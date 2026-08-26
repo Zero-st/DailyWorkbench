@@ -1454,6 +1454,7 @@
       renderHeaderStrip(d);
       renderActiveTab(d);
       renderTodayReview(d);
+      if (!__inited) { __inited = true; switchView("home"); }
     } catch (err) {
       console.error("render 出错", err);
       var box = document.getElementById("col-cap");
@@ -1464,6 +1465,48 @@
       }
     }
   }
+
+  // ---------- 侧边栏多视图切换（首页只留今日，其余模块侧边栏切换） ----------
+  var __view = "home";
+  var __inited = false;
+  function switchView(v) {
+    __view = v;
+    document.querySelectorAll(".side-item").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-view") === v);
+    });
+    var titles = {
+      home: ["今日", "WorkBuddy 本地面板 · 聚焦今日代办与复盘"],
+      dash: ["仪表盘", "本机 Skills / 会话 / 收藏 / 入口总览"],
+      cap: ["能力速达", "本机 Skills 速查与一键启动"],
+      ai: ["AI 助手", "用大白话回答你的问题"],
+      info: ["资讯", "AI 日报与每日新闻"],
+      ov: ["系统状态", "本机运行环境与服务健康度"],
+      stats: ["Skill 统计", "Skills 数量与分类分布"],
+      sess: ["会话档案", "本机会话记录与活跃热力图"],
+      week: ["本周动态", "近期变化与里程碑"],
+      schedule: ["课程表", "本地课程表管理"]
+    };
+    var t = titles[v] || ["", ""];
+    var h = document.getElementById("viewTitle"); if (h) h.textContent = t[0];
+    var s = document.getElementById("viewSub"); if (s) s.textContent = t[1];
+    // 先隐藏所有视图与 tabpane
+    document.querySelectorAll(".view").forEach(function (x) { x.classList.remove("active"); });
+    document.querySelectorAll(".tabpane").forEach(function (p) { p.classList.remove("active"); });
+    document.querySelectorAll(".tab").forEach(function (t2) { t2.classList.remove("active"); });
+    if (v === "home" || v === "dash") {
+      var el = document.getElementById("view-" + v);
+      if (el) el.classList.add("active");
+      return;
+    }
+    // tab 类：复用原 switchTab 的 DOM 体系
+    var target = document.getElementById("pane-" + v);
+    if (target) target.classList.add("active");
+    document.querySelectorAll(".tab").forEach(function (t2) {
+      if (t2.getAttribute("data-tab") === v) t2.classList.add("active");
+    });
+    if (__data) renderActiveTab(__data);
+  }
+  window.switchView = switchView;
 
   // ---------- 同步健康度（数据新鲜度 + 失败/陈旧告警） ----------
   function renderFreshness(d) {
