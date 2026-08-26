@@ -580,7 +580,7 @@
       { c: "kpi-green", i: ic("settings"), v: k.automations, l: "定时任务", tab: "ov", card: "card-auto" },
       { c: "kpi-purple", i: ic("hardDrive"), v: (disk.D ? disk.D.free + "G" : "-"), l: "磁盘可用 · 共 " + (disk.D ? disk.D.total + "G" : "-"), tab: "ov", card: "card-ov" },
       { c: "kpi-amber", i: ic("zap"), v: k.skills, l: "已装 Skills", tab: "cap", card: "card-skills" },
-      { c: "kpi-blue", i: ic("messageSquare"), v: k.sessions, l: "近期会话", tab: "cap", card: "card-sess" },
+      { c: "kpi-blue", i: ic("messageSquare"), v: k.sessions, l: "近期会话", tab: "sess", card: "col-sess" },
       { c: "kpi-purple", i: ic("archive"), v: k.memory, l: "记忆库文件", tab: "ov", card: "card-ov" },
     ];
     document.getElementById("kpis").innerHTML = items.map(function (x) {
@@ -655,25 +655,6 @@
     return html;
   }
 
-  function renderSessions(sessions) {
-    var groups = { "今天": [], "昨天": [], "更早": [] };
-    sessions.forEach(function (s) { (groups[s.group] = groups[s.group] || []).push(s); });
-    var html = "";
-    ["今天", "昨天", "更早"].forEach(function (g) {
-      if (!groups[g].length) return;
-      html += '<div class="grp"><div class="grp-h" onclick="toggleCat(this)"><span class="ci">🟢</span>' + g +
-        '<span class="cc">' + groups[g].length + '</span><span class="car">▶</span></div><div class="grp-b">';
-      groups[g].forEach(function (s) {
-        var disp = s.display || s.title || "";
-        var badge = s.status === "working" ? '<span class="badge on">进行中</span>' : "";
-        html += '<div class="auto sess" onclick="aiAsk(' + "'回顾并继续这个会话：" + jsStr(disp) + "'" + ')"><b>' +
-          esc(disp) + '</b><span class="meta">' + s.updated + " " + badge + "</span></div>";
-      });
-      html += "</div></div>";
-    });
-    return html;
-  }
-
   function renderHeat(heat) {
     var total = heat.reduce(function (a, b) { return a + b.count; }, 0);
     var html = '<div class="heat"><div class="heat-t">近 17 周会话活跃 · 合计 ' + total + ' 条记录 · 点格子看当天聊了啥</div><div class="heat-g">';
@@ -688,29 +669,16 @@
 
   function renderCap(d) {
     var skillsHtml = renderSkills(d.skills);
-    var sessHtml = renderSessions(d.sessions.recent);
-    var heatHtml = renderHeat(d.sessions.heatmap);
     var guideHtml = (d.guide || []).map(function (g) {
       return '<div class="guide-item' + (g.indexOf("⚠") >= 0 ? " warn" : "") + '">' + esc(g) + "</div>";
     }).join("");
-    var trendItems = [];
-    ((d.aiDaily && d.aiDaily.sections) || []).forEach(function (sec) {
-      (sec.items || []).forEach(function (it) {
-        if (trendItems.length < 3) trendItems.push(it);
-      });
-    });
-    var trendHtml = trendItems.length ? '<div class="trend-list">' + trendItems.map(function (it) {
-      return '<a class="trend" href="' + escAttr(it.url || "#") + '" target="_blank" rel="noopener">' + esc(it.title) +
-        (it.source ? '<span class="ts">' + esc(it.source) + "</span>" : "") + "</a>";
-    }).join("") + "</div>" : "";
     var inspireCmd = "根据我的工作台现状生成今日建议：已装 " + d.kpi.skills + " 个 skill，知识库 " + d.kpi.knowledge +
       " 个文件，模型 " + d.kpi.models + " 个（本机 " + ((d.status.localModels || []).length) + "）。请给我：1-2 个今天可以动手的小任务点子；一条 AI agent 学习路径（结合我已装的 skill）；一个值得关注的 AI 趋势。";
     document.getElementById("col-cap").innerHTML =
       '<div class="card" id="card-skills"><h2><span class="ic">' + ic("zap") + '</span>能力速达（点击复制调用指令）</h2>' +
         '<textarea id="cmdbox" rows="2" placeholder="点击上方 skill，指令会出现在这里（也可直接编辑/粘贴）"></textarea>' +
         '<div id="hint"></div><div id="sempty" class="empty" style="display:none">没有匹配的 skill</div>' +
-        '<div id="skills">' + skillsHtml + "</div></div>" +
-      '<div class="card" id="card-sess"><h2><span class="ic">' + ic("messageSquare") + '</span>近期会话 / 任务流</h2>' + sessHtml + heatHtml + "</div>";
+        '<div id="skills">' + skillsHtml + "</div></div>";
     var side = document.getElementById("side-cap");
     if (side) {
       side.innerHTML =
@@ -720,15 +688,7 @@
           '<div class="ov-metric"><span class="rk">AI 日报</span><span class="rv">' + ((d.aiDaily && d.aiDaily.count) || 0) + '</span><span class="rn">条今日资讯</span></div>' +
           "</div>" +
           '<div class="guide-grid">' + guideHtml + "</div>" +
-          '<div style="margin-top:12px"><button class="btn" onclick="aiAsk(' + "'" + jsStr(inspireCmd) + "'" + ')">生成建议</button></div></div>' +
-        '<div class="side-card" style="margin-top:12px"><h4><span class="ic">' + ic("trendingUp") + '</span>AI 趋势 / 学习流</h4>' +
-          (d.aiDaily && d.aiDaily.count
-            ? '<div class="empty" style="margin:2px 0 4px">今日已抓 ' + d.aiDaily.count + ' 条 AI 资讯（' + esc(d.aiDaily.date || "") + '），每天 08:30 自动更新</div>'
-            : '<div class="empty" style="margin:2px 0 4px">今日尚无日报数据</div>') +
-          trendHtml +
-          '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">' +
-          '<button class="btn" onclick="switchTab(' + "'news'" + ')">看今日 AI 日报</button>' +
-          '<button class="btn-sm" onclick="cmdtext(' + "'检索最近 30 天 AI 趋势，输出一份研究笔记'" + ')">趋势研究</button></div></div>';
+          '<div style="margin-top:12px"><button class="btn" onclick="aiAsk(' + "'" + jsStr(inspireCmd) + "'" + ')">生成建议</button></div></div>';
     }
   }
 
@@ -1090,20 +1050,6 @@
     return html;
   }
 
-  function renderWeekly(d) {
-    var box = document.getElementById("wkList");
-    if (!box) return;
-    var items = d.weekly || [];
-    var h2 = document.querySelector(".wk-card h2");
-    if (h2) h2.innerHTML = '本周动态 · 近期变化（' + items.length + '）';
-    if (!items.length) {
-      box.innerHTML = '<li class="empty">本周暂无新增变化 · 工作台平稳运行中</li>';
-      return;
-    }
-    var shown = items.slice(0, 12);
-    box.innerHTML = wkGroupHtml(shown) + (items.length > shown.length ? '<li class="empty" style="grid-column:1/-1;padding-top:4px">本周共 ' + items.length + ' 条变化，显示最近 12 条</li>' : "");
-  }
-
   // 本周动态全部 tab：全量 + 按类型筛选
   var weekFilter = "all";
   function weekSet(k) {
@@ -1372,7 +1318,6 @@
     renderOverview(d);
     renderOvCard(d);
     renderQuick(d);
-    renderWeekly(d);
   }
   function renderActiveTab(d) {
     if (!d) return;
