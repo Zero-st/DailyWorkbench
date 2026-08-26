@@ -846,6 +846,26 @@ body.light .wb-dlg .wb-dlg-in{background:var(--input-bg)}
 .rev-list a{color:var(--accent)}
 .rev-list .empty{list-style:none;margin-left:-18px;color:var(--sub);font-size:13px}
 .rev-rule{border:none;border-top:1px solid var(--line-soft);margin:16px 0;}
+.review-actions{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:12px}
+.review-actions .button{flex-shrink:0;min-height:36px;padding:0 16px}
+.review-actions #reviewHint{font-size:12px;flex:1;min-width:0}
+#reviewInput{
+  width:100%;
+  box-sizing:border-box;
+  min-height:128px;
+  background:var(--input-bg);
+  border:1px solid var(--line-mid);
+  border-radius:var(--radius-sm);
+  color:var(--ink);
+  padding:12px 14px;
+  font-size:14px;
+  line-height:1.65;
+  font-family:inherit;
+  resize:vertical;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+#reviewInput::placeholder{color:var(--sub-2)}
+#reviewInput:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--tint);background:var(--input-bg)}
 .note{color:var(--sub);line-height:1.65;font-size:14px}
 /* ---------- 侧边栏 + 多视图布局（其他模块侧边栏切换，首页只留今日） ---------- */
 .app{display:flex;align-items:stretch;min-height:100vh}

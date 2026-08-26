@@ -14,7 +14,7 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="styles.css?v=72">
+<link rel="stylesheet" href="styles.css?v=73">
 </head>
 <body>
 <div class="app">
@@ -94,10 +94,10 @@
             <h3 class="rev-h">📌 今日完成</h3>
             <ul class="rev-list" id="revSessions"></ul>
             <hr class="rev-rule">
-            <textarea id="reviewInput" rows="3" placeholder="写下今天的复盘（仅存本机，按日期保存）…"></textarea>
-            <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-              <button class="button sm" onclick="saveReview()">💾 保存复盘</button>
+            <textarea id="reviewInput" rows="6" placeholder="写下今天的复盘（仅存本机，按日期保存）…"></textarea>
+            <div class="review-actions">
               <span id="reviewHint" class="empty"></span>
+              <button class="button sm" onclick="saveReview()">💾 保存复盘</button>
             </div>
           </article>
         </div>
@@ -210,6 +210,6 @@
   </div>
 </div>
 <script src="schedule.js?v=2"></script>
-<script src="app.js?v=78"></script>
+<script src="app.js?v=79"></script>
 </body>
 </html>
