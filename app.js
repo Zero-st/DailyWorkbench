@@ -461,7 +461,17 @@
     var list = todosLoad();
     var done = list.filter(function (t) { return t.done; }).length;
     var prog = document.getElementById("todoProg");
-    if (prog) prog.textContent = list.length ? ("已完成 " + done + " / 共 " + list.length) : "";
+    if (prog) {
+      if (!list.length) {
+        prog.innerHTML = '<span class="empty">还没有待办，写一条吧～</span>';
+      } else {
+        var pct = Math.round(done / list.length * 100);
+        prog.innerHTML =
+          '<span class="todo-badge">✓ ' + done + ' / ' + list.length + '</span>' +
+          '<span class="todo-progress-bar"><span class="todo-progress-fill" style="width:' + pct + '%"></span></span>' +
+          '<span style="font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums">' + pct + '%</span>';
+      }
+    }
     if (!list.length) { ul.innerHTML = '<li class="empty">还没有待办，写一条吧～</li>'; return; }
     ul.innerHTML = list.map(function (t, i) {
       return '<li class="todo' + (t.done ? " done" : "") + '">' +
@@ -1420,7 +1430,17 @@
     if (done) {
       var list = todosLoad();
       var dn = list.filter(function (t) { return t.done; }).length;
-      done.textContent = list.length ? ("今日代办完成度 " + dn + " / " + list.length) : "今日还没有待办，写一条吧～";
+      var total = list.length;
+      if (!total) {
+        done.innerHTML = '<span class="empty">今日还没有待办，写一条吧～</span>';
+      } else {
+        var pct = Math.round(dn / total * 100);
+        done.innerHTML =
+          '<span style="color:var(--sub);font-size:13px">今日代办完成度</span>' +
+          '<span class="review-done-badge">✓ ' + dn + ' / ' + total + '</span>' +
+          '<span class="review-progress"><span class="review-progress-fill" style="width:' + pct + '%"></span></span>' +
+          '<span style="font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums">' + pct + '%</span>';
+      }
     }
     var sess = document.getElementById("revSessions");
     if (sess) {
