@@ -94,6 +94,8 @@ body.light{
   --panel-2:    #f2f5f9;
   --panel-3:    #e7ecf2;
   --input-bg:   #ffffff;
+  /* 跟随主题：浅色下用浅面板色，避免继承深色主题固化值 */
+  --glass-soft: var(--panel-2);
 
   /* ---- 线条：冷灰 hairline ---- */
   --line:       #d6dde5;
