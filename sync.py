@@ -25,7 +25,7 @@ ENV["PYTHONIOENCODING"] = "utf-8"
 
 REPO = "W-lik721/personal-workbench"
 API = "https://api.github.com"
-DIAG = r"D:\Users\qingdeng-ws\sync_diag.log"
+DIAG = r"D:\AIWork\sync_diag.log"
 
 
 def diag(msg):

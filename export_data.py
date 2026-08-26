@@ -16,11 +16,13 @@ import json
 import sqlite3
 import ctypes
 import subprocess
+import shutil
+import platform
 import time
 from datetime import datetime, date, timedelta
 
-WB = r"C:\Users\13115\.workbuddy"
-WS = r"D:\Users\qingdeng-ws"
+WB = os.path.expanduser(r"~\.workbuddy")
+WS = r"D:\AIWork"
 SKILLS_DIR = os.path.join(WB, "skills")
 DB = os.path.join(WB, "workbuddy.db")
 MODELS = os.path.join(WB, "models.json")
@@ -100,7 +102,18 @@ def get_automations():
     return out
 
 
+_MODELS_CACHE = None
+
+
 def get_models():
+    """优先读 ~/.workbuddy/models.json（接入配置的模型）。
+
+    本机无此文件时，回退为从 sessions 表聚合「近期实际使用的模型」
+    （按使用次数降序，auto 标为自动路由）。前端契约不变。
+    """
+    global _MODELS_CACHE
+    if _MODELS_CACHE is not None:
+        return _MODELS_CACHE
     out = []
     try:
         d = json.load(open(MODELS, encoding="utf-8"))
@@ -112,8 +125,23 @@ def get_models():
             mid = m.get("id", "") or ""
             typ = "本机" if ("localhost" in url or "local" in mid.lower()) else "云端"
             out.append({"name": m.get("name", mid), "type": typ})
-    except Exception as e:
-        print("models err", e)
+    except Exception:
+        pass
+    if not out:
+        # models.json 不存在或为空：从会话记录聚合近期实际使用的模型
+        try:
+            con = sqlite3.connect(DB)
+            cur = con.cursor()
+            cur.execute("SELECT model, COUNT(*) FROM sessions "
+                        "WHERE deleted_at IS NULL AND model IS NOT NULL AND model != '' "
+                        "GROUP BY model ORDER BY 2 DESC LIMIT 8")
+            for name, cnt in cur.fetchall():
+                typ = "自动路由" if str(name).lower() == "auto" else "云端"
+                out.append({"name": "%s（%d 次）" % (name, cnt), "type": typ})
+            con.close()
+        except Exception as e:
+            print("models err", e)
+    _MODELS_CACHE = out
     return out
 
 
@@ -127,7 +155,7 @@ def get_ollama_models():
     返回 {available, models:[{id,size,modified,tags:[name,...]}], running:[{name,size,processor}]}。
     与 status.localModels（WorkBuddy 接入配置）不同，这里取的是 Ollama 真正拉到本机的模型。
     """
-    exe = r"C:\Users\13115\ollama\ollama.exe"
+    exe = shutil.which("ollama") or r"C:\Users\lenovo\ollama\ollama.exe"
     out = {"available": False, "models": [], "running": []}
     if not os.path.isfile(exe):
         return out
@@ -177,10 +205,14 @@ def get_ollama_models():
 
 
 def memory_count():
-    try:
-        return len([f for f in os.listdir(MEM_DIR) if os.path.isfile(os.path.join(MEM_DIR, f))])
-    except Exception:
-        return 0
+    """聚合用户级（~/.workbuddy/memory）与工作区（<WS>/.workbuddy/memory）两级记忆文件数。"""
+    total = 0
+    for d in (MEM_DIR, os.path.join(WB, "memory")):
+        try:
+            total += len([f for f in os.listdir(d) if os.path.isfile(os.path.join(d, f))])
+        except Exception:
+            pass
+    return total
 
 
 def get_sessions():
@@ -189,9 +221,10 @@ def get_sessions():
     try:
         con = sqlite3.connect(DB)
         cur = con.cursor()
+        # 不按 cwd 过滤：本机会话散布在多个工作区（D:\AIWork、C:\Users\lenovo\WorkBuddy 等），
+        # 单工作区过滤会丢失约 2/3 的会话与热力图数据
         cur.execute("SELECT title, custom_title, status, updated_at, created_at FROM sessions "
-                    "WHERE deleted_at IS NULL AND cwd LIKE ? ORDER BY updated_at DESC",
-                    ("%%%s%%" % WS,))
+                    "WHERE deleted_at IS NULL ORDER BY updated_at DESC")
         rows = cur.fetchall()
         today = date.today()
         start = today - timedelta(days=17 * 7 - 1)
@@ -214,7 +247,7 @@ def get_sessions():
                     elif d0 == today - timedelta(days=1):
                         grp = "昨天"
                 recent.append({
-                    "title": title,
+                    "title": title or "",
                     "customTitle": custom_title.strip() if custom_title else "",
                     "display": display,
                     "status": status,
@@ -456,14 +489,14 @@ def main():
             titled.append((h["date"], t))
     today_iso = date.today().isoformat()
     for s in recent:
-        titled.append((today_iso, s.get("title", "")))
+        titled.append((today_iso, s.get("title") or ""))
     for s in sk:
         key = s["name"].lower()
         if key:
-            s["usage"] = sum(1 for _, t in titled if key in t.lower())
+            s["usage"] = sum(1 for _, t in titled if key in (t or "").lower())
             last = ""
             for d, t in sorted(titled, key=lambda x: x[0], reverse=True):
-                if key in t.lower():
+                if key in (t or "").lower():
                     last = d
                     break
             s["lastUsed"] = last
@@ -488,12 +521,12 @@ def main():
             guide.append("⏰ 定时任务「%s」将于 %s 运行" % (a["name"], a["next"]))
         else:
             guide.append("定时任务「%s」已就绪" % a["name"])
-    guide.append("用 prompt-forge 把今天的一个想法固化成可复用提示词")
+    guide.append("动手前用 prior-art-first 先检索已有方案，避免重复造轮子")
     guide.append("挑一个「能力速达」里的 skill 今天实际用一次")
 
     quick = [
         {"icon": "🔄", "label": "刷新工作台", "cmd": "打开工作台（刷新面板）"},
-        {"icon": "🎬", "label": "蒸馏视频", "cmd": "用 video-cangjie-distill 把以下视频转成 skill："},
+        {"icon": "🎬", "label": "拆解视频", "cmd": "用 creator-video-decoder 拆解以下视频，输出六维拆解报告："},
         {"icon": "🗞️", "label": "AI 日报", "cmd": "生成今日 AI 日报（中文）：最新模型 / 工具 / 趋势"},
         {"icon": "📝", "label": "记待办", "cmd": "记一笔待办："},
         {"icon": "🔍", "label": "搜知识库", "cmd": "在 knowledge-base/ 搜索："},
@@ -520,7 +553,7 @@ def main():
             "mcp": mc,
             "memoryLastUpdate": now.strftime("%Y-%m-%d"),
             "disk": dsk,
-            "runtime": "3.13 / 22.22",
+            "runtime": platform.python_version(),
         },
         "sessions": {"recent": recent, "heatmap": heat},
         "knowledge": kb,

@@ -1,531 +1,171 @@
 {
-  "generatedAt": "2026-08-26 11:19",
+  "generatedAt": "2026-08-26 12:22",
   "kpi": {
-    "skills": 65,
+    "skills": 20,
     "automations": 3,
     "models": 3,
-    "memory": 48,
-    "knowledge": 9,
-    "sessions": 9
+    "memory": 11,
+    "knowledge": 0,
+    "sessions": 15
   },
   "skills": [
     {
-      "name": "agency-kit",
-      "desc": "AI 专家角色（AI专家角色/agent角色）总入口，覆盖后端架构/前端/产品规划/安全等场景。整合 200+ 即插即用 agent",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：agency-agents__github",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "agent-chat",
-      "desc": "让同一台 Windows 机器上的多个 WorkBuddy 会话 / agent 像 Slack 一样互相发消息、mid-task 协调。提供 join / send / fyi / history / members / catchup / leave 子命令，基于共享 JSONL 日志 + .NET 文件锁，零网络、零 daemon。适合多 agent 并行开发时彼此通知接口变更、汇报阻塞、共享状态。",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：agent-chat",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "agent-design-kit",
-      "desc": "设计 AI Agent / skill 流程、为任务选型 agent 模式、写高质量提示词、用 LangGraph / AutoGen",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：agent-design-kit",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
       "name": "agent-reach",
-      "desc": "'Use this skill when the user wants to research / search / read / look up anything on the internet — e.g. \"全网调研 X\" / \"帮我调研一下 X\" / \"查一下 X\" / \"搜搜 X\" / \"看看大家怎么评价 X\" / \"X 上有什么讨论\" / \"research this topic\". Also use it whenever the user mentions any platform or shares any URL/链接: 小红书/xiaohongshu/xhs, Twitter/推特/X, B站/bilibili, Reddit, Facebook, Instagram, V2EX, LinkedIn/领英/招聘/求职/jobs, YouTube, GitHub code search, 小宇宙播客, 雪球/股票行情, RSS feeds, or any web URL. 15 platforms, multi-backend routing (OpenCLI / per-platform CLIs / APIs). Zero config for 6 channels. Run `agent-reach doctor --json` to see which backend serves each platform right now. NOT for: 写报告/数据分析/翻译等内容加工（本 skill 只负责从互联网获取内容）；发帖/评论/点赞等写操作；已有专门 skill 的平台（先用专门 skill）.'",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：agent-reach",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "karpathy-kit",
-      "desc": "Karpathy 风格 AI 方法论总入口，覆盖 15 个场景：① agentic engineering（代理工程 / agent",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：andrej-karpathy-skills__github",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "ascetic-breaker",
-      "desc": "\"苦行僧破执术（元认知 Skill）。打破 AI 的'苦行僧模式'——仅依赖当前上下文埋头硬推、无视外部资源、重复造轮子、信息不足仍强行编造。触发信号：(1)任务涉及代码编写/方案设计/调研分析但未先检索现有资源；(2)连续多轮同一问题反复推理未引入外部新信息；(3)上下文缺版本号/API文档/行业数据却仍继续输出；(4)用'应该是''大概''通常'填充关键事实缺口；(5)正在从头实现可能有成熟库的功能。核心价值：缺口检测→资源路由→方案评分→交叉校验→假设显式化→卡壳自动触发。调研类任务委托 web-access/agent-reach，代码类用 WebSearch/WebFetch 定向查官方文档/GitHub，项目内复用优先 Glob/Grep。与用户红线'写代码/接口字段禁止靠猜'一致。\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：ascetic-breaker",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "citation-management",
-      "desc": "Manage BibTeX citations for LaTeX papers. Harvest missing citations from a draft using Semantic Scholar, validate cite keys against .bib files, deduplicate entries, and format bibliography. Use when working with references, BibTeX, or citations.",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：citation-management",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "claude-mem",
-      "desc": "\"跨会话持久记忆系统（thedotmack/claude-mem）。当用户问「我们之前是不是讨论过 X / 上次那个决定是什么 / 之前试过什么」，或你要在长周期项目里积累、检索、复用历史上下文时触发。触发词：claude-mem、记忆、回忆、之前、上次、did we、recall。本包内置 18 个记忆相关子能力文档（见 techniques/），覆盖记忆检索、学习代码库、做计划、知识库、时间线报告等。仅作项目技术记忆方法论参考，须主动触发才读，不自动注入；不替代 WorkBuddy 原生三层记忆与 experience-loop 的记坑流程，同一件事不双写。\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：claude-mem",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "crawl4ai-to-vault",
-      "desc": "将任意网页抓取为干净 Markdown 并存入用户 vault（99-采集 目录）的技能。当用户说「抓这个网页」「把这个链接存进知识库」「爬取这个页面」「web to vault」或给出网址希望保存为笔记时使用。底层用 Crawl4AI（装在隔离 venv）复用系统已装 Edge，不下载浏览器。",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：crawl4ai-to-vault",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "cs-learning",
-      "desc": "计算机科学与技术（CS）专业学习路线导航。当用户要去学 CS / 问\"从哪开始学计算机\" /",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：cs-learning",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "daily-insight",
-      "desc": "基于工作台真实家底（已装 skill 数 / 知识库文件数 / 模型数·本机数）生成「今日灵感」三件套——① 1-2 个今天可动手的小任务 ② 一条结合已装 skill 的 agent 学习路径 ③ 一个值得关注的 AI 趋势。当用户说\"生成今日灵感\"\"给我今日灵感\"\"今日灵感\"时触发。绝不编造数字，读数失败即报错。",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：daily-insight",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "deeptutor-tutor",
-      "desc": "AI 私教 / 个性化辅导 skill。当用户说「私教」「教我」「带我学」「出题考我」「考考我」",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：deeptutor-tutor",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "design-taste-frontend",
-      "desc": "Anti-slop frontend skill for landing pages, portfolios, and",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：design-taste-frontend",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "douyin",
-      "desc": "|",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：douyin",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "en-to-zh-translator",
-      "desc": "\"Translate English text files (.txt, .md) to Chinese for language learning and translation practice. Also handles formatted documents (PDF/DOCX/PPTX/EPUB/HTML) by first converting them to Markdown with the markitdown MCP server. Use when the user asks to translate a text file to Chinese, create a Chinese version of an English document, or generate bilingual materials for translation training. The translation preserves sentence structure and combines broken sentences into complete lines.\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：en-to-zh-translator",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "experience-loop",
-      "desc": "\"经验捕获与晋升闭环（记忆运维）。把'记坑 → 标第N次 → 满3次晋升 → 复盘'这套流程一键触发。当用户说「记个坑」「记录一下这个报错」「这条经验记下来」「这个需求记一下」「复盘经验」「检查有没有重复踩的坑」「晋升检查」时使用。三分类记录（ERR错误/LRN经验/FEAT需求）→ 落每日日志+踩坑手册 → 三条件晋升（满3次+跨2任务+30天内 → 环境坑入手册/原则进MEMORY/流程提skill）。与 wb-self-iter（认知层深度复盘）分工：本 skill 管'记忆怎么写、何时升级'，复盘认知提炼仍走 wb-self-iter；与 claude-mem 分工：项目技术记忆检索走 claude-mem(techniques/mem-search)，本机环境坑/用户偏好走原生三层记忆，不双写。\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：experience-loop",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "file-hygiene",
-      "desc": "\"文件整理与清理（Windows 安全版）。扫描目录（只读）→ 列出整理/清理方案 → 用户批准 → 安全执行（移动不覆盖、删除进回收站可反悔）。当用户说「整理下载文件夹」「清理一下 D 盘」「扫描大文件/重复文件/安装包残留」「删掉这些安装包」「帮我把文件归类」或任何文件整理/清理/瘦身请求时触发。核心理念：先审计、批准后才动、一切可回滚，绝不盲删。\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：file-hygiene",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "full-output-enforcement",
-      "desc": "Overrides default LLM truncation behavior. Enforces complete code",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：full-output-enforcement",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "github",
-      "desc": "\"Interact with GitHub using the `gh` CLI. Use `gh issue`, `gh pr`, `gh run`, and `gh api` for issues, PRs, CI runs, and advanced queries.\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：github",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "github-pages-auto-deploy",
-      "desc": "\"Configure automatic website deployment to GitHub Pages with GitHub Actions and custom domain support. Use when a static site should deploy automatically after code is pushed.\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：github-pages-auto-deploy",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "grill-me",
-      "desc": "Interview the user relentlessly about a plan or design until",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：grill-me__skillhub",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "hallmark",
-      "desc": "\"Anti-AI-slop design skill for greenfield pages, audits, redesigns, and design extraction from URLs or screenshots. Use when the user asks to build a new app or landing page, wants to redesign something, invokes Hallmark by name, or uses audit/redesign/study.\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：hallmark",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "idea-landing-3prompt",
-      "desc": ">-",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：idea-landing-3prompt",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "impeccable",
-      "desc": "|",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：impeccable",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "job-hunting-hub",
-      "desc": "统一求职全流程 skill（由 job-hunting-hub 与 ai-job-search",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：job-hunting-hub__skillhub",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "kb-ingest",
-      "desc": "",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：kb-ingest",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "kb-preflight",
-      "desc": "",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：kb-preflight",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "last30days",
-      "desc": "\"Research what people actually say about ANY topic in the last 30 days. Pulls posts and engagement from Reddit, X, YouTube, TikTok, Hacker News, Polymarket, GitHub, and the web. Includes a doctor health check to diagnose broken or missing sources. Boundary: for AI-SPECIFIC news / daily AI digest / GitHub AI repo trends, prefer wb-ai-radar (dedicated AI entry); last30days = general cross-topic discourse research (any subject, multi-platform engagement), not AI-only.\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：last30days",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "latex-paper-en",
-      "desc": "English LaTeX assistant for existing .tex journal or conference papers. Use for compile repair, venue formatting, bibliography/citation checks, section writing, logic, related work, tables, pseudocode, de-AI polish, translation, adaptation, and submission readiness; use latex-thesis-zh for Chinese theses and paper-audit for critique.",
-      "category": "academic-writing",
-      "cmd": "打开工作台后调用 skill：latex-paper-en",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "latex-thesis-zh",
-      "desc": "中文 LaTeX 学位论文助手，面向已有 .tex 硕博论文工程：编译诊断、GB/T 7714、模板识别、结构/格式/公式断行、术语一致性、逻辑与文献综述、标题优化、去 AI 味、盲审隐匿、对照学校规范逐项终检。触发词：学位论文/毕业论文/硕士/博士论文。英文论文用 latex-paper-en，审稿总评用 paper-audit。",
-      "category": "academic-writing",
-      "cmd": "打开工作台后调用 skill：latex-thesis-zh",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "literature-review",
-      "desc": "Conduct comprehensive literature reviews using multi-perspective dialogue simulation. Generate diverse expert personas, conduct grounded Q&A conversations, and synthesize findings into structured knowledge. Use when starting a new research project or writing a survey section.",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：literature-review",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "llm-onboard-diagnose",
-      "desc": "把第三方大模型接入 WorkBuddy（models.json）时的四步诊断法 + 踩坑清单。当用户要接入/调试一个新 LLM（OpenAI 兼容或各厂商 API）、遇到 400/403/404、模型看不懂图、回答跑偏、显示名重复，或问\"某厂商有没有免费/真免费模型\"时使用。This skill should be used when onboarding or troubleshooting a third-party LLM in WorkBuddy's models.json.",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：llm-onboard-diagnose",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "memory-setup",
-      "desc": "\"WorkBuddy 原生记忆系统初始化与体检工具（用户级）。当用户要配置记忆/初始化记忆/记忆体检/整理记忆/记忆清理/查看记忆状态/给 WorkBuddy 配一套记忆系统/MEMORY 太大/超限/瘦身压线，或想管理 WorkBuddy 自带的三层记忆时触发。覆盖三层记忆（云记忆/用户级 MEMORY.md/工作区 memory 目录）的骨架初始化、合规体检、规模统计、清理建议、超限瘦身压线，贴合现有「踩坑标注手册三件套」规范，不另起炉灶。（memory-maintain 已并入）\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：memory-setup",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "obsidian-cli",
-      "desc": "通过 Obsidian 官方命令行（obsidian 命令，1.12+ 已启用）安全操作用户的 Obsidian vault——建笔记、归档、读搜、每日笔记、反向链接、标签、移动。当用户提到 Obsidian、vault、笔记、归档、知识库整理、每日笔记、backlinks 时使用。vault 路径 D:\\Users\\qingdeng-ws\\vault（PARA 结构）。",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：obsidian-cli",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "ollama-local-multimodal",
-      "desc": "在 Windows 本机用 Ollama 部署本地多模态（视觉）大模型并接入 WorkBuddy 的完整流程。当用户要\"本地跑大模型/部署视觉模型/离线看图/不想用云端配额\"，或已装 Ollama 但遇到拉模型限速、客户端 400、响应慢时使用。覆盖便携安装、魔搭直拉绕限速、models.json 接入、上下文与显存调优。",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：ollama-local-multimodal",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "paper-checker",
-      "desc": "论文查重与AI率检测工具，支持中文英文论文查重、AI率检测、降重和降AI率处理。用于：(1)上传论文文件进行查重和AI率检测",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：paper-checker__skillhub",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "paper-pipeline",
-      "desc": "|",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：paper-pipeline",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "pdf",
-      "desc": "Use this skill whenever the user wants to OPERATE ON an existing PDF file — read/extract text-tables, merge/split/rotate, watermark, fill forms, encrypt/decrypt, extract images, OCR scanned PDFs. For GENERATING a brand-new visual/designed PDF (report, proposal, resume, 画册, 封面) from content, use the wb-doc-kit skill (minimax-pdf) instead. If the user mentions a .pdf file or asks to manipulate one, use this skill.",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：pdf",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "pitfall-manual-audit",
-      "desc": "核查踩坑标注手册的引用完整性、检测编号碰撞并执行安全重排。手册条目增长、做重排、或怀疑有 #编号 断链时触发。触发词：引用完整性、编号碰撞、断链修复、audit_orphan、手册重排。",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：pitfall-manual-audit",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "planning-with-files",
-      "desc": "\"Manus-style persistent file-based planning for AI coding agents: keeps task_plan.md, findings.md, and progress.md on disk so work survives context loss and /clear. Use when asked to plan out, break down, or organize a multi-step project, research task, or any work requiring 5+ tool calls. Supports automatic session recovery after /clear.\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：planning-with-files",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "ponytail",
-      "desc": "\"反过度工程的极简编码方法论（Lazy senior dev mode）。覆盖：① 写码/重构/修bug/审代码时套",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：ponytail",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "product-manager-suite",
-      "desc": "完整产品经理技能包。用于从想法、截图/图片、用户反馈、老板指令、竞品功能、数据现象、PRD",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：product-manager-suite",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "prompt-forge",
-      "desc": "\"Turn a vague user request into a high-quality, reusable AI prompt. Trigger when the user says things like 帮我写个提示词, 怎么问 AI 才能答好, 生成 prompt 模板, 让 AI 自己想清楚再答, or hands over a fuzzy topic and wants a better way to ask any model. Implements the three-sentence method: assign a role, reverse-analyze missing info, then generate and self-optimize a professional prompt.\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：prompt-forge",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "pua",
-      "desc": "让你的 AI 不敢摆烂。用大厂 PUA 话术穷尽一切方案。触发条件：(1) 任务失败 2+ 次或反复微调同一思路; (2)",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：pua",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "quarkclouddrive",
-      "desc": "夸克网盘官方(Quark Drive)Skill，用于文件上传/下载（支持断点续传）、文件分享与转存、网盘文件搜索、相册整理、AI助手（文件总结与知识问答，支持万级文件）。当用户需要操作夸克网盘文件或进行身份验证时使用。",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：quarkclouddrive",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "skill-trigger-audit",
-      "desc": "|",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：skill-trigger-audit",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "superpowers",
-      "desc": "\"通用 AI 工程方法论技能包（obra/superpowers）。开始任何工程任务——写功能、调试、做计划、写测试、并行派发子 agent、代码评审、用 git worktree 隔离——都应先调用对应子技能。触发词：superpowers、brainstorm、debug、写计划、TDD、并行 agent、code review、worktree、验证完成。本包内置 14 个经实战调优的子技能（见 techniques/），主 agent 应先读 using-superpowers 的原则，再按需读取具体技术文件。【路由】通用工程默认入口；点名 Karpathy / AK 风格走 karpathy-kit，agent/skill 架构设计走 agent-design-kit。\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：superpowers",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "tencent-video-capture",
-      "desc": "Download videos from Tencent share links (微信视频号 weixin.qq.com/sph, channels.weixin.qq.com, or QQ频道 pd.qq.com) whose real video URL is hidden behind a JS app and not in the page source. Use when curl/WebFetch can't find a direct mp4. (视频号/WeChat Channels/QQ频道 视频下载)",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：tencent-video-capture",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "tts-reader",
-      "desc": "\"文本朗读（文字转语音 TTS）。把文字/文档/长文转成 mp3 语音文件，供用户播放收听。当用户说「朗读这段文字」「把这篇文章读出来」「文字转语音」「生成语音」「TTS」「读给我听」「把文档转成音频」时触发。用微软 edge-tts 神经语音（免费、中文多音色、音质自然），需要网络。适合：长文档听读（学 CS 时眼睛累）、英文材料听力、把文章转成音频路上听。\"",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：tts-reader",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "url-redirect-vuln",
-      "desc": "URL 跳转（重定向）漏洞单一大类 skill。覆盖：① 概念与钓鱼危害 ② 授权/SRC 场景下的发现与验证 ③ SRC",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：url-redirect-vuln",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "vault-index-refresh",
-      "desc": "刷新 WorkBuddy vault 的知识索引与机器可读 kb-index.json。当知识库增删文件、完成一次\"入库\"、或需要重建导航/索引时使用。一键自动生成各区域 📑 索引.md、00-导航总览.md、🛠 代码项目索引.md，重生成 kb-index.json，并自动校验一致性（文件数/漏索引/缺索引页），输出 ✅/⚠️ 摘要。支持 --check 只读巡检。触发词：刷新索引、重建导航、入库后更新、索引不同步、索引巡检、体检索引、重建知识库索引。",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：vault-index-refresh",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "video",
-      "desc": "|",
-      "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：video",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "wb-ai-radar",
       "desc": ">",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：wb-ai-radar",
+      "cmd": "打开工作台后调用 skill：agent-reach__skillhub",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "wb-design-kit",
-      "desc": "设计/前端视觉总入口：高端视觉设计、图生代码、前端图像、野兽派/极简 UI、网站升级重构、品牌图像生成。触发场景覆盖：高端设计/agency 风格/Awwwards 级视觉设计、image to code/图生代码/设计稿转前端、前端图像/premium 网页参考图生成、工业野兽派/brutalist/Swiss 排版/战术终端 UI、极简 UI/minimalist/编辑风网页/bento 布局/干净 UI、网站升级/重构/redesign/UI 改版/去除 AI 味设计/提升视觉质量、品牌图/brand-kit/Logo 系统设计/品牌规范板/视觉世界提案。中文同义：品牌视觉、网站改版、设计优化、高端落地页、视觉升级。【路由】本 skill 是设计/前端视觉总入口；落地页/作品集/网页改版专项请用 design-taste-frontend，产品 UI/组件/海报+设计评审+动效请用 impeccable。三者互补不冲突。",
+      "name": "aihot",
+      "desc": "查询 AI HOT 的中文 AI 资讯、精选、当前热点和日报。用户询问今天或最近的 AI 新闻、AI 圈动态、大模型或产品发布、OpenAI／Anthropic／Google 最新消息、AI 论文、AI 日报、AI HOT 精选、当前最热事件，或需要同步当前全部精选时使用。必须通过 aihot.virxact.com 的匿名只读 API 获取当前数据，不凭训练记忆回答新闻；不需要 API Key 或 MCP server。",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：wb-design-kit",
+      "cmd": "打开工作台后调用 skill：aihot",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "wb-doc-kit",
-      "desc": "\"文档生成总入口：①视觉 PDF 生成（minimax-pdf）：从内容【从零生成】视觉PDF/报告PDF/设计感PDF/排版美化/提案/简历/封面/画册（注意：是生成设计稿，不是编辑已有 PDF——编辑/合并/拆分/提取/OCR 已有 PDF 请用 pdf skill）②Office 文档 docx/xlsx/pptx 创建/检查/修改（officecli）：创建 Word/Excel/PPT/Office 文档、检查格式、查问题、加图表、修改文档、填充表单、转换\"",
-      "category": "document-generation",
-      "cmd": "打开工作台后调用 skill：wb-doc-kit",
-      "usage": 0,
-      "lastUsed": ""
-    },
-    {
-      "name": "wb-legal-policy",
-      "desc": "法律与政策检索总入口：①合法合规类案/法条查询 ②时政政策内容检索",
+      "name": "creator-clone-kit",
+      "desc": "自媒体博主模仿工具集总入口与流水线编排。串联视频拆解（creator-video-decoder）、人设建立（creator-persona-builder）、技能检索聚合（creator-toolkit-finder）三个模块，支持单模块调用与全流程一键运行，输出对标拆解报告、差异化人设档案与工具选型清单。当用户要系统性对标某个博主、从零搭建自媒体账号、做完整的账号孵化方案时使用。",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：wb-legal-policy",
+      "cmd": "打开工作台后调用 skill：creator-clone-kit",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "wb-self-iter",
-      "desc": "自我迭代总入口：①模型自我检查与纠错（用户反对/指出错误时重新分析原始意图） ②每日复盘/自我复盘（深度洞察与方法论提炼，每天22:00定时运行） ③lobster 自我迭代优化（规则/代码/闭环自动迭代与评分）。【路由】与 experience-loop 分工：认知复盘/方法论提炼/每日22:00 走我，记坑/晋升/查重复踩坑走 experience-loop；claude-mem 仅作项目技术记忆参考，主动触发才读，不替代原生三层记忆。",
+      "name": "creator-persona-builder",
+      "desc": "自媒体博主人设建立模块。基于视频拆解结果或用户自述，生成个人定位、性格标签、视觉风格、口头禅与内容调性，输出差异化人设档案 persona.json 与可执行的人设手册。当用户需要做账号定位、建立博主人设、设计个人 IP、找差异化切入点、定内容调性时使用。属于 creator-clone-kit 工具集模块二，可独立运行，也可读取 creator-video-decoder 的 decode.json 作为输入。",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：wb-self-iter",
+      "cmd": "打开工作台后调用 skill：creator-persona-builder",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "wb-skill-ops",
-      "desc": "\"WorkBuddy skill 运维总入口：①海外/开源 skill 平台适配（五维诊断+六原则+本地 Chromium 桥接）②skill 改进优化 ③skill 安全审查。触发词：适配/优化/修一下某 skill、Claude Code skill、海外 skill、openclaw、GitHub/Cursor/OpenClaw 引入、Chrome/Chromium/Puppeteer/Playwright/headless/截图/网页渲染/JS 页面/网页抓取/浏览器自动化/装 Chrome + 改进 skill/优化 skill/skill 升级/skill 调试/自动优化/BUG 自修复 + 审查 skill/skill 安全/安装前检查/技能风险/vetter。\"",
+      "name": "creator-toolkit-finder",
+      "desc": "自媒体工具与 skill 检索聚合模块。从 GitHub 及开源/自媒体生态自动搜索并整理与自媒体运营、视频制作、内容策划相关的工具、skill、MCP 服务，汇总名称、功能描述、适用场景、star 数与选型建议。当用户需要找自媒体工具、视频处理工具、内容创作 skill、对比工具选型、补齐工作流缺口时使用。属于 creator-clone-kit 工具集模块三，完全独立可用。",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：wb-skill-ops",
+      "cmd": "打开工作台后调用 skill：creator-toolkit-finder",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "wb-text-tuner",
-      "desc": "文本优化总入口：①token智能省流压缩（自动压缩用户输入/代码/对话，节省20%-70% token）②去AI味/润色（让文字更像人话，修AI高频词、过度结构化、公式化结尾）。触发场景：压缩/降token/省流/上下文过长 + 去AI味/降AI味/像人话/润色/改写自然/AI写作痕迹 等（含英文：compress/token save/humanize/remove AI flavor）。",
+      "name": "creator-video-decoder",
+      "desc": "自媒体博主视频内容分析拆解模块。输入目标博主的视频（本地文件、平台链接或已有素材），自动提取主题结构、叙事节奏、镜头语言、文案风格、爆款元素与内容框架，输出可复用的六维拆解报告与结构化 decode.json。当用户需要拆解视频、分析博主套路、研究爆款、逆向内容公式、做对标账号分析时使用。属于 creator-clone-kit 工具集模块一，可独立运行，也可将输出喂给 creator-persona-builder。",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：wb-text-tuner",
+      "cmd": "打开工作台后调用 skill：creator-video-decoder",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "web-access",
-      "desc": "'AI 联网与浏览器自动化 skill。当用户要做联网操作（搜索信息、抓取网页、访问需登录的网站、操作网页界面、读取动态渲染页面、抓取社交媒体内容如小红书/微博/推特、跨平台并行调研）时调用。提供五层工具链：WebSearch / WebFetch / curl / Jina / CDP 浏览器自动化，按场景自动选型；并内置 16 引擎多引擎搜索（references/multi-search-engine/，无需 API key）。注意：CDP 浏览器层需要用户本地 Chrome/Edge 开启远程调试；纯静态抓取可走 WebSearch/WebFetch/Jina。协同路由：平台专属/登录态抓取（小红书/Reddit/B站/推特等）转 agent-reach；AI 资讯/日报走 wb-ai-radar；过去30天社媒舆情走 last30days。'",
+      "name": "feishu-group-summary",
+      "desc": "\"This skill should be used when a user wants to silently read and summarize Feishu (Lark) group chat messages WITHOUT @-mentioning any bot and WITHOUT other group members noticing. It uses the official Feishu CLI (lark-cli / @larksuite/cli) in act-as-you mode to pull group history via the open-platform API and summarize it locally. Trigger phrases include 静默读飞书群消息, 不 @ 机器人总结群聊, feishu CLI 读群, 用 lark-cli 拉群消息, 总结某个飞书群最近 N 天. Do NOT use this for posting messages to a group — it is read-only and privacy-preserving by design.\"",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：web-access",
+      "cmd": "打开工作台后调用 skill：feishu-group-summary",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "wechat-miniprogram",
-      "desc": "WeChat Mini Program (微信小程序) development framework. Use when",
+      "name": "requirement-document-generator",
+      "desc": "客户需求智能整理与文档生成专家。从沟通记录（飞书文档、妙记、会议纪要等）中提取、分析并整理成结构化的需求文档，自动生成飞书文档。触发场景：(1) 用户需要整理客户需求文档 (2) 需要将会议纪要转换为需求文档 (3) 需要从沟通记录提取关键需求 (4) 需要生成项目需求说明书 (5) 需要创建业务需求文档 (BRD) 或产品需求文档 (PRD)",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：wechat-miniprogram",
+      "cmd": "打开工作台后调用 skill：feishu-requirement-document-generator__skillhub",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "workbuddy-bluebook",
-      "desc": "|",
+      "name": "khazix-writer",
+      "desc": "|-",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：workbuddy-bluebook",
+      "cmd": "打开工作台后调用 skill：khazix-writer",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "workbuddy-git-safety",
-      "desc": "This skill MUST load before any git operation (merge / fetch / rebase / push / clone) on a WorkBuddy-managed repo, or when a remote-tracking ref is stale, a merge/fetch hangs, a .git looks corrupted, or you must verify whether a commit/branch is truly lost. Enforces: local .git writes (merge/fetch/ref/rebase) must NEVER use dangerouslyDisableSandbox — the managed .git is a junction and the flag corrupts it (real incident #189); the flag is only safe for Flutter build / large-file download / D-drive delete-write. Provides a pre-operation checklist, safe command templates, and incident recovery.",
+      "name": "opencli-agent",
+      "desc": "当用户希望通过命令行自动化与网站或在线服务交互时，应使用本技能。它支持在 Twitter/X 上发帖、浏览 Reddit、获取 B站热门、下载小红书内容等 70+ 个平台的操作——全部通过 opencli 工具完成。触发场景包括社交媒体操作（发帖、点赞、关注、搜索）、内容获取（热门、时间线、动态流）、下载（视频、图片、文章）以及 opencli 支持的任何网络服务自动化。",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：workbuddy-git-safety",
+      "cmd": "打开工作台后调用 skill：opencli-agent__skillhub",
+      "usage": 2,
+      "lastUsed": "2026-08-26"
+    },
+    {
+      "name": "organize-room-video",
+      "desc": "\"Generate vertical shorts of organizing from chaos to order (WeryAI): closets, fridges, vanities, desks, luggage. Use when you need organizing satisfying video, declutter ASMR, before/after tidy clips, or users ask for rainbow-fold stacks and the snap of a clear lid. Requires WERYAI_API_KEY at runtime (declared in frontmatter for registries). SEO: organize room video; organizing video generation.\"",
+      "category": "通用能力",
+      "cmd": "打开工作台后调用 skill：organize-room-video__skillhub",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "workbuddy-mcp-connect",
-      "desc": "把外部 Python MCP 服务接进 WorkBuddy 并排错。触发：想\"把某项目作为 MCP 工具接进 WorkBuddy\"、\"MCP 启动失败/Connection closed\"、装好但 WorkBuddy 连不上。覆盖 MCP vs proxy 选型、隔离 venv 安装、绕开 Rust 编译、补 [mcp] 漏装依赖、写 mcp.json 绝对路径、MCP 握手验证、OpenAI 兼容模型 key 验证。以 headroom 为完整示例。",
+      "name": "playwright-browser-automation",
+      "desc": "\"Direct Playwright API for browser automation without MCP complexity. Navigate websites, interact with elements, extract data, take screenshots, generate PDFs, record videos. More reliable than MCP-based approaches. Requires: node, npx, playwright.\"",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：workbuddy-mcp-connect",
+      "cmd": "打开工作台后调用 skill：playwright-browser-automation",
       "usage": 0,
       "lastUsed": ""
     },
     {
-      "name": "workbuddy-workspace-recover",
-      "desc": "WorkBuddy 工作空间文件夹被重命名或移动后，之前在该工作空间下的旧对话/项目在左侧打不开、提示\"工作目录可能已被重命名或删除\"时的恢复指南。通过把旧会话数据从 projects/<旧ws-key> 迁移到 projects/<新ws-key>、并把 workbuddy.db 里 sessions.cwd 改为新路径、删除失效的 workspaces 行来恢复。适用于用户改名工作空间后会话失联的故障。",
+      "name": "podcast-summarizer",
+      "desc": "构建「播客自动总结并归档到 Obsidian」的可扩展工具。覆盖内容获取(小宇宙/RSS/本地)、语音转写(Whisper)、大模型结构化总结、Markdown 归档。当用户要抓取小宇宙等播客平台内容、做播客笔记/总结/摘要、或自动化沉淀到 Obsidian 时调用。",
       "category": "通用能力",
-      "cmd": "打开工作台后调用 skill：workbuddy-workspace-recover",
+      "cmd": "打开工作台后调用 skill：podcast-summarizer",
+      "usage": 0,
+      "lastUsed": ""
+    },
+    {
+      "name": "prior-art-first",
+      "desc": "先行方案扫描 —— 动手前先从 GitHub 及开源生态检索是否已有现成仓库、工具、Agent Skill 或 MCP Server 可用，研究借鉴后再决定复用/封装/重写/自造。用户已将此设为所有任务的强制前置流程。当要开发工具、搭建方案、实现功能、造轮子、选型技术、或用户说\"先看看有没有现成的\"时使用。",
+      "category": "通用能力",
+      "cmd": "打开工作台后调用 skill：prior-art-first",
+      "usage": 0,
+      "lastUsed": ""
+    },
+    {
+      "name": "self-review-pro",
+      "desc": "AI每日自我复盘技能。用于每日复盘、深度洞察、方法论提炼。当用户说\"复盘\"、\"自我复盘\"、\"每天回顾\"时触发。也会在每天22:00自动运行（可通过定时任务触发）。",
+      "category": "通用能力",
+      "cmd": "打开工作台后调用 skill：self-reivew-pro__skillhub",
+      "usage": 0,
+      "lastUsed": ""
+    },
+    {
+      "name": "tencent-yuanbao-standard-search",
+      "desc": "Search the web using TencentCloud Web Search API (WSA). Prioritize using it when you need to retrieve network information.",
+      "category": "通用能力",
+      "cmd": "打开工作台后调用 skill：tencent-yuanbao-standard-search",
+      "usage": 0,
+      "lastUsed": ""
+    },
+    {
+      "name": "web-search",
+      "desc": "This skill should be used when users need to search the web for information, find current content, look up news articles, search for images, or find videos. It uses DuckDuckGo's search API to return results in clean, formatted output (text, markdown, or JSON). Use for research, fact-checking, finding recent information, or gathering web resources.",
+      "category": "通用能力",
+      "cmd": "打开工作台后调用 skill：web-search__skillhub",
+      "usage": 0,
+      "lastUsed": ""
+    },
+    {
+      "name": "wechat-favorites",
+      "desc": "微信收藏夹导出、智能分类与知识库管理。支持从解析后的 favorite.db 导出收藏记录、自动归纳分类（从用户内容发现自然类别）、LLM 智能增强（可选）、批量导入 IMA 知识库（可选）、多平台导出（Obsidian/Notion，可选）、增量分类。核心功能支持离线使用，网络功能默认关闭。",
+      "category": "通用能力",
+      "cmd": "打开工作台后调用 skill：wechat-favorite__skillhub",
+      "usage": 0,
+      "lastUsed": ""
+    },
+    {
+      "name": "wechat-smart-organizer",
+      "desc": "微信聊天记录智能整理技能。当用户想要读取微信聊天记录、提取关键信息、存储到Obsidian笔记、或创建日历事件时使用此技能。功能包括：查询会话、读取聊天记录、搜索关键词、提取任务/时间/待办事项、智能分类存储到Obsidian、创建日历提醒。",
+      "category": "通用能力",
+      "cmd": "打开工作台后调用 skill：wechat-smart-organizer__skillhub",
+      "usage": 0,
+      "lastUsed": ""
+    },
+    {
+      "name": "zhiliao-official-tender-assistant",
+      "desc": "知了标讯官方招投标数据助手，覆盖招标公告与中标结果查询、企业工商与招中标画像、竞争对手分析、市场趋势统计、Top采购/中标单位与品牌、历史中标价格、临期项目商机挖掘等。当用户涉及招投标、政府采购、中标查询、供应商/竞对分析、采购市场研究等任何场景时，必须使用此SKILL；即使未出现「招投标」字样，只要涉及中标、采购、供应商、竞对、市场份额等需求均应使用。",
+      "category": "通用能力",
+      "cmd": "打开工作台后调用 skill：zhiliao-official-tender-assistant__skillhub",
       "usage": 0,
       "lastUsed": ""
     }
@@ -538,8 +178,8 @@
     },
     {
       "icon": "🎬",
-      "label": "蒸馏视频",
-      "cmd": "用 video-cangjie-distill 把以下视频转成 skill："
+      "label": "拆解视频",
+      "cmd": "用 creator-video-decoder 拆解以下视频，输出六维拆解报告："
     },
     {
       "icon": "🗞️",
@@ -575,115 +215,55 @@
   "guide": [
     "🗞️ 今日 AI 日报已更新（19 条）：Anthropic 推出 500 万美元资助计划，支持 AI 对用户幸福感影响的独立评估",
     "📰 今日国内新闻已更新（15 条），点「每日新闻」标签看看",
-    "⏰ 定时任务「工作空间每周安全清理巡检」将于 08-31 10:06 运行",
-    "用 prompt-forge 把今天的一个想法固化成可复用提示词",
+    "⏰ 定时任务「每日 AI 新闻推送」将于 08-01 15:55 运行",
+    "动手前用 prior-art-first 先检索已有方案，避免重复造轮子",
     "挑一个「能力速达」里的 skill 今天实际用一次"
   ],
   "status": {
     "skillsLastUpdate": "2026-08-26",
     "automations": [
       {
-        "name": "工作空间每周安全清理巡检",
-        "status": "ACTIVE",
-        "next": "08-31 10:06",
-        "cron": "FREQ=WEEKLY;BYDAY=MO;BYHOUR=10;BYMINUTE=0"
+        "name": "每日 AI 新闻推送",
+        "status": "PAUSED",
+        "next": "08-01 15:55",
+        "cron": "FREQ=DAILY;BYHOUR=16;BYMINUTE=0"
       },
       {
-        "name": "归档文件半年清理检查（WB实用Skills源文件）",
-        "status": "ACTIVE",
-        "next": "02-06 09:00",
-        "cron": ""
+        "name": "GitHub 热门 AI 项目每日推送",
+        "status": "PAUSED",
+        "next": "08-24 09:50",
+        "cron": "FREQ=DAILY;BYHOUR=10;BYMINUTE=0"
       },
       {
-        "name": "知识库每周体检",
-        "status": "ACTIVE",
-        "next": "08-31 09:04",
-        "cron": "FREQ=WEEKLY;BYDAY=MO;BYHOUR=9"
+        "name": "每日一个为什么",
+        "status": "PAUSED",
+        "next": "08-18 17:25",
+        "cron": "FREQ=DAILY;BYHOUR=17;BYMINUTE=30"
       }
     ],
     "models": [
       {
-        "name": "GLM-4.7-Flash",
+        "name": "hy3（43 次）",
         "type": "云端"
       },
       {
-        "name": "agnes-2.5-flash",
-        "type": "云端"
+        "name": "auto（9 次）",
+        "type": "自动路由"
       },
       {
-        "name": "qwen3.5",
-        "type": "本机"
+        "name": "glm-5.2（2 次）",
+        "type": "云端"
       }
     ],
-    "localModels": [
-      "qwen3.5"
-    ],
+    "localModels": [],
     "ollama": {
-      "available": true,
-      "models": [
-        {
-          "id": "730eed4bbbd6",
-          "size": "408 MB",
-          "modified": "3 weeks ago",
-          "tags": [
-            "dmeta-embedding-zh:latest"
-          ]
-        },
-        {
-          "id": "6dd66787ddbd",
-          "size": "6.5 GB",
-          "modified": "17 hours ago",
-          "tags": [
-            "qwen3.5:9b",
-            "modelscope.cn/lmstudio-community/Qwen3.5-9B-GGUF:Q4_K_M"
-          ]
-        }
-      ],
+      "available": false,
+      "models": [],
       "running": []
     },
     "mcp": [
       {
-        "name": "officecli",
-        "type": "stdio",
-        "online": true
-      },
-      {
-        "name": "headroom",
-        "type": "stdio",
-        "online": true
-      },
-      {
-        "name": "jcodemunch",
-        "type": "stdio",
-        "online": true
-      },
-      {
-        "name": "markitdown",
-        "type": "stdio",
-        "online": true
-      },
-      {
-        "name": "gitnexus",
-        "type": "stdio",
-        "online": true
-      },
-      {
-        "name": "image-extractor",
-        "type": "stdio",
-        "online": true
-      },
-      {
-        "name": "yby6-video-mcp",
-        "type": "stdio",
-        "online": true
-      },
-      {
-        "name": "context7",
-        "type": "stdio",
-        "online": true
-      },
-      {
-        "name": "qwen-mm-plugins-core",
+        "name": "xiaoyuzhoufm-mcp",
         "type": "stdio",
         "online": true
       }
@@ -691,88 +271,136 @@
     "memoryLastUpdate": "2026-08-26",
     "disk": {
       "C": {
-        "total": 380,
-        "free": 231
+        "total": 200,
+        "free": 45
       },
       "D": {
-        "total": 544,
-        "free": 364
+        "total": 275,
+        "free": 251
       }
     },
-    "runtime": "3.13 / 22.22"
+    "runtime": "3.13.14"
   },
   "sessions": {
     "recent": [
       {
-        "title": "约定明天再处理",
-        "customTitle": "学习",
-        "display": "学习",
-        "status": "completed",
-        "updated": "08-26 11:10",
+        "title": "克隆 personal-workbench 项目到本地",
+        "customTitle": "",
+        "display": "克隆 personal-workbench 项目到本地",
+        "status": "planning",
+        "updated": "08-26 12:22",
         "group": "今天"
       },
       {
-        "title": "查询电脑可运行的优于qwen的模型",
+        "title": "分析 opencli-agent 技能并通俗讲解",
         "customTitle": "",
-        "display": "查询电脑可运行的优于qwen的模型",
+        "display": "分析 opencli-agent 技能并通俗讲解",
         "status": "completed",
-        "updated": "08-25 20:31",
+        "updated": "08-25 15:48",
         "group": "昨天"
       },
       {
-        "title": "整理知识库并做系统体检",
+        "title": "分析豆包对话线程",
         "customTitle": "",
-        "display": "整理知识库并做系统体检",
+        "display": "分析豆包对话线程",
         "status": "completed",
-        "updated": "08-21 11:20",
-        "group": "更早"
+        "updated": "08-25 14:26",
+        "group": "昨天"
       },
       {
-        "title": "排查大量部署失败的原因",
-        "customTitle": "工作台",
-        "display": "工作台",
-        "status": "completed",
-        "updated": "08-20 14:50",
-        "group": "更早"
-      },
-      {
-        "title": "寻找无需apikey的抖音视频下载skill",
-        "customTitle": "skill",
-        "display": "skill",
-        "status": "completed",
-        "updated": "08-19 13:15",
-        "group": "更早"
-      },
-      {
-        "title": "询问对方为何也停止了",
-        "customTitle": "填充知识库",
-        "display": "填充知识库",
-        "status": "completed",
-        "updated": "08-16 13:34",
-        "group": "更早"
-      },
-      {
-        "title": "电脑项目跑完通知我",
+        "title": "克隆 all-skills 项目到本地路径",
         "customTitle": "",
-        "display": "电脑项目跑完通知我",
+        "display": "克隆 all-skills 项目到本地路径",
         "status": "completed",
-        "updated": "07-21 23:29",
+        "updated": "08-24 17:08",
         "group": "更早"
       },
       {
-        "title": "重命名工作文件夹后项目无法打开",
+        "title": "克隆 deepseek-harness 项目到本地路径",
         "customTitle": "",
-        "display": "重命名工作文件夹后项目无法打开",
-        "status": "archived",
-        "updated": "07-19 09:36",
+        "display": "克隆 deepseek-harness 项目到本地路径",
+        "status": "completed",
+        "updated": "08-21 10:21",
         "group": "更早"
       },
       {
-        "title": "列出 work buddy 已安装的 skill",
+        "title": "",
+        "customTitle": "GitHub 热门 AI 项目每日推送",
+        "display": "GitHub 热门 AI 项目每日推送",
+        "status": "completed",
+        "updated": "08-21 09:53",
+        "group": "更早"
+      },
+      {
+        "title": "调研 workbuddy 用户使用场景",
         "customTitle": "",
-        "display": "列出 work buddy 已安装的 skill",
-        "status": "archived",
-        "updated": "07-19 09:36",
+        "display": "调研 workbuddy 用户使用场景",
+        "status": "completed",
+        "updated": "08-20 11:23",
+        "group": "更早"
+      },
+      {
+        "title": "",
+        "customTitle": "GitHub 热门 AI 项目每日推送",
+        "display": "GitHub 热门 AI 项目每日推送",
+        "status": "completed",
+        "updated": "08-20 09:53",
+        "group": "更早"
+      },
+      {
+        "title": "详细介绍 gork cli",
+        "customTitle": "",
+        "display": "详细介绍 gork cli",
+        "status": "completed",
+        "updated": "08-20 09:18",
+        "group": "更早"
+      },
+      {
+        "title": "",
+        "customTitle": "每日一个为什么",
+        "display": "每日一个为什么",
+        "status": "completed",
+        "updated": "08-17 17:26",
+        "group": "更早"
+      },
+      {
+        "title": "",
+        "customTitle": "GitHub 热门 AI 项目每日推送",
+        "display": "GitHub 热门 AI 项目每日推送",
+        "status": "completed",
+        "updated": "08-17 09:58",
+        "group": "更早"
+      },
+      {
+        "title": "",
+        "customTitle": "GitHub 热门 AI 项目每日推送",
+        "display": "GitHub 热门 AI 项目每日推送",
+        "status": "completed",
+        "updated": "08-14 09:55",
+        "group": "更早"
+      },
+      {
+        "title": "",
+        "customTitle": "GitHub 热门 AI 项目每日推送",
+        "display": "GitHub 热门 AI 项目每日推送",
+        "status": "completed",
+        "updated": "08-14 09:15",
+        "group": "更早"
+      },
+      {
+        "title": "",
+        "customTitle": "每日一个为什么",
+        "display": "每日一个为什么",
+        "status": "completed",
+        "updated": "08-14 09:14",
+        "group": "更早"
+      },
+      {
+        "title": "",
+        "customTitle": "每日一个为什么",
+        "display": "每日一个为什么",
+        "status": "completed",
+        "updated": "08-12 17:25",
         "group": "更早"
       }
     ],
@@ -1179,11 +807,8 @@
       },
       {
         "date": "2026-07-19",
-        "count": 2,
-        "titles": [
-          "重命名工作文件夹后项目无法打开",
-          "列出 work buddy 已安装的 skill"
-        ]
+        "count": 0,
+        "titles": []
       },
       {
         "date": "2026-07-20",
@@ -1194,7 +819,7 @@
         "date": "2026-07-21",
         "count": 1,
         "titles": [
-          "电脑项目跑完通知我"
+          "询问workbuddy接入飞书读取群消息"
         ]
       },
       {
@@ -1229,23 +854,37 @@
       },
       {
         "date": "2026-07-28",
-        "count": 0,
-        "titles": []
+        "count": 5,
+        "titles": [
+          "科普Hy3模型及与主流模型对比",
+          "搜索小红书AI副业热门帖子提取思路",
+          "每日 AI 新闻推送",
+          "解释workbuddy自动化配置并优化提示词",
+          "批量管理B站关注列表"
+        ]
       },
       {
         "date": "2026-07-29",
-        "count": 0,
-        "titles": []
+        "count": 2,
+        "titles": [
+          "每日 AI 新闻推送",
+          "查询workbuddy技能本地安装路径"
+        ]
       },
       {
         "date": "2026-07-30",
-        "count": 0,
-        "titles": []
+        "count": 2,
+        "titles": [
+          "每日 AI 新闻推送",
+          "构建播客内容自动总结工具"
+        ]
       },
       {
         "date": "2026-07-31",
-        "count": 0,
-        "titles": []
+        "count": 1,
+        "titles": [
+          "每日 AI 新闻推送"
+        ]
       },
       {
         "date": "2026-08-01",
@@ -1259,28 +898,55 @@
       },
       {
         "date": "2026-08-03",
-        "count": 0,
-        "titles": []
+        "count": 4,
+        "titles": [
+          "查找 workbuddy 归档历史会话位置",
+          "为移动端 App 创建设计令牌体系",
+          "询问本地任务对话是否同步云端",
+          "GitHub 热门 AI 项目每日推送"
+        ]
       },
       {
         "date": "2026-08-04",
-        "count": 0,
-        "titles": []
+        "count": 6,
+        "titles": [
+          "询问专家团工作原理",
+          "解决 workbuddy 检查更新提示问题",
+          "设计影子跟读网站全栈架构",
+          "领取美团优惠券",
+          "复盘与 WorkBuddy 的对话交互",
+          "GitHub 热门 AI 项目每日推送"
+        ]
       },
       {
         "date": "2026-08-05",
-        "count": 0,
-        "titles": []
+        "count": 2,
+        "titles": [
+          "每日一个为什么",
+          "GitHub 热门 AI 项目每日推送"
+        ]
       },
       {
         "date": "2026-08-06",
-        "count": 0,
-        "titles": []
+        "count": 9,
+        "titles": [
+          "https://www.bilibili.com/video/BV1Emjd6iEk1 总结视频内容...",
+          "每日一个为什么",
+          "设计小红书账号整理方案",
+          "实现WorkBuddy的GitHub热门AI项目推送",
+          "整理电脑对话记录到云端",
+          "作为一名使用 Claude Code 的开发工程师，请为我设计并实现一个 7×24 小时不间断运行的...",
+          "开发自媒体博主模仿工具集",
+          "搜索GitHub上7×24小时运行agent的方法"
+        ]
       },
       {
         "date": "2026-08-07",
-        "count": 0,
-        "titles": []
+        "count": 2,
+        "titles": [
+          "每日一个为什么",
+          "GitHub 热门 AI 项目每日推送"
+        ]
       },
       {
         "date": "2026-08-08",
@@ -1294,18 +960,27 @@
       },
       {
         "date": "2026-08-10",
-        "count": 0,
-        "titles": []
+        "count": 2,
+        "titles": [
+          "每日一个为什么",
+          "查询抖音信息中标项目"
+        ]
       },
       {
         "date": "2026-08-11",
-        "count": 0,
-        "titles": []
+        "count": 2,
+        "titles": [
+          "每日一个为什么",
+          "GitHub 热门 AI 项目每日推送"
+        ]
       },
       {
         "date": "2026-08-12",
-        "count": 0,
-        "titles": []
+        "count": 2,
+        "titles": [
+          "每日一个为什么",
+          "GitHub 热门 AI 项目每日推送"
+        ]
       },
       {
         "date": "2026-08-13",
@@ -1314,8 +989,11 @@
       },
       {
         "date": "2026-08-14",
-        "count": 0,
-        "titles": []
+        "count": 2,
+        "titles": [
+          "GitHub 热门 AI 项目每日推送",
+          "每日一个为什么"
+        ]
       },
       {
         "date": "2026-08-15",
@@ -1324,15 +1002,16 @@
       },
       {
         "date": "2026-08-16",
-        "count": 1,
-        "titles": [
-          "填充知识库"
-        ]
+        "count": 0,
+        "titles": []
       },
       {
         "date": "2026-08-17",
-        "count": 0,
-        "titles": []
+        "count": 2,
+        "titles": [
+          "每日一个为什么",
+          "GitHub 热门 AI 项目每日推送"
+        ]
       },
       {
         "date": "2026-08-18",
@@ -1341,23 +1020,24 @@
       },
       {
         "date": "2026-08-19",
-        "count": 1,
-        "titles": [
-          "skill"
-        ]
+        "count": 0,
+        "titles": []
       },
       {
         "date": "2026-08-20",
-        "count": 1,
+        "count": 3,
         "titles": [
-          "工作台"
+          "调研 workbuddy 用户使用场景",
+          "GitHub 热门 AI 项目每日推送",
+          "详细介绍 gork cli"
         ]
       },
       {
         "date": "2026-08-21",
-        "count": 1,
+        "count": 2,
         "titles": [
-          "整理知识库并做系统体检"
+          "克隆 deepseek-harness 项目到本地路径",
+          "GitHub 热门 AI 项目每日推送"
         ]
       },
       {
@@ -1372,110 +1052,56 @@
       },
       {
         "date": "2026-08-24",
-        "count": 0,
-        "titles": []
+        "count": 1,
+        "titles": [
+          "克隆 all-skills 项目到本地路径"
+        ]
       },
       {
         "date": "2026-08-25",
-        "count": 1,
+        "count": 2,
         "titles": [
-          "查询电脑可运行的优于qwen的模型"
+          "分析 opencli-agent 技能并通俗讲解",
+          "分析豆包对话线程"
         ]
       },
       {
         "date": "2026-08-26",
         "count": 1,
         "titles": [
-          "学习"
+          "克隆 personal-workbench 项目到本地"
         ]
       }
     ]
   },
   "knowledge": {
-    "total": 9,
-    "types": {
-      ".md": 7,
-      "(无扩展名)": 1,
-      ".json": 1
-    },
-    "files": [
-      {
-        "name": "📑 索引.md",
-        "mtime": "08-24 18:20"
-      },
-      {
-        "name": "00-导航总览.md",
-        "mtime": "08-24 18:20"
-      },
-      {
-        "name": "kb-index.json",
-        "mtime": "08-24 18:20"
-      },
-      {
-        "name": "AGENTS.md",
-        "mtime": "08-19 12:59"
-      },
-      {
-        "name": "00-路由表.md",
-        "mtime": "08-18 19:13"
-      },
-      {
-        "name": ".gitignore",
-        "mtime": "08-18 17:00"
-      },
-      {
-        "name": "Home.md",
-        "mtime": "08-06 14:52"
-      },
-      {
-        "name": "AGENTS.md",
-        "mtime": "08-05 23:06"
-      }
-    ]
+    "total": 0,
+    "types": {},
+    "files": []
   },
   "weekly": [
     {
-      "kind": "kb",
-      "name": "kb-index.json",
-      "when": 1787566833.7947123
-    },
-    {
-      "kind": "kb",
-      "name": "00-导航总览.md",
-      "when": 1787566833.383319
-    },
-    {
-      "kind": "kb",
-      "name": "📑 索引.md",
-      "when": 1787566831.6988068
-    },
-    {
-      "kind": "kb",
-      "name": "AGENTS.md",
-      "when": 1787115550.9584312
-    },
-    {
       "kind": "skill",
-      "name": "wb-skill-ops",
-      "when": 1787115427.9659824,
+      "name": "opencli-agent__skillhub",
+      "when": 1787641625.149221,
       "scope": "本机"
     },
     {
       "kind": "skill",
-      "name": "kb-preflight",
-      "when": 1787115349.7105615,
+      "name": "aihot",
+      "when": 1787639314.1838753,
       "scope": "本机"
     },
     {
       "kind": "skill",
-      "name": "kb-ingest",
-      "when": 1787115349.6909914,
+      "name": "zhiliao-official-tender-assistant__skillhub",
+      "when": 1787188560.505278,
       "scope": "本机"
     }
   ],
   "aiDaily": {
     "date": "2026-08-26",
-    "fetchedAt": "2026-08-26 11:19",
+    "fetchedAt": "2026-08-26 12:22",
     "source": "AI HOT",
     "canonical": "https://aihot.virxact.com/daily/2026-08-26",
     "count": 19,
@@ -1624,7 +1250,7 @@
     "history": [
       {
         "date": "2026-08-26",
-        "fetchedAt": "2026-08-26 11:19",
+        "fetchedAt": "2026-08-26 12:22",
         "count": 19,
         "sections": [
           {
@@ -2562,20 +2188,9 @@
       },
       {
         "date": "2026-08-18",
-        "fetchedAt": "2026-08-18 22:49",
-        "count": 19,
+        "fetchedAt": "2026-08-18 16:29",
+        "count": 18,
         "sections": [
-          {
-            "label": "产品发布",
-            "items": [
-              {
-                "title": "OpenAI 推出 ChatGPT for Teens：面向青少年的学习体验与更强安全保护",
-                "summary": "OpenAI 发布 ChatGPT for Teens，为 13-17 岁用户自动启用，内置更强安全保护与家长控制。新增 Study Mode、负责任作业提醒、测验与学习可视化，以及可设定默认开启时段的 Study Hours，引导青少年分步解题而非直接给答案。OpenAI 同时宣布与 CodeAI 合作，帮助青少年理解、质疑并创造性地使用 AI。",
-                "url": "https://aihot.virxact.com/items/cmsykcnkt0yh1roz0a9h404r5",
-                "source": ""
-              }
-            ]
-          },
           {
             "label": "行业动态",
             "items": [
@@ -3265,7 +2880,7 @@
   },
   "dailyNews": {
     "date": "2026-08-26",
-    "fetchedAt": "2026-08-26 11:19",
+    "fetchedAt": "2026-08-26 12:22",
     "source": "每日60秒 (vikiboss/60s)",
     "canonical": "https://github.com/vikiboss/60s",
     "count": 15,
@@ -3367,7 +2982,7 @@
     "history": [
       {
         "date": "2026-08-26",
-        "fetchedAt": "2026-08-26 11:19",
+        "fetchedAt": "2026-08-26 12:22",
         "count": 15,
         "items": [
           {
@@ -4768,9 +4383,9 @@
     ]
   },
   "sync": {
-    "lastRun": "2026-08-26T11:19:57",
+    "lastRun": "2026-08-26T12:22:25",
     "status": "ok",
-    "nextRun": "2026-08-26T12:19:57",
+    "nextRun": "2026-08-26T13:22:25",
     "intervalHours": 1,
     "staleHours": 2
   }
