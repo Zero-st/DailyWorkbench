@@ -1,6 +1,6 @@
 {
   "packageId": "com.qingdeng.workbench",
-  "host": "w-lik721.github.io",
+  "host": "Zero-st.github.io",
   "name": "个人工作台",
   "launcherName": "工作台",
   "display": "standalone",
@@ -69,8 +69,8 @@
   },
   "enableNotifications": false,
   "startUrl": "/personal-workbench/index.html",
-  "iconUrl": "https://w-lik721.github.io/personal-workbench/icon-512.png",
-  "maskableIconUrl": "https://w-lik721.github.io/personal-workbench/icon-maskable-512.png",
+  "iconUrl": "https://Zero-st.github.io/DailyWorkbench/icon-512.png",
+  "maskableIconUrl": "https://Zero-st.github.io/DailyWorkbench/icon-maskable-512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "workbench.keystore",
@@ -82,7 +82,7 @@
   "appVersionCode": 1,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://w-lik721.github.io/personal-workbench/manifest.json",
+  "webManifestUrl": "https://Zero-st.github.io/DailyWorkbench/manifest.json",
   "fallbackType": "webview",
   "features": {},
   "alphaDependencies": {
@@ -91,7 +91,7 @@
   "enableSiteSettingsShortcut": false,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "https://w-lik721.github.io/personal-workbench/",
+  "fullScopeUrl": "https://Zero-st.github.io/DailyWorkbench/",
   "minSdkVersion": 21,
   "orientation": "portrait",
   "fingerprints": [],

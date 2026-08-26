@@ -366,7 +366,7 @@ class Store {
 
   // ---------- 云同步（GitHub 备份中转） ----------
   // 仓库名（owner/repo），默认用户自己的工作台仓库
-  static String get syncRepo => _p?.getString('wb_sync_repo') ?? 'W-lik721/personal-workbench';
+  static String get syncRepo => _p?.getString('wb_sync_repo') ?? 'Zero-st/DailyWorkbench';
   static set syncRepo(String v) => _p?.setString('wb_sync_repo', v.trim().replaceAll(RegExp(r'^https?://[^/]+/'), '').replaceAll(RegExp(r'\.git$'), ''));
   // GitHub Personal Access Token：走加密存储，不落明文
   static Future<String> syncToken() async {

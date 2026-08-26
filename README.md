@@ -71,8 +71,8 @@ python export_data.py
 
 ## 部署（GitHub Pages，固定地址 + 自动同步）
 
-- **线上地址（固定，推荐）**：https://w-lik721.github.io/personal-workbench/
-- 仓库（公开）：https://github.com/W-lik721/personal-workbench
+- **线上地址（固定，推荐）**：https://Zero-st.github.io/DailyWorkbench/
+- 仓库（公开）：https://github.com/Zero-st/DailyWorkbench
 - 手机 / 电脑浏览器直接开；手机浏览器菜单「添加到主屏幕」即变成 App，离线也能开。
 - **自动同步（核心）**：两个本机计划任务
   - `WorkbenchAutoSync` —— 每小时跑 `sync.cmd`，重抓本机真实数据 → `git push`。装了新 skill / 加了新自动化，最多 1 小时后线上更新。

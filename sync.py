@@ -23,7 +23,7 @@ PY = sys.executable
 ENV = dict(os.environ)
 ENV["PYTHONIOENCODING"] = "utf-8"
 
-REPO = "W-lik721/personal-workbench"
+REPO = "Zero-st/DailyWorkbench"
 API = "https://api.github.com"
 DIAG = r"D:\AIWork\sync_diag.log"
 

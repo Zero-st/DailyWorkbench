@@ -233,7 +233,7 @@ class _SettingsPageState extends State<SettingsPage> {
             child: TextField(
               controller: _repoCtrl,
               onChanged: (v) => Store.syncRepo = v, // 实时持久化，避免只在按钮里存
-              decoration: const InputDecoration(labelText: 'GitHub 仓库', hintText: '用户名/仓库名，如 W-lik721/personal-workbench', border: OutlineInputBorder(), isDense: true),
+              decoration: const InputDecoration(labelText: 'GitHub 仓库', hintText: '用户名/仓库名，如 Zero-st/DailyWorkbench', border: OutlineInputBorder(), isDense: true),
             ),
           ),
           Padding(
@@ -683,7 +683,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final token = _tokenCtrl.text.trim();
     final repo = _repoCtrl.text.trim();
     if (!_validRepo(repo)) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('仓库格式应为：用户名/仓库名（如 W-lik721/personal-workbench）')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('仓库格式应为：用户名/仓库名（如 Zero-st/DailyWorkbench）')));
       return;
     }
     if (token.isEmpty) {
@@ -713,7 +713,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final token = _tokenCtrl.text.trim();
     final repo = _repoCtrl.text.trim();
     if (!_validRepo(repo)) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('仓库格式应为：用户名/仓库名（如 W-lik721/personal-workbench）')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('仓库格式应为：用户名/仓库名（如 Zero-st/DailyWorkbench）')));
       return;
     }
     if (token.isEmpty) {

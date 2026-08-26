@@ -20,7 +20,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $RunnerDir = "D:\actions-runner"
-$RepoUrl   = "https://github.com/W-lik721/personal-workbench"
+$RepoUrl   = "https://github.com/Zero-st/DailyWorkbench"
 $StartupDir = [Environment]::GetFolderPath("Startup")
 
 if (-not (Test-Path "$RunnerDir\config.cmd")) {

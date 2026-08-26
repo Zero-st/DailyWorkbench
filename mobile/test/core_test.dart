@@ -40,10 +40,10 @@ void main() {
 
     test('云同步仓库名归一化', () {
       // 粘贴完整网址或带 .git 也能自动整理成 用户名/仓库名
-      Store.syncRepo = ' https://github.com/W-lik721/personal-workbench.git ';
-      expect(Store.syncRepo, 'W-lik721/personal-workbench');
-      Store.syncRepo = 'W-lik721/personal-workbench';
-      expect(Store.syncRepo, 'W-lik721/personal-workbench');
+      Store.syncRepo = ' https://github.com/Zero-st/DailyWorkbench.git ';
+      expect(Store.syncRepo, 'Zero-st/DailyWorkbench');
+      Store.syncRepo = 'Zero-st/DailyWorkbench';
+      expect(Store.syncRepo, 'Zero-st/DailyWorkbench');
     });
 
     test('速记/收藏/入口/课程表读写', () {

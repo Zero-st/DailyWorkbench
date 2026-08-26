@@ -15,7 +15,7 @@ import base64
 import urllib.request
 import urllib.error
 
-REPO = "W-lik721/personal-workbench"
+REPO = "Zero-st/DailyWorkbench"
 API = "https://api.github.com/repos/%s/contents/schedule.json" % REPO
 HERE = os.path.dirname(os.path.abspath(__file__))
 

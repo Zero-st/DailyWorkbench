@@ -10,7 +10,7 @@
   var WB = window.WB;
   function esc(s) { return WB.esc(s); }
 
-  var GH_REPO = "W-lik721/personal-workbench";
+  var GH_REPO = "Zero-st/DailyWorkbench";
   var GH_API = "https://api.github.com/repos/" + GH_REPO + "/contents/schedule.json";
   var GH_RAW = "https://raw.githubusercontent.com/" + GH_REPO + "/main/schedule.json";
   var GH_TOKEN_KEY = "wb_gh_token";
