@@ -845,6 +845,7 @@ body.light .wb-dlg .wb-dlg-in{background:var(--input-bg)}
 .rev-list{margin:0;padding-left:18px;color:var(--ink);font-size:14px;line-height:1.7}
 .rev-list a{color:var(--accent)}
 .rev-list .empty{list-style:none;margin-left:-18px;color:var(--sub);font-size:13px}
+.rev-rule{border:none;border-top:1px solid var(--line-soft);margin:16px 0;}
 .note{color:var(--sub);line-height:1.65;font-size:14px}
 /* ---------- 侧边栏 + 多视图布局（其他模块侧边栏切换，首页只留今日） ---------- */
 .app{display:flex;align-items:stretch;min-height:100vh}

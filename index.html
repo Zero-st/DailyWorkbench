@@ -14,7 +14,7 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="styles.css?v=71">
+<link rel="stylesheet" href="styles.css?v=72">
 </head>
 <body>
 <div class="app">
@@ -90,12 +90,10 @@
           <article class="card review-card">
             <h2><span class="ic">📈</span> 今日复盘</h2>
             <div class="sub" id="reviewDone">代办完成度加载中…</div>
-            <h3 class="rev-h">📌 今日做了什么</h3>
+            <hr class="rev-rule">
+            <h3 class="rev-h">📌 今日完成</h3>
             <ul class="rev-list" id="revSessions"></ul>
-            <h3 class="rev-h">💡 今日 AI 关注</h3>
-            <ul class="rev-list" id="revAi"></ul>
-            <h3 class="rev-h">🎯 明日行动</h3>
-            <div id="revGuide"></div>
+            <hr class="rev-rule">
             <textarea id="reviewInput" rows="3" placeholder="写下今天的复盘（仅存本机，按日期保存）…"></textarea>
             <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
               <button class="button sm" onclick="saveReview()">💾 保存复盘</button>
@@ -212,6 +210,6 @@
   </div>
 </div>
 <script src="schedule.js?v=2"></script>
-<script src="app.js?v=77"></script>
+<script src="app.js?v=78"></script>
 </body>
 </html>
