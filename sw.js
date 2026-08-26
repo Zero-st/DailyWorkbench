@@ -2,7 +2,7 @@
 const CACHE = "workbench-v95";
 const FILES = [
   "./index.html",
-  "./styles.css?v=73",
+  "./styles.css?v=74",
   "./schedule.js?v=2",
   "./app.js?v=79",
   "./manifest.json",
