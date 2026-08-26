@@ -1429,21 +1429,6 @@
         return "<li>" + esc(s.title || s.custom_title || "未命名会话") + "</li>";
       }).join("") : '<li class="empty">今天还没有会话记录</li>';
     }
-    var ai = document.getElementById("revAi");
-    if (ai) {
-      var items = [];
-      ((d.aiDaily && d.aiDaily.sections) || []).forEach(function (sec) {
-        (sec.items || []).forEach(function (it) { if (items.length < 2) items.push(it); });
-      });
-      ai.innerHTML = items.length ? items.map(function (it) {
-        return '<li><a href="' + escAttr(it.url || "#") + '" target="_blank" rel="noopener">' + esc(it.title || "") + "</a></li>";
-      }).join("") : '<li class="empty">今日暂无 AI 资讯</li>';
-    }
-    var guide = document.getElementById("revGuide");
-    if (guide) {
-      var g = (d.guide || []).slice(0, 3);
-      guide.innerHTML = g.length ? g.map(function (x) { return '<div class="note">• ' + esc(x) + "</div>"; }).join("") : '<div class="note">暂无引导，点「同步数据」获取今日建议</div>';
-    }
     var txt = document.getElementById("reviewInput");
     if (txt) { var saved = reviewLoad(); if (saved) txt.value = saved; }
   }
