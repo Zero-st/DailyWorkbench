@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0e0f13">
+<meta name="theme-color" content="#fff7fb">
 <title>个人工作台</title>
 <meta name="description" content="WorkBuddy 个人操作面板：定时同步本机 skills / 模型 / 自动化 / 记忆真实数据，聚合 AI 日报与每日新闻，含速记、课程表与一键本机刷新。">
 <meta property="og:title" content="个人工作台">
@@ -14,15 +14,16 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="styles.css?v=66">
+<link rel="stylesheet" href="styles.css?v=67">
 </head>
 <body>
 <a class="skip" href="#main">跳到主内容</a>
 <header class="header">
   <div>
-    <h1>个人工作台</h1>
-    <div class="sub">WorkBuddy 本地面板 · 每小时自动同步本机真实数据</div>
-  </div>
+      <h1>个人工作台</h1>
+      <div class="sub">WorkBuddy 本地面板 · 每小时自动同步本机真实数据</div>
+      <span class="brand">WorkBuddy 出品</span>
+    </div>
   <div class="snap-wrap">
     <span class="clock" id="clock">🕐 --:--:--</span>
     <button class="refresh-btn" id="todayBtn" onclick="copyToday()" title="把今天的 KPI / 头条 / 引导整理成一段文字复制，发给 AI 要今日建议"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> 今日概览</button>
@@ -145,6 +146,7 @@
   </section>
 </main>
 <div class="foot">本机数据每小时自动同步 · AI 日报与每日新闻自动抓取 · 全部用真实数据动态生成 · <span id="freshness"></span><button class="btn-sm" id="selfCheckBtn" onclick="selfCheck()" title="跑一遍功能自检，列出各模块是否正常">🔍 功能自检</button><button class="btn-sm" onclick="exportAll()" title="把速记/待办/收藏/入口导出为 Markdown">导出数据</button><button class="btn-sm" onclick="backupExport()" title="导出 JSON 备份（可完整恢复）">备份</button><button class="btn-sm" onclick="backupImport()" title="从 JSON 备份恢复数据">恢复</button></div>
+<div class="foot" style="margin-top:8px">设计风格参考 <a href="https://github.com/uncle11/xfc-obsidian-workbench-builder-community" target="_blank" rel="noopener">xfc-obsidian-workbench-builder-community</a> · 配色与组件体系沿用其社区版粉色 Ins 风</div>
 <div class="heat-modal" id="heat-detail" onclick="if(event.target===this)closeHeat()">
   <div class="heat-card">
     <div class="heat-card-h"><span id="heat-detail-date"></span><button class="heat-x" onclick="closeHeat()">✕</button></div>
@@ -152,6 +154,6 @@
   </div>
 </div>
 <script src="schedule.js?v=2"></script>
-<script src="app.js?v=72"></script>
+<script src="app.js?v=73"></script>
 </body>
 </html>
