@@ -590,7 +590,7 @@
     var total = aCount + dCount;
     var aTime = String(a.fetchedAt || "").slice(11, 16) || "-";
     var dTime = String(dn.fetchedAt || "").slice(11, 16) || "-";
-    var prompt = "帮我把今天工作台里的资讯划 3 条重点：AI 日报 " + aCount + " 条、每日新闻 " + dCount + " 条。请挑出 3 条对我（青灯，在自学计算机、爱折腾 AI 工具）最值得关注的，每条用大白话说明：背景是什么；为什么重要；今天能动手试什么。";
+    var prompt = "帮我把今天工作台里的资讯划 3 条重点：AI 日报 " + aCount + " 条、每日新闻 " + dCount + " 条。请挑出 3 条对我（AI 工具重度玩家，正在搭建自媒体创作工具集与自动化工作流，关注开源项目和 AI 前沿动态）最值得关注的，每条用大白话说明：背景是什么；为什么重要；今天能动手试什么。";
     document.getElementById("overview").innerHTML =
       '<div class="ov-hero">' +
         '<div class="ov-hero-top"><div class="ov-ttl">今日速览</div>' +
@@ -1508,41 +1508,41 @@
       })
       .catch(function () { return false; });
   }
-  // ---------- 立即刷新：触发 GitHub Actions 同步（等同手动 Run workflow） ----------
+  // ---------- 立即刷新：路线 A（本地）触发本机 local_refresh.py ----------
+  // 保留下方 GitHub Actions 相关函数（pollUntilSynced 等），供路线 B（云同步）启用
   function refreshData() {
     var btn = document.getElementById("refreshBtn");
-    var token = ghToken();
-    if (!token) {
-      WB.dialog.alert("首次使用需要先填 GitHub Token（只存你浏览器）。\n点「确定」后粘贴 Token（需要 repo + workflow 权限），填好再来点刷新。", function () { setGhToken(); });
+    var old = btn ? btn.textContent : "同步数据";
+    if (btn) { btn.disabled = true; btn.textContent = "⏳ 本机刷新中…"; }
+    fetchT("/api/refresh", { method: "POST" }, 8000).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      if (btn) btn.textContent = "⏳ 抓取资讯与数据…";
+      localReloadWait(btn, old, 0);
+    }).catch(function () {
+      // 本地刷新服务不可达（静态服务器 / file:// 打开）：退化为重读磁盘上的数据
+      if (btn) { btn.disabled = false; btn.textContent = old; }
+      loadData().then(function () {
+        WB.dialog.alert("当前打开方式不支持触发刷新（需用 server.py 启动工作台）。\n已重新加载磁盘上的最新数据；计划任务每小时会自动刷新。");
+      }).catch(function () {
+        WB.dialog.alert("刷新失败：无法访问 data.json。");
+      });
+    });
+  }
+  // 轮询本地数据直到 generatedAt 变化（本地刷新全程约 5-30 秒）
+  function localReloadWait(btn, old, tries) {
+    var MAX = 12; // 12 × 5s = 1 分钟
+    if (tries >= MAX) {
+      if (btn) { btn.disabled = false; btn.textContent = old; }
+      loadData().catch(function () {});
       return;
     }
-    var old = btn ? btn.textContent : "立即刷新";
-    if (btn) { btn.disabled = true; btn.textContent = "⏳ 触发同步…"; }
-
-    var api = "https://api.github.com/repos/" + GH_REPO + "/actions/workflows/sync.yml/dispatches";
-    // 在发起请求前记录时间戳，并预留 3 秒缓冲，避免 run 创建时间早于 POST 响应导致漏检
-    var afterTs = Date.now() - 3000;
-    fetch(api, {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + token,
-        "Accept": "application/vnd.github+json",
-        "Content-Type": "application/json",
-        "X-GitHub-Api-Version": "2022-11-28"
-      },
-      body: JSON.stringify({ ref: "main" })
-    }).then(function (r) {
-      if (r.ok) return;
-      if (r.status === 401 || r.status === 403) throw new Error("Token 无效或权限不足（需要 repo + workflow 权限，HTTP " + r.status + "）");
-      if (r.status === 404) throw new Error("找不到同步工作流（404），请确认仓库/分支名");
-      throw new Error("触发失败：HTTP " + r.status);
-    }).then(function () {
-      if (btn) btn.textContent = "本机 Runner 执行中…";
-      pollUntilSynced(btn, old, 0, afterTs);
-    }).catch(function (err) {
-      if (btn) { btn.disabled = false; btn.textContent = old; }
-      WB.dialog.alert("立即刷新失败：" + err.message);
-    });
+    if (btn) btn.textContent = "⏳ 等待新数据 (" + (tries + 1) + "/" + MAX + ")";
+    setTimeout(function () {
+      maybeReload().then(function (reloaded) {
+        if (reloaded) { if (btn) { btn.disabled = false; btn.textContent = old; } }
+        else localReloadWait(btn, old, tries + 1);
+      });
+    }, 5000);
   }
 
   // 轮询本次触发的运行，完成后等 Pages 重新部署再刷新页面
@@ -1703,12 +1703,13 @@
   // ---------- 常用入口（纯前端，本机 localStorage 存，不依赖 data.json） ----------
   var LINKS_KEY = "wb_links";
   var DEFAULT_LINKS = [
-    {"label": "抖音", "url": "https://www.douyin.com"},
+    {"label": "GitHub", "url": "https://github.com"},
+    {"label": "哔哩哔哩", "url": "https://www.bilibili.com"},
+    {"label": "小宇宙播客", "url": "https://www.xiaoyuzhoufm.com"},
+    {"label": "飞书", "url": "https://www.feishu.cn"},
     {"label": "WorkBuddy 文档", "url": "https://www.workbuddy.cn/docs/"},
-    {"label": "本仓库源码", "url": "https://github.com/Zero-st/DailyWorkbench"},
     {"label": "AI 日报源", "url": "https://aihot.virxact.com/daily"},
-    {"label": "每日新闻源", "url": "https://github.com/vikiboss/60s"},
-    {"label": "本地 Ollama", "url": "http://localhost:11434"}
+    {"label": "每日新闻源", "url": "https://github.com/vikiboss/60s"}
   ];
   function getLinks() {
     try { var v = localStorage.getItem(LINKS_KEY); if (v) return JSON.parse(v); } catch (e) {}
