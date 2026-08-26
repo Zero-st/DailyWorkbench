@@ -363,12 +363,12 @@
   // ---------- 主题切换（三态：深色 / 浅色 / 跟随系统，与 App 端一致） ----------
   function syncThemeColor(light) {
     var m = document.querySelector('meta[name="theme-color"]');
-    if (m) m.setAttribute("content", light ? "#f4f6f8" : "#0e1116");
+    if (m) m.setAttribute("content", light ? "#eaeef3" : "#0e1116");
   }
-  // 读取主题模式：light / dark / system（默认深色冷色科技风）
+  // 读取主题模式：light / dark / system（默认浅色·钢蓝科技风）
   function _themeMode() {
     var v = localStorage.getItem("wb_theme");
-    return (v === "light" || v === "dark" || v === "system") ? v : "dark";
+    return (v === "light" || v === "dark" || v === "system") ? v : "light";
   }
   // 算出当前是否浅色：system 模式跟随系统配色偏好
   function _themeLight(mode) {
