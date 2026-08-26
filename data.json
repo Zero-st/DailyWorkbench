@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-26 12:22",
+  "generatedAt": "2026-08-26 16:00",
   "kpi": {
     "skills": 20,
     "automations": 3,
@@ -243,11 +243,11 @@
     ],
     "models": [
       {
-        "name": "hy3（43 次）",
+        "name": "hy3（44 次）",
         "type": "云端"
       },
       {
-        "name": "auto（9 次）",
+        "name": "auto（8 次）",
         "type": "自动路由"
       },
       {
@@ -272,7 +272,7 @@
     "disk": {
       "C": {
         "total": 200,
-        "free": 45
+        "free": 44
       },
       "D": {
         "total": 275,
@@ -287,8 +287,8 @@
         "title": "克隆 personal-workbench 项目到本地",
         "customTitle": "",
         "display": "克隆 personal-workbench 项目到本地",
-        "status": "planning",
-        "updated": "08-26 12:22",
+        "status": "completed",
+        "updated": "08-26 15:45",
         "group": "今天"
       },
       {
@@ -1101,7 +1101,7 @@
   ],
   "aiDaily": {
     "date": "2026-08-26",
-    "fetchedAt": "2026-08-26 12:22",
+    "fetchedAt": "2026-08-26 16:00",
     "source": "AI HOT",
     "canonical": "https://aihot.virxact.com/daily/2026-08-26",
     "count": 19,
@@ -1250,7 +1250,7 @@
     "history": [
       {
         "date": "2026-08-26",
-        "fetchedAt": "2026-08-26 12:22",
+        "fetchedAt": "2026-08-26 16:00",
         "count": 19,
         "sections": [
           {
@@ -2880,7 +2880,7 @@
   },
   "dailyNews": {
     "date": "2026-08-26",
-    "fetchedAt": "2026-08-26 12:22",
+    "fetchedAt": "2026-08-26 16:00",
     "source": "每日60秒 (vikiboss/60s)",
     "canonical": "https://github.com/vikiboss/60s",
     "count": 15,
@@ -2982,7 +2982,7 @@
     "history": [
       {
         "date": "2026-08-26",
-        "fetchedAt": "2026-08-26 12:22",
+        "fetchedAt": "2026-08-26 16:00",
         "count": 15,
         "items": [
           {
@@ -4383,9 +4383,9 @@
     ]
   },
   "sync": {
-    "lastRun": "2026-08-26T12:22:25",
+    "lastRun": "2026-08-26T16:00:04",
     "status": "ok",
-    "nextRun": "2026-08-26T13:22:25",
+    "nextRun": "2026-08-26T17:00:04",
     "intervalHours": 1,
     "staleHours": 2
   }

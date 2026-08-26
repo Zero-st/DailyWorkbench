@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0e1116">
+<meta name="theme-color" content="#eaeef3">
 <title>个人工作台</title>
 <meta name="description" content="WorkBuddy 个人操作面板：聚焦今日代办与今日复盘，其他模块可侧边栏切换。">
 <meta property="og:title" content="个人工作台">
@@ -14,7 +14,7 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="styles.css?v=70">
+<link rel="stylesheet" href="styles.css?v=71">
 </head>
 <body>
 <div class="app">
@@ -192,7 +192,7 @@
       </section>
 
       <div class="foot">本机数据每小时自动同步 · AI 日报与每日新闻自动抓取 · 全部用真实数据动态生成 · <span id="freshness"></span><button class="btn-sm" id="selfCheckBtn" onclick="selfCheck()" title="跑一遍功能自检，列出各模块是否正常">🔍 功能自检</button><button class="btn-sm" onclick="exportAll()" title="把速记/待办/收藏/入口导出为 Markdown">导出数据</button><button class="btn-sm" onclick="backupExport()" title="导出 JSON 备份（可完整恢复）">备份</button><button class="btn-sm" onclick="backupImport()" title="从 JSON 备份恢复数据">恢复</button></div>
-      <div class="foot" style="margin-top:8px">设计风格参考 <a href="https://github.com/uncle11/xfc-obsidian-workbench-builder-community" target="_blank" rel="noopener">xfc-obsidian-workbench-builder-community</a> · 配色与组件体系沿用其社区版粉色 Ins 风</div>
+      <div class="foot" style="margin-top:8px">设计风格参考 <a href="https://github.com/uncle11/xfc-obsidian-workbench-builder-community" target="_blank" rel="noopener">xfc-obsidian-workbench-builder-community</a> · 配色与组件体系沿用其社区版布局，已重皮为冷色硬朗科技风</div>
 
       <div class="heat-modal" id="heat-detail" onclick="if(event.target===this)closeHeat()">
         <div class="heat-card">
@@ -212,6 +212,6 @@
   </div>
 </div>
 <script src="schedule.js?v=2"></script>
-<script src="app.js?v=76"></script>
+<script src="app.js?v=77"></script>
 </body>
 </html>
