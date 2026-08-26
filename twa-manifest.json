@@ -1,0 +1,106 @@
+{
+  "packageId": "com.qingdeng.workbench",
+  "host": "w-lik721.github.io",
+  "name": "个人工作台",
+  "launcherName": "工作台",
+  "display": "standalone",
+  "themeColor": {
+    "model": "rgb",
+    "color": [
+      13,
+      17,
+      23
+    ],
+    "valpha": 1
+  },
+  "themeColorDark": {
+    "model": "rgb",
+    "color": [
+      0,
+      0,
+      0
+    ],
+    "valpha": 1
+  },
+  "navigationColor": {
+    "model": "rgb",
+    "color": [
+      0,
+      0,
+      0
+    ],
+    "valpha": 1
+  },
+  "navigationColorDark": {
+    "model": "rgb",
+    "color": [
+      0,
+      0,
+      0
+    ],
+    "valpha": 1
+  },
+  "navigationDividerColor": {
+    "model": "rgb",
+    "color": [
+      0,
+      0,
+      0
+    ],
+    "valpha": 0
+  },
+  "navigationDividerColorDark": {
+    "model": "rgb",
+    "color": [
+      0,
+      0,
+      0
+    ],
+    "valpha": 0
+  },
+  "backgroundColor": {
+    "model": "rgb",
+    "color": [
+      13,
+      17,
+      23
+    ],
+    "valpha": 1
+  },
+  "enableNotifications": false,
+  "startUrl": "/personal-workbench/index.html",
+  "iconUrl": "https://w-lik721.github.io/personal-workbench/icon-512.png",
+  "maskableIconUrl": "https://w-lik721.github.io/personal-workbench/icon-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "workbench.keystore",
+    "alias": "workbench",
+    "keyPassword": "workbench-pass",
+    "password": "workbench-pass"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://w-lik721.github.io/personal-workbench/manifest.json",
+  "fallbackType": "webview",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": false,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://w-lik721.github.io/personal-workbench/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [],
+  "enableGeolocation": false,
+  "enableShareTarget": false
+}
