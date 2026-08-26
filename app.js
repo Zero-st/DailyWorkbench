@@ -1401,12 +1401,59 @@
     d.knowledge.files = Array.isArray(d.knowledge.files) ? d.knowledge.files : [];
     return d;
   }
+  // ---------- 今日复盘（主页聚焦模块：基于真实数据自动生成 + 本机手动复盘） ----------
+  var REVIEW_KEY = "wb_review_" + (function () {
+    var n = new Date();
+    return n.getFullYear() + "-" + ("0" + (n.getMonth() + 1)).slice(-2) + "-" + ("0" + n.getDate()).slice(-2);
+  })();
+  function reviewLoad() { try { return localStorage.getItem(REVIEW_KEY) || ""; } catch (e) { return ""; } }
+  function saveReview() {
+    var t = document.getElementById("reviewInput");
+    var h = document.getElementById("reviewHint");
+    if (!t) return;
+    try { localStorage.setItem(REVIEW_KEY, t.value); if (h) h.textContent = "✓ 已保存（" + REVIEW_KEY.slice(10) + "）"; }
+    catch (e) { if (h) h.textContent = "保存失败"; }
+  }
+  window.saveReview = saveReview;
+  function renderTodayReview(d) {
+    var done = document.getElementById("reviewDone");
+    if (done) {
+      var list = todosLoad();
+      var dn = list.filter(function (t) { return t.done; }).length;
+      done.textContent = list.length ? ("今日代办完成度 " + dn + " / " + list.length) : "今日还没有待办，写一条吧～";
+    }
+    var sess = document.getElementById("revSessions");
+    if (sess) {
+      var rec = (d.sessions && d.sessions.recent) || [];
+      sess.innerHTML = rec.length ? rec.slice(0, 3).map(function (s) {
+        return "<li>" + esc(s.title || s.custom_title || "未命名会话") + "</li>";
+      }).join("") : '<li class="empty">今天还没有会话记录</li>';
+    }
+    var ai = document.getElementById("revAi");
+    if (ai) {
+      var items = [];
+      ((d.aiDaily && d.aiDaily.sections) || []).forEach(function (sec) {
+        (sec.items || []).forEach(function (it) { if (items.length < 2) items.push(it); });
+      });
+      ai.innerHTML = items.length ? items.map(function (it) {
+        return '<li><a href="' + escAttr(it.url || "#") + '" target="_blank" rel="noopener">' + esc(it.title || "") + "</a></li>";
+      }).join("") : '<li class="empty">今日暂无 AI 资讯</li>';
+    }
+    var guide = document.getElementById("revGuide");
+    if (guide) {
+      var g = (d.guide || []).slice(0, 3);
+      guide.innerHTML = g.length ? g.map(function (x) { return '<div class="note">• ' + esc(x) + "</div>"; }).join("") : '<div class="note">暂无引导，点「同步数据」获取今日建议</div>';
+    }
+    var txt = document.getElementById("reviewInput");
+    if (txt) { var saved = reviewLoad(); if (saved) txt.value = saved; }
+  }
   function render(d) {
     try {
       d = normalizeData(d);
       __data = d;
       renderHeaderStrip(d);
       renderActiveTab(d);
+      renderTodayReview(d);
     } catch (err) {
       console.error("render 出错", err);
       var box = document.getElementById("col-cap");
