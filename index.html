@@ -14,7 +14,7 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="styles.css?v=76">
+<link rel="stylesheet" href="styles.css?v=79">
 </head>
 <body>
 <div class="app">
@@ -40,6 +40,11 @@
         <button class="side-item" data-view="cap" onclick="switchView('cap')"><span class="si">🧰</span><span class="label">能力速达</span></button>
         <button class="side-item" data-view="info" onclick="switchView('info')"><span class="si">📰</span><span class="label">资讯</span></button>
         <button class="side-item" data-view="ai" onclick="switchView('ai')"><span class="si">🤖</span><span class="label">AI 助手</span></button>
+        <button class="side-item" data-view="models" onclick="switchView('models')"><span class="si">🧠</span><span class="label">模型管理</span></button>
+      </div>
+      <div class="side-group">
+        <div class="side-group-title">知识</div>
+        <button class="side-item" data-view="kb" onclick="switchView('kb')"><span class="si">📚</span><span class="label">知识库</span></button>
       </div>
       <div class="side-group">
         <div class="side-group-title">系统</div>
@@ -116,6 +121,7 @@
             <div class="review-actions">
               <span id="reviewHint" class="empty"></span>
               <button class="button sm" onclick="saveReview()">💾 保存复盘</button>
+              <button class="btn-sm" onclick="kbSaveReview()" title="把复盘存进知识库 AI工作台沉淀内容/今日">📥 存知识库</button>
             </div>
           </article>
         </div>
@@ -174,6 +180,9 @@
       <section class="tabpane" id="pane-ai">
         <div class="wrap"><div class="col" id="col-ai"></div></div>
       </section>
+      <section class="tabpane" id="pane-models">
+        <div class="wrap"><div class="col" id="col-models"></div></div>
+      </section>
       <section class="tabpane" id="pane-info">
         <div class="wrap"><div class="col" id="col-info"><div id="newsBlock"></div><div id="dnewsBlock"></div></div></div>
       </section>
@@ -192,6 +201,9 @@
       <section class="tabpane" id="pane-schedule">
         <div class="wrap"><div class="col" id="col-schedule"></div></div>
       </section>
+      <section class="tabpane" id="pane-kb">
+        <div class="wrap"><div class="col" id="col-kb"></div></div>
+      </section>
 
       <div class="foot">本机数据每小时自动同步 · AI 日报与每日新闻自动抓取 · 全部用真实数据动态生成 · <span id="freshness"></span><button class="btn-sm" id="selfCheckBtn" onclick="selfCheck()" title="跑一遍功能自检，列出各模块是否正常">🔍 功能自检</button><button class="btn-sm" onclick="exportAll()" title="把速记/待办/收藏/入口导出为 Markdown">导出数据</button><button class="btn-sm" onclick="backupExport()" title="导出 JSON 备份（可完整恢复）">备份</button><button class="btn-sm" onclick="backupImport()" title="从 JSON 备份恢复数据">恢复</button></div>
       <div class="foot" style="margin-top:8px">设计风格参考 <a href="https://github.com/uncle11/xfc-obsidian-workbench-builder-community" target="_blank" rel="noopener">xfc-obsidian-workbench-builder-community</a> · 配色与组件体系沿用其社区版布局，已重皮为活力糖果圆润科技风</div>
@@ -200,6 +212,13 @@
         <div class="heat-card">
           <div class="heat-card-h"><span id="heat-detail-date"></span><button class="heat-x" onclick="closeHeat()">✕</button></div>
           <div class="heat-card-b" id="heat-detail-body"></div>
+        </div>
+      </div>
+
+      <div class="model-modal" id="model-modal" onclick="if(event.target===this)closeModelModal()">
+        <div class="model-dlg" onclick="event.stopPropagation()">
+          <div class="model-dlg-h"><span id="model-dlg-title">添加模型</span><button class="model-dlg-x" onclick="closeModelModal()">✕</button></div>
+          <div class="model-dlg-b" id="model-dlg-body"></div>
         </div>
       </div>
 
@@ -214,6 +233,9 @@
   </div>
 </div>
 <script src="schedule.js?v=2"></script>
-<script src="app.js?v=81"></script>
+<script src="model-manager.js?v=4"></script>
+<script src="vendor/marked.min.js?v=1"></script>
+<script src="kb.js?v=2"></script>
+<script src="app.js?v=87"></script>
 </body>
 </html>

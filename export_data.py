@@ -22,7 +22,7 @@ import time
 from datetime import datetime, date, timedelta
 
 WB = os.path.expanduser(r"~\.workbuddy")
-WS = r"D:\AIWork"
+WS = r"E:\AITools\workbuddy\workspace"
 SKILLS_DIR = os.path.join(WB, "skills")
 DB = os.path.join(WB, "workbuddy.db")
 MODELS = os.path.join(WB, "models.json")

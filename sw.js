@@ -1,10 +1,13 @@
 ﻿// 个人工作台 Service Worker - 离线可开、可安装到主屏幕
-const CACHE = "workbench-v99";
+const CACHE = "workbench-v105";
 const FILES = [
   "./index.html",
-  "./styles.css?v=77",
+  "./styles.css?v=79",
   "./schedule.js?v=2",
-  "./app.js?v=83",
+  "./model-manager.js?v=4",
+  "./vendor/marked.min.js?v=1",
+  "./kb.js?v=2",
+  "./app.js?v=87",
   "./manifest.json",
   "./icon.svg",
   "./icon-192.png",
@@ -34,6 +37,11 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
   const url = new URL(e.request.url);
+  // /api/* 网络唯一：不缓存（避免 /api/kb/note?path=X 等变体污染缓存），离线返回 503
+  if (url.pathname.startsWith("/api/")) {
+    e.respondWith(fetch(e.request).catch(() => new Response('{"error":"offline"}', { status: 503, headers: { "Content-Type": "application/json" } })));
+    return;
+  }
   // data.json：网络优先，离线时回退最近一次成功缓存（断网也能看上次数据）
   if (url.pathname.endsWith("data.json")) {
     e.respondWith(

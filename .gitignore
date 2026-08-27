@@ -2,4 +2,10 @@ __pycache__/
 *.pyc
 *.log
 schedule.local.json
+supabase.local.json
+kb.local.json
 APK/
+# 调试截图与预览图（不入库）
+debug-*.png
+*-preview.png
+kb-panel-preview.png
