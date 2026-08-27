@@ -26,11 +26,13 @@ _running = {"on": False}
 
 
 def _do_refresh():
-    """后台执行 local_refresh.py；已在跑则忽略重复触发。"""
+    """后台执行 local_refresh.py；已在跑则返回 running=True 让前端提示用户。"""
     with _lock:
         if _running["on"]:
-            return
+            _running["queued_yes"] = True  # 仅作提示标志，不影响主流程
+            return "running"
         _running["on"] = True
+    state = "started"
     try:
         env = dict(os.environ)
         env["PYTHONIOENCODING"] = "utf-8"
@@ -41,8 +43,10 @@ def _do_refresh():
         )
     except Exception as e:
         sys.stderr.write("[refresh] %s\n" % e)
+        state = "error: %s" % e
     finally:
         _running["on"] = False
+    return state
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -59,8 +63,23 @@ class Handler(SimpleHTTPRequestHandler):
         if self.path.split("?")[0] != "/api/refresh":
             self.send_error(404)
             return
-        threading.Thread(target=_do_refresh, daemon=True).start()
-        body = json.dumps({"ok": True, "msg": "refresh started"}).encode("utf-8")
+        # 同步启动后台线程，立刻获取返回值；告诉前端是「刚开始」还是「复用已有任务」
+        result = {"ok": True, "msg": "ok"}
+        container = {"r": None}
+
+        def runner():
+            container["r"] = _do_refresh()
+
+        t = threading.Thread(target=runner, daemon=True)
+        t.start()
+        # 最多等 200ms 看是否秒返回「已在跑」
+        t.join(timeout=0.2)
+        if container["r"] == "running":
+            result["running"] = True
+            result["msg"] = "已有任务在跑，本轮跳过"
+        else:
+            result["msg"] = "refresh started"
+        body = json.dumps(result).encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))

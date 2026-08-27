@@ -881,6 +881,14 @@ body.light .side-card{box-shadow:var(--shadow-sm)}
 .wb-dlg .wb-dlg-in:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--tint)}
 .wb-dlg .wb-dlg-acts{display:flex;gap:8px;justify-content:flex-end}
 @media(prefers-reduced-motion:reduce){.wb-mask,.wb-dlg{animation:none}}
+/* ---------- 顶部轻量 toast（替换刷新的 alert 提示，避免被浏览器吞）---------- */
+#wb-toast-host{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:1100;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:min(440px,92vw)}
+.wb-toast{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-left-width:3px;border-radius:12px;padding:11px 16px;font-size:13px;line-height:1.55;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(-12px) scale(.98);transition:opacity .22s var(--ease),transform .26s var(--ease);white-space:pre-line;max-width:100%;font-family:inherit}
+.wb-toast.show{opacity:1;transform:none}
+.wb-toast.info{border-left-color:var(--accent)}
+.wb-toast.ok{border-left-color:var(--candy-green);background:linear-gradient(0deg,var(--candy-green-soft),var(--candy-green-soft)),var(--panel)}
+.wb-toast.warn{border-left-color:var(--candy-amber);background:linear-gradient(0deg,rgba(245,158,11,.10),rgba(245,158,11,.10)),var(--panel)}
+.wb-toast.err{border-left-color:var(--candy-orange);background:linear-gradient(0deg,var(--candy-orange-soft),var(--candy-orange-soft)),var(--panel)}
 
 /* ---------- 离线提示条 ---------- */
 .offline-bar{text-align:center;background:rgba(245,158,11,0.10);color:var(--amber);border-bottom:1px solid var(--amber-line);font-size:var(--text-sm);padding:7px 12px;font-weight:600;animation:fadeIn .3s ease both}
