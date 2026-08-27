@@ -1344,8 +1344,8 @@
   }
   function renderActiveTab(d) {
     if (!d) return;
-    var a = document.querySelector(".tab.active");
-    var id = a ? a.getAttribute("data-tab") : "cap";
+    // 用 __view 路由（P0 后 DOM 已无 .tab 按钮，不能再依赖 .tab.active）
+    var id = __view || "cap";
     if (id === "cap") renderCap(d);
     else if (id === "ai") renderAI(d);
     else if (id === "info") renderInfo(d);
