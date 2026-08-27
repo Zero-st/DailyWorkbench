@@ -118,6 +118,29 @@
       confirm: function (msg, onOk, onCancel) { open({ title: "确认", msg: msg, okText: "确定", onOk: onOk, onCancel: onCancel }); },
       prompt: function (title, defVal, onOk, onCancel, placeholder) {
         open({ title: title, input: defVal || "", okText: "保存", onOk: onOk, onCancel: onCancel, placeholder: placeholder });
+      },
+      // 轻量顶部提示：进度/成功/失败场景替代 alert，避免被浏览器策略吞掉
+      // kind: 'info' | 'ok' | 'warn' | 'err'；ms 默认 2400（成功/失败延后 3s）
+      toast: function (msg, kind, ms) {
+        var k = kind || "info";
+        var life = ms || (k === "ok" || k === "warn" || k === "err" ? 3200 : 2400);
+        var box = document.getElementById("wb-toast-host");
+        if (!box) {
+          box = document.createElement("div");
+          box.id = "wb-toast-host";
+          document.body.appendChild(box);
+        }
+        var t = document.createElement("div");
+        t.className = "wb-toast wb-toast-" + k;
+        t.textContent = msg;
+        box.appendChild(t);
+        // 强制 reflow + 加 show 类，CSS 触发入场动画
+        void t.offsetWidth;
+        requestAnimationFrame(function () { t.classList.add("show"); });
+        setTimeout(function () {
+          t.classList.remove("show");
+          setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 350);
+        }, life);
       }
     };
   })();
@@ -1554,35 +1577,47 @@
     var btn = document.getElementById("refreshBtn");
     var old = btn ? btn.textContent : "同步数据";
     if (btn) { btn.disabled = true; btn.textContent = "⏳ 本机刷新中…"; }
+    WB.dialog.toast("已开始同步（后台跑约 5–30 秒）", "info", 1800);
     fetchT("/api/refresh", { method: "POST" }, 8000).then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
       if (btn) btn.textContent = "⏳ 抓取资讯与数据…";
+      // 看看 server 是否告知「已在跑」：200 OK 但 running=true 表示这是重复点击，复用已有任务
+      try {
+        r.clone().json().then(function (j) {
+          if (j && j.running) WB.dialog.toast("刷新任务正在执行中，请稍候", "info", 2200);
+        });
+      } catch (e) {}
       localReloadWait(btn, old, 0);
     }).catch(function () {
       // 本地刷新服务不可达（静态服务器 / file:// 打开）：退化为重读磁盘上的数据
       if (btn) { btn.disabled = false; btn.textContent = old; }
       loadData().then(function () {
-        WB.dialog.alert("当前打开方式不支持触发刷新（需用 server.py 启动工作台）。\n已重新加载磁盘上的最新数据；计划任务每小时会自动刷新。");
+        WB.dialog.toast("⚠️ 当前打开方式不支持触发刷新（需用 server.py 启动工作台）。\n已重新加载磁盘上的最新数据；计划任务每小时会自动刷新。", "warn", 4500);
       }).catch(function () {
-        WB.dialog.alert("刷新失败：无法访问 data.json。");
+        WB.dialog.toast("刷新失败：无法访问 data.json。", "err", 3500);
       });
     });
   }
   // 轮询本地数据直到 generatedAt 变化（本地刷新全程约 5-30 秒）
+  // 优化：第 1 次 2s 后立刻查（让"开始"反馈更明确）；之后按 5s 节流
   function localReloadWait(btn, old, tries) {
     var MAX = 12; // 12 × 5s = 1 分钟
     if (tries >= MAX) {
       if (btn) { btn.disabled = false; btn.textContent = old; }
+      WB.dialog.toast("数据可能没变化（已轮询 1 分钟）。下次每小时自动任务或再点一次试试。", "warn", 4000);
       loadData().catch(function () {});
       return;
     }
     if (btn) btn.textContent = "⏳ 等待新数据 (" + (tries + 1) + "/" + MAX + ")";
     setTimeout(function () {
       maybeReload().then(function (reloaded) {
-        if (reloaded) { if (btn) { btn.disabled = false; btn.textContent = old; } }
+        if (reloaded) {
+          if (btn) { btn.disabled = false; btn.textContent = old; }
+          WB.dialog.toast("✅ 同步完成，数据已更新", "ok", 2400);
+        }
         else localReloadWait(btn, old, tries + 1);
       });
-    }, 5000);
+    }, tries === 0 ? 2000 : 5000);
   }
 
   // 轮询本次触发的运行，完成后等 Pages 重新部署再刷新页面
