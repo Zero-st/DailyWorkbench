@@ -1,14 +1,17 @@
 // 共享应用状态（ES Module）：数据快照 __data 与当前视图 __view 的唯一真源。
 // 原为 app.js 私有闭包变量，抽出后可被各视图模块 import 共享。
 //
-// 注（重要）：本步暂不镜像到 window.__data / window.__view，保持现状——
-// model-manager.js / kb.js 里读 window.__data / window.__view 的守卫当前恒为
-// undefined（空转），行为与重构前一致；这一潜伏 bug 留到 C 步（那两个文件转
-// ES Module、直接 import 本模块）时一并修，避免在本步引入行为变化。
+// window 镜像（C 步·修潜伏 bug）：schedule.js / kb.js / model-manager.js 是经典脚本
+// 无法 import，沿用项目既有的 window.* 桥接（同 window.WB 工具桥）读状态——
+//   · model-manager.js 改模型配置后 `if (window.__data && renderAI) renderAI(window.__data)`
+//     需要 window.__data；配合 window.renderAI（见 ai.js）令 AI 视图真正随模型刷新；
+//   · kb.js 的 30s 轮询用 window.__view 判断「仅在 kb 视图时重建树」。
+// 故本模块是 window.__data/__view 的唯一写入方，setData/setView 负责镜像，保持一致。
 var _data = null;
 var _view = "home";
+window.__view = _view; // 初值镜像，供经典脚本守卫读取
 
 export function getData() { return _data; }
-export function setData(d) { _data = d; return d; }
+export function setData(d) { _data = d; window.__data = d; return d; }
 export function getView() { return _view; }
-export function setView(v) { _view = v; return v; }
+export function setView(v) { _view = v; window.__view = v; return v; }

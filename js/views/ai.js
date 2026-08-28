@@ -340,5 +340,7 @@ function aiMemoryClear() {
   });
 }
 window.aiSaveKey = aiSaveKey; window.aiSend = aiSend; window.aiSetProv = aiSetProv; window.aiAsk = aiAsk; window.aiClear = aiClear; window.aiMemoryAdd = aiMemoryAdd; window.aiMemoryDel = aiMemoryDel; window.aiMemoryClear = aiMemoryClear;
+// 经典脚本桥接：model-manager.js 改模型配置后 `renderAI(window.__data)` 刷新 AI 视图需此。
+window.renderAI = renderAI;
 
 export { renderAI, aiAsk };
