@@ -11,14 +11,11 @@
 """
 import os
 import sys
-import json
-import base64
 import subprocess
-import urllib.request
-import urllib.error
 from datetime import datetime
 
 import wb_config
+import wb_common
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
@@ -26,7 +23,6 @@ ENV = dict(os.environ)
 ENV["PYTHONIOENCODING"] = "utf-8"
 
 REPO = "Zero-st/DailyWorkbench"
-API = "https://api.github.com"
 DIAG = wb_config.diag_log()
 
 
@@ -45,86 +41,9 @@ def run_py(script, timeout=300):
     return p.returncode, out.strip()
 
 
-def api_request(method, url, data=None, token=None, retries=3):
-    headers = {
-        "Authorization": "Bearer %s" % token,
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "workbuddy-sync",
-    }
-    payload = json.dumps(data).encode("utf-8") if data is not None else None
-    if payload is not None:
-        headers["Content-Type"] = "application/json"
-    last = None
-    for attempt in range(retries):
-        req = urllib.request.Request(url, data=payload, headers=headers, method=method)
-        try:
-            with urllib.request.urlopen(req, timeout=60) as r:
-                body = r.read().decode("utf-8", "replace")
-                return json.loads(body) if body else {}
-        except urllib.error.HTTPError as e:
-            last = e
-            detail = ""
-            try:
-                detail = e.read().decode("utf-8", "replace")
-            except Exception:
-                pass
-            diag("API %s -> HTTP %d: %s" % (method, e.code, detail[:400]))
-            if e.code == 409 and method == "PUT":
-                raise  # 交给调用方用最新 sha 重试
-            if e.code >= 500 and attempt < retries - 1:
-                continue
-            raise RuntimeError("GitHub API %s 失败 %d: %s" % (method, e.code, detail[:400]))
-        except Exception as e:
-            last = e
-            diag("API %s 异常: %s" % (method, e))
-            if attempt < retries - 1:
-                continue
-            raise
-    if last:
-        raise last
-
-
 def push_file(token, relpath, msg):
-    """把本地 relpath 文件推送到仓库（Contents API）。成功返回 True。
-
-    relpath 为相对仓库根的路径，如 "data.json"、"ai_daily.json"。
-    统一推送通道：daily_ai.py 也 import 本函数，与 sync.py 共用
-    GitHub Contents API（唯一无交互依赖、实测长期成功的通道）。
-    """
-    url = "%s/repos/%s/contents/%s" % (API, REPO, relpath)
-    try:
-        cur = api_request("GET", url, token=token)
-        sha = cur.get("sha") if isinstance(cur, dict) else None
-    except Exception as e:
-        diag("GET %s sha 失败: %s" % (relpath, e))
-        sha = None
-    with open(os.path.join(HERE, relpath), "rb") as f:
-        content = base64.b64encode(f.read()).decode("ascii")
-    body = {
-        "message": msg,
-        "content": content,
-    }
-    if sha:
-        body["sha"] = sha
-    try:
-        api_request("PUT", url, data=body, token=token)
-        diag("PUT %s 成功 (sha=%s)" % (relpath, sha or "new"))
-        return True
-    except RuntimeError as e:
-        if "409" in str(e):  # 并发更新，取最新 sha 重试一次
-            try:
-                cur = api_request("GET", url, token=token)
-                sha = cur.get("sha") if isinstance(cur, dict) else None
-                if sha:
-                    body["sha"] = sha
-                    api_request("PUT", url, data=body, token=token)
-                    diag("PUT %s 重试成功" % relpath)
-                    return True
-            except Exception as e2:
-                diag("PUT %s 重试失败: %s" % (relpath, e2))
-        diag("PUT %s 最终失败" % relpath)
-        return False
+    """把仓库相对路径 relpath 的本地文件推送到仓库（Contents API 统一通道）。"""
+    return wb_common.github_push(token, relpath, msg, REPO, HERE, log=diag)
 
 
 def main():
@@ -161,21 +80,9 @@ def main():
 
     ok = export_ok and push1_ok and push2_ok
     lines.append("==== done %s %s ====" % ("OK" if ok else "FAIL", datetime.now().strftime("%H:%M:%S")))
-    write_log(lines)
+    wb_common.write_log(os.path.join(HERE, "sync.log"), lines)
     diag("==== sync 结束 ok=%s ====" % ok)
     return 0 if ok else 1
-
-
-def write_log(lines):
-    text = "\n".join(lines)
-    with open(os.path.join(HERE, "sync.log"), "w", encoding="utf-8") as f:
-        f.write(text + "\n")
-    try:
-        print(text)
-    except UnicodeEncodeError:
-        fb = text.encode(sys.stdout.encoding or "utf-8", errors="replace").decode(
-            sys.stdout.encoding or "utf-8")
-        print(fb)
 
 
 if __name__ == "__main__":

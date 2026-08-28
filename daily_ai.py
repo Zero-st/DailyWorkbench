@@ -22,6 +22,7 @@ import subprocess
 import sys
 from datetime import datetime
 
+import wb_common
 from sync import push_file
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -45,15 +46,7 @@ def run(cmd, allow_fail=False, timeout=180):
 
 
 def write_log(lines):
-    text = "\n".join(lines)
-    with open(LOG, "w", encoding="utf-8") as f:
-        f.write(text + "\n")
-    try:
-        print(text)
-    except UnicodeEncodeError:
-        fallback = text.encode(sys.stdout.encoding or "utf-8", errors="replace").decode(
-            sys.stdout.encoding or "utf-8")
-        print(fallback)
+    wb_common.write_log(LOG, lines)
 
 
 def main():

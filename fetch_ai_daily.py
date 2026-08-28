@@ -12,13 +12,11 @@
 """
 import os
 import json
-import ssl
-import urllib.request
 from datetime import datetime, timedelta, timezone
 
+import wb_common
+
 BASE = "https://aihot.virxact.com"
-UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "ai_daily.json")
 
@@ -38,17 +36,7 @@ SEC_ORDER = ["模型发布", "产品发布", "行业动态", "论文研究", "�
 
 
 def _get(path, timeout=25):
-    url = BASE + path
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
-    ctx = ssl.create_default_context()
-    try:
-        with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
-            return json.loads(r.read().decode("utf-8"))
-    except Exception:
-        # Windows 证书链偶发问题时降级（数据为公开只读资讯，可接受）
-        ctx2 = ssl._create_unverified_context()
-        with urllib.request.urlopen(req, timeout=timeout, context=ctx2) as r:
-            return json.loads(r.read().decode("utf-8"))
+    return wb_common.http_get_json(BASE + path, timeout=timeout)
 
 
 def _norm(it, label):

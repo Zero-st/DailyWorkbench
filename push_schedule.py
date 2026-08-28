@@ -11,12 +11,10 @@
 import os
 import sys
 import json
-import base64
-import urllib.request
-import urllib.error
+
+import wb_common
 
 REPO = "Zero-st/DailyWorkbench"
-API = "https://api.github.com/repos/%s/contents/schedule.json" % REPO
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -27,35 +25,20 @@ def main():
         return 1
     with open(src, "r", encoding="utf-8") as f:
         list_data = json.load(f)
-    content = base64.b64encode(json.dumps(list_data, ensure_ascii=False, indent=2).encode("utf-8")).decode("ascii")
 
     token = os.environ.get("GITHUB_TOKEN") or input("GitHub Token: ").strip()
     if not token:
         print("未提供 Token")
         return 1
 
-    req = urllib.request.Request(API, headers={"Authorization": "Bearer " + token, "Accept": "application/vnd.github+json"})
-    sha = None
-    try:
-        with urllib.request.urlopen(req, timeout=15) as r:
-            meta = json.loads(r.read().decode("utf-8"))
-            sha = meta.get("sha")
-    except urllib.error.HTTPError as e:
-        if e.code != 404:
-            print("读取现有文件失败：", e.read().decode("utf-8", "replace"))
-            return 1
-
-    body = json.dumps({"message": "chore: update schedule from local", "content": content, "sha": sha}).encode("utf-8")
-    preq = urllib.request.Request(API, data=body, method="PUT",
-                                   headers={"Authorization": "Bearer " + token, "Content-Type": "application/json",
-                                             "Accept": "application/vnd.github+json"})
-    try:
-        with urllib.request.urlopen(preq, timeout=15) as r:
-            print("✅ 已推送 %d 条课程到 GitHub schedule.json" % len(list_data))
-            return 0
-    except urllib.error.HTTPError as e:
-        print("推送失败：", e.read().decode("utf-8", "replace"))
-        return 1
+    # 源文件名(schedule.local.json)≠仓库目标名(schedule.json)，用 src_path 指定读取源
+    ok = wb_common.github_push(token, "schedule.json", "chore: update schedule from local",
+                               REPO, HERE, log=lambda m: print(m), src_path=src)
+    if ok:
+        print("✅ 已推送 %d 条课程到 GitHub schedule.json" % len(list_data))
+        return 0
+    print("推送失败")
+    return 1
 
 
 if __name__ == "__main__":
