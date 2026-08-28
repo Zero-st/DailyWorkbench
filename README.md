@@ -80,12 +80,15 @@ python export_data.py
 - 原理：`data.json` 已改为「永远走网络、不缓存」（见 sw.js）；两个任务都用本机 git 凭据（credential.helper=store）自动推送。
 - 想立刻更新：双击 `sync.cmd`，或命令行 `python daily_ai.py`（含日报）。
 
-### ⚠️ 改前端必做：bump 版本号
-Service Worker 会缓存静态资源。**每次改 `styles.css` / `app.js` 后必须：**
-1. `index.html` 里的 `?v=N` 加 1（如 `?v=7` → `?v=8`）
-2. `sw.js` 里 `CACHE = "workbench-vN"` 加 1，`FILES` 列表的 `?v=N` 同步改
+### 改前端必做：bump 版本号（已自动化）
+Service Worker 会缓存静态资源，改了前端却不更新版本戳，用户端会一直吃旧缓存、「页面裸掉」。**改完 `styles.css` / `app.js` 等前端资产后，跑一次：**
 
-漏做的话用户端会一直吃旧缓存，看到「页面裸掉」（没样式）。另外 push 后要等 **30-50 秒** GitHub Pages 才构建完，别立刻 curl 验证。
+```bash
+python bump_version.py        # 按文件内容 hash 自动同步 index.html + sw.js 的 ?v= 与 CACHE
+python bump_version.py --check # 只校验是否同步（CI 会跑，不一致直接失败）
+```
+
+版本戳由内容 hash 生成，不再手改数字、不会漏改。CI 的 `bump_version.py --check` 是硬门槛，漏 bump 直接红。push 后要等 **30-50 秒** GitHub Pages 才构建完，别立刻 curl 验证。
 
 ### （备选）CloudStudio 静态快照
 - 之前用 `cloudstudio-deploy` 部署过（链接形如 `https://<id>.sh4.agentos-app.net`）。**它是静态快照，需手动重部署才更新**，已主用 GitHub Pages，此方案仅作备份。
