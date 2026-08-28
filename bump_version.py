@@ -27,12 +27,14 @@ ASSETS = [
     "vendor/marked.min.js",
     "js/core/util.js",
     "js/core/state.js",
+    "js/core/net.js",
     "js/views/stats.js",
     "js/views/ov.js",
     "js/views/sess.js",
     "js/views/week.js",
     "js/views/info.js",
     "js/views/cap.js",
+    "js/views/ai.js",
     "js/features/favs.js",
 ]
 
