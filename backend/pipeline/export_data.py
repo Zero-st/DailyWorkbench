@@ -20,8 +20,9 @@ import platform
 import time
 from datetime import datetime, date, timedelta
 
-import wb_config
-import wb_common
+from backend.core import config as wb_config
+from backend.utils import common as wb_common
+from backend.core.paths import DATA_JSON, AI_DAILY_JSON, DAILY_NEWS_JSON
 
 WB = os.path.expanduser(r"~\.workbuddy")
 WS = wb_config.workspace()
@@ -32,7 +33,7 @@ MCP = os.path.join(WB, "mcp.json")
 MEM_DIR = os.path.join(WS, ".workbuddy", "memory")
 WS_SKILLS = os.path.join(WS, ".workbuddy", "skills")
 KB_DIRS = [os.path.join(WS, "knowledge-base"), os.path.join(WS, "vault")]
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.json")
+OUT = DATA_JSON  # 钉在仓库根：前端 fetch / server 静态服务 / sync 推送都在根
 
 
 def fm(path):
@@ -412,15 +413,14 @@ def get_ai_daily():
     历史随 data.json 一起经 sync.py 用 GitHub API 推送，天然持久化（无需额外文件/本地 git）。
     每次 export 时从「上一次生成的 data.json」恢复 history，upsert 当天，保留最近 14 天。
     """
-    HERE = os.path.dirname(os.path.abspath(__file__))
-    p = os.path.join(HERE, "ai_daily.json")
+    p = AI_DAILY_JSON
     try:
         d = json.load(open(p, encoding="utf-8"))
     except Exception:
         d = {"date": "", "fetchedAt": "", "count": 0, "sections": [],
              "canonical": "https://aihot.virxact.com/daily"}
     hist = []
-    old = os.path.join(HERE, "data.json")
+    old = DATA_JSON
     if os.path.isfile(old):
         try:
             hist = (json.load(open(old, encoding="utf-8")).get("aiDaily") or {}).get("history", [])
@@ -443,8 +443,7 @@ def get_daily_news():
     与 get_ai_daily 同机制：每次 export 时从「上一次生成的 data.json」恢复 history，
     upsert 当天，保留最近 14 天，随 data.json 经 sync.py 推送天然持久化。
     """
-    HERE = os.path.dirname(os.path.abspath(__file__))
-    p = os.path.join(HERE, "daily_news.json")
+    p = DAILY_NEWS_JSON
     try:
         d = json.load(open(p, encoding="utf-8"))
     except Exception:
@@ -452,7 +451,7 @@ def get_daily_news():
              "source": "每日60秒 (vikiboss/60s)", "canonical": "https://github.com/vikiboss/60s",
              "tip": "", "cover": ""}
     hist = []
-    old = os.path.join(HERE, "data.json")
+    old = DATA_JSON
     if os.path.isfile(old):
         try:
             hist = (json.load(open(old, encoding="utf-8")).get("dailyNews") or {}).get("history", [])

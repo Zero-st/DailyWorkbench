@@ -7,9 +7,9 @@
 import json
 import os
 
-import wb_common
-import kb_service
-import sync_status
+from backend.utils import common as wb_common
+from backend.clients import kb as kb_service
+from backend.pipeline import sync_status
 import bump_version
 
 

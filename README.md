@@ -98,24 +98,43 @@ python bump_version.py --check # 只校验是否同步（CI 会跑，不一致�
 
 ## 文件结构
 
+> 按类分区。前端因 GitHub Pages「从仓库根部署」（`deploy-pages.yml` 上传 `path: .`）+ 文档相对路径而**钉死在根**；后端已收敛为分层 Python package。详见 [`docs/TECH_CHARTER.md`](docs/TECH_CHARTER.md)。
+
 ```
-personal-workbench/
-├── index.html      # 页面骨架
-├── styles.css      # 深色主题 + 响应式
-├── app.js          # 数据渲染 + PWA 注册 + 复制指令
-├── data.json       # 数据（export_data.py 生成的真实数据）
-├── manifest.json   # PWA 配置
-├── sw.js           # Service Worker（离线/可安装）
-├── icon.svg        # 图标
-├── export_data.py    # 从本机 WorkBuddy 抓取真实数据 → data.json
-├── fetch_ai_daily.py # 抓 aihot 当日 AI 资讯 → ai_daily.json（零 API Key）
-├── daily_ai.py       # 每日流程：抓日报 → 重生成 data.json → git push（计划任务 08:30 调）
-├── ai_daily.json     # 当日 AI 日报数据
-├── refresh.cmd       # 小白双击刷新（调用 export_data.py）
-├── sync.cmd          # 每小时自动同步（含本机路径，已被 .gitignore 排除，不进公开仓库）
-├── .gitignore        # 排除 sync.cmd / .env / *.log 等本机文件
-└── README.md
+DailyWorkbench/
+│  ── 前端 PWA（钉死在根：Pages 根部署 + 相对路径）──
+├── index.html                     # 唯一 HTML 入口
+├── app.js                         # ES Module 主入口（装配 + boot + window 桥接）
+├── js/                            # 前端模块：core/(util·state·net) views/(各视图) features/(notes·todos·favs)
+├── styles.css                     # 深色/浅色主题 + 响应式
+├── schedule.js kb.js model-manager.js  # 经典脚本（课程表 / 知识库 / 模型管理，window.WB 桥接）
+├── vendor/marked.min.js  xlsx.full.min.js   # 第三方（Markdown / 课程表导入·懒加载）
+├── sw.js  manifest.json  icon*.{svg,png}    # Service Worker / PWA 配置 / 图标
+│  ── 数据 · 配置（前端 fetch 或后端产出，钉在根）──
+├── data.json                      # 聚合快照（backend/pipeline/export_data.py 生成）
+├── ai_daily.json  daily_news.json # 抓取的资讯数据
+├── app-data.json                  # 移动端云端备份 blob（GitHub API 契约，勿改名）
+├── workbench.local.json.example   # 本机配置模板（真实 *.local.json 均 gitignore）
+│  ── 前端工程工具（留根）──
+├── bump_version.py                # 缓存戳自动同步（CI 硬门禁，改前端后必跑）
+├── test_workbench.py  conftest.py # 测试（conftest 把仓库根加 sys.path）
+├── jsconfig.json                  # JSDoc + checkJs 类型检查
+│  ── 后端（Python 分层 package）──
+├── backend/
+│   ├── server.py                  # 本地 HTTP 服务（静态 + /api/{refresh,chat,models,kb}）
+│   ├── core/                      # config（配置层）· paths（路径单一来源）
+│   ├── utils/                     # common（github_push / http_get / frontmatter / log）
+│   ├── clients/                   # supabase · kb（Obsidian vault）
+│   └── pipeline/                  # export_data · fetch_* · daily_ai · local_refresh · sync · sync_status · push_schedule
+│  ── 文档 · 其它交付形态 · 自动化 ──
+├── docs/                          # TECH_CHARTER · adr/ · 各操作指南 · supabase_schema.sql
+├── twa/                           # Android TWA 构建（bubblewrap + gradle）
+├── lite/  mobile/                 # 轻量版 PWA（独立分叉）/ Flutter 移动端
+├── refresh.cmd start_workbench.cmd run_refresh.vbs setup_runner.ps1  # 本机启动 / 同步（含机器路径）
+└── .github/workflows/             # ci · deploy-pages · sync · daily-ai · build-apk
 ```
+
+> 后端脚本作为 package 运行：`python -m backend.server 8899`、`python -m backend.pipeline.export_data` 等（详见各 workflow 与 `refresh.cmd`）。
 
 > 为什么 `daily_ai.py` 是 Python 而不是 `.cmd`：cmd.exe 走 GBK 代码页，含中文的 UTF-8 批处理会直接崩溃（实测退出码 `-1073741510`，脚本第一行都跑不到）。Python 无此问题。
 

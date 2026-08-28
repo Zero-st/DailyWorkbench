@@ -27,9 +27,10 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse, unquote, parse_qs
 
-import wb_config
-import supabase_client as sb
-import kb_service as kb
+from backend.core import config as wb_config
+from backend.core.paths import ROOT
+from backend.clients import supabase as sb
+from backend.clients import kb
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
@@ -50,8 +51,8 @@ def _do_refresh():
         env = dict(os.environ)
         env["PYTHONIOENCODING"] = "utf-8"
         subprocess.run(
-            [PY, os.path.join(HERE, "local_refresh.py")],
-            cwd=HERE, env=env, timeout=600,
+            [PY, "-m", "backend.pipeline.local_refresh"],
+            cwd=ROOT, env=env, timeout=600,
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
     except Exception as e:
@@ -111,7 +112,7 @@ class Handler(SimpleHTTPRequestHandler):
     }
 
     def __init__(self, *a, **kw):
-        super().__init__(*a, directory=HERE, **kw)
+        super().__init__(*a, directory=ROOT, **kw)
 
     def end_headers(self):
         # data.json 永不缓存：前端 30s 轮询才能拿到新数据

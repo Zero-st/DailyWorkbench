@@ -14,15 +14,18 @@ import subprocess
 import sys
 from datetime import datetime
 
+from backend.core.paths import ROOT, DATA_JSON
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable  # 与调用方同一解释器
-LOG = os.path.join(HERE, "local_refresh.log")
+LOG = os.path.join(HERE, "local_refresh.log")  # 后端私有日志，留 backend/pipeline
 LOG_MAX = 512 * 1024  # 超过 512KB 轮转，防无限增长
 
+# 以 package 模块名 spawn（python -m backend.pipeline.<x>，cwd=ROOT）
 STEPS = [
-    ("AI 日报", "fetch_ai_daily.py"),
-    ("每日新闻", "fetch_daily_news.py"),
-    ("数据聚合", "export_data.py"),
+    ("AI 日报", "fetch_ai_daily"),
+    ("每日新闻", "fetch_daily_news"),
+    ("数据聚合", "export_data"),
 ]
 
 
@@ -46,8 +49,8 @@ def run_step(name, script):
     env["PYTHONIOENCODING"] = "utf-8"  # 子进程同样防编码问题
     try:
         p = subprocess.run(
-            [PY, os.path.join(HERE, script)],
-            cwd=HERE, env=env,
+            [PY, "-m", "backend.pipeline." + script],
+            cwd=ROOT, env=env,
             capture_output=True, text=True,
             encoding="utf-8", errors="replace",
             timeout=300,
@@ -73,9 +76,9 @@ def main():
     ok = results[-1]
 
     try:
-        from sync_status import write_sync_status
+        from backend.pipeline.sync_status import write_sync_status
         st = write_sync_status(
-            os.path.join(HERE, "data.json"),
+            DATA_JSON,
             ok=ok, interval_hours=1, stale_hours=2,
         )
         log("sync status -> %s (lastRun=%s)" % (

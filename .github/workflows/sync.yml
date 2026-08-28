@@ -24,7 +24,7 @@ jobs:
         continue-on-error: true
         env:
           PYTHONIOENCODING: utf-8
-        run: ${{ vars.PYTHON_EXE || 'python' }} fetch_ai_daily.py
+        run: ${{ vars.PYTHON_EXE || 'python' }} -m backend.pipeline.fetch_ai_daily
         shell: cmd
         working-directory: ${{ github.workspace }}
 
@@ -32,7 +32,7 @@ jobs:
         continue-on-error: true
         env:
           PYTHONIOENCODING: utf-8
-        run: ${{ vars.PYTHON_EXE || 'python' }} fetch_daily_news.py
+        run: ${{ vars.PYTHON_EXE || 'python' }} -m backend.pipeline.fetch_daily_news
         shell: cmd
         working-directory: ${{ github.workspace }}
 
@@ -40,6 +40,6 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ${{ vars.PYTHON_EXE || 'python' }} sync.py
+        run: ${{ vars.PYTHON_EXE || 'python' }} -m backend.pipeline.sync
         shell: cmd
         working-directory: ${{ github.workspace }}

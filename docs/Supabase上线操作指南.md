@@ -71,7 +71,7 @@ Supabase PostgREST
 ### 4.1 启动
 ```bash
 cd E:\AITools\DailyWorkbench
-python server.py 8080
+python -m backend.server 8080
 ```
 看到 `GET/POST /api/models -> Supabase (云端配置已启用)` 即为云端模式；
 显示 `未配置 Supabase，回退 localStorage` 则说明凭证文件缺失或未重启。
@@ -91,7 +91,7 @@ python server.py 8080
 
 1. 目标机器克隆/同步 `E:\AITools\DailyWorkbench` 项目
 2. **仅复制** `supabase.local.json` 到目标机器同目录（该文件不入 git，需手动传）
-3. 启动 `python server.py 8080`，即读写同一云端配置
+3. 启动 `python -m backend.server 8080`，即读写同一云端配置
 4. 注意：两台机器同时编辑会互相覆盖（单行存储，后保存者胜）；单用户场景可忽略
 
 ---

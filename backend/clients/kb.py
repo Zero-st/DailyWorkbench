@@ -13,7 +13,7 @@ import re
 import sys
 import datetime as _dt
 
-import wb_config
+from backend.core import config as wb_config
 
 VAULT, DEPOSIT = wb_config.kb()
 # 沉淀模块白名单（与工作台侧边栏一致，去空格）

@@ -15,12 +15,12 @@ import os
 import json
 from datetime import datetime
 
-import wb_common
+from backend.utils import common as wb_common
+from backend.core.paths import DAILY_NEWS_JSON
 
 PRIMARY = "https://60s-api.viki.moe/v2/60s"
 BACKUP = "https://60s.viki.moe/v2/60s"
-HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "daily_news.json")
+OUT = DAILY_NEWS_JSON  # 钉在仓库根
 
 
 def _get(url, timeout=25):

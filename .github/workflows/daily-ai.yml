@@ -23,6 +23,6 @@ jobs:
       - name: Run daily AI update
         env:
           PYTHONIOENCODING: utf-8
-        run: ${{ vars.PYTHON_EXE || 'python' }} daily_ai.py
+        run: ${{ vars.PYTHON_EXE || 'python' }} -m backend.pipeline.daily_ai
         shell: cmd
         working-directory: ${{ github.workspace }}

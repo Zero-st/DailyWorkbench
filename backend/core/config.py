@@ -15,7 +15,8 @@ import platform
 import shutil
 import tempfile
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+from backend.core.paths import ROOT  # *.local.json 配置钉在仓库根
+
 IS_WIN = platform.system() == "Windows"
 
 
@@ -28,7 +29,7 @@ def _load_json(path):
 
 
 # 统一本地配置文件（缺失即为空 dict，全部回退平台默认）
-_LOCAL = _load_json(os.path.join(HERE, "workbench.local.json"))
+_LOCAL = _load_json(os.path.join(ROOT, "workbench.local.json"))
 
 
 def _first(*vals):
@@ -86,7 +87,7 @@ def supabase():
     url = url or sb.get("url") or ""
     key = key or sb.get("serviceKey") or sb.get("service_role") or ""
     if not url or not key:
-        legacy = _load_json(os.path.join(HERE, "supabase.local.json"))
+        legacy = _load_json(os.path.join(ROOT, "supabase.local.json"))
         url = url or legacy.get("url", "")
         key = key or legacy.get("serviceKey") or legacy.get("service_role") or ""
     return url.rstrip("/"), key
@@ -100,7 +101,7 @@ def kb():
     vault = vault or k.get("vault") or ""
     deposit = deposit or k.get("depositRoot") or ""
     if not vault:
-        legacy = _load_json(os.path.join(HERE, "kb.local.json"))
+        legacy = _load_json(os.path.join(ROOT, "kb.local.json"))
         vault = vault or legacy.get("vault", "")
         deposit = deposit or legacy.get("depositRoot", "")
     return (os.path.normpath(vault) if vault else ""), (os.path.normpath(deposit) if deposit else "")

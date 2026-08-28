@@ -8,7 +8,7 @@ intervalHours / staleHours。
 import json
 from datetime import datetime, timedelta
 
-import wb_common
+from backend.utils import common as wb_common
 
 # 自动同步节奏：WorkbenchAutoSync 每小时一次
 INTERVAL_HOURS = 1

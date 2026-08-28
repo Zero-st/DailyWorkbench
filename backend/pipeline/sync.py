@@ -14,8 +14,9 @@ import sys
 import subprocess
 from datetime import datetime
 
-import wb_config
-import wb_common
+from backend.core import config as wb_config
+from backend.utils import common as wb_common
+from backend.core.paths import ROOT, DATA_JSON
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
@@ -34,16 +35,17 @@ def diag(msg):
         pass
 
 
-def run_py(script, timeout=300):
-    p = subprocess.run([PY, script], cwd=HERE, env=ENV, capture_output=True,
-                       text=True, encoding="utf-8", errors="replace", timeout=timeout)
+def run_py(mod, timeout=300):
+    p = subprocess.run([PY, "-m", "backend.pipeline." + mod], cwd=ROOT, env=ENV,
+                       capture_output=True, text=True, encoding="utf-8",
+                       errors="replace", timeout=timeout)
     out = (p.stdout or "") + (p.stderr or "")
     return p.returncode, out.strip()
 
 
 def push_file(token, relpath, msg):
     """把仓库相对路径 relpath 的本地文件推送到仓库（Contents API 统一通道）。"""
-    return wb_common.github_push(token, relpath, msg, REPO, HERE, log=diag)
+    return wb_common.github_push(token, relpath, msg, REPO, ROOT, log=diag)
 
 
 def main():
@@ -54,13 +56,13 @@ def main():
         diag("ERROR: 缺少 GITHUB_TOKEN，无法推送 data.json")
         return 1
 
-    from sync_status import write_sync_status
+    from backend.pipeline.sync_status import write_sync_status
     lines = ["==== sync %s ====" % datetime.now().strftime("%Y-%m-%d %H:%M:%S")]
-    data_path = os.path.join(HERE, "data.json")
+    data_path = DATA_JSON
 
-    rc, out = run_py("export_data.py")
-    lines.append("[export_data.py] rc=%d\n%s" % (rc, out))
-    diag("[export_data.py] rc=%d" % rc)
+    rc, out = run_py("export_data")
+    lines.append("[export_data] rc=%d\n%s" % (rc, out))
+    diag("[export_data] rc=%d" % rc)
     export_ok = (rc == 0)
 
     push1_ok = push_file(token, "data.json",

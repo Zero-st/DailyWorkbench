@@ -14,11 +14,11 @@ import os
 import json
 from datetime import datetime, timedelta, timezone
 
-import wb_common
+from backend.utils import common as wb_common
+from backend.core.paths import AI_DAILY_JSON
 
 BASE = "https://aihot.virxact.com"
-HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "ai_daily.json")
+OUT = AI_DAILY_JSON  # 钉在仓库根（前端/推送都在根取）
 
 MAX_PER_SECTION = 8
 MAX_TOTAL = 20

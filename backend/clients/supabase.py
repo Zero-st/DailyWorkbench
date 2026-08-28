@@ -9,7 +9,7 @@ import sys
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
-import wb_config
+from backend.core import config as wb_config
 
 URL, KEY = wb_config.supabase()
 

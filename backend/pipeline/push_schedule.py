@@ -12,14 +12,14 @@ import os
 import sys
 import json
 
-import wb_common
+from backend.utils import common as wb_common
+from backend.core.paths import ROOT, SCHEDULE_LOCAL_JSON
 
 REPO = "Zero-st/DailyWorkbench"
-HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def main():
-    src = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "schedule.local.json")
+    src = sys.argv[1] if len(sys.argv) > 1 else SCHEDULE_LOCAL_JSON
     if not os.path.isfile(src):
         print("源文件不存在：%s" % src)
         return 1
@@ -33,7 +33,7 @@ def main():
 
     # 源文件名(schedule.local.json)≠仓库目标名(schedule.json)，用 src_path 指定读取源
     ok = wb_common.github_push(token, "schedule.json", "chore: update schedule from local",
-                               REPO, HERE, log=lambda m: print(m), src_path=src)
+                               REPO, ROOT, log=lambda m: print(m), src_path=src)
     if ok:
         print("✅ 已推送 %d 条课程到 GitHub schedule.json" % len(list_data))
         return 0

@@ -22,12 +22,13 @@ import subprocess
 import sys
 from datetime import datetime
 
-import wb_common
-from sync import push_file
+from backend.utils import common as wb_common
+from backend.pipeline.sync import push_file
+from backend.core.paths import ROOT, DATA_JSON, AI_DAILY_JSON
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
-LOG = os.path.join(HERE, "daily_ai.log")
+LOG = os.path.join(HERE, "daily_ai.log")  # 后端私有日志，留 backend/pipeline
 
 ENV = dict(os.environ)
 ENV["PYTHONIOENCODING"] = "utf-8"
@@ -35,7 +36,7 @@ ENV["PYTHONIOENCODING"] = "utf-8"
 
 def run(cmd, allow_fail=False, timeout=180):
     try:
-        p = subprocess.run(cmd, cwd=HERE, env=ENV, capture_output=True,
+        p = subprocess.run(cmd, cwd=ROOT, env=ENV, capture_output=True,
                            text=True, encoding="utf-8", errors="replace", timeout=timeout)
         out = (p.stdout or "") + (p.stderr or "")
         return p.returncode, out.strip()
@@ -59,15 +60,15 @@ def main():
         return 1
 
     export_ok = True
-    for script in ("fetch_ai_daily.py", "export_data.py"):
-        rc, out = run([PY, script], allow_fail=True)
-        lines.append("[%s] rc=%s\n%s" % (script, rc, out))
+    for mod in ("fetch_ai_daily", "export_data"):
+        rc, out = run([PY, "-m", "backend.pipeline." + mod], allow_fail=True)
+        lines.append("[%s] rc=%s\n%s" % (mod, rc, out))
         if rc != 0:
             export_ok = False
 
     # API 推送：先推 ai_daily.json（日报数据，抓取失败则文件不存在时跳过）
     push_ok = True
-    if os.path.exists(os.path.join(HERE, "ai_daily.json")):
+    if os.path.exists(AI_DAILY_JSON):
         ok1 = push_file(token, "ai_daily.json",
                         "chore: AI 日报自动更新 %s" % datetime.now().strftime("%Y-%m-%d"))
         lines.append("[push ai_daily.json] %s" % ok1)
@@ -82,8 +83,8 @@ def main():
     push_ok = push_ok and ok2
 
     # 把同步健康度写进 data.json，再推一次（让面板能显示失败/陈旧告警）
-    from sync_status import write_sync_status
-    data_path = os.path.join(HERE, "data.json")
+    from backend.pipeline.sync_status import write_sync_status
+    data_path = DATA_JSON
     st = write_sync_status(data_path, ok=(export_ok and push_ok))
     lines.append("[sync status] %s" % st)
     ok3 = push_file(token, "data.json", "chore: update sync health status")
