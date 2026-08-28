@@ -104,12 +104,11 @@ python bump_version.py --check # 只校验是否同步（CI 会跑，不一致�
 DailyWorkbench/
 │  ── 前端 PWA（钉死在根：Pages 根部署 + 相对路径）──
 ├── index.html                     # 唯一 HTML 入口
-├── app.js                         # ES Module 主入口（装配 + boot + window 桥接）
-├── js/                            # 前端模块：core/(util·state·net) views/(各视图) features/(notes·todos·favs)
-├── styles.css                     # 深色/浅色主题 + 响应式
-├── schedule.js kb.js model-manager.js  # 经典脚本（课程表 / 知识库 / 模型管理，window.WB 桥接）
-├── vendor/marked.min.js  xlsx.full.min.js   # 第三方（Markdown / 课程表导入·懒加载）
-├── sw.js  manifest.json  icon*.{svg,png}    # Service Worker / PWA 配置 / 图标
+├── sw.js  manifest.json  .nojekyll # Service Worker / PWA 配置 / 禁 Jekyll
+├── css/styles.css                 # 深色/浅色主题 + 响应式
+├── js/                            # app.js(入口) · kb/schedule/model-manager(经典脚本·window.WB) · core/ views/ features/ types/
+├── vendor/                        # marked.min.js · xlsx.full.min.js（第三方：Markdown / 课程表导入·懒加载）
+├── icons/                         # icon.svg · icon-192/512 · maskable-512
 │  ── 数据 · 配置（前端 fetch 或后端产出，钉在根）──
 ├── data.json                      # 聚合快照（backend/pipeline/export_data.py 生成）
 ├── ai_daily.json  daily_news.json # 抓取的资讯数据

@@ -1,20 +1,20 @@
 // 个人工作台 · 数据驱动渲染 + PWA（ES Modules 主模块）
 // 工具/图标/弹窗/复制/撤销已抽到 js/core/util.js（详见该文件）。
 // 本文件暂作主模块，后续按视图逐步剥离到 js/views/*。
-import { esc, jsStr, ic } from "./js/core/util.js";
-import { getData, setData, getView, setView } from "./js/core/state.js";
-import { renderStats } from "./js/views/stats.js";
-import { renderOv } from "./js/views/ov.js";
-import { renderSessArchive, closeHeat } from "./js/views/sess.js";
-import { renderWeekAll } from "./js/views/week.js";
-import { favsLoad, favsSave, renderFavs } from "./js/features/favs.js";
-import { renderInfo } from "./js/views/info.js";
-import { renderCap } from "./js/views/cap.js";
-import { fetchT } from "./js/core/net.js";
-import { renderAI, aiAsk } from "./js/views/ai.js";
-import { notesLoad, notesSave, renderNotes } from "./js/features/notes.js";
-import { todosLoad, todosSave, renderTodos } from "./js/features/todos.js";
-import { renderKPI, renderQuick, renderOverview, renderOvCard, renderTodayReview } from "./js/views/dash.js";
+import { esc, jsStr, ic } from "./core/util.js";
+import { getData, setData, getView, setView } from "./core/state.js";
+import { renderStats } from "./views/stats.js";
+import { renderOv } from "./views/ov.js";
+import { renderSessArchive, closeHeat } from "./views/sess.js";
+import { renderWeekAll } from "./views/week.js";
+import { favsLoad, favsSave, renderFavs } from "./features/favs.js";
+import { renderInfo } from "./views/info.js";
+import { renderCap } from "./views/cap.js";
+import { fetchT } from "./core/net.js";
+import { renderAI, aiAsk } from "./views/ai.js";
+import { notesLoad, notesSave, renderNotes } from "./features/notes.js";
+import { todosLoad, todosSave, renderTodos } from "./features/todos.js";
+import { renderKPI, renderQuick, renderOverview, renderOvCard, renderTodayReview } from "./views/dash.js";
 
 // WB 命名空间（dialog/esc/ic/jsStr）由 util.js 挂载到 window.WB；本模块内沿用 WB.dialog.*
 var WB = window.WB;

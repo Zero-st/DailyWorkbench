@@ -144,7 +144,7 @@
     return new Promise(function (resolve, reject) {
       if (typeof XLSX !== "undefined") { resolve(); return; }
       var s = document.createElement("script");
-      s.src = "xlsx.full.min.js";
+      s.src = "vendor/xlsx.full.min.js";
       s.onload = function () { resolve(); };
       s.onerror = function () { reject(new Error("xlsx 解析库加载失败（请检查网络后重试）")); };
       document.head.appendChild(s);

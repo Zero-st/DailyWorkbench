@@ -63,12 +63,15 @@ def test_write_sync_status_preserves_fields(tmp_path):
 
 # ---------- bump_version（缓存戳自动同步） ----------
 def _fake_frontend(base):
-    (base / "app.js").write_text("console.log(1)", encoding="utf-8")
-    (base / "styles.css").write_text("body{}", encoding="utf-8")
+    # 资产按真实布局放在 js/ 与 css/ 子目录（与 bump_version.ASSETS 的 js/app.js、css/styles.css 一致）
+    (base / "js").mkdir(exist_ok=True)
+    (base / "css").mkdir(exist_ok=True)
+    (base / "js" / "app.js").write_text("console.log(1)", encoding="utf-8")
+    (base / "css" / "styles.css").write_text("body{}", encoding="utf-8")
     (base / "index.html").write_text(
-        '<link href="styles.css?v=1"><script src="app.js?v=1"></script>', encoding="utf-8")
+        '<link href="css/styles.css?v=1"><script src="js/app.js?v=1"></script>', encoding="utf-8")
     (base / "sw.js").write_text(
-        'const CACHE = "workbench-v0";\nconst FILES=["./app.js?v=1","./styles.css?v=1"];',
+        'const CACHE = "workbench-v0";\nconst FILES=["./js/app.js?v=1","./css/styles.css?v=1"];',
         encoding="utf-8")
 
 
@@ -84,8 +87,8 @@ def test_bump_check_then_apply_makes_consistent(tmp_path):
     assert bump_version.check(base) == []
     assert bump_version.apply(base)[0] == []
     # 版本戳确实等于内容 hash
-    h = bump_version._hash_file(os.path.join(base, "app.js"))
-    assert ("app.js?v=" + h) in open(os.path.join(base, "index.html"), encoding="utf-8").read()
+    h = bump_version._hash_file(os.path.join(base, "js", "app.js"))
+    assert ("js/app.js?v=" + h) in open(os.path.join(base, "index.html"), encoding="utf-8").read()
 
 
 def test_bump_detects_content_change(tmp_path):
@@ -94,6 +97,6 @@ def test_bump_detects_content_change(tmp_path):
     bump_version.apply(base)
     assert bump_version.check(base) == []
     # 改动 app.js 内容后必须重新报不同步（这正是防白屏的关键）
-    (tmp_path / "app.js").write_text("console.log(2)", encoding="utf-8")
+    (tmp_path / "js" / "app.js").write_text("console.log(2)", encoding="utf-8")
     assert "index.html" in bump_version.check(base)
     assert "sw.js" in bump_version.check(base)

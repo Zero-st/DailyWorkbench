@@ -1,13 +1,13 @@
 ﻿// 个人工作台 Service Worker - 离线可开、可安装到主屏幕
-const CACHE = "workbench-75c36464";
+const CACHE = "workbench-89f344f3";
 const FILES = [
   "./index.html",
-  "./styles.css?v=4f5e2288",
-  "./schedule.js?v=64c25777",
-  "./model-manager.js?v=af4fbd61",
+  "./css/styles.css?v=4f5e2288",
+  "./js/schedule.js?v=4c01aab2",
+  "./js/model-manager.js?v=af4fbd61",
   "./vendor/marked.min.js?v=b7319d77",
-  "./kb.js?v=3ff6bd36",
-  "./app.js?v=608f79e2",
+  "./js/kb.js?v=3ff6bd36",
+  "./js/app.js?v=1bb22bf9",
   "./js/core/util.js",
   "./js/core/state.js",
   "./js/core/net.js",
@@ -23,10 +23,10 @@ const FILES = [
   "./js/features/notes.js",
   "./js/features/todos.js",
   "./manifest.json",
-  "./icon.svg",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./icon-maskable-512.png"
+  "./icons/icon.svg",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
+  "./icons/icon-maskable-512.png"
 ];
 
 self.addEventListener("install", (e) => {

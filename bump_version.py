@@ -19,11 +19,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 # 带 ?v= 缓存戳的前端资产（index.html 与 sw.js 的 FILES 里都引用它们）
 ASSETS = [
-    "app.js",
-    "styles.css",
-    "schedule.js",
-    "model-manager.js",
-    "kb.js",
+    "js/app.js",
+    "css/styles.css",
+    "js/schedule.js",
+    "js/model-manager.js",
+    "js/kb.js",
     "vendor/marked.min.js",
     "js/core/util.js",
     "js/core/state.js",
