@@ -37,6 +37,26 @@ def http_get_json(url, timeout=25, ua=UA):
             return json.loads(r.read().decode("utf-8"))
 
 
+def write_json_atomic(path, obj, indent=2):
+    """原子写 JSON：先写同目录临时文件，再 os.replace 覆盖目标。
+
+    避免读者（前端轮询 data.json / 另一进程）读到「写了一半」的损坏文件——
+    os.replace 在同一文件系统上是原子操作，读到的要么是旧内容要么是新内容。
+    多进程/多通道并发写同一 data.json 时，最后一个 replace 胜出，不会互相截断。
+    """
+    tmp = "%s.tmp.%d" % (path, os.getpid())
+    try:
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(obj, f, ensure_ascii=False, indent=indent)
+        os.replace(tmp, path)
+    except Exception:
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
+        raise
+
+
 def write_log(path, lines):
     """把日志行写入 path 并打印；stdout 编码不支持中文时安全降级。"""
     text = "\n".join(lines)

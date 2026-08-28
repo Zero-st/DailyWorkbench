@@ -21,6 +21,7 @@ import time
 from datetime import datetime, date, timedelta
 
 import wb_config
+import wb_common
 
 WB = os.path.expanduser(r"~\.workbuddy")
 WS = wb_config.workspace()
@@ -564,8 +565,7 @@ def main():
         "aiDaily": aid,
         "dailyNews": dn,
     }
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    wb_common.write_json_atomic(OUT, data)  # 原子替换，前端轮询不会读到半写文件
     print("✅ 已生成 data.json")
     print("   Skills : %d" % len(sk))
     print("   自动化 : %d" % len(autos))

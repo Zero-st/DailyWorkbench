@@ -8,6 +8,8 @@ intervalHours / staleHours。
 import json
 from datetime import datetime, timedelta
 
+import wb_common
+
 # 自动同步节奏：WorkbenchAutoSync 每小时一次
 INTERVAL_HOURS = 1
 # 超过这个时间没成功同步就判为「陈旧」，前端标红告警
@@ -30,6 +32,5 @@ def write_sync_status(data_path, ok, interval_hours=INTERVAL_HOURS, stale_hours=
         "intervalHours": interval_hours,
         "staleHours": stale_hours,
     }
-    with open(data_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    wb_common.write_json_atomic(data_path, data)  # 原子替换，避免与全量重建互相截断
     return data.get("sync")
