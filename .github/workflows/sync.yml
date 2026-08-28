@@ -24,7 +24,7 @@ jobs:
         continue-on-error: true
         env:
           PYTHONIOENCODING: utf-8
-        run: C:\Users\13115\.workbuddy\binaries\python\versions\3.13.12\python.exe fetch_ai_daily.py
+        run: ${{ vars.PYTHON_EXE || 'python' }} fetch_ai_daily.py
         shell: cmd
         working-directory: ${{ github.workspace }}
 
@@ -32,7 +32,7 @@ jobs:
         continue-on-error: true
         env:
           PYTHONIOENCODING: utf-8
-        run: C:\Users\13115\.workbuddy\binaries\python\versions\3.13.12\python.exe fetch_daily_news.py
+        run: ${{ vars.PYTHON_EXE || 'python' }} fetch_daily_news.py
         shell: cmd
         working-directory: ${{ github.workspace }}
 
@@ -40,6 +40,6 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: C:\Users\13115\.workbuddy\binaries\python\versions\3.13.12\python.exe sync.py
+        run: ${{ vars.PYTHON_EXE || 'python' }} sync.py
         shell: cmd
         working-directory: ${{ github.workspace }}

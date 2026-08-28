@@ -18,6 +18,8 @@ import urllib.request
 import urllib.error
 from datetime import datetime
 
+import wb_config
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
 ENV = dict(os.environ)
@@ -25,7 +27,7 @@ ENV["PYTHONIOENCODING"] = "utf-8"
 
 REPO = "Zero-st/DailyWorkbench"
 API = "https://api.github.com"
-DIAG = r"D:\AIWork\sync_diag.log"
+DIAG = wb_config.diag_log()
 
 
 def diag(msg):

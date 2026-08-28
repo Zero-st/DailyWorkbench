@@ -1,0 +1,12 @@
+{
+  "_说明": "复制本文件为 workbench.local.json（已 gitignore）并按本机情况填写。只填「换机会变」的环境参数；每个键都可被同名环境变量覆盖。缺失/留空即回退平台默认。",
+
+  "workspace": "E:/AITools/workbuddy/workspace",
+  "ollamaExe": "auto",
+  "diagLog": "",
+  "disks": ["C:\\", "D:\\"],
+
+  "supabase": { "url": "", "serviceKey": "" },
+  "kb": { "vault": "", "depositRoot": "" },
+  "chatProxy": { "allowHosts": [] }
+}

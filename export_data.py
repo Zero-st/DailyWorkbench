@@ -14,15 +14,16 @@
 import os
 import json
 import sqlite3
-import ctypes
 import subprocess
 import shutil
 import platform
 import time
 from datetime import datetime, date, timedelta
 
+import wb_config
+
 WB = os.path.expanduser(r"~\.workbuddy")
-WS = r"E:\AITools\workbuddy\workspace"
+WS = wb_config.workspace()
 SKILLS_DIR = os.path.join(WB, "skills")
 DB = os.path.join(WB, "workbuddy.db")
 MODELS = os.path.join(WB, "models.json")
@@ -155,9 +156,9 @@ def get_ollama_models():
     返回 {available, models:[{id,size,modified,tags:[name,...]}], running:[{name,size,processor}]}。
     与 status.localModels（WorkBuddy 接入配置）不同，这里取的是 Ollama 真正拉到本机的模型。
     """
-    exe = shutil.which("ollama") or r"C:\Users\lenovo\ollama\ollama.exe"
+    exe = wb_config.ollama_exe()
     out = {"available": False, "models": [], "running": []}
-    if not os.path.isfile(exe):
+    if not exe or not os.path.isfile(exe):
         return out
     out["available"] = True
     try:
@@ -288,13 +289,15 @@ def get_knowledge():
 
 
 def get_disk():
+    """跨平台磁盘占用探测（shutil.disk_usage，替代原 Windows-only 的 ctypes）。
+
+    盘符/挂载点由 wb_config.disks() 提供；不存在的路径直接跳过（优雅降级）。
+    """
     out = {}
-    for drive in ("C:\\", "D:\\"):
+    for drive in wb_config.disks():
         try:
-            free = ctypes.c_ulonglong(0)
-            total = ctypes.c_ulonglong(0)
-            if ctypes.windll.kernel32.GetDiskFreeSpaceExW(drive, None, ctypes.byref(total), ctypes.byref(free)):
-                out[drive[0]] = {"total": total.value // (1024 ** 3), "free": free.value // (1024 ** 3)}
+            u = shutil.disk_usage(drive)
+            out[drive[0]] = {"total": u.total // (1024 ** 3), "free": u.free // (1024 ** 3)}
         except Exception:
             pass
     return out

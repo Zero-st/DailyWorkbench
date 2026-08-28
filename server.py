@@ -19,37 +19,18 @@ import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
+
+import wb_config
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
 
-# ---------- Supabase 配置（云端存储模型配置，前端不持 key） ----------
-# 优先级：环境变量 > 本地 supabase.local.json（已 gitignore，不入库）
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
-SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
-_cfg_path = os.path.join(HERE, "supabase.local.json")
-if (not SUPABASE_URL or not SUPABASE_KEY) and os.path.exists(_cfg_path):
-    try:
-        with open(_cfg_path, "r", encoding="utf-8") as _f:
-            _c = json.load(_f)
-        SUPABASE_URL = _c.get("url", "").rstrip("/") or SUPABASE_URL
-        SUPABASE_KEY = _c.get("serviceKey") or _c.get("service_role") or SUPABASE_KEY
-    except Exception as _e:
-        sys.stderr.write("[supabase] 读取本地配置失败: %s\n" % _e)
-
-# ---------- 知识库配置（Obsidian vault 只读浏览 + 沉淀写入根） ----------
-# 优先级：环境变量 > 本地 kb.local.json（已 gitignore，不入库）
-KB_VAULT = os.environ.get("KB_VAULT", "")
-KB_DEPOSIT = os.environ.get("KB_DEPOSIT", "")
-_kb_cfg_path = os.path.join(HERE, "kb.local.json")
-if (not KB_VAULT) and os.path.exists(_kb_cfg_path):
-    try:
-        with open(_kb_cfg_path, "r", encoding="utf-8") as _f:
-            _kc = json.load(_f)
-        KB_VAULT = os.path.normpath(_kc.get("vault", "") or "")
-        KB_DEPOSIT = os.path.normpath(_kc.get("depositRoot", "") or "")
-    except Exception as _e:
-        sys.stderr.write("[kb] 读取配置失败: %s\n" % _e)
+# ---------- 环境绑定配置统一走 wb_config（环境变量 > workbench.local.json > 旧分文件） ----------
+# Supabase：云端存储模型配置，前端不持 key（兼容旧 supabase.local.json）
+SUPABASE_URL, SUPABASE_KEY = wb_config.supabase()
+# 知识库：Obsidian vault 只读浏览 + 沉淀写入根（兼容旧 kb.local.json）
+KB_VAULT, KB_DEPOSIT = wb_config.kb()
 # 沉淀模块白名单（与工作台侧边栏一致，去空格）
 KB_MODULES = ["今日", "资讯", "AI助手", "会话档案", "知识库"]
 KB_SOURCES = ["review", "ai-daily", "news", "ai-chat", "session", "note"]
@@ -88,6 +69,12 @@ def _do_chat_proxy(payload):
     target = payload.get("targetUrl", "").strip()
     if not target:
         return 400, b'{"error":"missing targetUrl"}'
+    # 目标主机白名单（wb_config.chat_allow_hosts，空=不限制）：防止本服务被误用为开放代理
+    allow = wb_config.chat_allow_hosts()
+    if allow:
+        host = (urlparse(target).hostname or "").lower()
+        if host not in [h.lower() for h in allow]:
+            return 403, b'{"error":"target host not allowed"}'
     api_key = payload.get("key", "")
     if not api_key:
         return 401, b'{"error":"missing api key"}'
