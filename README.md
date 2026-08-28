@@ -66,7 +66,7 @@ python -m http.server 8080
 # 方式 A：命令行
 python export_data.py
 
-# 方式 B：小白双击 refresh.cmd（已配好托管 Python 路径，跑完自动刷新）
+# 方式 B：小白双击 scripts/refresh.cmd（已配好托管 Python 路径，跑完自动刷新）
 ```
 
 跑完刷新浏览器，工作台即显示最新真实数据。
@@ -129,11 +129,11 @@ DailyWorkbench/
 ├── docs/                          # TECH_CHARTER · adr/ · 各操作指南 · supabase_schema.sql
 ├── twa/                           # Android TWA 构建（bubblewrap + gradle）
 ├── lite/  mobile/                 # 轻量版 PWA（独立分叉）/ Flutter 移动端
-├── refresh.cmd start_workbench.cmd run_refresh.vbs setup_runner.ps1  # 本机启动 / 同步（含机器路径）
+├── scripts/                       # 本机启动/同步/构建脚本（refresh·start_workbench·run_refresh·setup_runner·build-apk·grab-crash·delete_workbench_tasks，含机器路径）
 └── .github/workflows/             # ci · deploy-pages · sync · daily-ai · build-apk
 ```
 
-> 后端脚本作为 package 运行：`python -m backend.server 8899`、`python -m backend.pipeline.export_data` 等（详见各 workflow 与 `refresh.cmd`）。
+> 后端脚本作为 package 运行：`python -m backend.server 8899`、`python -m backend.pipeline.export_data` 等（详见各 workflow 与 `scripts/refresh.cmd`）。
 
 > 为什么 `daily_ai.py` 是 Python 而不是 `.cmd`：cmd.exe 走 GBK 代码页，含中文的 UTF-8 批处理会直接崩溃（实测退出码 `-1073741510`，脚本第一行都跑不到）。Python 无此问题。
 

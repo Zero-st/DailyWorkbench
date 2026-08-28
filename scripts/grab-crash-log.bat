@@ -13,7 +13,7 @@ echo Clearing old logcat buffer...
 echo Now OPEN the app and make it crash, then come back.
 pause
 echo Saving crash logs to mobile\crash_log.txt ...
-"%ADB%" logcat -d > mobile\crash_log.txt
+"%ADB%" logcat -d > "%~dp0..\mobile\crash_log.txt"
 echo ==========================================
 echo  DONE. Open mobile\crash_log.txt and send it.
 echo ==========================================

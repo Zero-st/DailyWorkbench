@@ -9,7 +9,7 @@ set PUB_HOSTED_URL=https://pub.flutter-io.cn
 set FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
 
 rem === Go to mobile project (next to this bat) ===
-cd /d "%~dp0mobile"
+cd /d "%~dp0..\mobile"
 
 echo === flutter clean ===
 call "D:\Android\flutter\bin\flutter.bat" clean
@@ -28,13 +28,13 @@ if "%BUILD_RC%"=="0" (
   echo BUILD OK
   echo   source : mobile\build\app\outputs\flutter-apk\app-release.apk
   rem === 拷到浅层 APK\ 目录，方便查找安装 ===
-  if not exist "%~dp0APK" mkdir "%~dp0APK"
-  copy /Y "%~dp0mobile\build\app\outputs\flutter-apk\app-release.apk" "%~dp0APK\app-release.apk" >nul
+  if not exist "%~dp0..\APK" mkdir "%~dp0..\APK"
+  copy /Y "%~dp0..\mobile\build\app\outputs\flutter-apk\app-release.apk" "%~dp0..\APK\app-release.apk" >nul
   if errorlevel 1 (
     echo   WARNING: 拷贝到 APK\ 失败，安装包仍在上面的 source 路径
   ) else (
     echo   copied : APK\app-release.apk
-    echo   full   : %~dp0APK\app-release.apk
+    echo   full   : %~dp0..\APK\app-release.apk
   )
 ) else (
   echo.
