@@ -39,3 +39,20 @@ jobs:
 
       - name: Run tests
         run: python -m pytest -q
+
+  types:
+    name: "Frontend: Type check (JSDoc + checkJs)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Type check (core module boundaries)
+        # JSDoc + checkJs 仅覆盖 state.js / net.js（含 data.json 契约 WBData），零构建、
+        # 不进浏览器产物。当前零报错，硬门禁：类型契约破坏即 CI 失败。范围见 jsconfig.json。
+        run: npx -y -p typescript@latest tsc --noEmit -p jsconfig.json

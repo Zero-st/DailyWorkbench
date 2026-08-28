@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "allowJs": true,
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "target": "es2020",
+    "lib": ["es2020", "dom", "dom.iterable"],
+    "noEmit": true,
+    "strict": false,
+    "skipLibCheck": true
+  },
+  "//": "checkJs 目前仅覆盖已标注类型的核心模块边界（state/net + data.json 契约）——零噪音、CI 可硬门禁。视图/app.js 内部为字符串拼接渲染，暂不纳入（见 plan 六·1b 落地范围）；日后可按文件逐步加 // @ts-check 并扩 include。",
+  "include": ["js/core/state.js", "js/core/net.js", "js/types/globals.d.ts"],
+  "exclude": ["node_modules", "lite", "mobile", "app", "vendor"]
+}
