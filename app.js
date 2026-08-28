@@ -223,16 +223,8 @@
     if (e) e.style.display = (q !== "" && !any) ? "block" : "none";
   }
   function toggleCat(h) { h.parentNode.classList.toggle("open"); }
-  function switchTab(id) {
-    document.querySelectorAll(".tab").forEach(function (t) {
-      t.classList.toggle("active", t.getAttribute("data-tab") === id);
-    });
-    document.querySelectorAll(".tabpane").forEach(function (p) {
-      p.classList.toggle("active", p.id === "pane-" + id);
-    });
-    try { localStorage.setItem("wb_tab", id); } catch (e) {}
-    if (__data) renderActiveTab(__data);
-  }
+  // 历史遗留：曾与 switchView 双路由并存。现统一委托 switchView（保留导出与全部调用者）。
+  function switchTab(id) { switchView(id); }
   function goKPI(tab, cardId) {
     switchTab(tab);
     setTimeout(function () {
@@ -1567,21 +1559,11 @@
     var t = titles[v] || ["", ""];
     var h = document.getElementById("viewTitle"); if (h) h.textContent = t[0];
     var s = document.getElementById("viewSub"); if (s) s.textContent = t[1];
-    // 先隐藏所有视图与 tabpane
+    // 统一容器体系：隐藏所有 .view，显示 #view-<v>（home/dash 与其余 10 个已收敛为同一套）
     document.querySelectorAll(".view").forEach(function (x) { x.classList.remove("active"); });
-    document.querySelectorAll(".tabpane").forEach(function (p) { p.classList.remove("active"); });
-    document.querySelectorAll(".tab").forEach(function (t2) { t2.classList.remove("active"); });
-    if (v === "home" || v === "dash") {
-      var el = document.getElementById("view-" + v);
-      if (el) el.classList.add("active");
-      return;
-    }
-    // tab 类：复用原 switchTab 的 DOM 体系
-    var target = document.getElementById("pane-" + v);
+    var target = document.getElementById("view-" + v);
     if (target) target.classList.add("active");
-    document.querySelectorAll(".tab").forEach(function (t2) {
-      if (t2.getAttribute("data-tab") === v) t2.classList.add("active");
-    });
+    try { localStorage.setItem("wb_tab", v); } catch (e) {}
     if (__data) renderActiveTab(__data);
   }
   window.switchView = switchView;
@@ -2078,7 +2060,7 @@
   var lastTab = "";
   try { lastTab = localStorage.getItem("wb_tab") || ""; } catch (e) {}
   if (lastTab === "news" || lastTab === "dnews") lastTab = "info"; // 资讯 Tab 合并兼容
-  if (lastTab && lastTab !== "cap") switchTab(lastTab);
+  if (lastTab && lastTab !== "cap") switchView(lastTab);
 
   // 后台自动刷新：每 30s 检测数据是否更新，有变化就自动重渲染（覆盖每小时自动同步）
   // 页面不可见（切后台标签页）时暂停轮询省流量/电量，回到前台立即补查一次
