@@ -26,6 +26,11 @@ ASSETS = [
     "kb.js",
     "vendor/marked.min.js",
     "js/core/util.js",
+    "js/core/state.js",
+    "js/views/stats.js",
+    "js/views/ov.js",
+    "js/views/sess.js",
+    "js/views/week.js",
 ]
 
 

@@ -2,6 +2,11 @@
 // 工具/图标/弹窗/复制/撤销已抽到 js/core/util.js（详见该文件）。
 // 本文件暂作主模块，后续按视图逐步剥离到 js/views/*。
 import { esc, escAttr, jsStr, ic, catLabel, undoSnack } from "./js/core/util.js";
+import { getData, setData, getView, setView } from "./js/core/state.js";
+import { renderStats } from "./js/views/stats.js";
+import { renderOv } from "./js/views/ov.js";
+import { renderSessArchive, closeHeat } from "./js/views/sess.js";
+import { renderWeekAll } from "./js/views/week.js";
 
 // WB 命名空间（dialog/esc/ic/jsStr）由 util.js 挂载到 window.WB；本模块内沿用 WB.dialog.*
 var WB = window.WB;
@@ -39,20 +44,7 @@ var WB = window.WB;
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 80);
   }
-  function openHeat(span) {
-    var date = span.getAttribute("data-date");
-    var count = span.getAttribute("data-count");
-    var titles = (span.getAttribute("data-titles") || "").split("\n").filter(Boolean);
-    document.getElementById("heat-detail-date").textContent = date + " · " + count + " 个会话";
-    var body = document.getElementById("heat-detail-body");
-    body.innerHTML = titles.length
-      ? titles.map(function (t) {
-          return '<div class="hdi" onclick="aiAsk(' + "'回顾并继续这个会话：" + jsStr(t) + "'" + ')">' + esc(t) + '<span class="hd-arrow">›</span></div>';
-        }).join("")
-      : '<div class="empty">这天没有会话记录</div>';
-    document.getElementById("heat-detail").style.display = "flex";
-  }
-  function closeHeat() { document.getElementById("heat-detail").style.display = "none"; }
+  // openHeat/closeHeat/renderHeat/sessFilter/sessStatus/renderSessArchive 已剥到 js/views/sess.js
 
   // ---------- 我的速记（localStorage，纯前端） ----------
   function notesLoad() {
@@ -240,7 +232,6 @@ var WB = window.WB;
   }
 
   window.filt = filt; window.toggleCat = toggleCat; window.switchTab = switchTab; window.goKPI = goKPI;
-  window.openHeat = openHeat; window.closeHeat = closeHeat;
   window.addNote = addNote; window.delNote = delNote; window.editNote = editNote; window.toggleTheme = toggleTheme;
   window.toggleNews = toggleNews;
   window.toggleNS = toggleNS; window.newsDateChanged = newsDateChanged;
@@ -364,7 +355,6 @@ var WB = window.WB;
     try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) {}
   }
   window.pomoToggle = pomoToggle; window.pomoReset = pomoReset; window.pomoSetLen = pomoSetLen;
-  window.sessFilter = sessFilter; window.sessStatus = sessStatus; window.weekSet = weekSet;
   window.addTodo = addTodo; window.toggleTodo = toggleTodo; window.delTodo = delTodo; window.clearDone = clearDone;
   window.dnewsDateChanged = dnewsDateChanged;
 
@@ -425,7 +415,7 @@ var WB = window.WB;
 
   // 今日建议：把工作台现状拼成 prompt 发给 AI 助手
   function inspireToday() {
-    var d = __data || {};
+    var d = getData() || {};
     var k = d.kpi || {};
     var cmd = "根据我的工作台现状生成今日建议：已装 " + (k.skills || 0) + " 个 skill，知识库 " + (k.knowledge || 0) +
       " 个文件，模型 " + (k.models || 0) + " 个（本机 " + (((d.status || {}).localModels || []).length) + "）。请给我：1-2 个今天可以动手的小任务点子；一条 AI agent 学习路径（结合我已装的 skill）；一个值得关注的 AI 趋势。";
@@ -451,17 +441,6 @@ var WB = window.WB;
     return html;
   }
 
-  function renderHeat(heat) {
-    var total = heat.reduce(function (a, b) { return a + b.count; }, 0);
-    var html = '<div class="heat"><div class="heat-t">近 17 周会话活跃 · 合计 ' + total + ' 条记录 · 点格子看当天聊了啥</div><div class="heat-g">';
-    heat.forEach(function (h) {
-      var lvl = h.count === 0 ? "l0" : (h.count <= 2 ? "l1" : (h.count <= 5 ? "l2" : "l3"));
-      var titles = (h.titles || []).map(function (t) { return esc(t); }).join("\n");
-      html += '<span class="hc ' + lvl + '" data-date="' + h.date + '" data-count="' + h.count + '" data-titles="' + escAttr(titles) + '" onclick="openHeat(this)" title="' + h.date + " : " + h.count + ' 个会话"></span>';
-    });
-    html += '</div><div class="heat-lg"><span class="hc l1"></span>少 <span class="hc l2"></span>中 <span class="hc l3"></span>多</div></div>';
-    return html;
-  }
 
   function renderCap(d) {
     var skillsHtml = renderSkills(d.skills);
@@ -630,246 +609,11 @@ var WB = window.WB;
     box.innerHTML = html;
   }
 
-  // 把 RRULE 风格 cron（FREQ=WEEKLY;BYDAY=MO;BYHOUR=10;BYMINUTE=0）解析成中文
-  function cronZh(cron) {
-    if (!cron) return "";
-    var p = {};
-    String(cron).split(";").forEach(function (kv) {
-      var i = kv.indexOf("=");
-      if (i > 0) p[kv.slice(0, i).toUpperCase()] = kv.slice(i + 1);
-    });
-    var freq = p.FREQ || "";
-    var days = { MO: "一", TU: "二", WE: "三", TH: "四", FR: "五", SA: "六", SU: "日" };
-    var when = [];
-    if (p.BYHOUR) { when.push((p.BYHOUR.length === 1 ? "0" + p.BYHOUR : p.BYHOUR) + ":" + (p.BYMINUTE ? (p.BYMINUTE.length === 1 ? "0" + p.BYMINUTE : p.BYMINUTE) : "00")); }
-    var hm = when.length ? " " + when[0] : "";
-    if (freq.indexOf("WEEKLY") >= 0) {
-      var ds = (p.BYDAY || "").split(",").filter(Boolean).map(function (d) { return days[d] || ""; }).join("、");
-      return (ds ? "每周" + ds : "每周") + hm;
-    }
-    if (freq.indexOf("DAILY") >= 0) return "每天" + hm;
-    if (freq.indexOf("HOURLY") >= 0) return "每小时";
-    if (freq.indexOf("MONTHLY") >= 0) return "每月" + hm;
-    return String(cron).slice(0, 30);
-  }
+  // cronZh + renderOv 已剥到 js/views/ov.js
 
-  function renderOv(d) {
-    var st = d.status;
-    var modelsHtml = (st.models || []).map(function (m) {
-      return '<div class="model"><span class="mn">' + esc(m.name) + '</span><span class="mm">' + esc(m.type) + "</span></div>";
-    }).join("");
-    var mcpHtml = (st.mcp || []).map(function (m) {
-      var off = (m.online === false);
-      return '<span class="mcp' + (off ? " off" : "") + '">' + esc(m.name) +
-        (off ? ' <span class="mcp-badge">离线</span>' : "") + "</span>";
-    }).join("");
-    var disk = st.disk || {};
-    var localHtml = (st.localModels || []).map(function (m) { return '<div class="model">' + esc(m) + "</div>"; }).join("");
-    var ol = st.ollama || {};
-    var olModels = ol.models || [];
-    var olRunning = ol.running || [];
-    var olHtml = ol.available === false ? '<div class="empty">Ollama 未安装</div>' :
-      (olModels.length ? olModels.map(function (m) {
-        var tags = m.tags || [m.name];
-        var run = olRunning.some(function (r) { return tags.indexOf(r.name) >= 0; });
-        var alias = tags.length > 1 ? " · 等 " + tags.length + " 个标签" : "";
-        return '<div class="model ol-model"><span class="ol-dot ' + (run ? "on" : "") + '"></span><b>' + esc(tags[0]) + '</b>' +
-          '<span class="meta">' + esc(m.size || "") + alias + (run ? " · 运行中" : "") + "</span></div>";
-      }).join("") : '<div class="empty">Ollama 未运行 · 暂无本地模型</div>');
-    var autoHtml = (st.automations || []).map(function (a) {
-      var badge = a.status === "ACTIVE" || a.status === "active" ? '<span class="badge on">ACTIVE</span>' : '<span class="badge off">' + esc(a.status) + "</span>";
-      var freq = cronZh(a.cron);
-      return '<div class="auto">' + badge + "<b>" + esc(a.name) + '</b><span class="meta">' + (freq ? esc(freq) + " · " : "") + "下次 " + esc(a.next || "-") + "</span></div>";
-    }).join("") || '<div class="empty">暂无自动化任务</div>';
-    var kb = d.knowledge || { total: 0, types: {}, files: [] };
-    var kbTypes = Object.keys(kb.types || {}).map(function (t) { return t + " " + kb.types[t]; }).join(" · ");
-    var kbHtml = (kb.files || []).map(function (f) {
-      return '<div class="auto"><b>' + esc(f.name) + '</b><span class="meta">' + esc(f.mtime) + "</span></div>";
-    }).join("");
+  // renderStats 已剥到 js/views/stats.js（renderActiveTab 通过 import 调用）
 
-    document.getElementById("col-ov").innerHTML =
-      '<div class="card" id="card-ov"><h2><span class="ic">' + ic("activity") + '</span>个人状态看板</h2>' +
-        '<div class="ov-sub">已接入模型（' + (st.models || []).length + '）</div><div class="ov-models">' + modelsHtml + "</div>" +
-        '<div class="ov-sub">集成与资源</div>' +
-        '<div class="ov-res">' +
-        '<div class="ov-mcp"><div class="ov-mcp-h"><span class="rk">MCP 集成</span><span class="rv">' + (st.mcp || []).length + '</span></div><div class="ov-mcp-chips">' + mcpHtml + "</div></div>" +
-        '<div class="ov-metric"><span class="rk">记忆库</span><span class="rv">' + d.kpi.memory + '</span><span class="rn">个文件</span></div>' +
-        '<div class="ov-metric"><span class="rk">磁盘 C:</span><span class="rv">' + (disk.C ? disk.C.free + "G" : "-") + '</span><span class="rn">共 ' + (disk.C ? disk.C.total + "G" : "-") + "</span></div>" +
-        '<div class="ov-metric"><span class="rk">磁盘 D:</span><span class="rv">' + (disk.D ? disk.D.free + "G" : "-") + '</span><span class="rn">可用 · 共 ' + (disk.D ? disk.D.total + "G" : "-") + "</span></div>" +
-        "</div></div>" +
-      '<div class="card"><h2><span class="ic">' + ic("tool") + '</span>环境体检台</h2>' +
-        '<div class="ov-res">' +
-        '<div class="ov-metric"><span class="rk">本地模型</span><span class="rv">' + olModels.length + '</span><span class="rn">' + (ol.available === false ? "Ollama 未装" : (olRunning.length ? olRunning.length + " 运行中" : "已就绪")) + "</span></div>" +
-        '<div class="ov-metric"><span class="rk">C 盘剩余</span><span class="rv">' + (disk.C ? disk.C.free + "G" : "-") + '</span><span class="rn">共 ' + (disk.C ? disk.C.total + "G" : "-") + "</span></div>" +
-        '<div class="ov-metric"><span class="rk">运行时</span><span class="rv" style="font-size:14px">' + esc(st.runtime || "-") + '</span><span class="rn">Python / Node</span></div>' +
-        "</div>" +
-        (olModels.length ? '<div style="margin:8px 0 2px;color:var(--accent2);font-size:13px">本地 Ollama 模型（' + olModels.length + '）</div><div class="ov-ol">' + olHtml + "</div>" : "") +
-      "</div>" +
-      '<div class="card" id="card-auto"><h2><span class="ic">' + ic("settings") + '</span>自动化与任务编排</h2>' +
-        '<div class="ov-res" style="grid-template-columns:repeat(2,1fr);margin-bottom:8px">' +
-        '<div class="ov-metric"><span class="rk">自动化任务</span><span class="rv">' + (st.automations || []).length + '</span><span class="rn">WorkBuddy 内置</span></div>' +
-        '<div class="ov-metric"><span class="rk">活跃中</span><span class="rv">' + (st.automations || []).filter(function (a) { return a.status === "ACTIVE" || a.status === "active"; }).length + '</span><span class="rn">ACTIVE 状态</span></div>' +
-        "</div>" +
-        '<div class="ov-auto-panel">' + autoHtml + "</div>" +
-        '<div style="margin-top:10px"><button class="btn" onclick="cmdtext(' + "'新建定时任务：频率（如每周一10点）+ 工作区 + 任务描述'" + ')">➕ 新建定时任务</button></div></div>' +
-      '<div class="card" id="card-kb"><h2><span class="ic">' + ic("book") + '</span>内容与知识生产</h2>' +
-        '<div class="ov-res" style="grid-template-columns:repeat(2,1fr)">' +
-        '<div class="ov-metric"><span class="rk">知识库文件</span><span class="rv">' + kb.files.length + '</span><span class="rn">篇笔记 / 资料</span></div>' +
-        '<div class="ov-metric"><span class="rk">知识库类型</span><span class="rv" style="font-size:14px">' + Object.keys(kb.types || {}).length + '</span><span class="rn">' + esc(kbTypes || "未分类") + "</span></div>" +
-        "</div>" +
-        (kb.files.length ? '<div class="ov-kb" style="margin-top:8px">' + kbHtml + "</div>" : '<div class="empty" style="margin-top:8px">暂无知识库文件，点下方新建</div>') +
-        '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">' +
-        '<button class="btn" onclick="cmdtext(' + "'在 knowledge-base/ 新建一篇笔记，主题：'" + ')">➕ 新建笔记</button>' +
-        '<button class="btn" onclick="cmdtext(' + "'用 video-cangjie-distill 把以下视频转成 skill：'" + ')">蒸馏视频</button>' +
-        '<button class="btn-sm" onclick="cmdtext(' + "'在 knowledge-base/ 搜索：'" + ')">🔍 搜知识库</button></div></div>';
-  }
-
-  // ---------- Skill 使用统计 ----------
-  function renderStats(d) {
-    var box = document.getElementById("col-stats");
-    if (!box) return;
-    var skills = d.skills || [];
-    var used = skills.filter(function (s) { return (s.usage || 0) > 0; });
-    var totalUsage = skills.reduce(function (a, s) { return a + (s.usage || 0); }, 0);
-    var top = skills.slice().sort(function (a, b) { return (b.usage || 0) - (a.usage || 0); }).filter(function (s) { return (s.usage || 0) > 0; }).slice(0, 10);
-    var maxU = top.length ? top[0].usage : 1;
-    var byCat = {};
-    skills.forEach(function (s) { (byCat[s.category] = byCat[s.category] || []).push(s); });
-    var catMax = 1; Object.keys(byCat).forEach(function (c) { if (byCat[c].length > catMax) catMax = byCat[c].length; });
-    var html = '<div class="card"><h2><span class="ic">' + ic("barChart2") + '</span>Skill 使用统计</h2>' +
-      '<div class="ov-res" style="margin-bottom:10px">' +
-      '<div class="ov-metric"><span class="rk">已装 Skills</span><span class="rv">' + skills.length + '</span><span class="rn">个能力</span></div>' +
-      '<div class="ov-metric"><span class="rk">用过</span><span class="rv">' + used.length + '</span><span class="rn">占 ' + Math.round(100 * used.length / Math.max(1, skills.length)) + '%</span></div>' +
-      '<div class="ov-metric"><span class="rk">累计使用</span><span class="rv">' + totalUsage + '</span><span class="rn">次调用</span></div>' +
-      "</div></div>";
-    html += '<div class="card"><h2><span class="ic">🔥</span>使用最多的 TOP ' + top.length + '</h2>';
-    if (!top.length) html += '<div class="empty">还没有使用记录，去 能力速达 点几个 skill 试试（点一下即算一次）</div>';
-    html += '<div class="stat-list">' + top.map(function (s) {
-      return '<div class="stat"><span class="st-name">' + esc(s.name) + '</span>' +
-        '<span class="st-bar"><span class="st-fill" style="width:' + Math.round(100 * s.usage / maxU) + '%"></span></span>' +
-        '<span class="st-num">' + s.usage + '</span></div>';
-    }).join("") + "</div></div>";
-    html += '<div class="card"><h2>按分类分布（' + Object.keys(byCat).length + ' 类）</h2><div class="stat-list">' +
-      Object.keys(byCat).map(function (c) {
-        return '<div class="stat"><span class="st-name">' + esc(catLabel(c)) + '</span>' +
-          '<span class="st-bar"><span class="st-fill" style="width:' + Math.round(100 * byCat[c].length / catMax) + '%"></span></span>' +
-          '<span class="st-num">' + byCat[c].length + '</span></div>';
-      }).join("") + "</div></div>";
-    box.innerHTML = html;
-  }
-
-  // ---------- 会话档案 ----------
-  function sessFilter() {
-    var q = (document.getElementById("sessQ").value || "").trim().toLowerCase();
-    var items = document.querySelectorAll("#sessArchiveList .sess-it");
-    var n = 0;
-    items.forEach(function (it) {
-      var show = !q || (it.getAttribute("data-title") || "").toLowerCase().indexOf(q) >= 0;
-      it.style.display = show ? "" : "none";
-      if (show) n++;
-    });
-    var c = document.getElementById("sessCount");
-    if (c) c.textContent = n + " 条";
-  }
-  function sessStatus(v) {
-    var chips = document.querySelectorAll(".schip");
-    chips.forEach(function (c) { c.classList.toggle("active", c.getAttribute("data-v") === v); });
-    var items = document.querySelectorAll("#sessRecentList .sess-it");
-    items.forEach(function (it) {
-      it.style.display = (v === "all" || it.getAttribute("data-status") === v) ? "" : "none";
-    });
-  }
-  function renderSessArchive(d) {
-    var box = document.getElementById("col-sess");
-    if (!box) return;
-    var sess = d.sessions || {};
-    var recent = sess.recent || [];
-    var heat = sess.heatmap || [];
-    var byDate = {};
-    heat.forEach(function (h) { byDate[h.date] = (h.titles || []); });
-    var dates = Object.keys(byDate).sort().reverse();
-    var totalTitles = 0; dates.forEach(function (dt) { totalTitles += byDate[dt].length; });
-    var archiveHtml = "";
-    dates.forEach(function (dt) {
-      var list = byDate[dt];
-      if (!list.length) return;
-      archiveHtml += '<div class="sess-day">' + esc(dt) + ' <span class="cc">' + list.length + "</span></div>";
-      list.forEach(function (t) {
-        archiveHtml += '<div class="auto sess sess-it" data-title="' + escAttr(t) + '" onclick="aiAsk(' + "'回顾并继续这个会话：" + jsStr(t) + "'" + ')"><b>' + esc(t) + "</b></div>";
-      });
-    });
-    var recentHtml = '<div class="card"><h2>近期会话（最近 ' + recent.length + ' 条）</h2>' +
-      '<div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">' +
-      '<button class="schip active" data-v="all" onclick="sessStatus(\'all\')">全部</button>' +
-      '<button class="schip" data-v="working" onclick="sessStatus(\'working\')">进行中</button></div>' +
-      '<div id="sessRecentList">' + (recent.length ? recent.map(function (s) {
-        var st = s.status || "";
-        var disp = s.display || s.title || "";
-        return '<div class="auto sess sess-it" data-status="' + escAttr(st) + '" onclick="aiAsk(' + "'回顾并继续这个会话：" + jsStr(disp) + "'" + ')"><b>' + esc(disp) + '</b><span class="meta">' + esc(s.updated) + (st === "working" ? ' <span class="badge on">进行中</span>' : "") + "</span></div>";
-      }).join("") : '<div class="empty">暂无近期会话</div>') + "</div></div>";
-    var html = '<div class="card"><h2><span class="ic">🔍</span>搜索会话</h2>' +
-      '<input id="sessQ" class="sf" placeholder="按标题搜索全部会话…" oninput="sessFilter()">' +
-      '<div class="empty" style="margin-top:4px">共 ' + totalTitles + ' 条历史记录 · ' + dates.length + ' 天</div></div>' +
-      recentHtml +
-      '<div class="card"><h2>活跃热力图 · 近 ' + heat.length + ' 天</h2>' + renderHeat(heat) + "</div>" +
-      '<div class="card"><h2>全部会话档案<span class="news-n" id="sessCount">' + totalTitles + " 条</span></h2>" +
-      '<div id="sessArchiveList" class="sess-arch">' + archiveHtml + '</div></div>';
-    box.innerHTML = html;
-  }
-
-  // 本周动态：bento 首页卡（最近 12 条）+ 独立 tab（全部 + 类型筛选）共用渲染
-  var WK_ICON = { skill: "", automation: "", kb: "", model: "" };
-  var WK_LABEL = { skill: "新增/更新 skill", automation: "新建自动化任务", kb: "新增知识库文件", model: "拉取本地模型" };
-  function wkItemHtml(it) {
-    var dt = new Date((it.when || 0) * 1000);
-    var ds = (dt.getMonth() + 1) + "-" + dt.getDate() + " " +
-      ("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2);
-    var scope = (it.scope || "").replace(/^[（(]|[）)]$/g, "").trim();
-    return '<li class="wk">' + "•" + '</span>' +
-      '<div class="wk-b"><span class="wk-name">' + esc(it.name) + '</span></div>' +
-      (scope ? '<span class="wk-scope">' + esc(scope) + '</span>' : '') +
-      '<span class="wk-meta">' + ds + '</span></li>';
-  }
-  function wkGroupHtml(items) {
-    var order = ["skill", "kb", "automation", "model"];
-    var html = "";
-    order.forEach(function (k) {
-      var list = items.filter(function (it) { return it.kind === k; });
-      if (!list.length) return;
-      html += '<li class="wk-grp">' + "•" + " " + esc(WK_LABEL[k] || k) +
-        '<span class="cc">' + list.length + "</span></li>" + list.map(wkItemHtml).join("");
-    });
-    var rest = items.filter(function (it) { return order.indexOf(it.kind) < 0; });
-    if (rest.length) {
-      html += '<li class="wk-grp">• 其他<span class="cc">' + rest.length + "</span></li>" + rest.map(wkItemHtml).join("");
-    }
-    return html;
-  }
-
-  // 本周动态全部 tab：全量 + 按类型筛选
-  var weekFilter = "all";
-  function weekSet(k) {
-    weekFilter = k;
-    var data = __data;
-    if (data) renderWeekAll(data);
-  }
-  function renderWeekAll(d) {
-    var box = document.getElementById("col-week");
-    if (!box) return;
-    var items = d.weekly || [];
-    var kinds = ["all", "skill", "kb", "automation", "model"];
-    var labels = { all: "全部", skill: "skill", kb: "知识库", automation: "自动化", model: "模型" };
-    var chips = kinds.map(function (k) {
-      var n = k === "all" ? items.length : items.filter(function (it) { return it.kind === k; }).length;
-      return '<button class="week-chip' + (weekFilter === k ? " on" : "") + '" onclick="weekSet(' + "'" + k + "'" + ')">' + labels[k] + ' <span class="cc">' + n + "</span></button>";
-    }).join("");
-    var list = weekFilter === "all" ? items : items.filter(function (it) { return it.kind === weekFilter; });
-    var body = list.length
-      ? '<ul class="wk-list week-full">' + wkGroupHtml(list) + "</ul>"
-      : '<div class="empty">该类型暂无变化</div>';
-    box.innerHTML = '<div class="card"><h2>本周动态 · 全部（' + items.length + ' 条）</h2>' +
-      '<div class="week-chips">' + chips + '</div>' + body + "</div>";
-  }
+  // 会话档案(sess) 与 本周动态(week) 已剥到 js/views/sess.js 与 js/views/week.js
 
   // ---------- AI 助手（Agnes / 智谱 GLM 双可选，浏览器直连，Key 存本机） ----------
   var AI_PROVIDERS = {
@@ -917,7 +661,7 @@ var WB = window.WB;
   function aiSetProv(p) {
     aiProv = AI_PROVIDERS[p] ? p : "agnes";
     try { localStorage.setItem("wb_ai_prov", aiProv); } catch (e) {}
-    if (__data) renderAI(__data);
+    if (getData()) renderAI(getData());
   }
   function renderAI(d) {
     var box = document.getElementById("col-ai");
@@ -1187,18 +931,18 @@ var WB = window.WB;
     mem.push({ ts: Date.now(), text: t });
     aiMemSave(mem);
     inp.value = "";
-    if (__data) renderAI(__data);
+    if (getData()) renderAI(getData());
     else { var ul = document.getElementById("aiMemList"); if (ul) ul.innerHTML = aiMemHtml(); }
   }
   function aiMemoryDel(ts) {
     var mem = aiMemLoad().filter(function (m) { return m.ts !== ts; });
     aiMemSave(mem);
-    if (__data) renderAI(__data);
+    if (getData()) renderAI(getData());
   }
   function aiMemoryClear() {
     WB.dialog.confirm("清空全部长期记忆？此操作不可恢复，对话不受影响。", function () {
       aiMemSave([]);
-      if (__data) renderAI(__data);
+      if (getData()) renderAI(getData());
     });
   }
   window.aiSaveKey = aiSaveKey; window.aiSend = aiSend; window.aiSetProv = aiSetProv; window.aiAsk = aiAsk; window.aiClear = aiClear; window.aiMemoryAdd = aiMemoryAdd; window.aiMemoryDel = aiMemoryDel; window.aiMemoryClear = aiMemoryClear;
@@ -1219,7 +963,7 @@ var WB = window.WB;
   function renderActiveTab(d) {
     if (!d) return;
     // 用 __view 路由（P0 后 DOM 已无 .tab 按钮，不能再依赖 .tab.active）
-    var id = __view || "cap";
+    var id = getView() || "cap";
     if (id === "cap") renderCap(d);
     else if (id === "ai") renderAI(d);
     else if (id === "models") renderModels();
@@ -1299,7 +1043,7 @@ var WB = window.WB;
   function render(d) {
     try {
       d = normalizeData(d);
-      __data = d;
+      setData(d);
       renderHeaderStrip(d);
       renderActiveTab(d);
       renderTodayReview(d);
@@ -1316,10 +1060,9 @@ var WB = window.WB;
   }
 
   // ---------- 侧边栏多视图切换（首页只留今日，其余模块侧边栏切换） ----------
-  var __view = "home";
   var __inited = false;
   function switchView(v) {
-    __view = v;
+    setView(v);
     document.querySelectorAll(".side-item").forEach(function (b) {
       b.classList.toggle("active", b.getAttribute("data-view") === v);
     });
@@ -1345,7 +1088,7 @@ var WB = window.WB;
     var target = document.getElementById("view-" + v);
     if (target) target.classList.add("active");
     try { localStorage.setItem("wb_tab", v); } catch (e) {}
-    if (__data) renderActiveTab(__data);
+    if (getData()) renderActiveTab(getData());
   }
   window.switchView = switchView;
 
@@ -1398,7 +1141,6 @@ var WB = window.WB;
   // ---------- 启动 ----------
   var __lastGen = "";
   var __lastMod = "";
-  var __data = null;
   // 带超时的 fetch：防止网络挂起导致页面一直"加载中"像冻住
   function fetchT(url, opts, ms) {
     ms = ms || 15000;
@@ -1429,7 +1171,7 @@ var WB = window.WB;
           .then(function (rr) { return rr.json(); })
           .then(function (d) {
             d = normalizeData(d);
-            __data = d;
+            setData(d);
             renderHeaderStrip(d);
             renderActiveTab(d);
             __lastGen = d.generatedAt || "";
@@ -1698,7 +1440,7 @@ var WB = window.WB;
   // ---------- 一键导出（速记/待办/收藏/入口 → Markdown） ----------
   // ---------- 今日概览（KPI + 头条 + 引导 → 一键发给 AI 助手） ----------
   function copyToday() {
-    var d = __data;
+    var d = getData();
     if (!d) { aiAsk("今日数据还没加载完，请稍等几秒再点。"); return; }
     var lines = [];
     var k = d.kpi || {};
