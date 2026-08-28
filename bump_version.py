@@ -31,6 +31,8 @@ ASSETS = [
     "js/views/ov.js",
     "js/views/sess.js",
     "js/views/week.js",
+    "js/views/info.js",
+    "js/features/favs.js",
 ]
 
 
