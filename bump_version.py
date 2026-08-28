@@ -25,6 +25,7 @@ ASSETS = [
     "model-manager.js",
     "kb.js",
     "vendor/marked.min.js",
+    "js/core/util.js",
 ]
 
 
