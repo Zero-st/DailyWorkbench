@@ -4,18 +4,22 @@ on:
   push:
     paths:
       - '.github/workflows/build-apk.yml'
-      - 'app/**'
-      - 'gradle/**'
-      - 'build.gradle'
-      - 'settings.gradle'
-      - 'gradle.properties'
-      - 'twa-manifest.json'
+      - 'twa/app/**'
+      - 'twa/gradle/**'
+      - 'twa/build.gradle'
+      - 'twa/settings.gradle'
+      - 'twa/gradle.properties'
+      - 'twa/twa-manifest.json'
 
 jobs:
   build-apk:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # TWA 构建已归入 twa/；run 步骤默认在此目录执行（checkout/upload 等 uses: 步骤仍以仓库根为基准）
+    defaults:
+      run:
+        working-directory: twa
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -59,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: workbench-apk
-          path: workbench-signed.apk
+          path: twa/workbench-signed.apk
           retention-days: 30
 
       - name: Create GitHub Release
@@ -68,5 +72,5 @@ jobs:
         with:
           tag_name: apk-${{ github.run_number }}
           name: 工作台 APK v${{ github.run_number }}
-          files: workbench-signed.apk
+          files: twa/workbench-signed.apk
           generate_release_notes: false
