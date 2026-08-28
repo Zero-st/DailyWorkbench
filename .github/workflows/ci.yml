@@ -9,7 +9,7 @@ on:
 
 jobs:
   python:
-    name: Python: Lint & Test
+    name: "Python: Lint & Test"
     runs-on: ubuntu-latest
     strategy:
       matrix:
