@@ -21,6 +21,25 @@
 
 ---
 
+## [0.7.0] · 2026-08-31 — 信息架构重构（13 视图 → 9）
+
+**思路**：落地 v0.6.0 的 [`docs/产品-IA评审.md`](docs/产品-IA评审.md) 提案——诊断出「信息架构过度碎片化 + 模块重叠 + 分组错配」，按**知识飞轮顺序**把侧边栏从 13 项收敛到 9 项（7 飞轮一等公民 + 2 设置），去重、去离题。原则：改动小 × 可逆 × 收益大先做（Nielsen 极简 / Krug 别让我思考 / DRY）。
+
+### Changed
+- **侧边栏重排为飞轮顺序**：今日 / 飞轮（资讯·知识库·蒸馏库·AI助手）/ 工具（能力速达·动态）/ 设置（模型管理·系统状态）。资讯从「能力」re-home 到「飞轮」输入端；模型管理 + 系统状态降级到「设置」。
+- **今日 = 捕获+复盘中枢**：吸收原仪表盘的 速记 / 收藏 / 常用入口 / 快捷启动台四个交互件。
+- **会话档案 → 动态**：吸收原「本周动态」为一张「本周变更」卡（含类型筛选）。
+
+### Removed
+- **仪表盘（dash）拆解下线**：交互件并入今日；KPI 指标条 + 今日速览（与系统状态/资讯重复）删除。
+- **Skill 统计（stats）并入 能力速达**：TOP10 使用 + 分类分布移入 cap 侧栏（删 `js/views/stats.js`）。
+- **本周动态（week）并入 动态**（删 `js/views/week.js`）。
+- **系统状态**删「内容与知识生产」卡（与知识库重复）；其动作入口（新建笔记/蒸馏/搜索）改在**知识库**内提供。
+- **课程表从导航下架**（`js/schedule.js` 与云端 `schedule.json` 代码/数据保留，可随时恢复入口）。
+
+### Fixed
+- 历史标签兼容：`localStorage.wb_tab` 为已下线视图（dash/stats/week/schedule）时自动重定向到承接者（home/cap/sess/home），刷新不再落空。
+
 ## [0.6.0] · 2026-08-31 — 产品/IA 评审 + 知识飞轮复用端
 
 **思路**：界面视觉已修（见 v0.5.0），但用户仍觉"产品/模块设计不合理"。经 `/brainstorming` 确认主心骨=**个人知识飞轮**，并诊断"整条飞轮从没跑通"→ 采用**"先跑通一条最窄闭环"**策略（walking skeleton），选中**蒸馏闭环**、先攻**复用端**（存了不用是知识库头号死法）。详见 [`docs/产品-IA评审.md`](docs/产品-IA评审.md)、[`docs/温故复用-设计.md`](docs/温故复用-设计.md)。
@@ -29,6 +48,8 @@
 - **今日「温故」卡**（`js/features/recall.js`）：旧蒸馏经验卡按简化间隔重复(Leitner-lite)每天在「今日」浮现，👍有用/✓已内化/打开三态反馈；复用 `/api/kb/deposits` 与 `distillOpen`，纯前端 + localStorage，零后端零依赖。
 - `docs/产品-IA评审.md`：13 模块过度碎片化诊断（仅 5 个日用）+ 收敛到 ~7 的重构提案（Nielsen/Krug/design-principles）。
 - `docs/需求澄清工具选型.md`：需求澄清工具选型对比（spec-kit/BMAD/brainstorming，真实热度 + 安全评级）。
+- [`docs/工具链-MCP与Skill地图.md`](docs/工具链-MCP与Skill地图.md)：本项目用到的 MCP/Skill × 开发阶段复盘 + 换机复用手册（chrome-devtools MCP、/brainstorming、Spec-Kit、design-principles 等，含证据出处与安装/触发速查）。
+- [`docs/开发阶段-Skill选型账本.md`](docs/开发阶段-Skill选型账本.md)：通用选型账本——软件开发各阶段（选型/全流程/前端/后端/测试）GitHub 优质 Skill/MCP/SDD 框架对比（gh api 实测 star 快照 + Snyk 安全红线 + 决策指引），面向任意项目/设备复用。
 - `CHANGELOG.md` + `docs/版本管理规范.md`：建立版本管理体系。
 
 ### Fixed
