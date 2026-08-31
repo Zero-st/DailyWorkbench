@@ -63,7 +63,7 @@ function _drawFilter() {
   if (!el) return;
   var chips = ['<button class="chip' + (_filter === "" ? " on" : "") + '" onclick="distillFilter(\'\')">全部</button>'];
   PLATFORMS.forEach(function (p) {
-    chips.push('<button class="chip' + (_filter === p.v ? " on" : "") + '" onclick="distillFilter(' + jsStr(p.v) + ')">' + icon(p.ic) + " " + esc(p.label) + "</button>");
+    chips.push('<button class="chip' + (_filter === p.v ? " on" : "") + '" onclick="distillFilter(' + "'" + jsStr(p.v) + "'" + ')">' + icon(p.ic) + " " + esc(p.label) + "</button>");
   });
   el.innerHTML = chips.join("");
 }
@@ -79,7 +79,7 @@ function _drawList() {
     var meta = [_badge(r.platform)];
     if (r.topic) meta.push(esc(r.topic));
     if (r.date) meta.push(esc(r.date));
-    return '<div class="distill-card" onclick="distillOpen(' + jsStr(r.vaultPath || r.relPath || "") + ')">' +
+    return '<div class="distill-card" onclick="distillOpen(' + "'" + jsStr(r.vaultPath || r.relPath || "") + "'" + ')">' +
       '<div class="dc-title">' + esc(r.title || r.fileName || "未命名") + "</div>" +
       '<div class="dc-meta">' + meta.join(" · ") + "</div></div>";
   }).join("");
@@ -117,7 +117,7 @@ function distillNew() {
   var box = document.getElementById("distillReader");
   if (!box) return;
   var platBtns = PLATFORMS.map(function (p) {
-    return '<button class="chip' + (_formPlat === p.v ? " on" : "") + '" onclick="distillPickPlat(' + jsStr(p.v) + ')">' + icon(p.ic) + " " + esc(p.label) + "</button>";
+    return '<button class="chip' + (_formPlat === p.v ? " on" : "") + '" onclick="distillPickPlat(' + "'" + jsStr(p.v) + "'" + ')">' + icon(p.ic) + " " + esc(p.label) + "</button>";
   }).join("");
   box.innerHTML =
     '<div class="distill-form">' +
@@ -144,7 +144,7 @@ function distillPickPlat(v) {
   _formPlat = v;
   var el = document.getElementById("dfPlat");
   if (el) el.innerHTML = PLATFORMS.map(function (p) {
-    return '<button class="chip' + (_formPlat === p.v ? " on" : "") + '" onclick="distillPickPlat(' + jsStr(p.v) + ')">' + p.emoji + " " + esc(p.label) + "</button>";
+    return '<button class="chip' + (_formPlat === p.v ? " on" : "") + '" onclick="distillPickPlat(' + "'" + jsStr(p.v) + "'" + ')">' + p.emoji + " " + esc(p.label) + "</button>";
   }).join("");
 }
 
