@@ -10,3 +10,6 @@ APK/
 debug-*.png
 *-preview.png
 kb-panel-preview.png
+# spec-kit 本地开发工具（第三方，需求澄清用；不随仓走，见 docs/版本管理规范.md）
+.specify/
+.claude/skills/speckit-*/
