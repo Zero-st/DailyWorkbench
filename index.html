@@ -30,28 +30,21 @@
         <button class="side-item active" data-view="home" onclick="switchView('home')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span class="label">今日</span></button>
       </div>
       <div class="side-group">
-        <div class="side-group-title">洞察</div>
-        <button class="side-item" data-view="dash" onclick="switchView('dash')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg></span><span class="label">仪表盘</span></button>
-        <button class="side-item" data-view="week" onclick="switchView('week')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span><span class="label">本周动态</span></button>
-        <button class="side-item" data-view="sess" onclick="switchView('sess')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span><span class="label">会话档案</span></button>
-      </div>
-      <div class="side-group">
-        <div class="side-group-title">能力</div>
-        <button class="side-item" data-view="cap" onclick="switchView('cap')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="label">能力速达</span></button>
+        <div class="side-group-title">飞轮</div>
         <button class="side-item" data-view="info" onclick="switchView('info')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><line x1="18" y1="14" x2="10" y2="14"/><line x1="15" y1="18" x2="10" y2="18"/><rect x="10" y="6" width="8" height="4" rx="1"/></svg></span><span class="label">资讯</span></button>
-        <button class="side-item" data-view="ai" onclick="switchView('ai')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></span><span class="label">AI 助手</span></button>
-        <button class="side-item" data-view="models" onclick="switchView('models')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span><span class="label">模型管理</span></button>
-      </div>
-      <div class="side-group">
-        <div class="side-group-title">知识</div>
         <button class="side-item" data-view="kb" onclick="switchView('kb')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="label">知识库</span></button>
         <button class="side-item" data-view="distill" onclick="switchView('distill')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.31l-5.7 9.32A1 1 0 0 0 5.16 20h13.68a1 1 0 0 0 .86-1.37L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg></span><span class="label">蒸馏库</span></button>
+        <button class="side-item" data-view="ai" onclick="switchView('ai')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></span><span class="label">AI 助手</span></button>
       </div>
       <div class="side-group">
-        <div class="side-group-title">系统</div>
+        <div class="side-group-title">工具</div>
+        <button class="side-item" data-view="cap" onclick="switchView('cap')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span><span class="label">能力速达</span></button>
+        <button class="side-item" data-view="sess" onclick="switchView('sess')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span><span class="label">动态</span></button>
+      </div>
+      <div class="side-group">
+        <div class="side-group-title">设置</div>
+        <button class="side-item" data-view="models" onclick="switchView('models')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span><span class="label">模型管理</span></button>
         <button class="side-item" data-view="ov" onclick="switchView('ov')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="label">系统状态</span></button>
-        <button class="side-item" data-view="stats" onclick="switchView('stats')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="label">Skill 统计</span></button>
-        <button class="side-item" data-view="schedule" onclick="switchView('schedule')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="label">课程表</span></button>
       </div>
     </nav>
     <div class="side-foot">
@@ -126,23 +119,11 @@
               <button class="btn-sm" onclick="kbSaveReview()" title="把复盘存进知识库 AI工作台沉淀内容/今日">📥 存知识库</button>
             </div>
           </article>
-        </div>
-      </section>
-
-      <!-- 仪表盘：本机小数据总览（速记 / 概览 / 收藏 / 入口 / 本周动态） -->
-      <section class="view" id="view-dash">
-        <section class="kpis" id="kpis"></section>
-        <div class="searchbar">
-          <span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-          <input id="q" placeholder="搜 skill 名称 / 描述，快速定位…" oninput="filt()">
-        </div>
-        <section class="quickbar">
-          <div class="qb-title"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 快捷启动台</div>
-          <div class="qb-grid" id="quickbar"></div>
-        </section>
-        <section class="overview" id="overview"></section>
-        <div class="bento">
-          <section class="card notes-card">
+          <article class="card">
+            <h2><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> 快捷启动台</h2>
+            <div class="qb-grid" id="quickbar"></div>
+          </article>
+          <article class="card notes-card">
             <h2><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></span>我的速记 · 仅存本机</h2>
             <textarea id="noteInput" rows="2" placeholder="记一笔待办 / 想法，回车或点“添加”（只存在你浏览器，不上传）"></textarea>
             <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
@@ -150,29 +131,23 @@
               <span id="notesHint" class="empty"></span>
             </div>
             <ul class="notes" id="notesList"></ul>
-          </section>
-          <section class="card ov-card">
-            <h2><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>今日概览 · 本机小数据</h2>
-            <div class="ov-res" id="ovStats"></div>
-            <button class="mini-btn" onclick="inspireToday()">生成今日建议</button>
-          </section>
-          <section class="card fav-card">
+          </article>
+          <article class="card fav-card">
             <h2><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>我的收藏 · 稍后读</h2>
             <ul class="fav-list" id="favList"></ul>
             <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
               <button class="btn-sm" onclick="clearFavs()">清空收藏</button>
               <span id="favsHint" class="empty"></span>
             </div>
-          </section>
-          <section class="card links-card">
+          </article>
+          <article class="card links-card">
             <h2><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>常用入口</h2>
             <div class="links-grid" id="linksGrid"></div>
             <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
               <button class="btn-sm" onclick="addLink()">➕ 加一个</button>
               <span id="linksHint" class="empty"></span>
             </div>
-          </section>
-
+          </article>
         </div>
       </section>
 
@@ -191,15 +166,10 @@
       <section class="view" id="view-ov">
         <div class="wrap"><div class="col" id="col-ov"></div></div>
       </section>
-      <section class="view" id="view-stats">
-        <div class="wrap"><div class="col" id="col-stats"></div></div>
-      </section>
       <section class="view" id="view-sess">
         <div class="wrap"><div class="col" id="col-sess"></div></div>
       </section>
-      <section class="view" id="view-week">
-        <div class="wrap"><div class="col" id="col-week"></div></div>
-      </section>
+      <!-- 课程表已从侧边栏下架（代码/云备份保留，可随时恢复入口）；section 保留供 renderSchedule 写入 -->
       <section class="view" id="view-schedule">
         <div class="wrap"><div class="col" id="col-schedule"></div></div>
       </section>
@@ -240,7 +210,7 @@
 <script src="js/schedule.js?v=4c01aab2"></script>
 <script src="js/model-manager.js?v=af4fbd61"></script>
 <script src="vendor/marked.min.js?v=b7319d77"></script>
-<script src="js/kb.js?v=8a54fc0c"></script>
-<script type="module" src="js/app.js?v=bc3aa41a"></script>
+<script src="js/kb.js?v=df8f7c46"></script>
+<script type="module" src="js/app.js?v=d7b4977f"></script>
 </body>
 </html>

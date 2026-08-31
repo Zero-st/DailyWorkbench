@@ -52,11 +52,7 @@ export function renderOv(d) {
     var freq = cronZh(a.cron);
     return '<div class="auto">' + badge + "<b>" + esc(a.name) + '</b><span class="meta">' + (freq ? esc(freq) + " · " : "") + "下次 " + esc(a.next || "-") + "</span></div>";
   }).join("") || '<div class="empty">暂无自动化任务</div>';
-  var kb = d.knowledge || { total: 0, types: {}, files: [] };
-  var kbTypes = Object.keys(kb.types || {}).map(function (t) { return t + " " + kb.types[t]; }).join(" · ");
-  var kbHtml = (kb.files || []).map(function (f) {
-    return '<div class="auto"><b>' + esc(f.name) + '</b><span class="meta">' + esc(f.mtime) + "</span></div>";
-  }).join("");
+  // 「内容与知识生产」卡已随 IA 重构并入「知识库」视图（避免与 kb 重复）
 
   document.getElementById("col-ov").innerHTML =
     '<div class="card" id="card-ov"><h2><span class="ic">' + ic("activity") + '</span>个人状态看板</h2>' +
@@ -82,15 +78,5 @@ export function renderOv(d) {
       '<div class="ov-metric"><span class="rk">活跃中</span><span class="rv">' + (st.automations || []).filter(function (a) { return a.status === "ACTIVE" || a.status === "active"; }).length + '</span><span class="rn">ACTIVE 状态</span></div>' +
       "</div>" +
       '<div class="ov-auto-panel">' + autoHtml + "</div>" +
-      '<div style="margin-top:10px"><button class="btn" onclick="cmdtext(' + "'新建定时任务：频率（如每周一10点）+ 工作区 + 任务描述'" + ')">➕ 新建定时任务</button></div></div>' +
-    '<div class="card" id="card-kb"><h2><span class="ic">' + ic("book") + '</span>内容与知识生产</h2>' +
-      '<div class="ov-res" style="grid-template-columns:repeat(2,1fr)">' +
-      '<div class="ov-metric"><span class="rk">知识库文件</span><span class="rv">' + kb.files.length + '</span><span class="rn">篇笔记 / 资料</span></div>' +
-      '<div class="ov-metric"><span class="rk">知识库类型</span><span class="rv" style="font-size:14px">' + Object.keys(kb.types || {}).length + '</span><span class="rn">' + esc(kbTypes || "未分类") + "</span></div>" +
-      "</div>" +
-      (kb.files.length ? '<div class="ov-kb" style="margin-top:8px">' + kbHtml + "</div>" : '<div class="empty" style="margin-top:8px">暂无知识库文件，点下方新建</div>') +
-      '<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">' +
-      '<button class="btn" onclick="cmdtext(' + "'在 knowledge-base/ 新建一篇笔记，主题：'" + ')">➕ 新建笔记</button>' +
-      '<button class="btn" onclick="cmdtext(' + "'用 video-cangjie-distill 把以下视频转成 skill：'" + ')">蒸馏视频</button>' +
-      '<button class="btn-sm" onclick="cmdtext(' + "'在 knowledge-base/ 搜索：'" + ')">🔍 搜知识库</button></div></div>';
+      '<div style="margin-top:10px"><button class="btn" onclick="cmdtext(' + "'新建定时任务：频率（如每周一10点）+ 工作区 + 任务描述'" + ')">➕ 新建定时任务</button></div></div>';
 }

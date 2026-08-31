@@ -181,6 +181,11 @@
       '<div class="kb-layout">' +
         '<div class="kb-side">' +
           '<div class="kb-search"><input id="kbQ" class="sf" placeholder="检索（回车全文；tag:xx / title:xx）" onkeydown="if(event.key===\'Enter\')kbSearch(this.value)"><span class="kb-cnt" id="kbCnt"></span></div>' +
+          '<div class="kb-acts" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">' +
+            '<button class="btn-sm" onclick="cmdtext(\'在 knowledge-base/ 新建一篇笔记，主题：\')">➕ 新建笔记</button>' +
+            '<button class="btn-sm" onclick="switchView(\'distill\')">蒸馏经验卡</button>' +
+            '<button class="btn-sm" onclick="var q=document.getElementById(\'kbQ\');if(q){q.focus();q.select();}">🔍 搜索</button>' +
+          '</div>' +
           '<div class="kb-tree" id="kbTree"><div class="empty">加载中…</div></div>' +
         '</div>' +
         '<div class="kb-main"><div class="kb-reader" id="kbReader"><div class="empty">选择左侧笔记查看，或在上方检索</div></div></div>' +

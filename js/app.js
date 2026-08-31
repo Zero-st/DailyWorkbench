@@ -3,10 +3,8 @@
 // 本文件暂作主模块，后续按视图逐步剥离到 js/views/*。
 import { esc, jsStr, ic } from "./core/util.js";
 import { getData, setData, getView, setView } from "./core/state.js";
-import { renderStats } from "./views/stats.js";
 import { renderOv } from "./views/ov.js";
 import { renderSessArchive, closeHeat } from "./views/sess.js";
-import { renderWeekAll } from "./views/week.js";
 import { favsLoad, favsSave, renderFavs } from "./features/favs.js";
 import { renderInfo } from "./views/info.js";
 import { renderCap } from "./views/cap.js";
@@ -14,7 +12,7 @@ import { fetchT } from "./core/net.js";
 import { renderAI, aiAsk } from "./views/ai.js";
 import { notesLoad, notesSave, renderNotes } from "./features/notes.js";
 import { todosLoad, todosSave, renderTodos } from "./features/todos.js";
-import { renderKPI, renderQuick, renderOverview, renderOvCard, renderTodayReview } from "./views/dash.js";
+import { renderQuick, renderTodayReview } from "./views/dash.js";
 import { renderDistill } from "./views/distill.js";
 import { renderRecall } from "./features/recall.js";
 
@@ -144,15 +142,15 @@ var WB = window.WB;
   window.pomoToggle = pomoToggle; window.pomoReset = pomoReset; window.pomoSetLen = pomoSetLen;
 
   // ---------- 渲染 ----------
-  // renderKPI/renderQuick/renderOverview/renderOvCard/inspireToday/renderTodayReview 已剥到 js/views/dash.js
-  // renderSkills/renderCap 见 js/views/cap.js
+  // renderQuick(快捷启动) / renderTodayReview(今日复盘) 见 js/views/dash.js
+  // renderSkills/renderCap（含 Skill 统计）见 js/views/cap.js
 
 
   // cronZh + renderOv 已剥到 js/views/ov.js
 
-  // renderStats 已剥到 js/views/stats.js（renderActiveTab 通过 import 调用）
+  // 「Skill 统计」已并入 能力速达（cap.js 的 skillStatsHtml）
 
-  // 会话档案(sess) 与 本周动态(week) 已剥到 js/views/sess.js 与 js/views/week.js
+  // 会话档案 + 「本周变更」（原 week 已并入）见 js/views/sess.js
 
   // AI 助手全套 已剥到 js/views/ai.js
 
@@ -164,10 +162,7 @@ var WB = window.WB;
     document.getElementById("snap").textContent = "快照 · " + (d.generatedAt || "-");
     renderSync(d);
     renderFreshness(d);
-    renderKPI(d);
-    renderOverview(d);
-    renderOvCard(d);
-    renderQuick(d);
+    renderQuick(d); // 快捷启动台（已并入「今日」视图）
   }
   function renderActiveTab(d) {
     if (!d) return;
@@ -178,12 +173,10 @@ var WB = window.WB;
     else if (id === "models") renderModels();
     else if (id === "info") renderInfo(d);
     else if (id === "ov") renderOv(d);
-    else if (id === "stats") renderStats(d);
-    else if (id === "sess") renderSessArchive(d);
-    else if (id === "week") renderWeekAll(d);
+    else if (id === "sess") renderSessArchive(d); // 含「本周变更」（原 week 已并入）
     else if (id === "kb") { if (typeof renderKb === "function") renderKb(); }
     else if (id === "distill") renderDistill();
-    // schedule 是纯 localStorage，启动时已渲染，无需数据
+    // schedule 已从导航下架（代码保留），启动时已渲染；stats 并入 cap、week 并入 sess
   }
   // ---------- 数据规范化（兜底缺字段，避免 data.json 部分缺失/损坏导致白屏） ----------
   function normalizeData(d) {
@@ -238,17 +231,13 @@ var WB = window.WB;
       b.classList.toggle("active", b.getAttribute("data-view") === v);
     });
     var titles = {
-      home: ["今日", "WorkBuddy 本地面板 · 聚焦今日代办与复盘"],
-      dash: ["仪表盘", "本机 Skills / 会话 / 收藏 / 入口总览"],
-      cap: ["能力速达", "本机 Skills 速查与一键启动"],
+      home: ["今日", "WorkBuddy 本地面板 · 捕获 + 复盘中枢（代办 / 速记 / 收藏 / 温故）"],
+      cap: ["能力速达", "本机 Skills 速查与一键启动 · 含使用统计"],
       ai: ["AI 助手", "用大白话回答你的问题"],
       models: ["模型管理", "AI 平台与模型配置"],
       info: ["资讯", "AI 日报与每日新闻"],
       ov: ["系统状态", "本机运行环境与服务健康度"],
-      stats: ["Skill 统计", "Skills 数量与分类分布"],
-      sess: ["会话档案", "本机会话记录与活跃热力图"],
-      week: ["本周动态", "近期变化与里程碑"],
-      schedule: ["课程表", "本地课程表管理"],
+      sess: ["动态", "会话记录 · 本周变更 · 活跃热力图"],
       kb: ["知识库", "Obsidian vault 浏览 / 检索 / 双链 / 沉淀"],
       distill: ["蒸馏库", "up 主经验卡 · 视频/图文蒸馏成可复用结构化卡片"]
     };
@@ -743,6 +732,9 @@ var WB = window.WB;
   var lastTab = "";
   try { lastTab = localStorage.getItem("wb_tab") || ""; } catch (e) {}
   if (lastTab === "news" || lastTab === "dnews") lastTab = "info"; // 资讯 Tab 合并兼容
+  // IA 重构后的历史标签兼容：已下线/合并的视图重定向到承接者
+  var __tabRemap = { dash: "home", stats: "cap", week: "sess", schedule: "home" };
+  if (__tabRemap[lastTab]) lastTab = __tabRemap[lastTab];
   if (lastTab && lastTab !== "cap") switchView(lastTab);
 
   // 后台自动刷新：每 30s 检测数据是否更新，有变化就自动重渲染（覆盖每小时自动同步）
