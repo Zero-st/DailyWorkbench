@@ -17,8 +17,8 @@ from backend.core import config as wb_config
 
 VAULT, DEPOSIT = wb_config.kb()
 # 沉淀模块白名单（与工作台侧边栏一致，去空格）
-MODULES = ["今日", "资讯", "AI助手", "会话档案", "知识库"]
-SOURCES = ["review", "ai-daily", "news", "ai-chat", "session", "note"]
+MODULES = ["今日", "资讯", "AI助手", "会话档案", "知识库", "蒸馏库"]
+SOURCES = ["review", "ai-daily", "news", "ai-chat", "session", "note", "distill"]
 SKIP_DIRS = {".obsidian", ".git", ".claude", ".trash", ".cache", "node_modules"}
 
 _FM_RE = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)$", re.DOTALL)
@@ -188,8 +188,35 @@ def _clean_title(title):
     return t[:60]
 
 
-def save(module, source, title, body):
-    """沉淀写入：三级目录 + 同名冲突 + frontmatter + _index.jsonl。返回 dict。"""
+def _fm_scalar(v):
+    """frontmatter 标量清洗：去换行，防止破坏 YAML 结构。"""
+    return re.sub(r"[\r\n]+", " ", str(v)).strip()
+
+
+def _extra_front(extra):
+    """把经验卡额外元数据（platform/author/url/topic/actionable）渲染成 frontmatter 行。
+    未知/空字段跳过；actionable 支持字符串或列表。返回附加的 YAML 文本（可能为空）。"""
+    if not extra or not isinstance(extra, dict):
+        return ""
+    lines = ""
+    for k in ("platform", "author", "url", "topic"):
+        v = extra.get(k)
+        if v:
+            lines += "%s: %s\n" % (k, _fm_scalar(v))
+    act = extra.get("actionable")
+    if act:
+        if isinstance(act, str):
+            act = [act]
+        items = [_fm_scalar(x) for x in act if _fm_scalar(x)]
+        if items:
+            lines += "actionable: [%s]\n" % ", ".join(items)
+    return lines
+
+
+def save(module, source, title, body, extra=None):
+    """沉淀写入：三级目录 + 同名冲突 + frontmatter + _index.jsonl。返回 dict。
+    extra: 可选元数据 dict（platform/author/url/topic/actionable），非空则并入 frontmatter，
+    并把 platform/topic 记进 _index.jsonl，供「蒸馏库」等视图检索。其它模块不传则行为不变。"""
     if not DEPOSIT:
         return {"ok": False, "error": "未配置 depositRoot"}
     if module not in MODULES:
@@ -220,8 +247,8 @@ def save(module, source, title, body):
         fpath = os.path.join(day_dir, fname)
         n += 1
     rel = os.path.relpath(fpath, DEPOSIT).replace("\\", "/")
-    front = "---\nmodule: %s\ndate: %s\nsource: %s\nsavedAt: %s\ntitle: %s\ntags: [AI工作台, %s]\n---\n\n" % (
-        module, date, source, ts, base, module)
+    front = "---\nmodule: %s\ndate: %s\nsource: %s\nsavedAt: %s\ntitle: %s\ntags: [AI工作台, %s]\n%s---\n\n" % (
+        module, date, source, ts, base, module, _extra_front(extra))
     try:
         with open(fpath, "w", encoding="utf-8") as _f:
             _f.write(front + (body or "") + "\n")
@@ -231,9 +258,50 @@ def save(module, source, title, body):
     # 追加 _index.jsonl
     rec = {"savedAt": ts, "module": module, "date": date, "relPath": rel,
            "fileName": fname, "title": base, "source": source, "bytes": bsz}
+    if extra and isinstance(extra, dict):
+        for k in ("platform", "topic"):
+            if extra.get(k):
+                rec[k] = _fm_scalar(extra[k])
     try:
         with open(os.path.join(DEPOSIT, "_index.jsonl"), "a", encoding="utf-8") as _f:
             _f.write(json.dumps(rec, ensure_ascii=False) + "\n")
     except Exception as e:
         sys.stderr.write("[kb] index append failed: %s\n" % e)
     return {"ok": True, "path": rel, "fileName": fname, "savedAt": ts}
+
+
+def list_deposits(module=None, limit=500):
+    """读 _index.jsonl 返回沉淀记录（新→旧），可按 module 过滤。供「蒸馏库」等视图列卡。
+    行内含 platform/topic 等（若保存时写入）。文件缺失/未配置返回 []。"""
+    out = []
+    if not DEPOSIT:
+        return out
+    p = os.path.join(DEPOSIT, "_index.jsonl")
+    if not os.path.isfile(p):
+        return out
+    try:
+        with open(p, "r", encoding="utf-8") as _f:
+            for line in _f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    rec = json.loads(line)
+                except Exception:
+                    continue
+                if module and rec.get("module") != module:
+                    continue
+                # relPath 是相对 depositRoot 的；/api/kb/note 读取相对 vault，
+                # 故补一个相对 vault 的 vaultPath 供前端开卡（depositRoot 通常是 vault 子目录）。
+                rp = rec.get("relPath")
+                if rp and VAULT and DEPOSIT:
+                    try:
+                        rec["vaultPath"] = os.path.relpath(
+                            os.path.join(DEPOSIT, rp.replace("/", os.sep)), VAULT).replace("\\", "/")
+                    except Exception:
+                        rec["vaultPath"] = rp
+                out.append(rec)
+    except Exception:
+        return out
+    out.reverse()  # 新→旧
+    return out[:limit]

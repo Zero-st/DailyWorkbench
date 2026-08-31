@@ -165,9 +165,11 @@
 
   // ---- 沉淀写入 ----
   function kbSave(opt) {
+    var payload = { module: opt.module, source: opt.source, title: opt.title, body: opt.body };
+    if (opt.extra) payload.extra = opt.extra;  // 经验卡等额外元数据（platform/author/url/topic/actionable）
     return fetch("/api/kb/save", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ module: opt.module, source: opt.source, title: opt.title, body: opt.body })
+      body: JSON.stringify(payload)
     }).then(function (r) { return r.json(); });
   }
 

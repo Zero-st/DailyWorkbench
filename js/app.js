@@ -15,6 +15,7 @@ import { renderAI, aiAsk } from "./views/ai.js";
 import { notesLoad, notesSave, renderNotes } from "./features/notes.js";
 import { todosLoad, todosSave, renderTodos } from "./features/todos.js";
 import { renderKPI, renderQuick, renderOverview, renderOvCard, renderTodayReview } from "./views/dash.js";
+import { renderDistill } from "./views/distill.js";
 
 // WB 命名空间（dialog/esc/ic/jsStr）由 util.js 挂载到 window.WB；本模块内沿用 WB.dialog.*
 var WB = window.WB;
@@ -180,6 +181,7 @@ var WB = window.WB;
     else if (id === "sess") renderSessArchive(d);
     else if (id === "week") renderWeekAll(d);
     else if (id === "kb") { if (typeof renderKb === "function") renderKb(); }
+    else if (id === "distill") renderDistill();
     // schedule 是纯 localStorage，启动时已渲染，无需数据
   }
   // ---------- 数据规范化（兜底缺字段，避免 data.json 部分缺失/损坏导致白屏） ----------
@@ -245,7 +247,8 @@ var WB = window.WB;
       sess: ["会话档案", "本机会话记录与活跃热力图"],
       week: ["本周动态", "近期变化与里程碑"],
       schedule: ["课程表", "本地课程表管理"],
-      kb: ["知识库", "Obsidian vault 浏览 / 检索 / 双链 / 沉淀"]
+      kb: ["知识库", "Obsidian vault 浏览 / 检索 / 双链 / 沉淀"],
+      distill: ["蒸馏库", "up 主经验卡 · 视频/图文蒸馏成可复用结构化卡片"]
     };
     var t = titles[v] || ["", ""];
     var h = document.getElementById("viewTitle"); if (h) h.textContent = t[0];

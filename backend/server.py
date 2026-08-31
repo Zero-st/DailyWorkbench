@@ -103,6 +103,7 @@ class Handler(SimpleHTTPRequestHandler):
         "/api/kb/tree": "_get_kb_tree",
         "/api/kb/note": "_get_kb_note",
         "/api/kb/search": "_get_kb_search",
+        "/api/kb/deposits": "_get_kb_deposits",
     }
     POST_ROUTES = {
         "/api/chat": "_post_chat",
@@ -196,6 +197,14 @@ class Handler(SimpleHTTPRequestHandler):
         res = kb.search(q, stype) if q else []
         self._json(200, {"configured": True, "results": res, "q": q, "type": stype})
 
+    def _get_kb_deposits(self):
+        if not kb.DEPOSIT:
+            self._json(200, {"configured": False, "deposits": []})
+            return
+        qs = parse_qs(self.path.split("?", 1)[1]) if "?" in self.path else {}
+        module = (qs.get("module", [""])[0] or "").strip() or None
+        self._json(200, {"configured": True, "deposits": kb.list_deposits(module)})
+
     # ---------- POST 端点 ----------
     def _post_chat(self):
         try:
@@ -230,7 +239,8 @@ class Handler(SimpleHTTPRequestHandler):
         try:
             payload = self._body()
             res = kb.save(payload.get("module", ""), payload.get("source", "note"),
-                          payload.get("title", ""), payload.get("body", ""))
+                          payload.get("title", ""), payload.get("body", ""),
+                          payload.get("extra"))
             self._json(200 if res.get("ok") else 400, res)
         except Exception as e:
             sys.stderr.write("[kb-save] %s\n" % e)
