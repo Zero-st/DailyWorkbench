@@ -16,6 +16,7 @@ import { notesLoad, notesSave, renderNotes } from "./features/notes.js";
 import { todosLoad, todosSave, renderTodos } from "./features/todos.js";
 import { renderKPI, renderQuick, renderOverview, renderOvCard, renderTodayReview } from "./views/dash.js";
 import { renderDistill } from "./views/distill.js";
+import { renderRecall } from "./features/recall.js";
 
 // WB 命名空间（dialog/esc/ic/jsStr）由 util.js 挂载到 window.WB；本模块内沿用 WB.dialog.*
 var WB = window.WB;
@@ -216,6 +217,7 @@ var WB = window.WB;
       renderHeaderStrip(d);
       renderActiveTab(d);
       renderTodayReview(d);
+      renderRecall();
       if (!__inited) { __inited = true; switchView("home"); }
     } catch (err) {
       console.error("render 出错", err);

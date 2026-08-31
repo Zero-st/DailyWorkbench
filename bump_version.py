@@ -38,6 +38,7 @@ ASSETS = [
     "js/views/ai.js",
     "js/views/dash.js",
     "js/views/distill.js",
+    "js/features/recall.js",
     "js/features/favs.js",
     "js/features/notes.js",
     "js/features/todos.js",

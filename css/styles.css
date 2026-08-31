@@ -1155,6 +1155,16 @@ a.dc-chip:hover{background:var(--tint-2)}
 .df-actions{display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap}
 .df-actions .empty{margin-right:auto}
 
+/* ===== 今日「温故」卡 recall（蒸馏复用抓手；复用 card/distill-card 风格） ===== */
+.recall-card-wrap{margin-bottom:var(--space-xs)}
+.recall-list{display:flex;flex-direction:column;gap:8px}
+.recall-card{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:10px 12px;transition:border-color .15s,box-shadow .15s}
+.recall-card:hover{border-color:var(--accent);box-shadow:var(--shadow-sm)}
+.rc-body{flex:1;min-width:180px;cursor:pointer}
+.rc-title{font-weight:600;color:var(--ink-strong);font-size:14px}
+.rc-meta{font-size:12px;color:var(--sub-2);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rc-acts{display:flex;gap:6px;flex-wrap:wrap}
+
 @media(max-width:880px){
   .kb-layout{grid-template-columns:1fr}
   .kb-side{max-height:40vh}
