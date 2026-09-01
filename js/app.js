@@ -167,7 +167,7 @@ var WB = window.WB;
   function renderActiveTab(d) {
     if (!d) return;
     // 用 __view 路由（P0 后 DOM 已无 .tab 按钮，不能再依赖 .tab.active）
-    var id = getView() || "cap";
+    var id = getView() || "home";
     if (id === "cap") renderCap(d);
     else if (id === "ai") renderAI(d);
     else if (id === "models") renderModels();
@@ -733,9 +733,10 @@ var WB = window.WB;
   try { lastTab = localStorage.getItem("wb_tab") || ""; } catch (e) {}
   if (lastTab === "news" || lastTab === "dnews") lastTab = "info"; // 资讯 Tab 合并兼容
   // IA 重构后的历史标签兼容：已下线/合并的视图重定向到承接者
-  var __tabRemap = { dash: "home", stats: "cap", week: "sess", schedule: "home" };
+  // MVP：遥测三件套 cap/sess/ov 从导航下架 → 统一回落到今日（代码保留，加回按钮即恢复）
+  var __tabRemap = { dash: "home", stats: "home", week: "home", schedule: "home", cap: "home", sess: "home", ov: "home" };
   if (__tabRemap[lastTab]) lastTab = __tabRemap[lastTab];
-  if (lastTab && lastTab !== "cap") switchView(lastTab);
+  if (lastTab && lastTab !== "home") switchView(lastTab);
 
   // 后台自动刷新：每 30s 检测数据是否更新，有变化就自动重渲染（覆盖每小时自动同步）
   // 页面不可见（切后台标签页）时暂停轮询省流量/电量，回到前台立即补查一次
