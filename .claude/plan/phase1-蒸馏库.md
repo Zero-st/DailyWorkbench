@@ -1,6 +1,6 @@
 # Phase 1 实施计划 · up 主经验蒸馏库
 
-> 关联：`docs/知识飞轮-路线图.md`（Phase 1）、`docs/知识库沉淀存储方案.md`（沉淀写入规范）。
+> 关联：`docs/planning/知识飞轮-路线图.md`（Phase 1）、`docs/design/知识库沉淀存储方案.md`（沉淀写入规范）。
 > 范围：**纯本地 · 零云**。复用现有 `kbSave` 沉淀底座，新增「蒸馏库」模块与视图。
 > 不碰：Supabase / 云 / 手机端（留 Phase 3-4）。
 
@@ -11,7 +11,7 @@
 ## 数据层
 
 ### 1. 登记新沉淀模块（改规范文档）
-- `docs/知识库沉淀存储方案.md` §3.1 模块表新增一行：`蒸馏库 | 蒸馏库 | up主经验卡（视频/图文蒸馏）`；§5 `source` 枚举加 `distill`。
+- `docs/design/知识库沉淀存储方案.md` §3.1 模块表新增一行：`蒸馏库 | 蒸馏库 | up主经验卡（视频/图文蒸馏）`；§5 `source` 枚举加 `distill`。
 
 ### 2. 后端放开白名单（`backend/clients/kb.py`）
 - `MODULES` 白名单加 `"蒸馏库"`（第 ~20 行）。
@@ -88,6 +88,6 @@ actionable: [<可复用动作1>, <动作2>]
 
 ## 代价与边界（诚实）
 - 纯本地、双向门，坏了随时改回。
-- **依赖 Obsidian 库存在**（`kb.local.json`/`workbench.local.json` 的 `depositRoot` 已配）——未配则蒸馏库只读不了/存不进，需先按 `docs/知识库沉淀存储方案.md` §2 配好落点。
+- **依赖 Obsidian 库存在**（`kb.local.json`/`workbench.local.json` 的 `depositRoot` 已配）——未配则蒸馏库只读不了/存不进，需先按 `docs/design/知识库沉淀存储方案.md` §2 配好落点。
 - skill 蒸馏仍是"人在环中"（复制指令→跑→粘回），非全自动——符合当前"零依赖、不接外部自动化"的取舍；未来若要一键直出，再单独评估。
-- 完成后回来更新 `docs/知识飞轮-路线图.md` §6 变更记录（Phase 1 done）。
+- 完成后回来更新 `docs/planning/知识飞轮-路线图.md` §6 变更记录（Phase 1 done）。

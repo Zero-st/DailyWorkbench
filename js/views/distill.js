@@ -42,7 +42,7 @@ export function renderDistill() {
   fetch("/api/kb/deposits?module=" + encodeURIComponent("蒸馏库"))
     .then(function (r) { return r.json(); })
     .then(function (d) {
-      if (!d.configured) { _listEmpty("未配置 depositRoot（见 docs/知识库沉淀存储方案.md）"); return; }
+      if (!d.configured) { _listEmpty("未配置 depositRoot（见 docs/design/知识库沉淀存储方案.md）"); return; }
       _deposits = d.deposits || [];
       _drawList();
     })

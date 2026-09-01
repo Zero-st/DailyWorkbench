@@ -1,7 +1,7 @@
 # 复盘 · MVP 闭环首跑（蒸馏库落下第一张真实经验卡）
 
 > 日期：2026-09-01　性质：活文档（里程碑复盘）
-> 关联：`docs/知识飞轮-路线图.md` v1.5、`CHANGELOG.md` [Unreleased]、`.claude/plan/phase1-蒸馏库.md`
+> 关联：`docs/planning/知识飞轮-路线图.md` v1.5、`CHANGELOG.md` [Unreleased]、`.claude/plan/phase1-蒸馏库.md`
 > 一句话：知识飞轮最窄闭环「**捕获 → 蒸馏 → 入库 → 复用**」首次用**真实内容**转通一圈，蒸馏库 **0 → 1**。
 
 ---

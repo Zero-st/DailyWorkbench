@@ -21,7 +21,7 @@
   - **Flutter 原生**（`mobile/`，`lite_workbench` 1.3.2+11）：**照着工作台重新写的原生安卓 App**，非网页壳。本机 `scripts/build-apk.bat` 跑 `flutter build apk --release --target-platform android-arm64`→`APK/app-release.apk`。
 - **lite/**：**独立、纯静态**轻量版（自带 index/app/sw/manifest/icons），不依赖任何本机服务，直接从公开 API 取数据；单独静态托管即可。
 - **改前端必做**：`python bump_version.py`（内容 hash 自动同步 `index.html`/`sw.js` 的 `?v=` 与 CACHE），`--check` 是 CI 硬门禁。
-- **文档索引**：`docs/TECH_CHARTER.md`、`docs/adr/0001-0004`、`docs/模型管理模块操作指南.md`、`docs/知识库沉淀存储方案.md`、`docs/Supabase上线操作指南.md`、`docs/supabase_schema.sql`。
+- **文档索引**：`docs/TECH_CHARTER.md`、`docs/adr/0001-0004`、`docs/guides/模型管理模块操作指南.md`、`docs/design/知识库沉淀存储方案.md`、`docs/guides/Supabase上线操作指南.md`、`docs/reference/supabase_schema.sql`。
 
 ## 目标 README 结构（章节大纲）
 

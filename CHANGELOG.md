@@ -5,7 +5,7 @@
 - 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)；
 - 版本号遵循 [语义化版本 SemVer](https://semver.org/lang/zh-CN/)；
 - 提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/)。
-- **本文件只记「做了什么」（简）**；「为什么这么做、代价与取舍」（详）见对应 `docs/` 设计文档与 `docs/adr/`；方向见 `docs/知识飞轮-路线图.md`。规则见 [`docs/版本管理规范.md`](docs/版本管理规范.md)。
+- **本文件只记「做了什么」（简）**；「为什么这么做、代价与取舍」（详）见对应 `docs/` 设计文档与 `docs/adr/`；方向见 `docs/planning/知识飞轮-路线图.md`。规则见 [`docs/版本管理规范.md`](docs/版本管理规范.md)。
 
 版本语义（本项目，无对外 API）：**MAJOR**=北极星/架构级变化或破坏用户数据·URL｜**MINOR**=新模块/新能力｜**PATCH**=修 bug/小优化。`0.x` 表示仍在演进、未冻结。
 
@@ -13,7 +13,7 @@
 
 ## [Unreleased] · 下个版本目标
 
-> 详见 [`docs/知识飞轮-路线图.md`](docs/知识飞轮-路线图.md)。当前方向：**先把"蒸馏闭环"彻底跑顺**，再拓宽飞轮。
+> 详见 [`docs/planning/知识飞轮-路线图.md`](docs/planning/知识飞轮-路线图.md)。当前方向：**先把"蒸馏闭环"彻底跑顺**，再拓宽飞轮。
 
 - **补完蒸馏闭环剩余摩擦**（候选）：捕获侧"从链接到卡尽量一步"（后端直跑蒸馏）；复用端"相关时浮现"（按 topic/tag 匹配，非仅时间驱动）。
 - **Phase 2 · 灵感留存 + 备份**（候选）：随手记灵感 → Obsidian `灵感/日期/`；Obsidian 库纳入 git 自动备份（复用 self-hosted runner）。
@@ -23,7 +23,7 @@
 
 ## [0.8.0] · 2026-09-01 — MVP 聚焦（9 视图 → 6）
 
-**思路**：为跑通 **MVP**，把侧边栏收敛到「知识飞轮最窄闭环」这一条主线——只留飞轮五件（今日/资讯/知识库/蒸馏库/AI助手）+ 设置·模型管理。所有"看机器在干嘛"的**遥测类**视图（系统状态/动态/能力速达）对 MVP 是噪音，下架。延续 [`docs/产品-IA评审.md`](docs/产品-IA评审.md) 诊断（遥测四件套重叠）。这是**双向门**（design-principles 卡 5），故只下架、保留全部代码/数据，随时可恢复。
+**思路**：为跑通 **MVP**，把侧边栏收敛到「知识飞轮最窄闭环」这一条主线——只留飞轮五件（今日/资讯/知识库/蒸馏库/AI助手）+ 设置·模型管理。所有"看机器在干嘛"的**遥测类**视图（系统状态/动态/能力速达）对 MVP 是噪音，下架。延续 [`docs/design/产品-IA评审.md`](docs/design/产品-IA评审.md) 诊断（遥测四件套重叠）。这是**双向门**（design-principles 卡 5），故只下架、保留全部代码/数据，随时可恢复。
 
 ### Removed
 - **系统状态 `ov`、动态 `sess`、能力速达 `cap` 从导航下架**：三者均属"看机器"遥测/工具，不推动知识在飞轮里流动。**js 文件、`#view-*` section、数据全部保留**（恢复只需在 `side-nav` 加回按钮）。
@@ -35,7 +35,7 @@
 
 ## [0.7.0] · 2026-08-31 — 信息架构重构（13 视图 → 9）
 
-**思路**：落地 v0.6.0 的 [`docs/产品-IA评审.md`](docs/产品-IA评审.md) 提案——诊断出「信息架构过度碎片化 + 模块重叠 + 分组错配」，按**知识飞轮顺序**把侧边栏从 13 项收敛到 9 项（7 飞轮一等公民 + 2 设置），去重、去离题。原则：改动小 × 可逆 × 收益大先做（Nielsen 极简 / Krug 别让我思考 / DRY）。
+**思路**：落地 v0.6.0 的 [`docs/design/产品-IA评审.md`](docs/design/产品-IA评审.md) 提案——诊断出「信息架构过度碎片化 + 模块重叠 + 分组错配」，按**知识飞轮顺序**把侧边栏从 13 项收敛到 9 项（7 飞轮一等公民 + 2 设置），去重、去离题。原则：改动小 × 可逆 × 收益大先做（Nielsen 极简 / Krug 别让我思考 / DRY）。
 
 ### Changed
 - **侧边栏重排为飞轮顺序**：今日 / 飞轮（资讯·知识库·蒸馏库·AI助手）/ 工具（能力速达·动态）/ 设置（模型管理·系统状态）。资讯从「能力」re-home 到「飞轮」输入端；模型管理 + 系统状态降级到「设置」。
@@ -54,14 +54,14 @@
 
 ## [0.6.0] · 2026-08-31 — 产品/IA 评审 + 知识飞轮复用端
 
-**思路**：界面视觉已修（见 v0.5.0），但用户仍觉"产品/模块设计不合理"。经 `/brainstorming` 确认主心骨=**个人知识飞轮**，并诊断"整条飞轮从没跑通"→ 采用**"先跑通一条最窄闭环"**策略（walking skeleton），选中**蒸馏闭环**、先攻**复用端**（存了不用是知识库头号死法）。详见 [`docs/产品-IA评审.md`](docs/产品-IA评审.md)、[`docs/温故复用-设计.md`](docs/温故复用-设计.md)。
+**思路**：界面视觉已修（见 v0.5.0），但用户仍觉"产品/模块设计不合理"。经 `/brainstorming` 确认主心骨=**个人知识飞轮**，并诊断"整条飞轮从没跑通"→ 采用**"先跑通一条最窄闭环"**策略（walking skeleton），选中**蒸馏闭环**、先攻**复用端**（存了不用是知识库头号死法）。详见 [`docs/design/产品-IA评审.md`](docs/design/产品-IA评审.md)、[`docs/design/温故复用-设计.md`](docs/design/温故复用-设计.md)。
 
 ### Added
 - **今日「温故」卡**（`js/features/recall.js`）：旧蒸馏经验卡按简化间隔重复(Leitner-lite)每天在「今日」浮现，👍有用/✓已内化/打开三态反馈；复用 `/api/kb/deposits` 与 `distillOpen`，纯前端 + localStorage，零后端零依赖。
-- `docs/产品-IA评审.md`：13 模块过度碎片化诊断（仅 5 个日用）+ 收敛到 ~7 的重构提案（Nielsen/Krug/design-principles）。
-- `docs/需求澄清工具选型.md`：需求澄清工具选型对比（spec-kit/BMAD/brainstorming，真实热度 + 安全评级）。
-- [`docs/工具链-MCP与Skill地图.md`](docs/工具链-MCP与Skill地图.md)：本项目用到的 MCP/Skill × 开发阶段复盘 + 换机复用手册（chrome-devtools MCP、/brainstorming、Spec-Kit、design-principles 等，含证据出处与安装/触发速查）。
-- [`docs/开发阶段-Skill选型账本.md`](docs/开发阶段-Skill选型账本.md)：通用选型账本——软件开发各阶段（选型/全流程/前端/后端/测试）GitHub 优质 Skill/MCP/SDD 框架对比（gh api 实测 star 快照 + Snyk 安全红线 + 决策指引），面向任意项目/设备复用。
+- `docs/design/产品-IA评审.md`：13 模块过度碎片化诊断（仅 5 个日用）+ 收敛到 ~7 的重构提案（Nielsen/Krug/design-principles）。
+- `docs/research/需求澄清工具选型.md`：需求澄清工具选型对比（spec-kit/BMAD/brainstorming，真实热度 + 安全评级）。
+- [`docs/research/工具链-MCP与Skill地图.md`](docs/research/工具链-MCP与Skill地图.md)：本项目用到的 MCP/Skill × 开发阶段复盘 + 换机复用手册（chrome-devtools MCP、/brainstorming、Spec-Kit、design-principles 等，含证据出处与安装/触发速查）。
+- [`docs/research/开发阶段-Skill选型账本.md`](docs/research/开发阶段-Skill选型账本.md)：通用选型账本——软件开发各阶段（选型/全流程/前端/后端/测试）GitHub 优质 Skill/MCP/SDD 框架对比（gh api 实测 star 快照 + Snyk 安全红线 + 决策指引），面向任意项目/设备复用。
 - `CHANGELOG.md` + `docs/版本管理规范.md`：建立版本管理体系。
 
 ### Fixed
@@ -75,7 +75,7 @@
 
 ### Added
 - **蒸馏库**视图（`js/views/distill.js`）：链接→skill 六维萃取→经验卡→落 Obsidian `蒸馏库/`，可筛选/检索；后端 `kb.save(extra)` + `GET /api/kb/deposits`（第 9 条 API）。(`6fb14d0`)
-- `docs/界面设计准则.md`：codify 设计系统 v7 + 图标红线 + 新视图检查清单。(`d9d8380`)
+- `docs/design/界面设计准则.md`：codify 设计系统 v7 + 图标红线 + 新视图检查清单。(`d9d8380`)
 
 ### Changed
 - 关键图标 emoji→内联 SVG（新增 `js/core/icons.js`；侧边栏 13 项迁移），修复缺 emoji 字体系统上的豆腐块。(`d9d8380`)
@@ -90,7 +90,7 @@
 - README 全面重写为分平台部署手册（大白话比喻）。(`6b180f0`)
 
 ### Added
-- `docs/知识飞轮-路线图.md` + `docs/项目总览-需求与进度.md` + Phase1 计划。(`af8908b`)
+- `docs/planning/知识飞轮-路线图.md` + `docs/planning/项目总览-需求与进度.md` + Phase1 计划。(`af8908b`)
 
 ## [0.3.0] · 2026-08-29 — ES Modules 零构建 + 类型化 + 治理
 

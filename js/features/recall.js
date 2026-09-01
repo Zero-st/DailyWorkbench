@@ -1,6 +1,6 @@
 // 今日「温故」卡：让旧蒸馏经验卡"回来找你"——飞轮复用端的最小切片。
 // 简化间隔重复(Leitner-lite) + localStorage；复用 /api/kb/deposits 列卡、window.distillOpen 开卡。
-// 设计见 docs/温故复用-设计.md。零后端改动、零依赖。
+// 设计见 docs/design/温故复用-设计.md。零后端改动、零依赖。
 import { esc, jsStr } from "../core/util.js";
 import { icon } from "../core/icons.js";
 

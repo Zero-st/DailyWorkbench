@@ -3,7 +3,7 @@
 > 版本：v1.0　制定：2026-08-31
 > 定位：**本项目开发过程中「用了哪些 MCP / Claude Code Skill、各对应软件工程哪个阶段」的复盘账本 + 换机复用手册。**
 > 性质：**reference**。
-> 关联：`需求澄清工具选型.md`、`开发阶段-Skill选型账本.md`（通用·GitHub 优质 skill/MCP 选型）、`知识飞轮-路线图.md`、`项目总览-需求与进度.md`、`界面设计准则.md`、`版本管理规范.md`。
+> 关联：[`需求澄清工具选型.md`](需求澄清工具选型.md)、[`开发阶段-Skill选型账本.md`](开发阶段-Skill选型账本.md)（通用·GitHub 优质 skill/MCP 选型）、[`知识飞轮-路线图.md`](../planning/知识飞轮-路线图.md)、[`项目总览-需求与进度.md`](../planning/项目总览-需求与进度.md)、[`界面设计准则.md`](../design/界面设计准则.md)、[`版本管理规范.md`](../版本管理规范.md)。
 
 ---
 
@@ -80,8 +80,8 @@ MCP 与 Skill 的使用**从来不是靠项目配置文件声明的**——它�
 ### 2.4 `database-designer`（设计/架构·数据建模）※ 推断
 - **是什么**：设计数据库 schema、数据迁移、SQL vs NoSQL 选型、建模关系的 skill。
 - **属阶段**：设计/架构（数据层）。
-- **本项目怎么用**：**推断（弱证据）**——项目有 Supabase 云端配置与 `docs/supabase_schema.sql`、
-  `docs/知识库沉淀存储方案.md`，建模阶段可能用到；但无 commit/plan 直接点名，故标「推断」，换机时按需再定。
+- **本项目怎么用**：**推断（弱证据）**——项目有 Supabase 云端配置与 `docs/reference/supabase_schema.sql`、
+  `docs/design/知识库沉淀存储方案.md`，建模阶段可能用到；但无 commit/plan 直接点名，故标「推断」，换机时按需再定。
 - **换机怎么装+怎么触发**：确认要用再装；触发：要设计表/迁移/选型/建模时。
 - **代价与红线**：同社区 skill 红线（§3）。
 
@@ -146,12 +146,12 @@ MCP 与 Skill 的使用**从来不是靠项目配置文件声明的**——它�
 
 ### 证据出处清单
 - MCP `chrome-devtools`：commit `d9d8380 / 2988dd0 / 53e601a / 4ac2ff9 / 23e0591`；`.claude/plan/温故复用.md`、`.claude/plan/phase1-蒸馏库.md`。
-- `/brainstorming`：`docs/知识飞轮-路线图.md`、`CHANGELOG.md`（v0.6.0）。
-- Spec-Kit：`docs/需求澄清工具选型.md`、`.specify/init-options.json`（speckit_version 1.0.1）、`.gitignore`。
-- `design-principles`：`docs/知识飞轮-路线图.md`、`docs/产品-IA评审.md`。
-- `database-designer`（推断）：`docs/supabase_schema.sql`、`docs/知识库沉淀存储方案.md`。
+- `/brainstorming`：`docs/planning/知识飞轮-路线图.md`、`CHANGELOG.md`（v0.6.0）。
+- Spec-Kit：`docs/research/需求澄清工具选型.md`、`.specify/init-options.json`（speckit_version 1.0.1）、`.gitignore`。
+- `design-principles`：`docs/planning/知识飞轮-路线图.md`、`docs/design/产品-IA评审.md`。
+- `database-designer`（推断）：`docs/reference/supabase_schema.sql`、`docs/design/知识库沉淀存储方案.md`。
 - 蒸馏三件套：`.claude/plan/phase1-蒸馏库.md`、`js/views/ov.js`。
-- 图表（可选）：`docs/产品-IA评审.md`（mermaid 代码块）。
+- 图表（可选）：`docs/design/产品-IA评审.md`（mermaid 代码块）。
 
 ---
 
