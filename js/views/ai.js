@@ -312,7 +312,15 @@ function aiSend() {
     .catch(function (err) {
       var chat = document.getElementById("aiChat");
       if (chat && chat.lastChild) chat.removeChild(chat.lastChild);
-      aiAppend("bot", "⚠️ " + err.message);
+      var m = String((err && err.message) || err);
+      // 「Failed to fetch」= /api/chat 端点不可达（多半是后端没在跑，或从静态服务/Pages 打开）
+      if (/Failed to fetch|NetworkError|load failed/i.test(m)) {
+        m = "后端未连接：AI 聊天要靠本机后端代理转发。请用 `python -m backend.server <端口>` 启动，" +
+            "并从后端那个地址（如 http://127.0.0.1:8899）打开工作台——用静态服务或 GitHub Pages 打开会连不上。";
+      } else if (/aborted|AbortError|tim|超时/i.test(m)) {
+        m = "请求超时：模型很久没返回，可能是网络慢或模型在长时间推理，稍后重试或换个模型。";
+      }
+      aiAppend("bot", "⚠️ " + m);
     })
     .then(function () { aiBusy = false; });
 }
