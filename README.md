@@ -1,8 +1,8 @@
 # 个人工作台（双端 PWA · DailyWorkbench）
 
-一套代码，手机和电脑都能用的个人工作台——把你的 skills、自动化、模型、AI 日报、待办、课程表全摊在一块「随身面板」上。
+一套代码、手机和电脑都能用的**个人知识飞轮操作台**——把「**输入 → 捕获 → 沉淀 → 蒸馏 → 复用**」这条闭环摊在一块「随身面板」上：刷到的内容随手扔进收件箱，蒸馏成可复用的**六维经验卡**沉进 Obsidian，再靠「今日温故」把存过的东西每天推回你眼前。
 
-**打个比方**：它就像你随身带的一本"电子活页夹"。翻开（打开网页）就能看，手机、电脑翻的是同一本；WiFi 断了也照样能翻上次看过的那几页。不用装软件、不用先连服务器、不用等它"编译打包"。
+**打个比方**：它就像你随身带的一本"电子活页夹"——不只是翻着看，更是**帮你把碎片内容炼成自己的知识、还定期拿出来温习**。翻开（打开网页）就能看，手机、电脑翻的是同一本；WiFi 断了也照样能翻上次看过的那几页。不用装软件、不用先连服务器、不用等它"编译打包"。
 
 > 📐 **动手改架构前，先翻 [`docs/TECH_CHARTER.md`](docs/TECH_CHARTER.md)**（技术宪章：北极星原则 + 模块边界 + 工程护栏 + 协作流程）。改了架构请顺手更新它。
 
@@ -10,7 +10,7 @@
 
 ## 一、这是什么 · 为什么这么造
 
-它是一个 **PWA**（Progressive Web App，"能装到手机主屏、当 App 用的网页"）。核心信条一句话：
+它是一个 **PWA**（Progressive Web App，"能装到手机主屏、当 App 用的网页"）。**主心骨＝个人知识飞轮**：让内容从「刷到」一路走到「真的复用到」，而不是存了一堆再也不看（方向见 [`docs/planning/知识飞轮-路线图.md`](docs/planning/知识飞轮-路线图.md)）。工程上的核心信条一句话：
 
 > **零构建 · 零依赖 · 离线可跑**
 
@@ -28,16 +28,21 @@
 
 ## 二、功能一览
 
-- **顶部 KPI 指标条**：Skills / 自动化 / 模型 / 记忆条目，一眼看全家底。
-- **能力速达**：本机能力卡片网格，点一下即复制"调用指令"；按你实际用的频率排序、热门的标 🔥。
-- **AI 日报**：每天 08:30 自动抓当日 AI 资讯（模型 / 产品 / 行业 / 论文 / 技巧分栏），可直接点「让 AI 讲讲」。
-- **今日引导**：每日清单，会自动带上当天日报头条。
-- **状态看板**：自动化、模型、数据更新状态一目了然。
-- **我的速记 / 待办 / 收藏**：随手记，**纯浏览器本地存储，不上传**。
-- **课程表**：支持 Excel 导入（`.xlsx`，第三方库懒加载，用到才下载）。
-- **浅色 / 深色主题**：右上角一键切换，记住你的偏好。
-- **全局搜索**（快捷键 `/` 聚焦）、**会话热力图**（点格子看当天聊了啥，`Esc` 关详情）、**立即刷新**。
-- **响应式**：手机竖屏单列、电脑宽屏双栏；**离线可开**（Service Worker 缓存）；数据异常时显示友好错误卡，不整页白屏。
+侧边栏就是知识飞轮本身——**6 个视图，顺着「输入→捕获→沉淀→蒸馏→复用」排**（对应 v0.8.0 的 MVP 聚焦）：
+
+| 视图 | 在飞轮里的角色 | 干什么 |
+|---|---|---|
+| **今日** | 捕获 + 复盘中枢 | 每日清单（自动带当天日报头条）+ 速记 / 待办 / 收藏（纯浏览器本地、不上传）+ **今日温故卡**：旧蒸馏经验卡按简化间隔重复(Leitner-lite)每天浮现，👍有用 / ✓已内化 / 打开 三态反馈，把"存了不用"变"会回头用"。 |
+| **资讯** | 输入端 | AI 日报，每天约 08:30 自动抓当日 AI 资讯（模型 / 产品 / 行业 / 论文 / 技巧分栏），可点「让 AI 讲讲」。 |
+| **收件箱** | 捕获层 | 刷到的链接 / 灵感**秒存**（自动识别平台，如小红书），一键「→蒸馏」转进蒸馏库；蒸馏完自动回标「已蒸馏」。 |
+| **知识库** | 沉淀 | 读写本地 Obsidian 库（列目录 / 读笔记 / 搜索 / 沉淀），是所有内容的**权威副本**。 |
+| **蒸馏库** | 蒸馏 | 把一条内容炼成**六维经验卡**（核心观点 / 方法步骤 / 适用场景 / 边界反例 / 可复用动作 / 出处），带平台 / 作者 / 主题筛选，落 Obsidian `蒸馏库/`。 |
+| **AI 助手** | 贯穿全程 | 直接对话（经后端中转，绕开浏览器跨域）。 |
+| **模型管理**（设置） | — | 模型配置读写（Supabase 云端多端共享，没配则退回浏览器本地）。 |
+
+**通用体验**：浅色 / 深色主题一键切换并记住偏好 · 全局搜索（快捷键 `/` 聚焦）· 立即同步数据 · **响应式**（手机单列 / 电脑双栏）· **离线可开**（Service Worker 缓存）· 数据异常显示友好错误卡、不整页白屏。
+
+> 🧰 **代码保留、暂未挂导航**（双向门，随时可恢复）：遥测三件套（系统状态 / 动态 / 能力速达）与课程表（Excel 导入）——它们对"看机器在干嘛"有用，但不推动知识在飞轮里流动，为 MVP 聚焦从侧边栏下架，`js` 文件与 `#view-*` section 全部保留。详见 [`docs/design/产品-IA评审.md`](docs/design/产品-IA评审.md)。
 
 ---
 
@@ -248,7 +253,10 @@ DailyWorkbench/
 ├── index.html                     # 唯一 HTML 入口
 ├── sw.js  manifest.json  .nojekyll # Service Worker / PWA 配置 / 禁 Jekyll
 ├── css/styles.css                 # 深色/浅色主题 + 响应式
-├── js/                            # app.js(入口) · kb/schedule/model-manager(经典脚本·window.WB) · core/ views/ features/ types/
+├── js/                            # app.js(入口) · kb/schedule/model-manager(经典脚本·window.WB)
+│   │                              #   core/{net,state,util,icons,platforms} · types/(JSDoc)
+│   │                              #   views/{info,distill,ai,dash/cap/sess/ov(下架保留)}
+│   │                              #   features/{inbox(捕获),recall(温故),notes,todos,favs}
 ├── vendor/                        # marked.min.js · xlsx.full.min.js（第三方：Markdown / 课程表导入·懒加载）
 ├── icons/                         # icon.svg · icon-192/512 · maskable-512
 │  ── 数据 · 配置（前端 fetch 或后端产出，钉在根）──
@@ -268,7 +276,8 @@ DailyWorkbench/
 │   ├── clients/                   # supabase · kb（Obsidian vault）
 │   └── pipeline/                  # export_data · fetch_* · daily_ai · local_refresh · sync · sync_status · push_schedule
 │  ── 文档 · 其它交付形态 · 自动化 ──
-├── docs/                          # TECH_CHARTER · adr/ · 各操作指南 · supabase_schema.sql
+├── docs/                          # README(文档地图) · TECH_CHARTER · 版本管理规范 · adr/
+│   │                              #   guides/ design/ planning/ research/ reference/（按 Diátaxis 改编分类）
 ├── twa/                           # Android TWA 构建（网页套壳：gradle + bubblewrap）
 ├── lite/                          # 轻量版 PWA（独立纯静态分叉，不依赖后端）
 ├── mobile/                        # Flutter 原生移动端（照工作台重写的原生 App）
@@ -282,28 +291,18 @@ DailyWorkbench/
 
 ## 十、文档索引
 
+> 📑 **完整分类与命名规范见 [`docs/README.md`](docs/README.md)（文档地图·单一真源）**——docs 已按 Diátaxis 改编 + ADR 分为 `adr/ guides/ design/ planning/ research/ reference/`。下面只列最常翻的几篇：
+
 - [`docs/TECH_CHARTER.md`](docs/TECH_CHARTER.md) —— 技术宪章：北极星原则 + 模块边界红线 + 工程护栏 + 协作流程（改架构先翻它）。
-- [`docs/adr/`](docs/adr/) —— 架构决策记录（单向门才写）：
-  - `0001-zero-build-north-star.md` · 零构建北极星
-  - `0002-es-modules-no-framework.md` · 选原生 ES Modules、不上框架
-  - `0003-jsdoc-checkjs-not-full-ts.md` · 用 JSDoc+checkJs 而非全量 TS
-  - `0004-classic-scripts-keep-window-bridge.md` · 经典脚本保留 window 桥接
-- [`docs/模型管理模块操作指南.md`](docs/模型管理模块操作指南.md) —— 模型管理模块怎么用。
-- [`docs/知识库沉淀存储方案.md`](docs/知识库沉淀存储方案.md) —— Obsidian 知识库沉淀存储设计。
-- [`docs/Supabase上线操作指南.md`](docs/Supabase上线操作指南.md) —— Supabase 配置上线步骤。
-- [`docs/supabase_schema.sql`](docs/supabase_schema.sql) —— Supabase 建表 DDL（前端永不持有 Supabase 密钥，全走本机 `server.py` 的 service_role key）。
+- [`docs/planning/知识飞轮-路线图.md`](docs/planning/知识飞轮-路线图.md) —— 三层大脑模型 + 四阶段路线图（往哪走）。
+- [`docs/adr/`](docs/adr/) —— 架构决策记录（单向门才写）：0001 零构建北极星 · 0002 原生 ES Modules 不上框架 · 0003 JSDoc+checkJs 而非全量 TS · 0004 经典脚本保留 window 桥接。
+- [`docs/design/知识库沉淀存储方案.md`](docs/design/知识库沉淀存储方案.md) —— Obsidian 沉淀存储设计。
+- [`docs/guides/Supabase上线操作指南.md`](docs/guides/Supabase上线操作指南.md) · [`docs/reference/supabase_schema.sql`](docs/reference/supabase_schema.sql) —— Supabase 配置上线步骤 + 建表 DDL（前端永不持有 Supabase 密钥，全走本机 `server.py` 的 service_role key）。
 
 ---
 
 ## 十一、更新记录
 
-### 2026-08-28 · README 全面重写
-- 补齐**六种平台部署**（纯静态 / 本地后端 / GitHub Pages / 手机 PWA / 安卓 APK 两种 / lite），新增"你是哪种情况→用哪套"对照表。
-- 讲清 **TWA 壳 vs Flutter 原生**两个 APK 的区别；自动更新机制更正为 **GitHub Actions 自助 runner + cron**（旧的本机计划任务叙述已废）。
-- 全篇加大白话比喻；命令全部对齐 `backend/` package 运行方式（`python -m backend.X`）。
+变更记录统一维护在 **[`CHANGELOG.md`](CHANGELOG.md)**（遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) + 语义化版本）；「为什么这么做、代价取舍」见对应 `docs/design/` 设计文档与 `docs/adr/`；方向见 [`docs/planning/知识飞轮-路线图.md`](docs/planning/知识飞轮-路线图.md)。落位与写法规矩见 [`docs/版本管理规范.md`](docs/版本管理规范.md)。
 
-### 2026-08-17 · 网页端 PWA 健壮性 & 交互打磨
-- **防白屏（健壮性）**：新增 `normalizeData()` 兜底 `data.json` 缺字段；`render()` 包 `try/catch`，数据异常显示友好错误卡而非整页空白。
-- **弹窗统一（一致性）**：`aiClear` / `aiMemoryClear` 的原生 `confirm` 与 `aiSend` 无 Key 提示统一改为自定义 `WB.dialog`。
-- **交互增强（体验）**：快捷键 `/` 聚焦搜索、`Esc` 关热力图详情；新增离线提示条（`offline`/`online` 事件）。
-- **版本 bump（部署纪律）**：`index.html` `?v=62→63`、`sw.js` `CACHE workbench-v76→v77`（三处一致，避免用户吃旧缓存）。
+**当前里程碑**：`v0.8.0`（2026-09-01）· **MVP 聚焦**——侧边栏收敛到知识飞轮最窄闭环（6 视图），蒸馏库落下**首张真实经验卡**，「捕获→蒸馏→入库→复用」端到端跑通。
