@@ -80,6 +80,7 @@ docs/
 | [界面设计准则.md](design/界面设计准则.md) | design | 设计系统 v7 索引 + 图标红线 + 新视图检查清单 |
 | [温故复用-设计.md](design/温故复用-设计.md) | design | 「今日温故卡」复用抓手设计（Leitner-lite） |
 | [产品-IA评审.md](design/产品-IA评审.md) | design | 信息架构评审 + 收敛提案 |
+| [工作台走查评审-v0.8.0.md](design/工作台走查评审-v0.8.0.md) | design | chrome-devtools 全链路走查 + 分层优化 backlog |
 | [知识库沉淀存储方案.md](design/知识库沉淀存储方案.md) | design | Obsidian 沉淀写入侧存储规范 |
 | [模型管理模块操作指南.md](guides/模型管理模块操作指南.md) | guides | 模型管理模块操作手册 |
 | [Supabase上线操作指南.md](guides/Supabase上线操作指南.md) | guides | Supabase 接入 / 上线步骤 |
