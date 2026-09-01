@@ -14,6 +14,7 @@ import { notesLoad, notesSave, renderNotes } from "./features/notes.js";
 import { todosLoad, todosSave, renderTodos } from "./features/todos.js";
 import { renderQuick, renderTodayReview } from "./views/dash.js";
 import { renderDistill } from "./views/distill.js";
+import { renderInbox } from "./features/inbox.js";
 import { renderRecall } from "./features/recall.js";
 
 // WB 命名空间（dialog/esc/ic/jsStr）由 util.js 挂载到 window.WB；本模块内沿用 WB.dialog.*
@@ -176,6 +177,7 @@ var WB = window.WB;
     else if (id === "sess") renderSessArchive(d); // 含「本周变更」（原 week 已并入）
     else if (id === "kb") { if (typeof renderKb === "function") renderKb(); }
     else if (id === "distill") renderDistill();
+    else if (id === "inbox") renderInbox();
     // schedule 已从导航下架（代码保留），启动时已渲染；stats 并入 cap、week 并入 sess
   }
   // ---------- 数据规范化（兜底缺字段，避免 data.json 部分缺失/损坏导致白屏） ----------
@@ -231,11 +233,12 @@ var WB = window.WB;
       b.classList.toggle("active", b.getAttribute("data-view") === v);
     });
     var titles = {
-      home: ["今日", "WorkBuddy 本地面板 · 捕获 + 复盘中枢（代办 / 速记 / 收藏 / 温故）"],
+      home: ["今日", "捕获 + 复盘中枢（代办 / 速记 / 收藏 / 温故）"],
       cap: ["能力速达", "本机 Skills 速查与一键启动 · 含使用统计"],
       ai: ["AI 助手", "用大白话回答你的问题"],
       models: ["模型管理", "AI 平台与模型配置"],
       info: ["资讯", "AI 日报与每日新闻"],
+      inbox: ["收件箱", "刷到好帖子/好想法秒存 → 之后一键蒸馏"],
       ov: ["系统状态", "本机运行环境与服务健康度"],
       sess: ["动态", "会话记录 · 本周变更 · 活跃热力图"],
       kb: ["知识库", "Obsidian vault 浏览 / 检索 / 双链 / 沉淀"],
@@ -542,7 +545,6 @@ var WB = window.WB;
     {"label": "哔哩哔哩", "url": "https://www.bilibili.com"},
     {"label": "小宇宙播客", "url": "https://www.xiaoyuzhoufm.com"},
     {"label": "飞书", "url": "https://www.feishu.cn"},
-    {"label": "WorkBuddy 文档", "url": "https://www.workbuddy.cn/docs/"},
     {"label": "AI 日报源", "url": "https://aihot.virxact.com/daily"},
     {"label": "每日新闻源", "url": "https://github.com/vikiboss/60s"}
   ];

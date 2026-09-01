@@ -3,15 +3,8 @@
 // 复用：/api/kb/deposits（列卡）、/api/kb/note（读）、window.kbSave（存）、window.cmdtext（交接指令）。
 import { esc, jsStr } from "../core/util.js";
 import { icon } from "../core/icons.js";
-
-// 平台枚举：value 存 frontmatter，label 展示，ic 是内联 SVG 图标名，skill 决定交接哪把萃取器
-var PLATFORMS = [
-  { v: "bilibili", label: "B站", ic: "tv", skill: "creator-video-decoder", kind: "视频" },
-  { v: "xhs", label: "小红书", ic: "book", skill: "baoyu-url-to-markdown", kind: "图文" },
-  { v: "article", label: "图文/文章", ic: "file", skill: "baoyu-url-to-markdown", kind: "图文" }
-];
-function _plat(v) { for (var i = 0; i < PLATFORMS.length; i++) if (PLATFORMS[i].v === v) return PLATFORMS[i]; return null; }
-function _badge(v) { var p = _plat(v); return p ? icon(p.ic) + " " + esc(p.label) : "· 未标注"; }
+// 平台枚举与收件箱 inbox 共享，避免两处漂移（含 B站/小红书/微博/即刻/文章）
+import { PLATFORMS, platform as _plat, platformBadge as _badge } from "../core/platforms.js";
 
 var _deposits = [];   // /api/kb/deposits 结果（新→旧）
 var _filter = "";     // 平台筛选（""=全部）
@@ -112,7 +105,9 @@ function distillOpen(rel) {
 }
 
 // ---- 新蒸馏表单（渲染在右侧阅读区，避免另加浮层） ----
-function distillNew() {
+// prefill: 可选 {url, platform}——由收件箱「→蒸馏」预填；无参时行为不变（向后兼容内联 onclick）
+function distillNew(prefill) {
+  if (prefill && typeof prefill === "object" && prefill.platform && _plat(prefill.platform)) _formPlat = prefill.platform;
   _formPlat = _formPlat || PLATFORMS[0].v;
   var box = document.getElementById("distillReader");
   if (!box) return;
@@ -138,13 +133,17 @@ function distillNew() {
         '<button class="button sm" onclick="distillSave()">' + icon("download") + ' 保存进蒸馏库</button>' +
       "</div>" +
     "</div>";
+  if (prefill && typeof prefill === "object" && prefill.url) {
+    var u = document.getElementById("dfUrl");
+    if (u) u.value = prefill.url;
+  }
 }
 
 function distillPickPlat(v) {
   _formPlat = v;
   var el = document.getElementById("dfPlat");
   if (el) el.innerHTML = PLATFORMS.map(function (p) {
-    return '<button class="chip' + (_formPlat === p.v ? " on" : "") + '" onclick="distillPickPlat(' + "'" + jsStr(p.v) + "'" + ')">' + p.emoji + " " + esc(p.label) + "</button>";
+    return '<button class="chip' + (_formPlat === p.v ? " on" : "") + '" onclick="distillPickPlat(' + "'" + jsStr(p.v) + "'" + ')">' + icon(p.ic) + " " + esc(p.label) + "</button>";
   }).join("");
 }
 
@@ -169,6 +168,8 @@ function distillSave() {
     extra: { platform: _formPlat, author: author, url: url, topic: topic, actionable: act }
   }).then(function (r) {
     if (r && r.ok) {
+      // 若来源是收件箱「→蒸馏」，回标该条为已蒸馏（薄耦合，inbox.js 注册）
+      if (typeof window.inboxOnDistilled === "function") window.inboxOnDistilled();
       window.WB.dialog.alert("已存入蒸馏库：\n" + (r.path || r.fileName || ""));
       renderDistill();
     } else if (hint) {

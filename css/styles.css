@@ -887,6 +887,22 @@ body.light .side-card{box-shadow:var(--shadow-sm)}
 .grid{display:grid;grid-template-columns:1.05fr 0.7fr 1.05fr;gap:14px;margin-bottom:14px;align-items:start}
 @media(max-width:1024px){.grid{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){.grid{grid-template-columns:1fr}}
+/* ---------- 今日页：核心仪式主次两栏 + 折叠「更多工具」（激进精简） ---------- */
+.grid-ritual{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;align-items:start;margin-bottom:14px}
+.view#view-home .review-card{margin-bottom:14px}
+@media(max-width:760px){.grid-ritual{grid-template-columns:1fr}}
+.more-tools{border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--panel-2);overflow:hidden}
+.more-tools>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:13px 16px;color:var(--sub);font-size:14px;user-select:none;transition:background .15s,color .15s}
+.more-tools>summary::-webkit-details-marker{display:none}
+.more-tools>summary::before{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .2s;flex:none}
+.more-tools[open]>summary::before{transform:rotate(45deg)}
+.more-tools>summary:hover{color:var(--accent);background:var(--tint)}
+.more-tools>summary:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.more-tools .mt-label{font-weight:700;color:var(--ink)}
+.more-tools .mt-hint{color:var(--sub-2);font-weight:500;font-size:12.5px}
+.more-tools[open]>summary{border-bottom:1px solid var(--line)}
+.grid-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:14px}
+@media(max-width:760px){.grid-tools{grid-template-columns:1fr}}
 .module{min-height:142px}
 .pill{border:1px solid var(--line);border-radius:999px;padding:5px 11px;background:var(--panel-2);color:var(--sub);font-size:12px;letter-spacing:.01em;font-weight:600}
 .button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;border-radius:999px;padding:0 16px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#fff;font-weight:700;border:none;cursor:pointer;font-size:13px;font-family:inherit;letter-spacing:.01em;transition:transform .12s,box-shadow .15s;box-shadow:var(--sh-btn)}
@@ -1169,3 +1185,34 @@ a.dc-chip:hover{background:var(--tint-2)}
   .kb-layout{grid-template-columns:1fr}
   .kb-side{max-height:40vh}
 }
+
+/* ===== 捕获收件箱 inbox（飞轮"捕获"环节；复用 card/chip/distill-card 风格） ===== */
+.inbox-wrap{display:flex;flex-direction:column;gap:14px;max-width:820px}
+.inbox-capture{display:flex;flex-direction:column;gap:10px}
+.inbox-capture h2{margin:0 0 2px;display:flex;align-items:center;gap:8px}
+.ib-row{display:flex}
+.ib-row .sf{width:100%}
+.ib-plat{display:flex;align-items:center;gap:8px}
+.ib-plat-lbl{font-size:12px;font-weight:600;color:var(--sub)}
+.ib-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ib-actions .empty{margin-right:auto}
+.ib-list-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ib-filter{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex:1}
+.ib-filter .chip{cursor:pointer;padding:4px 12px;transition:border-color .15s,color .15s,background .15s,transform .12s}
+.ib-filter .chip:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.ib-filter .chip.on:hover{color:#fff}
+.ib-filter-sep{width:1px;height:18px;background:var(--line);margin:0 2px}
+.inbox-list{display:flex;flex-direction:column;gap:8px}
+.ib-card{cursor:default}
+.ib-card:hover{transform:none}
+.ib-card .dc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ib-status{font-size:11px;padding:1px 8px;border-radius:999px;border:1px solid var(--line)}
+.ib-st-todo{color:var(--accent);background:var(--tint);border-color:var(--accent-line-2)}
+.ib-st-done{color:var(--candy-green);background:var(--panel-2)}
+.ib-st-arch{color:var(--sub-2);background:var(--panel-2)}
+.ib-tags{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
+.ib-tag{font-size:11px;color:var(--sub);background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
+.ib-card-acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.ib-card-acts .nd{margin-left:auto;background:transparent;border:none;color:var(--sub);cursor:pointer;font-size:14px;line-height:1;padding:0 4px}
+.ib-card-acts .nd:hover{color:var(--red)}
+.ib-card-acts a.button.sm.ghost{text-decoration:none;display:inline-flex;align-items:center;gap:5px}
