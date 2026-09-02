@@ -3,7 +3,7 @@
 // getAiActiveConfig/kbSave/kbMentionList 等经 window 全局取用（sibling 经典脚本）；
 // switchTab/switchView 亦经 window 桥接。aiAsk/renderAI 既 export（app.js router/首页调用）
 // 又挂 window（内联 onclick）。
-import { esc } from "../core/util.js";
+import { esc, ic } from "../core/util.js";
 import { getData } from "../core/state.js";
 import { fetchT } from "../core/net.js";
 
@@ -73,11 +73,11 @@ function renderAI(d) {
   box.innerHTML = '<div class="card"><h2>AI 助手</h2>' +
     '<div class="ai-set">' +
     '<div class="ai-active-info">' + activeHint + '</div>' +
-    '<button class="btn-sm" onclick="switchView(\'models\')">🧠 模型管理</button>' +
+    '<button class="btn-sm" onclick="switchView(\'models\')">' + ic("cpu") + ' 模型管理</button>' +
     '</div>' +
     '<div class="ai-bar">' +
     '<button class="btn-sm" onclick="aiClear()">清空对话</button>' +
-    (hasKey ? "" : '<span class="ai-guide">⚠️ 还没设置 API Key，请到「模型管理」添加并激活一个模型。</span>') +
+    (hasKey ? "" : '<span class="ai-guide">' + ic("alertTriangle") + ' 还没设置 API Key，请到「模型管理」添加并激活一个模型。</span>') +
     '</div>' +
     '<details class="ai-mem"><summary>长期记忆库（' + mem.length + ' 条）· 点开管理</summary>' +
     '<div class="ai-mem-add"><input id="aiMemInput" class="sf" placeholder="记一笔长期记忆，如：我偏好简洁回答 / 我在学 Flutter…">' +
@@ -91,7 +91,7 @@ function renderAI(d) {
     '<div class="ai-input">' +
     '<textarea id="aiBox" rows="2" placeholder="问 AI 点什么…（Enter 发送，Shift+Enter 换行；输入 @ 可引用知识库笔记）"></textarea>' +
     '<button class="btn" onclick="aiSend()">发送</button>' +
-    '<button class="btn-sm" onclick="kbSaveChat()" title="把当前对话精华存进知识库">📥 存知识库</button></div>' +
+    '<button class="btn-sm" onclick="kbSaveChat()" title="把当前对话精华存进知识库">' + ic("archive") + ' 存知识库</button></div>' +
     "</div>";
   var ta = document.getElementById("aiBox");
   if (ta) ta.addEventListener("keydown", function (e) {
@@ -191,7 +191,7 @@ function __kbMentionScan() {
   var rect = box.getBoundingClientRect();
   p.style.left = rect.left + "px"; p.style.top = (rect.bottom + 2) + "px"; p.style.width = rect.width + "px";
   p.innerHTML = __kbMentionItems.map(function (it, i) {
-    return '<div class="kb-mention-it' + (i === 0 ? " sel" : "") + '" data-i="' + i + '" onclick="__kbMentionPick(' + i + ')">📘 ' + (it.name) + '</div>';
+    return '<div class="kb-mention-it' + (i === 0 ? " sel" : "") + '" data-i="' + i + '" onclick="__kbMentionPick(' + i + ')">' + ic("book") + ' ' + esc(it.name) + '</div>';
   }).join("");
   __kbMentionSel = 0; p.style.display = "block";
 }
@@ -320,7 +320,7 @@ function aiSend() {
       } else if (/aborted|AbortError|tim|超时/i.test(m)) {
         m = "请求超时：模型很久没返回，可能是网络慢或模型在长时间推理，稍后重试或换个模型。";
       }
-      aiAppend("bot", "⚠️ " + m);
+      aiAppend("bot", m);
     })
     .then(function () { aiBusy = false; });
 }

@@ -21,6 +21,20 @@
 
 ---
 
+## [0.9.1] · 2026-09-02 — 表现层修复：emoji→SVG + 深色侧栏 + 主题跟随系统
+
+**思路**：PC-first 收敛后接着消化上一份走查评审的表现层 backlog（见 [`docs/design/工作台走查评审-v0.8.0.md`](docs/design/工作台走查评审-v0.8.0.md) 的 U1/U2/X2）。均为双向门小修，真机走查逐条验证（6 视图零 console error）。
+
+### Fixed
+- **X2 主题「跟随系统」颜色反转**：`_themeLight()` 在 system 模式下把「系统偏好深色」当作「浅色」返回（布尔取反 bug），导致系统偏好浅色时反显深色、从深色切「跟随系统」不生效。`!!` 改 `!`（`js/app.js`）。审计原猜「未清内联 override」为误诊——机制是 `body.light` class 切换，真因是这一处取反。
+- **U2 深色模式侧边栏发白**：`.sidebar` 基础规则硬编码白色渐变（而基础规则=深色基线），深色下侧栏仍白。改用 `var(--panel)→var(--paper)` token 自适应（`css/styles.css`）。
+- 顺带修 `#refreshBtn` 同步后丢 SVG 图标：`old` 用 `textContent` 捕获会剥掉图标 SVG，改 `innerHTML` 捕获/恢复（`js/app.js`）。
+
+### Changed
+- **U1 消灭 emoji 图标豆腐块**（本次最大观感修复）：知识库树（📁×81/📄×252）、模型管理（供应商徽标 + 🧠/➕/👁）、AI 助手（🧠/📥/📘/⚠️）、今日「更多工具」（🎬/💡/🧹）、顶栏时钟 🕐、同步/自检按钮与状态栏（⏳/✅/⚠️/❌/🔍）全部改内联描边 SVG。`js/core/util.js` 的 `ICONS` 新增 folder/film/eye/cpu/alertTriangle/check/clock，经典脚本（kb/model-manager）走已桥接的 `WB.ic`，ES 模块（dash/ai）直接 `import { ic }`。缺 emoji 字体的系统（如本 Linux/Chromium、许多服务器）不再满屏 □。dingbat 类符号（✓✕★☆）各系统基础字体均可渲染，保留不动。
+
+---
+
 ## [0.9.0] · 2026-09-02 — PC-first 收敛：删移动端 + 删下架视图 + 清死代码
 
 **思路**：战略转向「**先把 PC 端做扎实，功能成型后再回头做移动端**」。据此把上一阶段"下架但保留代码"的东西**彻底删除**，减少一人维护的垃圾代码与漂移面。移动端删除是方向级决策，见 [`docs/adr/0005-pc-first-drop-native-mobile.md`](docs/adr/0005-pc-first-drop-native-mobile.md)。

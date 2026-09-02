@@ -41,11 +41,11 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     var v = localStorage.getItem("wb_theme");
     return (v === "light" || v === "dark" || v === "system") ? v : "light";
   }
-  // 算出当前是否浅色：system 模式跟随系统配色偏好
+  // 算出当前是否浅色：system 模式跟随系统配色偏好（系统偏好深色 → 非浅色）
   function _themeLight(mode) {
     if (mode === "light") return true;
     if (mode === "dark") return false;
-    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    return !(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
   }
   function applyTheme() {
     var mode = _themeMode();
@@ -196,7 +196,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
       console.error("render 出错", err);
       var main = document.querySelector(".main");
       if (main && !document.getElementById("__renderErr")) {
-        main.insertAdjacentHTML("afterbegin", '<div class="card" id="__renderErr"><h2>⚠️ 渲染异常</h2><div class="empty">页面渲染遇到问题：' +
+        main.insertAdjacentHTML("afterbegin", '<div class="card" id="__renderErr"><h2>' + ic("alertTriangle") + ' 渲染异常</h2><div class="empty">页面渲染遇到问题：' +
           esc(String((err && err.message) || err)) +
           '。其余内容已尽量保留，可点「立即刷新」重试。</div></div>');
       }
@@ -255,7 +255,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     var s = d.sync;
     if (!s || !s.lastRun) {
       el.className = "sync-status warn";
-      el.textContent = "⚠️ 暂无同步记录，定时任务可能未运行";
+      el.innerHTML = ic("alertTriangle") + " 暂无同步记录，定时任务可能未运行";
       return;
     }
     var last = new Date(s.lastRun.replace(" ", "T"));
@@ -268,12 +268,12 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     if (s.status === "fail" || diffH > stale) {
       el.className = "sync-status warn";
       var overdue = diffH > 0 ? "，已超时约 " + (diffH >= 1 ? diffH.toFixed(1) + " 小时" : Math.round(diffMs / 60000) + " 分钟") : "";
-      el.textContent = "⚠️ 同步可能已停止（上次 " + hhmm + overdue + "）· 定时任务或网络异常";
+      el.innerHTML = ic("alertTriangle") + " 同步可能已停止（上次 " + esc(hhmm) + esc(overdue) + "）· 定时任务或网络异常";
     } else {
       el.className = "sync-status ok";
       var next = s.nextRun ? new Date(s.nextRun.replace(" ", "T")) : null;
       var nextStr = next ? (" · 下次约 " + ("0" + next.getHours()).slice(-2) + ":" + ("0" + next.getMinutes()).slice(-2)) : "";
-      el.textContent = "✅ 同步正常（上次 " + hhmm + nextStr + "）";
+      el.innerHTML = ic("check") + " 同步正常（上次 " + esc(hhmm) + esc(nextStr) + "）";
     }
   }
 
@@ -313,12 +313,12 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   // 保留下方 GitHub Actions 相关函数（pollUntilSynced 等），供路线 B（云同步）启用
   function refreshData() {
     var btn = document.getElementById("refreshBtn");
-    var old = btn ? btn.textContent : "同步数据";
-    if (btn) { btn.disabled = true; btn.textContent = "⏳ 本机刷新中…"; }
+    var old = btn ? btn.innerHTML : "同步数据";
+    if (btn) { btn.disabled = true; btn.innerHTML = ic("refreshCw") + " 本机刷新中…"; }
     WB.dialog.toast("已开始同步（后台跑约 5–30 秒）", "info", 1800);
     fetchT("/api/refresh", { method: "POST" }, 8000).then(function (r) {
       if (!r.ok) throw new Error("HTTP " + r.status);
-      if (btn) btn.textContent = "⏳ 抓取资讯与数据…";
+      if (btn) btn.innerHTML = ic("refreshCw") + " 抓取资讯与数据…";
       // 看看 server 是否告知「已在跑」：200 OK 但 running=true 表示这是重复点击，复用已有任务
       try {
         r.clone().json().then(function (j) {
@@ -328,9 +328,9 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
       localReloadWait(btn, old, 0);
     }).catch(function () {
       // 本地刷新服务不可达（静态服务器 / file:// 打开）：退化为重读磁盘上的数据
-      if (btn) { btn.disabled = false; btn.textContent = old; }
+      if (btn) { btn.disabled = false; btn.innerHTML = old; }
       loadData().then(function () {
-        WB.dialog.toast("⚠️ 当前打开方式不支持触发刷新（需用 server.py 启动工作台）。\n已重新加载磁盘上的最新数据；计划任务每小时会自动刷新。", "warn", 4500);
+        WB.dialog.toast("当前打开方式不支持触发刷新（需用 server.py 启动工作台）。\n已重新加载磁盘上的最新数据；计划任务每小时会自动刷新。", "warn", 4500);
       }).catch(function () {
         WB.dialog.toast("刷新失败：无法访问 data.json。", "err", 3500);
       });
@@ -341,17 +341,17 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   function localReloadWait(btn, old, tries) {
     var MAX = 12; // 12 × 5s = 1 分钟
     if (tries >= MAX) {
-      if (btn) { btn.disabled = false; btn.textContent = old; }
+      if (btn) { btn.disabled = false; btn.innerHTML = old; }
       WB.dialog.toast("数据可能没变化（已轮询 1 分钟）。下次每小时自动任务或再点一次试试。", "warn", 4000);
       loadData().catch(function () {});
       return;
     }
-    if (btn) btn.textContent = "⏳ 等待新数据 (" + (tries + 1) + "/" + MAX + ")";
+    if (btn) btn.innerHTML = ic("refreshCw") + " 等待新数据 (" + (tries + 1) + "/" + MAX + ")";
     setTimeout(function () {
       maybeReload().then(function (reloaded) {
         if (reloaded) {
-          if (btn) { btn.disabled = false; btn.textContent = old; }
-          WB.dialog.toast("✅ 同步完成，数据已更新", "ok", 2400);
+          if (btn) { btn.disabled = false; btn.innerHTML = old; }
+          WB.dialog.toast("同步完成，数据已更新", "ok", 2400);
         }
         else localReloadWait(btn, old, tries + 1);
       });
@@ -362,7 +362,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   function pollUntilSynced(btn, old, tries, afterTs) {
     var MAX = 24; // 24 × 10s ≈ 4 分钟
     if (tries >= MAX) {
-      if (btn) { btn.disabled = false; btn.textContent = old; }
+      if (btn) { btn.disabled = false; btn.innerHTML = old; }
       WB.dialog.alert("同步任务已提交，但本机 Runner 似乎没在运行（任务一直排队）。\n请确认本机 Runner 进程已启动，或稍后手动刷新浏览器。");
       loadData().catch(function () {});
       return;
@@ -384,10 +384,10 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
       var run = runs[0] || null;
       if (run && run.status === "completed") {
         if (run.conclusion === "success") {
-          if (btn) btn.textContent = "✅ 同步完成，刷新中…";
+          if (btn) btn.innerHTML = ic("check") + " 同步完成，刷新中…";
           tightReload(btn, old, 0);
         } else {
-          if (btn) { btn.disabled = false; btn.textContent = old; }
+          if (btn) { btn.disabled = false; btn.innerHTML = old; }
           WB.dialog.alert("本次同步运行失败（" + (run.conclusion || "unknown") + "），请到 GitHub Actions 看日志。");
           loadData().catch(function () {});
         }
@@ -405,13 +405,13 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   // 同步完成后紧轮询：每 10s 看一次数据，直到 generatedAt 变化（新数据已上线）再复位按钮
   function tightReload(btn, old, tries) {
     if (tries >= 30) { // 30 × 10s ≈ 5 分钟，给 GitHub Pages 部署留足时间
-      if (btn) { btn.disabled = false; btn.textContent = old; }
+      if (btn) { btn.disabled = false; btn.innerHTML = old; }
       WB.dialog.alert("本机同步已完成，但 GitHub Pages 上线略有延迟。\n页面会在后台继续检测，30 秒内若数据上线会自动刷新；也可稍后手动刷新浏览器。");
       return;
     }
-    if (btn) btn.textContent = "✅ 同步完成，刷新中… (" + (tries + 1) + "/30)";
+    if (btn) btn.innerHTML = ic("check") + " 同步完成，刷新中… (" + (tries + 1) + "/30)";
     maybeReload().then(function (reloaded) {
-      if (reloaded) { if (btn) { btn.disabled = false; btn.textContent = old; } }
+      if (reloaded) { if (btn) { btn.disabled = false; btn.innerHTML = old; } }
       else setTimeout(function () { tightReload(btn, old, tries + 1); }, 10000);
     });
   }
@@ -423,16 +423,17 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     if (!box) return;
     box.className = "selfcheck" + (cls ? " " + cls : "");
     box.style.display = "block";
-    box.textContent = msg;
+    var iconName = cls === "ok" ? "check" : (cls === "run" ? "refreshCw" : "alertTriangle");
+    box.innerHTML = ic(iconName) + " " + esc(msg);
   }
   function selfCheck() {
     var btn = document.getElementById("selfCheckBtn");
     var token = ghToken();
     if (!token) {
-      setSelfCheck("warn", "⚠️ 需先填 GitHub Token（点「🌙」旁的 或首次点「立即刷新」会提示）");
+      setSelfCheck("warn", "需先填 GitHub Token（首次点「立即刷新」时会提示填写）");
       return;
     }
-    if (btn) { btn.disabled = true; btn.textContent = "🔍 自检中…"; }
+    if (btn) { btn.disabled = true; btn.innerHTML = ic("search") + " 自检中…"; }
     setSelfCheck("run", "步骤 1/4 · 正在触发同步…");
 
     var api = "https://api.github.com/repos/" + GH_REPO + "/actions/workflows/sync.yml/dispatches";
@@ -454,15 +455,15 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     }).then(function () {
       pollSelfCheck(btn, afterTs, 0);
     }).catch(function (err) {
-      if (btn) { btn.disabled = false; btn.textContent = "🔍 功能自检"; }
-      setSelfCheck("warn", "❌ 自检中断：" + err.message);
+      if (btn) { btn.disabled = false; btn.innerHTML = ic("search") + " 功能自检"; }
+      setSelfCheck("warn", "自检中断：" + err.message);
     });
   }
   function pollSelfCheck(btn, afterTs, tries) {
     var MAX = 24;
     if (tries >= MAX) {
-      if (btn) { btn.disabled = false; btn.textContent = "🔍 功能自检"; }
-      setSelfCheck("warn", "❌ 超时：本机 Runner 一直没响应，请确认 Runner 服务在运行");
+      if (btn) { btn.disabled = false; btn.innerHTML = ic("search") + " 功能自检"; }
+      setSelfCheck("warn", "超时：本机 Runner 一直没响应，请确认 Runner 服务在运行");
       return;
     }
     var runsApi = "https://api.github.com/repos/" + GH_REPO + "/actions/workflows/sync.yml/runs?per_page=10";
@@ -484,8 +485,8 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
           setSelfCheck("run", "步骤 3/4 · 同步成功 (run " + run.id + ")，等待数据上线…");
           tightReloadSelfCheck(btn, 0);
         } else {
-          if (btn) { btn.disabled = false; btn.textContent = "🔍 功能自检"; }
-          setSelfCheck("warn", "❌ 同步运行失败（" + (run.conclusion || "unknown") + "），请到 GitHub Actions 看日志");
+          if (btn) { btn.disabled = false; btn.innerHTML = ic("search") + " 功能自检"; }
+          setSelfCheck("warn", "同步运行失败（" + (run.conclusion || "unknown") + "），请到 GitHub Actions 看日志");
         }
       } else if (run && (run.status === "in_progress" || run.status === "queued" || run.status === "waiting")) {
         setSelfCheck("run", "步骤 2/4 · Runner 执行中（" + run.status + "）…");
@@ -500,14 +501,14 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   }
   function tightReloadSelfCheck(btn, tries) {
     if (tries >= 30) {
-      if (btn) { btn.disabled = false; btn.textContent = "🔍 功能自检"; }
-      setSelfCheck("warn", "⚠️ 同步已完成，但数据上线略有延迟，页面会在后台自动刷新");
+      if (btn) { btn.disabled = false; btn.innerHTML = ic("search") + " 功能自检"; }
+      setSelfCheck("warn", "同步已完成，但数据上线略有延迟，页面会在后台自动刷新");
       return;
     }
     maybeReload().then(function (reloaded) {
       if (reloaded) {
-        if (btn) { btn.disabled = false; btn.textContent = "🔍 功能自检"; }
-        setSelfCheck("ok", "✅ 自检通过：触发 → 同步 → 自动刷新 全链路正常");
+        if (btn) { btn.disabled = false; btn.innerHTML = ic("search") + " 功能自检"; }
+        setSelfCheck("ok", "自检通过：触发 → 同步 → 自动刷新 全链路正常");
       } else {
         setTimeout(function () { tightReloadSelfCheck(btn, tries + 1); }, 10000);
       }
@@ -654,7 +655,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     var now = new Date();
     var wd = ["日", "一", "二", "三", "四", "五", "六"][now.getDay()];
     var p2 = function (n) { return ("0" + n).slice(-2); };
-    el.textContent = "🕐 " + (now.getMonth() + 1) + "-" + p2(now.getDate()) + " 周" + wd + " " + p2(now.getHours()) + ":" + p2(now.getMinutes()) + ":" + p2(now.getSeconds());
+    el.innerHTML = ic("clock") + " " + (now.getMonth() + 1) + "-" + p2(now.getDate()) + " 周" + wd + " " + p2(now.getHours()) + ":" + p2(now.getMinutes()) + ":" + p2(now.getSeconds());
   }
   window.exportAll = exportAll; window.updateClock = updateClock; window.backupExport = backupExport; window.backupImport = backupImport;
   window.addLink = addLink; window.delLink = delLink; window.renderLinks = renderLinks;
@@ -674,7 +675,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   if (ti) ti.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addTodo(); } });
   loadData().catch(function (e) {
     var main = document.querySelector(".main");
-    if (main && !document.getElementById("__loadErr")) main.insertAdjacentHTML("afterbegin", '<div class="card" id="__loadErr"><h2>⚠️ 数据加载失败</h2><div class="empty">无法读取 data.json：' + esc(e) + "。10 秒后自动重试。</div></div>");
+    if (main && !document.getElementById("__loadErr")) main.insertAdjacentHTML("afterbegin", '<div class="card" id="__loadErr"><h2>' + ic("alertTriangle") + ' 数据加载失败</h2><div class="empty">无法读取 data.json：' + esc(e) + "。10 秒后自动重试。</div></div>");
     // 网络抖动恢复：10 秒后自动重试一次
     setTimeout(function () { loadData().catch(function () {}); }, 10000);
   });

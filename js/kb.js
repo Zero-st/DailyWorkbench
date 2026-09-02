@@ -40,14 +40,14 @@
   }
   function renderNode(node, name, depth) {
     var h = '<div class="kb-dir" style="margin-left:' + (depth * 12) + 'px">';
-    h += '<div class="kb-dir-h" onclick="kbToggleDir(this)"><span class="kb-tw">▾</span>📁 ' + esc(name) + '</div><div class="kb-dir-b">';
+    h += '<div class="kb-dir-h" onclick="kbToggleDir(this)"><span class="kb-tw">▾</span>' + WB.ic("folder") + ' ' + esc(name) + '</div><div class="kb-dir-b">';
     Object.keys(node.kids).sort().forEach(function (k) { h += renderNode(node.kids[k], k, depth + 1); });
     node.files.forEach(function (f) { h += fileItem(f, depth + 1); });
     return h + '</div></div>';
   }
   function fileItem(f, depth) {
     var rel = f.rel.replace(/'/g, "\\'");
-    return '<div class="kb-file" style="margin-left:' + (12 + depth * 12) + 'px" onclick="kbOpenNote(\'' + esc(rel) + '\')" title="' + esc(f.rel) + '">📄 ' + esc(nameOf(f.rel)) + '</div>';
+    return '<div class="kb-file" style="margin-left:' + (12 + depth * 12) + 'px" onclick="kbOpenNote(\'' + esc(rel) + '\')" title="' + esc(f.rel) + '">' + WB.ic("fileText") + ' ' + esc(nameOf(f.rel)) + '</div>';
   }
   function kbToggleDir(el) {
     var b = el.nextElementSibling; if (!b) return;
@@ -60,7 +60,7 @@
     var codes = [], inl = [];
     raw = raw.replace(/```[\s\S]*?```/g, function (m) { codes.push(m); return "\u0000C" + (codes.length - 1) + "\u0000"; });
     raw = raw.replace(/`[^`\n]+`/g, function (m) { inl.push(m); return "\u0000I" + (inl.length - 1) + "\u0000"; });
-    raw = raw.replace(/!\[\[([^\]]+)\]\]/g, function (_, x) { return "[📄 嵌入:" + x + "](#kb:embed:" + encodeURIComponent(x) + ")"; });
+    raw = raw.replace(/!\[\[([^\]]+)\]\]/g, function (_, x) { return "[嵌入:" + x + "](#kb:embed:" + encodeURIComponent(x) + ")"; });
     raw = raw.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, function (_, x, y) { return "[" + y + "](#kb:name:" + encodeURIComponent(x.trim()) + ")"; });
     raw = raw.replace(/\[\[([^\]]+)\]\]/g, function (_, x) { return "[" + x + "](#kb:name:" + encodeURIComponent(x.trim()) + ")"; });
     raw = raw.replace(/==([^=\n]+)==/g, "<mark>$1</mark>");
@@ -120,7 +120,7 @@
     if (!arr || !arr.length) { if (WB.dialog) WB.dialog.alert("未找到笔记: " + name); return; }
     if (arr.length === 1) { kbOpenNote(arr[0]); return; }
     // 重名选择
-    var html = arr.map(function (r, i) { return '<div class="kb-pick" onclick="kbOpenNote(\'' + r.replace(/'/g, "\\'") + '\');kbClosePick()">📄 ' + esc(r) + '</div>'; }).join("");
+    var html = arr.map(function (r, i) { return '<div class="kb-pick" onclick="kbOpenNote(\'' + r.replace(/'/g, "\\'") + '\');kbClosePick()">' + WB.ic("fileText") + ' ' + esc(r) + '</div>'; }).join("");
     var ov = document.getElementById("kbPick");
     if (!ov) { ov = document.createElement("div"); ov.id = "kbPick"; ov.className = "kb-pick-pop"; document.body.appendChild(ov); }
     ov.innerHTML = '<div class="kb-pick-h">选择笔记<button class="kb-pick-x" onclick="kbClosePick()">✕</button></div>' + html;
@@ -182,9 +182,9 @@
         '<div class="kb-side">' +
           '<div class="kb-search"><input id="kbQ" class="sf" placeholder="检索（回车全文；tag:xx / title:xx）" onkeydown="if(event.key===\'Enter\')kbSearch(this.value)"><span class="kb-cnt" id="kbCnt"></span></div>' +
           '<div class="kb-acts" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">' +
-            '<button class="btn-sm" onclick="cmdtext(\'在 knowledge-base/ 新建一篇笔记，主题：\')">➕ 新建笔记</button>' +
+            '<button class="btn-sm" onclick="cmdtext(\'在 knowledge-base/ 新建一篇笔记，主题：\')">' + WB.ic("plus") + ' 新建笔记</button>' +
             '<button class="btn-sm" onclick="switchView(\'distill\')">蒸馏经验卡</button>' +
-            '<button class="btn-sm" onclick="var q=document.getElementById(\'kbQ\');if(q){q.focus();q.select();}">🔍 搜索</button>' +
+            '<button class="btn-sm" onclick="var q=document.getElementById(\'kbQ\');if(q){q.focus();q.select();}">' + WB.ic("search") + ' 搜索</button>' +
           '</div>' +
           '<div class="kb-tree" id="kbTree"><div class="empty">加载中…</div></div>' +
         '</div>' +

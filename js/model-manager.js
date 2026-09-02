@@ -217,9 +217,9 @@
     if (k.length <= 8) return "••••";
     return k.slice(0, 4) + "••••••••" + k.slice(-4);
   }
+  // 供应商徽标：统一内联 SVG（缺 emoji 字体的系统不再豆腐；供应商名由相邻文字承载）
   function providerEmoji(k) {
-    var map = { openai: "🅾️", azure: "🔷", anthropic: "🅰️", gemini: "♊", deepseek: "🐋", aliyun: "☁️", tencent: "🐧", "volcengine-coding": "🌋", volcengine: "🌋", minimax: "Ⓜ️", zhipu: "🟢", kimi: "🌙", openrouter: "🌐", agnes: "🅰️", custom: "⚙️" };
-    return map[k] || "🤖";
+    return (WB.ic || window.ic || function () { return ""; })("cpu");
   }
 
   // ---------- 视图渲染 ----------
@@ -264,8 +264,8 @@
 
     box.innerHTML = '<div class="card model-view">' +
       '<div class="model-view-h">' +
-        '<h2><span class="ic">🧠</span>模型管理</h2>' +
-        '<button class="btn" onclick="openModelModal()">➕ 添加模型</button>' +
+        '<h2><span class="ic">' + WB.ic("cpu") + '</span>模型管理</h2>' +
+        '<button class="btn" onclick="openModelModal()">' + WB.ic("plus") + ' 添加模型</button>' +
       '</div>' +
       activeHtml +
       '<div class="model-grid">' + cards + '</div>' + empty +
@@ -325,7 +325,7 @@
         '<label>API Key</label>' +
         '<div class="model-key-wrap">' +
           '<input id="mf-key" class="sf" type="password" value="' + escAttr(m ? m.apiKey : "") + '" placeholder="输入你的 API Key，仅保存在本机浏览器">' +
-          '<button type="button" class="icon-btn" onclick="modelToggleKeyVis()" title="显示/隐藏">👁</button>' +
+          '<button type="button" class="icon-btn" onclick="modelToggleKeyVis()" title="显示/隐藏">' + WB.ic("eye") + '</button>' +
         '</div>' +
       '</div>' +
       '<div class="model-form-row">' +
