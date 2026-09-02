@@ -21,6 +21,26 @@
 
 ---
 
+## [0.9.0] · 2026-09-02 — PC-first 收敛：删移动端 + 删下架视图 + 清死代码
+
+**思路**：战略转向「**先把 PC 端做扎实，功能成型后再回头做移动端**」。据此把上一阶段"下架但保留代码"的东西**彻底删除**，减少一人维护的垃圾代码与漂移面。移动端删除是方向级决策，见 [`docs/adr/0005-pc-first-drop-native-mobile.md`](docs/adr/0005-pc-first-drop-native-mobile.md)。
+
+### Removed
+- **移动端原生 + APK 两条交付**：删 `mobile/`（Flutter 原生 App）、`twa/`（Android TWA 壳）、`app-data.json`（移动云备份 blob）、`.github/workflows/build-apk.yml`、`scripts/build-apk.bat`、`scripts/grab-crash-log.bat`。**保留** PWA manifest/SW（桌面 PWA 用）与 `lite/`。
+- **下架视图彻底删除**：能力速达 `cap`（`js/views/cap.js`）、系统状态 `ov`（`ov.js`）、动态 `sess`（`sess.js`）、课程表 `schedule`（`js/schedule.js` + `backend/pipeline/push_schedule.py` + `SCHEDULE_LOCAL_JSON`）——含各自 `#view-*` section、热力图弹窗、路由/导入/标题接线、专属 CSS。
+- **死控件清理**：死快捷键 `/`（聚焦不存在的 `#q`）、死按钮 `#todayBtn` + `copyToday()`、无调用者的 `goKPI()`。
+- **移动端 CSS 断点**：删 `@media(max-width:820px)` 侧栏→底栏、`@media(max-width:780px)`（先只做 PC 布局）；顺带清理约 140 行下架视图专属死 CSS。
+
+### Changed
+- `ghToken()`/`GH_REPO`/`GH_TOKEN_KEY`（同步/功能自检用）从已删的 `schedule.js` 迁入 `js/app.js`。
+- 渲染异常/数据加载失败的兜底容器由已删的 `#col-cap` 改为 `.main` 顶部插卡。
+
+### Fixed
+- 消除每次加载都触发的 `schedule.json` 404（下架的 schedule.js 仍请求 GitHub raw）。
+- 恢复全局隐藏 `#cmdbox`（复制指令的手动兜底框，原随 cap 视图消失），使复制命令兜底在所有视图可用。
+
+> 消化了 [`docs/design/工作台走查评审-v0.8.0.md`](docs/design/工作台走查评审-v0.8.0.md) backlog 的 X1（移动端导航）/X3（死搜索）/X4（死按钮）/T1（schedule 404）/T3（孤儿视图）。
+
 ## [0.8.0] · 2026-09-01 — MVP 聚焦（9 视图 → 6）
 
 **思路**：为跑通 **MVP**，把侧边栏收敛到「知识飞轮最窄闭环」这一条主线——只留飞轮五件（今日/资讯/知识库/蒸馏库/AI助手）+ 设置·模型管理。所有"看机器在干嘛"的**遥测类**视图（系统状态/动态/能力速达）对 MVP 是噪音，下架。延续 [`docs/design/产品-IA评审.md`](docs/design/产品-IA评审.md) 诊断（遥测四件套重叠）。这是**双向门**（design-principles 卡 5），故只下架、保留全部代码/数据，随时可恢复。

@@ -1,8 +1,0 @@
-build/
-.dart_tool/
-.idea/
-*.iml
-android/key.properties
-.gradle*/
-.flutter-plugins-dependencies
-android/.kotlin/

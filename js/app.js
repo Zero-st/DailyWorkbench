@@ -3,11 +3,8 @@
 // 本文件暂作主模块，后续按视图逐步剥离到 js/views/*。
 import { esc, jsStr, ic } from "./core/util.js";
 import { getData, setData, getView, setView } from "./core/state.js";
-import { renderOv } from "./views/ov.js";
-import { renderSessArchive, closeHeat } from "./views/sess.js";
 import { favsLoad, favsSave, renderFavs } from "./features/favs.js";
 import { renderInfo } from "./views/info.js";
-import { renderCap } from "./views/cap.js";
 import { fetchT } from "./core/net.js";
 import { renderAI, aiAsk } from "./views/ai.js";
 import { notesLoad, notesSave, renderNotes } from "./features/notes.js";
@@ -20,20 +17,16 @@ import { renderRecall } from "./features/recall.js";
 // WB 命名空间（dialog/esc/ic/jsStr）由 util.js 挂载到 window.WB；本模块内沿用 WB.dialog.*
 var WB = window.WB;
 
+// 同步/功能自检用的 GitHub 常量（原在已删除的 schedule.js，迁入此处）
+var GH_REPO = "Zero-st/DailyWorkbench";
+var GH_TOKEN_KEY = "wb_gh_token";
+function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
+
 
 
   // ---------- 交互 ----------
-  // filt/toggleCat 与 renderSkills/renderCap 已剥到 js/views/cap.js
   // 历史遗留：曾与 switchView 双路由并存。现统一委托 switchView（保留导出与全部调用者）。
   function switchTab(id) { switchView(id); }
-  function goKPI(tab, cardId) {
-    switchTab(tab);
-    setTimeout(function () {
-      var el = document.getElementById(cardId);
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 80);
-  }
-  // openHeat/closeHeat/renderHeat/sessFilter/sessStatus/renderSessArchive 已剥到 js/views/sess.js
 
   // 我的速记 已剥到 js/features/notes.js
   // 我的收藏/稍后读 已剥到 js/features/favs.js
@@ -81,7 +74,7 @@ var WB = window.WB;
 
   // toggleNS/toggleNews/renderNewsItem 与资讯(news)渲染 已剥到 js/views/info.js
 
-  window.switchTab = switchTab; window.goKPI = goKPI; window.toggleTheme = toggleTheme;
+  window.switchTab = switchTab; window.toggleTheme = toggleTheme;
 
   // 待办清单 已剥到 js/features/todos.js
 
@@ -144,21 +137,9 @@ var WB = window.WB;
 
   // ---------- 渲染 ----------
   // renderQuick(快捷启动) / renderTodayReview(今日复盘) 见 js/views/dash.js
-  // renderSkills/renderCap（含 Skill 统计）见 js/views/cap.js
-
-
-  // cronZh + renderOv 已剥到 js/views/ov.js
-
-  // 「Skill 统计」已并入 能力速达（cap.js 的 skillStatsHtml）
-
-  // 会话档案 + 「本周变更」（原 week 已并入）见 js/views/sess.js
-
   // AI 助手全套 已剥到 js/views/ai.js
 
-  // 课程表模块已拆到 schedule.js（独立 IIFE，window.WB.esc 依赖注入，加载顺序在 app.js 前）
-  // 对外接口：window.renderSchedule / ghToken / scheduleLoad / schedulePullCloud / setGhToken / GH_REPO
-
-  // 头部条（KPI/同步/快捷启动/本周动态）+ tab 内容拆分渲染：省 CPU、按需
+  // 头部条（KPI/同步/快捷启动）+ tab 内容拆分渲染：省 CPU、按需
   function renderHeaderStrip(d) {
     document.getElementById("snap").textContent = "快照 · " + (d.generatedAt || "-");
     renderSync(d);
@@ -169,16 +150,13 @@ var WB = window.WB;
     if (!d) return;
     // 用 __view 路由（P0 后 DOM 已无 .tab 按钮，不能再依赖 .tab.active）
     var id = getView() || "home";
-    if (id === "cap") renderCap(d);
-    else if (id === "ai") renderAI(d);
+    if (id === "ai") renderAI(d);
     else if (id === "models") renderModels();
     else if (id === "info") renderInfo(d);
-    else if (id === "ov") renderOv(d);
-    else if (id === "sess") renderSessArchive(d); // 含「本周变更」（原 week 已并入）
     else if (id === "kb") { if (typeof renderKb === "function") renderKb(); }
     else if (id === "distill") renderDistill();
     else if (id === "inbox") renderInbox();
-    // schedule 已从导航下架（代码保留），启动时已渲染；stats 并入 cap、week 并入 sess
+    // 其余（home）为静态骨架，由 renderHeaderStrip/renderTodayReview/renderRecall 填充
   }
   // ---------- 数据规范化（兜底缺字段，避免 data.json 部分缺失/损坏导致白屏） ----------
   function normalizeData(d) {
@@ -216,11 +194,11 @@ var WB = window.WB;
       if (!__inited) { __inited = true; switchView("home"); }
     } catch (err) {
       console.error("render 出错", err);
-      var box = document.getElementById("col-cap");
-      if (box && !box.innerHTML) {
-        box.innerHTML = '<div class="card"><h2>⚠️ 渲染异常</h2><div class="empty">页面渲染遇到问题：' +
+      var main = document.querySelector(".main");
+      if (main && !document.getElementById("__renderErr")) {
+        main.insertAdjacentHTML("afterbegin", '<div class="card" id="__renderErr"><h2>⚠️ 渲染异常</h2><div class="empty">页面渲染遇到问题：' +
           esc(String((err && err.message) || err)) +
-          '。其余内容已尽量保留，可点「立即刷新」重试。</div></div>';
+          '。其余内容已尽量保留，可点「立即刷新」重试。</div></div>');
       }
     }
   }
@@ -234,13 +212,10 @@ var WB = window.WB;
     });
     var titles = {
       home: ["今日", "捕获 + 复盘中枢（代办 / 速记 / 收藏 / 温故）"],
-      cap: ["能力速达", "本机 Skills 速查与一键启动 · 含使用统计"],
       ai: ["AI 助手", "用大白话回答你的问题"],
       models: ["模型管理", "AI 平台与模型配置"],
       info: ["资讯", "AI 日报与每日新闻"],
       inbox: ["收件箱", "刷到好帖子/好想法秒存 → 之后一键蒸馏"],
-      ov: ["系统状态", "本机运行环境与服务健康度"],
-      sess: ["动态", "会话记录 · 本周变更 · 活跃热力图"],
       kb: ["知识库", "Obsidian vault 浏览 / 检索 / 双链 / 沉淀"],
       distill: ["蒸馏库", "up 主经验卡 · 视频/图文蒸馏成可复用结构化卡片"]
     };
@@ -590,31 +565,6 @@ var WB = window.WB;
   }
 
   // ---------- 一键导出（速记/待办/收藏/入口 → Markdown） ----------
-  // ---------- 今日概览（KPI + 头条 + 引导 → 一键发给 AI 助手） ----------
-  function copyToday() {
-    var d = getData();
-    if (!d) { aiAsk("今日数据还没加载完，请稍等几秒再点。"); return; }
-    var lines = [];
-    var k = d.kpi || {};
-    lines.push("今天是 " + (d.generatedAt ? String(d.generatedAt).slice(0, 10) : "") + "，我的工作台现状：");
-    lines.push("- 已装 " + (k.skills || 0) + " 个 skills，知识库 " + (k.knowledge || 0) + " 个文件，定时任务 " + (k.automations || 0) + " 个，记忆库 " + (k.memory || 0) + " 个文件");
-    var disk = (d.status && d.status.disk) || {};
-    if (disk.D) lines.push("- D 盘可用 " + disk.D.free + "G（共 " + disk.D.total + "G）");
-    var news = (d.dailyNews && d.dailyNews.items) || [];
-    if (news.length) {
-      lines.push("- 今日新闻 Top3：");
-      news.slice(0, 3).forEach(function (n, i) { lines.push((i + 1) + ". " + n.title); });
-    }
-    var ai = (d.aiDaily && d.aiDaily.count) || 0;
-    if (ai) lines.push("- AI 日报已抓取 " + ai + " 条");
-    var guide = d.guide || [];
-    if (guide.length) {
-      lines.push("- 今日引导：" + guide.slice(0, 2).join("；"));
-    }
-    lines.push("");
-    lines.push("请基于以上信息，给我今天最值得做的 3 件事（结合我的 skill 和知识库）。");
-    aiAsk(lines.join("\n"));
-  }
   function exportAll() {
     var now = new Date();
     var p2 = function (n) { return ("0" + n).slice(-2); };
@@ -706,27 +656,25 @@ var WB = window.WB;
     var p2 = function (n) { return ("0" + n).slice(-2); };
     el.textContent = "🕐 " + (now.getMonth() + 1) + "-" + p2(now.getDate()) + " 周" + wd + " " + p2(now.getHours()) + ":" + p2(now.getMinutes()) + ":" + p2(now.getSeconds());
   }
-  window.exportAll = exportAll; window.updateClock = updateClock; window.copyToday = copyToday; window.backupExport = backupExport; window.backupImport = backupImport;
+  window.exportAll = exportAll; window.updateClock = updateClock; window.backupExport = backupExport; window.backupImport = backupImport;
   window.addLink = addLink; window.delLink = delLink; window.renderLinks = renderLinks;
 
   window.selfCheck = selfCheck;
   applyTheme();
   renderNotes();
-  renderSchedule();
   renderLinks();
   renderTodos();
   renderFavs();
   updateClock();
   setInterval(updateClock, 1000);
   pomoRender();
-  // 本地无课程表时，自动从云端拉取一次（换设备也能看到）
-  if (!scheduleLoad().length) schedulePullCloud(true);
   var ni = document.getElementById("noteInput");
   if (ni) ni.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addNote(); } });
   var ti = document.getElementById("todoInput");
   if (ti) ti.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addTodo(); } });
   loadData().catch(function (e) {
-    document.getElementById("col-cap").innerHTML = '<div class="card"><h2>⚠️ 数据加载失败</h2><div class="empty">无法读取 data.json：' + esc(e) + "。10 秒后自动重试。</div></div>";
+    var main = document.querySelector(".main");
+    if (main && !document.getElementById("__loadErr")) main.insertAdjacentHTML("afterbegin", '<div class="card" id="__loadErr"><h2>⚠️ 数据加载失败</h2><div class="empty">无法读取 data.json：' + esc(e) + "。10 秒后自动重试。</div></div>");
     // 网络抖动恢复：10 秒后自动重试一次
     setTimeout(function () { loadData().catch(function () {}); }, 10000);
   });
@@ -734,8 +682,7 @@ var WB = window.WB;
   var lastTab = "";
   try { lastTab = localStorage.getItem("wb_tab") || ""; } catch (e) {}
   if (lastTab === "news" || lastTab === "dnews") lastTab = "info"; // 资讯 Tab 合并兼容
-  // IA 重构后的历史标签兼容：已下线/合并的视图重定向到承接者
-  // MVP：遥测三件套 cap/sess/ov 从导航下架 → 统一回落到今日（代码保留，加回按钮即恢复）
+  // 历史标签兼容：已删除的视图（dash/stats/week/schedule/cap/sess/ov）重定向到今日，避免旧 wb_tab 落空
   var __tabRemap = { dash: "home", stats: "home", week: "home", schedule: "home", cap: "home", sess: "home", ov: "home" };
   if (__tabRemap[lastTab]) lastTab = __tabRemap[lastTab];
   if (lastTab && lastTab !== "home") switchView(lastTab);
@@ -749,18 +696,6 @@ var WB = window.WB;
     } else {
       if (!pollTimer) pollTimer = setInterval(maybeReload, 30000);
       maybeReload();
-    }
-  });
-
-  // 全局键盘增强：按 / 聚焦搜索（不在输入框时）；按 Esc 关闭热力图弹窗
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-      var hm = document.getElementById("heat-detail");
-      if (hm && hm.style.display === "flex") { closeHeat(); return; }
-    }
-    if (e.key === "/" && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || "")) {
-      var q = document.getElementById("q");
-      if (q) { e.preventDefault(); q.focus(); q.select(); }
     }
   });
 

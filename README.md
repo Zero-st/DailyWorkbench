@@ -1,4 +1,4 @@
-# 个人工作台（双端 PWA · DailyWorkbench）
+# 个人工作台（PWA · DailyWorkbench）
 
 一套代码、手机和电脑都能用的**个人知识飞轮操作台**——把「**输入 → 捕获 → 沉淀 → 蒸馏 → 复用**」这条闭环摊在一块「随身面板」上：刷到的内容随手扔进收件箱，蒸馏成可复用的**六维经验卡**沉进 Obsidian，再靠「今日温故」把存过的东西每天推回你眼前。
 
@@ -40,7 +40,7 @@
 | **AI 助手** | 贯穿全程 | 直接对话（经后端中转，绕开浏览器跨域）。 |
 | **模型管理**（设置） | — | 模型配置读写（Supabase 云端多端共享，没配则退回浏览器本地）。 |
 
-**通用体验**：浅色 / 深色主题一键切换并记住偏好 · 全局搜索（快捷键 `/` 聚焦）· 立即同步数据 · **响应式**（手机单列 / 电脑双栏）· **离线可开**（Service Worker 缓存）· 数据异常显示友好错误卡、不整页白屏。
+**通用体验**：浅色 / 深色主题一键切换并记住偏好 · 立即同步数据 · **桌面自适应**（宽窗双栏 / 窄窗单列）· **离线可开**（Service Worker 缓存）· 数据异常显示友好错误卡、不整页白屏。
 
 > 🧰 **代码保留、暂未挂导航**（双向门，随时可恢复）：遥测三件套（系统状态 / 动态 / 能力速达）与课程表（Excel 导入）——它们对"看机器在干嘛"有用，但不推动知识在飞轮里流动，为 MVP 聚焦从侧边栏下架，`js` 文件与 `#view-*` section 全部保留。详见 [`docs/design/产品-IA评审.md`](docs/design/产品-IA评审.md)。
 
@@ -66,15 +66,16 @@ python -m http.server 8080
 
 ## 四、不同平台部署 ★
 
-工作台能落地成 **6 种形态**。别一股脑全上——先对号入座，看你是哪种情况：
+> **当前聚焦 PC 端**：原生/安卓 APK 移动交付已下线（见 [`docs/adr/0005-pc-first-drop-native-mobile.md`](docs/adr/0005-pc-first-drop-native-mobile.md)），飞轮功能成型后再回头做移动端。
+
+工作台能落地成 **4 种形态**。别一股脑全上——先对号入座，看你是哪种情况：
 
 | 你的情况 | 用哪套 | 一句话比喻 |
 |---|---|---|
 | 只想在电脑浏览器里看看 | **A · 纯静态本地** | 翻开笔记本就看 |
 | 想要完整功能（刷新/AI/知识库） | **B · 本地全功能后端** | 给笔记本配个私人助理 |
 | 想随时随地在线访问、还自动更新 | **C · GitHub Pages** | 把笔记本搬上云、还请人每天帮你续写 |
-| 想在手机上当 App 用 | **D · 手机 PWA** | 给网页穿件"App 马甲" |
-| 想要能安装的安卓 APK | **E · 安卓 APK（两种）** | 套壳 or 重盖一栋原生的房子 |
+| 想装成 App（桌面/手机浏览器都行） | **D · PWA 安装** | 给网页穿件"App 马甲" |
 | 只要个极简、纯静态的轻量版 | **F · lite 版** | 一本随身便签，不带助理 |
 
 ---
@@ -129,29 +130,12 @@ python -m backend.server 8080     # 端口可省，默认 8080；只绑 127.0.0.
 
 ---
 
-### 场景 D · 手机上当 App 用（PWA 安装）
+### 场景 D · 装成 App（PWA 安装 · 桌面/手机通用）
 
-- **适合谁**：想在手机主屏上有个图标，点开像原生 App，还能离线开。
-- **怎么做**：手机浏览器打开线上地址（场景 C），浏览器菜单选「**添加到主屏幕**」。搞定，主屏就多了个"工作台"图标。
+- **适合谁**：想在桌面或手机主屏上有个图标，点开像原生 App，还能离线开。
+- **怎么做**：用 Chrome/Edge 打开线上地址（场景 C），点地址栏右侧「安装」图标；手机浏览器则用菜单「**添加到主屏幕**」。
 - **比喻**：给网页**穿了件"App 马甲"**——外表和真 App 没差，其实里子还是那个网页，所以它跟着线上版一起更新，不用重新下载。
-
----
-
-### 场景 E · 安卓 APK（两条完全不同的路）
-
-想要一个真能安装的 `.apk`？项目里**有两个不同来源的 APK，千万别搞混**：
-
-| | **TWA 壳** | **Flutter 原生** |
-|---|---|---|
-| 目录 | `twa/` | `mobile/` |
-| 本质 | 给线上网页**套个安卓壳**，里面还是那个 PWA | **照着工作台重新写的原生安卓 App**（另一套代码） |
-| 怎么构建 | GitHub Actions `build-apk.yml` 在**云端 ubuntu** 跑 `./gradlew assembleRelease` + `apksigner` 签名 | 本机 Windows 跑 `scripts/build-apk.bat`（`flutter build apk --release`） |
-| 产物 | `twa/workbench-signed.apk`，并自动发一个 GitHub Release（tag `apk-<编号>`） | `mobile/build/.../app-release.apk`，拷到 `APK/app-release.apk` |
-| 更新方式 | 网页更新，它跟着更新（壳不用重装） | 改了要重新 `flutter build` 再装 |
-
-- **怎么触发 TWA 构建**：改了 `twa/**` 并 push，或在 GitHub Actions 页面手动 `workflow_dispatch`，跑完去 Release 下载 APK。
-- **比喻**：TWA 是**给现成的网页套个安卓外壳**（省事，随网页更新）；Flutter 是**照着样子重新盖了一栋原生的房子**（体验更"原生"，但要单独维护、单独重建）。
-- ⚠️ 技术宪章提醒：一个人**长期并行维护两套 UI 最贵**。这两条路（还有下面的 lite）都属"按需存在、别放任漂移"，明确要长期投入某一端时再收敛。
+- ⚠️ **原生 App / 安卓 APK（Flutter `mobile/` + TWA `twa/`）已下线**：一人维护并行多套 UI 成本最高，当前 PC-first；来日重做优先经"云收件箱中转"而非重起原生（见 ADR 0005）。
 
 ---
 
@@ -227,7 +211,7 @@ python bump_version.py --check # 只校验是否同步（CI 会跑，不一致�
 
 ## 八、幕后自动化（GitHub Actions）
 
-`.github/workflows/` 下 5 个工作流，各司其职：
+`.github/workflows/` 下 4 个工作流，各司其职：
 
 | 工作流 | 干什么 | 触发 | 跑在哪 |
 |---|---|---|---|
@@ -235,7 +219,6 @@ python bump_version.py --check # 只校验是否同步（CI 会跑，不一致�
 | `deploy-pages.yml` | 把整仓发布成 GitHub Pages 网站 | push 到 main / 数据流水线跑完后 | GitHub 托管 |
 | `sync.yml` | 每小时重抓真实数据、重建 `data.json` 并 push | cron `13 * * * *` | **自助 runner**（你的 Windows 机器） |
 | `daily-ai.yml` | 每天约 08:30 抓当日 AI 资讯 | cron（北京 08:30） | **自助 runner** |
-| `build-apk.yml` | 构建 + 签名 TWA 安卓 APK，发 Release | push `twa/**` / 手动 | GitHub 托管（ubuntu） |
 
 > CI 是**真门禁**（真会变红），项目约定**禁止 `|| true` 假绿**——宁可诚实删掉一个测试，也不留"看着在测其实没测"的绿灯。
 
@@ -262,7 +245,6 @@ DailyWorkbench/
 │  ── 数据 · 配置（前端 fetch 或后端产出，钉在根）──
 ├── data.json                      # 聚合快照（backend/pipeline/export_data.py 生成）
 ├── ai_daily.json  daily_news.json # 抓取的资讯数据
-├── app-data.json                  # 移动端云端备份 blob（GitHub API 契约，勿改名）
 ├── workbench.local.json.example   # 本机配置模板（真实 *.local.json 均 gitignore）
 │  ── 前端工程工具（留根）──
 ├── bump_version.py                # 缓存戳自动同步（CI 硬门禁，改前端后必跑）
@@ -274,15 +256,13 @@ DailyWorkbench/
 │   ├── core/                      # config（配置层）· paths（路径单一来源）
 │   ├── utils/                     # common（github_push / http_get / frontmatter / log）
 │   ├── clients/                   # supabase · kb（Obsidian vault）
-│   └── pipeline/                  # export_data · fetch_* · daily_ai · local_refresh · sync · sync_status · push_schedule
+│   └── pipeline/                  # export_data · fetch_* · daily_ai · local_refresh · sync · sync_status
 │  ── 文档 · 其它交付形态 · 自动化 ──
 ├── docs/                          # README(文档地图) · TECH_CHARTER · 版本管理规范 · adr/
 │   │                              #   guides/ design/ planning/ research/ reference/（按 Diátaxis 改编分类）
-├── twa/                           # Android TWA 构建（网页套壳：gradle + bubblewrap）
 ├── lite/                          # 轻量版 PWA（独立纯静态分叉，不依赖后端）
-├── mobile/                        # Flutter 原生移动端（照工作台重写的原生 App）
-├── scripts/                       # 本机启动/同步/构建脚本（refresh·start_workbench·run_refresh·setup_runner·build-apk·grab-crash·delete_workbench_tasks，含机器路径）
-└── .github/workflows/             # ci · deploy-pages · sync · daily-ai · build-apk
+├── scripts/                       # 本机启动/同步脚本（refresh·start_workbench·run_refresh·setup_runner·delete_workbench_tasks，含机器路径）
+└── .github/workflows/             # ci · deploy-pages · sync · daily-ai
 ```
 
 > 后端脚本作为 package 运行：`python -m backend.server 8080`、`python -m backend.pipeline.export_data` 等（详见各 workflow 与 `scripts/refresh.cmd`）。
@@ -305,4 +285,4 @@ DailyWorkbench/
 
 变更记录统一维护在 **[`CHANGELOG.md`](CHANGELOG.md)**（遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) + 语义化版本）；「为什么这么做、代价取舍」见对应 `docs/design/` 设计文档与 `docs/adr/`；方向见 [`docs/planning/知识飞轮-路线图.md`](docs/planning/知识飞轮-路线图.md)。落位与写法规矩见 [`docs/版本管理规范.md`](docs/版本管理规范.md)。
 
-**当前里程碑**：`v0.8.0`（2026-09-01）· **MVP 聚焦**——侧边栏收敛到知识飞轮最窄闭环（6 视图），蒸馏库落下**首张真实经验卡**，「捕获→蒸馏→入库→复用」端到端跑通。
+**当前里程碑**：`v0.9.0`（2026-09-02）· **PC-first 收敛**——移除移动端原生/APK 交付、彻底删除下架视图（能力速达/系统状态/动态/课程表）与死代码，先把桌面端做扎实。（`v0.8.0` · MVP 聚焦：侧边栏收敛到飞轮最窄闭环 6 视图、蒸馏库落下首张真实经验卡。）

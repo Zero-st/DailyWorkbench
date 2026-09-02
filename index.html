@@ -14,7 +14,7 @@
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="css/styles.css?v=f5622c9e">
+<link rel="stylesheet" href="css/styles.css?v=07d75464">
 </head>
 <body>
 <div class="app">
@@ -36,8 +36,6 @@
         <button class="side-item" data-view="distill" onclick="switchView('distill')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.31l-5.7 9.32A1 1 0 0 0 5.16 20h13.68a1 1 0 0 0 .86-1.37L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg></span><span class="label">蒸馏库</span></button>
         <button class="side-item" data-view="ai" onclick="switchView('ai')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></span><span class="label">AI 助手</span></button>
       </div>
-      <!-- MVP：工具组（能力速达 cap / 动态 sess）与设置组的系统状态 ov 已从侧边栏下架；
-           js 文件与 #view-cap/#view-sess/#view-ov section 全保留，恢复只需在此加回 <button data-view="..."> -->
       <div class="side-group">
         <div class="side-group-title">设置</div>
         <button class="side-item" data-view="models" onclick="switchView('models')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span><span class="label">模型管理</span></button>
@@ -152,10 +150,6 @@
         </details>
       </section>
 
-      <!-- MVP 已从侧边栏下架（代码/数据保留，恢复只需在 side-nav 加回按钮）；section 保留供 renderCap 写入 -->
-      <section class="view" id="view-cap">
-        <div class="wrap"><div class="col" id="col-cap"></div><aside class="col" id="side-cap"></aside></div>
-      </section>
       <section class="view" id="view-ai">
         <div class="wrap"><div class="col" id="col-ai"></div></div>
       </section>
@@ -164,18 +158,6 @@
       </section>
       <section class="view" id="view-info">
         <div class="wrap"><div class="col" id="col-info"><div id="newsBlock"></div><div id="dnewsBlock"></div></div></div>
-      </section>
-      <!-- MVP 已从侧边栏下架（代码/数据保留，恢复只需在 side-nav 加回按钮）；section 保留供 renderOv 写入 -->
-      <section class="view" id="view-ov">
-        <div class="wrap"><div class="col" id="col-ov"></div></div>
-      </section>
-      <!-- MVP 已从侧边栏下架（代码/数据保留，恢复只需在 side-nav 加回按钮）；section 保留供 renderSessArchive 写入 -->
-      <section class="view" id="view-sess">
-        <div class="wrap"><div class="col" id="col-sess"></div></div>
-      </section>
-      <!-- 课程表已从侧边栏下架（代码/云备份保留，可随时恢复入口）；section 保留供 renderSchedule 写入 -->
-      <section class="view" id="view-schedule">
-        <div class="wrap"><div class="col" id="col-schedule"></div></div>
       </section>
       <section class="view" id="view-kb">
         <div class="wrap"><div class="col" id="col-kb"></div></div>
@@ -190,13 +172,6 @@
       <div class="foot">本机数据每小时自动同步 · AI 日报与每日新闻自动抓取 · 全部用真实数据动态生成 · <span id="freshness"></span><button class="btn-sm" id="selfCheckBtn" onclick="selfCheck()" title="跑一遍功能自检，列出各模块是否正常">🔍 功能自检</button><button class="btn-sm" onclick="exportAll()" title="把速记/待办/收藏/入口导出为 Markdown">导出数据</button><button class="btn-sm" onclick="backupExport()" title="导出 JSON 备份（可完整恢复）">备份</button><button class="btn-sm" onclick="backupImport()" title="从 JSON 备份恢复数据">恢复</button></div>
       <div class="foot" style="margin-top:8px">设计风格参考 <a href="https://github.com/uncle11/xfc-obsidian-workbench-builder-community" target="_blank" rel="noopener">xfc-obsidian-workbench-builder-community</a> · 配色与组件体系沿用其社区版布局，已重皮为活力糖果圆润科技风</div>
 
-      <div class="heat-modal" id="heat-detail" onclick="if(event.target===this)closeHeat()">
-        <div class="heat-card">
-          <div class="heat-card-h"><span id="heat-detail-date"></span><button class="heat-x" onclick="closeHeat()">✕</button></div>
-          <div class="heat-card-b" id="heat-detail-body"></div>
-        </div>
-      </div>
-
       <div class="model-modal" id="model-modal" onclick="if(event.target===this)closeModelModal()">
         <div class="model-dlg" onclick="event.stopPropagation()">
           <div class="model-dlg-h"><span id="model-dlg-title">添加模型</span><button class="model-dlg-x" onclick="closeModelModal()">✕</button></div>
@@ -208,16 +183,15 @@
       <div id="hiddenEls" style="display:none">
         <span class="snap" id="snap">快照 · 加载中…</span>
         <button class="refresh-btn" id="installBtn" style="display:none">安装 App</button>
-        <button class="refresh-btn" id="todayBtn">今日概览</button>
         <div class="selfcheck" id="selfCheckResult"></div>
+        <textarea id="cmdbox" aria-hidden="true" tabindex="-1"></textarea>
       </div>
     </main>
   </div>
 </div>
-<script src="js/schedule.js?v=4c01aab2"></script>
 <script src="js/model-manager.js?v=af4fbd61"></script>
 <script src="vendor/marked.min.js?v=b7319d77"></script>
 <script src="js/kb.js?v=df8f7c46"></script>
-<script type="module" src="js/app.js?v=ad3438f0"></script>
+<script type="module" src="js/app.js?v=44f37780"></script>
 </body>
 </html>
