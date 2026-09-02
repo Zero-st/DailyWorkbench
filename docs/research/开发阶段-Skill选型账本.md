@@ -102,7 +102,31 @@
 
 ---
 
-## 6 · 聚合入口（读者自己继续找 skill / MCP 的地方）
+## 6 · 文档 & 可视化（架构图 / 图解）
+
+把「系统 / 流程」变成图，用于**理解、评审、沉淀、分享**。**先分清三类别混**：渲染器（把图源出成像素）× 语义图引擎（带校验 + 交互）× 原生渲染（免装）。
+
+| 名称 | 类型 | 证据 | 可信度 | 何时用 / 别用 |
+|---|---|---|---|---|
+| **Claude Artifacts 原生 mermaid** | 内置 | Artifacts 直接渲染 ```mermaid``` 围栏 | **第一方 Anthropic** | 只要在对话/Artifact 里预览图 → **免装、首选**；GitHub 也原生渲染 mermaid |
+| **diagram-render**（mermaid/d2 → png/svg/HTML） | Skill（本机/社区，已审） | `mmdc` + 系统 Chrome + `d2`；离线、中文（CJK 字体）安全 | 社区（本机已装、已审源码） | 把 md 里的图导出成图片 / 自包含 HTML；架构图用 **d2+elk** 更专业。**零坐标、一次成图**，日常首选 |
+| **claude-mermaid / mermaid MCP** | MCP | 交互式 mermaid 预览/保存 | 社区 | 只要交互式单图预览时 |
+| **archify**（tt-a1i/archify） | Skill（Node，已审） | [tt-a1i/archify](https://github.com/tt-a1i/archify)，MIT，Node、无 LLM key；Socket 0 alerts / Snyk 低危（2026-09 实测） | 社区（已审、低危） | 要**交互式追溯 + 证据链（节点锚定 git 源文件、校不过报错）+ 架构演进 delta + 精致分享/演示**。代价：手写类型化 IR + 迭代调几何 |
+
+**bake-off 实测（2026-09-02 · 对同一张 10 节点架构图）**：
+
+| | diagram-render（d2/elk） | archify |
+|---|---|---|
+| 编写成本 | ~25 行 d2、**零坐标**、一次成图 | 手写 IR + **4 轮校验调几何**（边穿节点/标签压组件），showcase 门槛太高需降 standard |
+| 观感 | 朴素专业 | **更精致**（类型配色+图例+boundary+强调/安全边） |
+| 交互 / 证据链 | 无 | **有**（引导视图逐链路追溯、节点锚 git 源文件、delta、导出） |
+| 中文 | 完美 | 完美（`locale:zh-CN` 连 Viewer UI 都中文） |
+
+**结论**：**日常图解 / 理解项目 → Artifacts 原生 mermaid 或 diagram-render 就够**（零几何、省事）；**archify 是低频高价值专用武器**——深读复杂项目、要可追溯/可演示时才升档。对齐 §9 决策指引末尾的 YAGNI：先用现有的，遇到独有能力（追溯/证据链/delta）再升级。产出实例见本仓 `docs/design/运行时架构-数据流.md`。
+
+---
+
+## 7 · 聚合入口（读者自己继续找 skill / MCP 的地方）
 
 | 入口 | 是什么 | 证据 | 可信度 |
 |---|---|---|---|
@@ -117,7 +141,7 @@
 
 ---
 
-## 7 · 安全红线（装任何社区 skill / MCP 前必看）
+## 8 · 安全红线（装任何社区 skill / MCP 前必看）
 
 **来源已直读正文核实**：Snyk「ToxicSkills」审计（[snyk.io/blog/toxicskills-...](https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/)）。
 
@@ -136,7 +160,7 @@
 
 ---
 
-## 8 · 决策指引（给纠结的人）
+## 9 · 决策指引（给纠结的人）
 
 | 你的处境 | 全流程 | 前端 | 后端 | 测试 | 选型/架构 |
 |---|---|---|---|---|---|
@@ -148,7 +172,7 @@
 
 ---
 
-## 9 · 换机 / 换 agent 复用提示
+## 10 · 换机 / 换 agent 复用提示
 
 - **第一方 skill**（anthropics/skills 系）：跟着官方仓库走，最省心；MCP（chrome-devtools / playwright / Supabase 等）需在**目标环境各自启用**（`claude mcp` 或交互式 `/mcp`），不随仓库走。
 - **claude.ai 连接器**（Figma / Notion / Atlassian / Linear 等官方 MCP）：需先在 **claude.ai 连接器设置** 或交互式 `/mcp` 完成 **OAuth 授权**，非交互会话无法代授。
@@ -156,7 +180,8 @@
 
 ---
 
-## 10 · 变更记录
+## 11 · 变更记录
 
 - 2026-08-31 · v1.0 · 初版：五阶段（选型/全流程/前端/后端/测试）候选卡 + 聚合入口 + Snyk 安全红线 + 决策指引。
   ★star 为 gh api 实测快照；未核实项已显式标注。缘起：需要一份面向任意项目/设备的通用开发工具选型账本。
+- 2026-09-02 · v1.1 · 新增 §6「文档 & 可视化（架构图/图解）」类目（Artifacts 原生 mermaid / diagram-render / mermaid MCP / archify）+ archify vs diagram-render bake-off 实测结论；后续章节顺移一位（§7~§11），一并修正原 §0.3/§1 对「聚合入口/安全红线/决策指引」的章节号引用。缘起：评估 archify skill 是否适合"图文并茂理解项目"。

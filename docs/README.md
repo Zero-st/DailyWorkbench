@@ -80,6 +80,7 @@ docs/
 | [知识飞轮-路线图.md](planning/知识飞轮-路线图.md) | planning | 三层大脑模型 + 四阶段路线图（方向盘） |
 | [项目总览-需求与进度.md](planning/项目总览-需求与进度.md) | planning | 一页总账：需求 / 已完成 / 待优化 / 待完成 |
 | [复盘-MVP闭环首跑.md](planning/复盘-MVP闭环首跑.md) | planning | 蒸馏库 0→1 首张真实经验卡的里程碑复盘 |
+| [运行时架构-数据流.md](design/运行时架构-数据流.md) | design | 一页架构总图（mermaid）：前端↔后端↔data.json 契约↔三大脑 + 数据流 |
 | [界面设计准则.md](design/界面设计准则.md) | design | 设计系统 v7 索引 + 图标红线 + 新视图检查清单 |
 | [温故复用-设计.md](design/温故复用-设计.md) | design | 「今日温故卡」复用抓手设计（Leitner-lite） |
 | [产品-IA评审.md](design/产品-IA评审.md) | design | 信息架构评审 + 收敛提案 |
@@ -91,4 +92,4 @@ docs/
 | [工具链-MCP与Skill地图.md](research/工具链-MCP与Skill地图.md) | research | 本项目用过的 MCP / Skill × 开发阶段 |
 | [开发阶段-Skill选型账本.md](research/开发阶段-Skill选型账本.md) | research | 通用 Skill / MCP / SDD 选型账本 |
 | [reference/supabase_schema.sql](reference/supabase_schema.sql) | reference | Supabase 表结构 |
-| [reference/devhtml/](reference/devhtml/) | reference | 生成的 html 产物（产品评分卡等） |
+| [reference/devhtml/](reference/devhtml/) | reference | 生成的 html 产物（产品评分卡、运行时架构-交互版[archify] 等） |
