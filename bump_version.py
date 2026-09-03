@@ -2,14 +2,23 @@
 """前端缓存版本自动同步：按文件内容 hash 生成 ?v= 戳，杜绝人肉漏改导致的白屏。
 
 原先改前端要手动同步三处版本号（index.html 的 ?v=、sw.js 的 FILES、sw.js 的
-CACHE），漏一处用户端就吃旧缓存白屏。本脚本从文件内容算 hash 自动写这三处。
+CACHE），漏一处用户端就吃旧缓存白屏。本脚本从文件内容算 hash 自动写 index.html
+与 sw.js 的 ?v= 及 CACHE。
+
+资产清单不再手写，按 ASSET_GLOBS 自动扫描——手写清单曾漂移（含 4 个已删文件、
+漏 inbox.js/platforms.js 两个新模块），漏掉的模块改了不换 CACHE，CI 还检不出。
+
+sw.js 的 FILES（预缓存列表）仍是手写，但 --check / apply 都会校验它：
+  · 扫描到的资产必须都在 FILES 里（漏了 → 新模块不进预缓存，离线首开 404）；
+  · FILES 不得引用不存在的文件（幽灵 → addAll 404 → 新 SW 永远装不上）。
 
 用法：
     python bump_version.py           # 按当前内容重写版本戳（改完前端后跑一次）
     python bump_version.py --check   # 只校验是否已同步，不一致则退出码 1（CI 用）
 
-戳形如 app.js?v=<8位hash>；CACHE=workbench-<8位hash>（覆盖全部资产+index.html）。
+戳形如 app.js?v=<8位hash>；CACHE=workbench-<8位hash>（由全部扫描到的资产决定）。
 """
+import glob
 import hashlib
 import os
 import re
@@ -17,30 +26,19 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-# 带 ?v= 缓存戳的前端资产（index.html 与 sw.js 的 FILES 里都引用它们）
-ASSETS = [
-    "js/app.js",
-    "css/styles.css",
-    "js/schedule.js",
-    "js/model-manager.js",
-    "js/kb.js",
-    "vendor/marked.min.js",
-    "js/core/util.js",
-    "js/core/icons.js",
-    "js/core/state.js",
-    "js/core/net.js",
-    "js/views/ov.js",
-    "js/views/sess.js",
-    "js/views/info.js",
-    "js/views/cap.js",
-    "js/views/ai.js",
-    "js/views/dash.js",
-    "js/views/distill.js",
-    "js/features/recall.js",
-    "js/features/favs.js",
-    "js/features/notes.js",
-    "js/features/todos.js",
-]
+# 资产发现：白名单 glob。白名单目录天然排除 data.json / *.local.json / docs/ / 测试；
+# *.d.ts 因后缀不匹配被排除。index.html / sw.js 自身不纳入（见 compute_cache 说明）。
+ASSET_GLOBS = ("js/**/*.js", "css/*.css", "vendor/*.js", "manifest.json", "icons/*")
+
+
+def discover_assets(base=HERE):
+    """扫描 base 下的前端资产，返回排序后的 '/' 分隔相对路径列表（跨平台、确定性）。"""
+    out = set()
+    for pat in ASSET_GLOBS:
+        for p in glob.glob(os.path.join(base, pat), recursive=True):
+            if os.path.isfile(p):
+                out.add(os.path.relpath(p, base).replace("\\", "/"))
+    return sorted(out)
 
 
 def _hash_bytes(b):
@@ -53,9 +51,9 @@ def _hash_file(path):
 
 
 def compute_stamps(base=HERE):
-    """每个资产的内容 hash（文件缺失则跳过）。"""
+    """每个资产的内容 hash（扫描期间被删的文件跳过）。"""
     stamps = {}
-    for a in ASSETS:
+    for a in discover_assets(base):
         p = os.path.join(base, a)
         if os.path.isfile(p):
             stamps[a] = _hash_file(p)
@@ -124,21 +122,60 @@ def apply(base=HERE):
     return changed, cache
 
 
+# ---------- sw.js FILES 校验（手写清单的机器守卫） ----------
+_FILES_RE = re.compile(r"const FILES\s*=\s*\[(.*?)\];", re.DOTALL)
+
+
+def sw_files(base=HERE):
+    """解析 sw.js 的 FILES：去 './' 前缀与 ?v= 后的相对路径列表；找不到返回 None。
+    用 search 而非 match——sw.js 首字节是 BOM。"""
+    p = os.path.join(base, "sw.js")
+    if not os.path.isfile(p):
+        return None
+    with open(p, "r", encoding="utf-8") as f:
+        m = _FILES_RE.search(f.read())
+    if not m:
+        return None
+    return re.findall(r'"\./([^"?]+)(?:\?v=[^"]*)?"', m.group(1))
+
+
+def check_sw_files(base=HERE):
+    """校验 sw.js FILES 与扫描结果一致。返回问题描述列表（空=OK）。"""
+    files = sw_files(base)
+    if files is None:
+        return ["sw.js: 未找到 const FILES = [...]"]
+    missing = sorted(set(discover_assets(base)) - set(files))
+    ghost = [f for f in files if not os.path.isfile(os.path.join(base, f))]
+    return (["sw.js FILES 缺少 %s（新文件不进预缓存，离线首开 404）" % a for a in missing]
+            + ["sw.js FILES 幽灵条目 %s（文件不存在，addAll 404 → 新 SW 装不上）" % f for f in ghost])
+
+
 def main(argv):
     if "--check" in argv:
         stale = check()
+        probs = check_sw_files()
         if stale:
             sys.stderr.write(
                 "[bump] 版本戳未同步：%s\n  改完前端请先跑 `python bump_version.py` 再提交。\n"
                 % ", ".join(stale))
+        for msg in probs:
+            sys.stderr.write("[bump] %s\n" % msg)
+        if stale or probs:
             return 1
-        print("[bump] 版本戳已同步 ✓")
+        stamps = compute_stamps()
+        print("[bump] 版本戳已同步 ✓（%d 个资产，CACHE=%s）" % (len(stamps), compute_cache(HERE, stamps)))
         return 0
     changed, cache = apply()
     if changed:
         print("[bump] 已更新 %s；CACHE=%s" % (", ".join(changed), cache))
     else:
         print("[bump] 无需改动，已是最新（CACHE=%s）" % cache)
+    probs = check_sw_files()
+    if probs:
+        for msg in probs:
+            sys.stderr.write("[bump] %s\n" % msg)
+        sys.stderr.write("[bump] 请手动增/删 sw.js 的 FILES 条目后重跑（apply 不代改预缓存列表）。\n")
+        return 1
     return 0
 
 
