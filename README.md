@@ -76,7 +76,6 @@ python -m http.server 8080
 | 想要完整功能（刷新/AI/知识库） | **B · 本地全功能后端** | 给笔记本配个私人助理 |
 | 想随时随地在线访问、还自动更新 | **C · GitHub Pages** | 把笔记本搬上云、还请人每天帮你续写 |
 | 想装成 App（桌面/手机浏览器都行） | **D · PWA 安装** | 给网页穿件"App 马甲" |
-| 只要个极简、纯静态的轻量版 | **F · lite 版** | 一本随身便签，不带助理 |
 
 ---
 
@@ -139,15 +138,6 @@ python -m backend.server 8080     # 端口可省，默认 8080；只绑 127.0.0.
 
 ---
 
-### 场景 F · lite 轻量版（纯静态、独立）
-
-- **适合谁**：只想要个极简版，**完全不依赖本机后端**，随便找个静态空间一挂就能用。
-- **怎么做**：单独把 `lite/` 这个文件夹静态托管即可（它自带 `index.html / app.js / sw.js / manifest / icons`）。
-- **和主版的区别**：lite 不走 `data.json` 那套后端流水线，而是**直接从公开 API 拉数据**（AI 日报 / 每日新闻 / AI 助手 / 待办 / 速记 / 收藏 / 课程表，全存浏览器本地）。
-- **比喻**：主版是"笔记本 + 私人助理"，lite 是**一本随身便签**——轻、独立、不用伺候，但也没那些联机高级功能。
-
----
-
 ## 五、数据从哪来（`data.json` 契约）
 
 面板默认读同目录下的 `data.json`——**它就是这个项目的"数据库"**，只不过是拿一个 JSON 文件当账本用（单人、无并发，够用且零依赖）。
@@ -164,7 +154,7 @@ python -m backend.server 8080     # 端口可省，默认 8080；只绑 127.0.0.
 
 ```bash
 python -m backend.pipeline.export_data     # 命令行
-# 或：Windows 小白双击 scripts/refresh.cmd（已配好托管 Python 路径，跑完自动刷新）
+# 或：Windows 小白双击 scripts/refresh.cmd（默认用 PATH 里的 python；要指定解释器就设环境变量 WB_PYTHON）
 ```
 
 数据落地在三处，各管各的：**`data.json` 文件**（主快照）+ **Supabase 云端**（只存需要多端共享的模型配置）+ **浏览器 localStorage**（速记 / 待办 / 收藏 / 偏好，纯本地不上传）。
@@ -205,7 +195,7 @@ python bump_version.py         # 按文件内容 hash 自动同步 index.html + 
 python bump_version.py --check # 只校验是否同步（CI 会跑，不一致直接失败）
 ```
 
-版本戳由**内容 hash** 生成，不用手改数字、不会漏改。`--check` 是 **CI 硬门槛**——漏 bump 直接红灯，进不了主干。
+版本戳由**内容 hash** 生成，不用手改数字、不会漏改。资产清单也不用手写——脚本**自动扫描** `js/**/*.js`、`css/`、`vendor/`、manifest 与 icons；新增 JS 文件只需加进 `sw.js` 的 `FILES` 预缓存列表，漏加或引用了已删文件，`--check` 同样报红。`--check` 是 **CI 硬门槛**——漏 bump 直接红灯，进不了主干。
 
 ---
 
@@ -240,7 +230,7 @@ DailyWorkbench/
 │   │                              #   core/{net,state,util,icons,platforms} · types/(JSDoc)
 │   │                              #   views/{info,distill,ai,dash/cap/sess/ov(下架保留)}
 │   │                              #   features/{inbox(捕获),recall(温故),notes,todos,favs}
-├── vendor/                        # marked.min.js · xlsx.full.min.js（第三方：Markdown / 课程表导入·懒加载）
+├── vendor/                        # marked.min.js（第三方：Markdown 渲染）
 ├── icons/                         # icon.svg · icon-192/512 · maskable-512
 │  ── 数据 · 配置（前端 fetch 或后端产出，钉在根）──
 ├── data.json                      # 聚合快照（backend/pipeline/export_data.py 生成）
@@ -260,8 +250,7 @@ DailyWorkbench/
 │  ── 文档 · 其它交付形态 · 自动化 ──
 ├── docs/                          # README(文档地图) · TECH_CHARTER · 版本管理规范 · adr/
 │   │                              #   guides/ design/ planning/ research/ reference/（按 Diátaxis 改编分类）
-├── lite/                          # 轻量版 PWA（独立纯静态分叉，不依赖后端）
-├── scripts/                       # 本机启动/同步脚本（refresh·start_workbench·run_refresh·setup_runner·delete_workbench_tasks，含机器路径）
+├── scripts/                       # 本机启动/同步脚本（refresh·start_workbench·setup_runner·delete_workbench_tasks；解释器经 WB_PYTHON 环境变量指定，不含机器路径）
 └── .github/workflows/             # ci · deploy-pages · sync · daily-ai
 ```
 

@@ -19,6 +19,22 @@
 - **Phase 2 · 灵感留存 + 备份**（候选）：随手记灵感 → Obsidian `灵感/日期/`；Obsidian 库纳入 git 自动备份（复用 self-hosted runner）。
 - 温故卡复用状态从 localStorage 迁到卡片 frontmatter（跨端持久，需后端"更新已存笔记 frontmatter"能力）。
 
+> **2026-09-03 止血批次**（工程帽半天，随后换产品帽 dogfood 一周，见 `.claude/plan/next-steps-dogfood-w1.md`）：
+
+### Removed
+- **`lite/` 轻量版分叉 + `vendor/xlsx.full.min.js`**：lite 与主站 58 处同名函数重复、其 xlsx 引用路径已断、无实际使用；881KB 的 xlsx 库仅被 lite 引用却随 Pages 整仓部署。PC-first 收敛的延续，见 [`docs/adr/0005`](docs/adr/0005-pc-first-drop-native-mobile.md) 修订。
+- `scripts/run_refresh.vbs`（指向已不存在的仓库路径，属计划任务时代遗留）。
+
+### Fixed
+- **`bump_version.py` 资产清单漂移**：手写 `ASSETS` 含 4 个已删文件、漏 `js/features/inbox.js` 与 `js/core/platforms.js`——单独改这两个文件不会换 SW CACHE，客户端吃旧缓存，CI `--check` 检不出（清单本身错）。改为自动扫描 `js/**/*.js`/`css/`/`vendor/`/manifest/icons；`--check` 与 `apply` 同时校验 `sw.js` FILES 无遗漏、无幽灵条目（幽灵条目会让 `addAll` 404、新 SW 永远装不上）。
+- **经验卡标题被改写**：`kb.save` 把清洗后的文件名当 `title` 写进 frontmatter 与 `_index.jsonl`，蒸馏库/温故卡显示成 `Codex-Claude-进阶必装的-10-个-…`。现 `title` 存用户原标题（加引号防冒号破坏 YAML），清洗名只留 `fileName`。
+- 知识库视图 30s 自动刷新守卫读裸 `__view`（走查评审 T2），改读 `state.js` 镜像的 `window.__view`。
+- `app.js` 僵尸：`switchTab` 纯转发别名（调用者改 `switchView`）、`backupExport/Import` 重复挂载。
+- `scripts/` 去硬编码：`.cmd` 改读 `WB_PYTHON` 环境变量（不设则用 PATH 里的 python）；`setup_runner.ps1` 的 runner 目录改参数、清掉三台机器混杂的注释路径。
+
+### Added
+- `kb.save`/`list_deposits` 回归测试 ×3（飞轮唯一写路径此前零覆盖；含同名后缀、越界标题、非白名单 source）+ `bump_version` 扫描/FILES 校验/「新增模块必换 CACHE」测试 ×3。
+
 ---
 
 ## [0.9.1] · 2026-09-02 — 表现层修复：emoji→SVG + 深色侧栏 + 主题跟随系统
