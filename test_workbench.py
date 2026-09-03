@@ -9,6 +9,8 @@ import json
 import os
 import re
 
+import pytest
+
 from backend.utils import common as wb_common
 from backend.clients import kb as kb_service
 from backend.pipeline import sync_status
@@ -223,3 +225,167 @@ def test_new_module_rotates_cache(tmp_path):
     assert bump_version.check(base) == ["sw.js"]          # index.html 无该文件的 ?v=，不受影响
     _, c2 = bump_version.apply(base)
     assert c1 != c2
+
+
+# ---------------------------------------------------------------- 捕获收件箱
+# 收件箱是飞轮捕获环的**唯一写路径**（浏览器扩展 + 工作台都往这写），
+# 故对去重、字段白名单、状态枚举、损坏恢复做回归覆盖。
+
+from backend.clients import inbox as inbox_service
+
+
+@pytest.fixture
+def _inbox_sandbox(tmp_path, monkeypatch):
+    """把收件箱数据文件指到 tmp，避免测试碰真实 inbox.local.json。"""
+    fp = tmp_path / "inbox.json"
+    monkeypatch.setattr(inbox_service, "path", lambda: str(fp))
+    return str(fp)
+
+
+def test_inbox_add_fills_server_side_fields(_inbox_sandbox):
+    r = inbox_service.add({"url": "https://www.xiaohongshu.com/explore/1",
+                           "excerpt": "精华一段", "note": "感悟", "tags": "RAG 检索",
+                           "source": "ext"})
+    assert r["ok"] is True
+    it = r["item"]
+    assert it["id"] and it["at"] and it["updatedAt"]
+    assert it["status"] == "待处理"      # 服务端定初始状态
+    assert it["type"] == "clip"          # 有 url 推断为剪藏
+    assert it["source"] == "ext"
+    assert it["tags"] == ["RAG", "检索"]  # 字符串标签被规整成列表
+
+
+def test_inbox_add_infers_idea_when_no_url(_inbox_sandbox):
+    r = inbox_service.add({"note": "只是一个想法"})
+    assert r["item"]["type"] == "idea"
+
+
+def test_inbox_add_rejects_empty_capture(_inbox_sandbox):
+    r = inbox_service.add({})
+    assert r["ok"] is False
+
+
+def test_inbox_add_dedupes_same_url_and_excerpt(_inbox_sandbox):
+    p = {"url": "https://b23.tv/x", "excerpt": "同一段摘录"}
+    first = inbox_service.add(dict(p))
+    again = inbox_service.add(dict(p))
+    assert again.get("deduped") is True
+    assert again["item"]["id"] == first["item"]["id"]
+    assert len(inbox_service.list_items()) == 1
+
+
+def test_inbox_add_keeps_both_when_excerpt_differs(_inbox_sandbox):
+    inbox_service.add({"url": "https://b23.tv/x", "excerpt": "第一段"})
+    inbox_service.add({"url": "https://b23.tv/x", "excerpt": "第二段"})
+    assert len(inbox_service.list_items()) == 2   # 同一帖的不同高亮各自成条
+
+
+def test_inbox_update_only_patches_whitelisted_fields(_inbox_sandbox):
+    iid = inbox_service.add({"url": "https://weibo.com/1", "excerpt": "x"})["item"]["id"]
+    r = inbox_service.update(iid, {"status": "已蒸馏", "note": "改后感悟",
+                                   "url": "https://hacked", "id": "spoof"})
+    assert r["ok"] is True
+    assert r["item"]["status"] == "已蒸馏"
+    assert r["item"]["note"] == "改后感悟"
+    assert r["item"]["url"] == "https://weibo.com/1"   # 白名单外字段改不动
+    assert r["item"]["id"] == iid
+
+
+def test_inbox_update_rejects_unknown_status(_inbox_sandbox):
+    iid = inbox_service.add({"note": "x"})["item"]["id"]
+    assert inbox_service.update(iid, {"status": "瞎写"})["ok"] is False
+
+
+def test_inbox_update_and_delete_missing_id(_inbox_sandbox):
+    assert inbox_service.update("nope", {"status": "已归档"})["ok"] is False
+    assert inbox_service.delete("nope")["ok"] is False
+
+
+def test_inbox_delete_removes_item(_inbox_sandbox):
+    iid = inbox_service.add({"note": "待删"})["item"]["id"]
+    assert inbox_service.delete(iid)["ok"] is True
+    assert inbox_service.list_items() == []
+
+
+def test_inbox_truncates_overlong_excerpt(_inbox_sandbox):
+    long = "字" * (inbox_service.EXCERPT_MAX + 500)
+    it = inbox_service.add({"url": "https://x.com/1", "excerpt": long})["item"]
+    assert len(it["excerpt"]) == inbox_service.EXCERPT_MAX
+
+
+def test_inbox_list_is_newest_first(_inbox_sandbox):
+    a = inbox_service.add({"note": "老"})["item"]
+    b = inbox_service.add({"note": "新"})["item"]
+    ids = [x["id"] for x in inbox_service.list_items()]
+    assert ids.index(b["id"]) < ids.index(a["id"])
+
+
+def test_inbox_recovers_from_corrupt_file(_inbox_sandbox):
+    # 损坏的数据文件不能让工作台起不来：备份 .bak 后空启动
+    with open(_inbox_sandbox, "w", encoding="utf-8") as f:
+        f.write("{ 这不是合法 JSON")
+    assert inbox_service.list_items() == []
+    assert inbox_service.add({"note": "灾后第一条"})["ok"] is True
+    assert os.path.isfile(_inbox_sandbox + ".bak")
+
+
+def test_inbox_write_leaves_no_tmp_file(_inbox_sandbox):
+    inbox_service.add({"note": "x"})
+    d = os.path.dirname(_inbox_sandbox)
+    assert not [f for f in os.listdir(d) if ".tmp" in f]
+
+
+def test_inbox_two_distinct_ideas_are_not_deduped(_inbox_sandbox):
+    """回归：纯想法 url/excerpt 皆空，若去重不看 note 会静默丢掉第二个想法。"""
+    inbox_service.add({"note": "想法一"})
+    inbox_service.add({"note": "想法二"})
+    notes = [x["note"] for x in inbox_service.list_items()]
+    assert sorted(notes) == ["想法一", "想法二"]
+
+
+def test_inbox_same_idea_twice_is_deduped(_inbox_sandbox):
+    inbox_service.add({"note": "手抖提交两次"})
+    r = inbox_service.add({"note": "手抖提交两次"})
+    assert r.get("deduped") is True
+    assert len(inbox_service.list_items()) == 1
+
+
+def test_inbox_concurrent_adds_lose_nothing(_inbox_sandbox):
+    """回归：ThreadingHTTPServer 下并发 add（前端 _flush 并行补推 / 扩展连点）。
+
+    加锁前的失效模式有两种，都出现过：
+      ① 两写者抢同一个 `.tmp`，后 os.replace 找不到源 → 返回"写入失败"(HTTP 400)；
+      ② 各自读到旧列表再覆写 → **静默丢条目**（更危险，用户以为存上了）。
+    """
+    import threading as _th
+
+    N = 25
+    errors = []
+
+    def worker(i):
+        r = inbox_service.add({"note": "并发第%d条" % i})
+        if not r.get("ok"):
+            errors.append(r)
+
+    ts = [_th.Thread(target=worker, args=(i,)) for i in range(N)]
+    for t in ts:
+        t.start()
+    for t in ts:
+        t.join()
+
+    assert errors == [], "并发写出现失败: %r" % (errors[:3],)
+    notes = {x["note"] for x in inbox_service.list_items()}
+    assert len(notes) == N, "并发丢条目：期望 %d 条，实到 %d" % (N, len(notes))
+    ids = [x["id"] for x in inbox_service.list_items()]
+    assert len(set(ids)) == len(ids), "并发产生了重复 id"
+
+
+def test_inbox_no_tmp_residue_after_concurrent_writes(_inbox_sandbox):
+    import threading as _th
+    ts = [_th.Thread(target=inbox_service.add, args=({"note": "t%d" % i},)) for i in range(10)]
+    for t in ts:
+        t.start()
+    for t in ts:
+        t.join()
+    d = os.path.dirname(_inbox_sandbox)
+    assert not [f for f in os.listdir(d) if ".tmp" in f], "并发写后残留 tmp 文件"

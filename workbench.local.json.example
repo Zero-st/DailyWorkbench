@@ -8,5 +8,6 @@
 
   "supabase": { "url": "", "serviceKey": "" },
   "kb": { "vault": "", "depositRoot": "" },
+  "inbox": { "path": "" },
   "chatProxy": { "allowHosts": [] }
 }

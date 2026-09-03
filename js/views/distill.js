@@ -9,12 +9,22 @@ import { PLATFORMS, platform as _plat, platformBadge as _badge } from "../core/p
 var _deposits = [];   // /api/kb/deposits 结果（新→旧）
 var _filter = "";     // 平台筛选（""=全部）
 var _formPlat = "";   // 新蒸馏表单当前平台
+var _formExtra = null; // 来自收件箱「→蒸馏」的摘录/感悟（有则蒸馏指令走"据此提炼"）
 
 // 六维拆解模板：交接给 skill 时明确要什么，保证产出可结构化成经验卡
-function _distillCmd(plat, url) {
+function _distillCmd(plat, url, extra) {
   var p = _plat(plat);
   if (!p) return "";
   var six = "核心观点 / 方法步骤 / 适用场景 / 边界反例 / 可复用动作 / 出处";
+  // 有人工摘录时走「据此提炼」——小红书/微博反爬抓不到正文，选中那段就是精华，
+  // 这样蒸馏不再依赖抓页面（设计见 docs/design/捕获收件箱-浏览器扩展-设计.md §1）
+  if (extra && extra.excerpt) {
+    var t = "以下是我从该 " + p.label + " " + p.kind + " 中选中的摘录与当时的感悟，" +
+            "请直接据此提炼六维经验卡（" + six + "），无需再抓取页面：\n\n【摘录】\n" + extra.excerpt;
+    if (extra.note) t += "\n\n【我的感悟】\n" + extra.note;
+    if (url) t += "\n\n【出处】\n" + url;
+    return t;
+  }
   if (p.skill === "creator-video-decoder") {
     return "用 creator-video-decoder 拆解以下 " + p.label + " " + p.kind + "，输出六维经验卡（" + six + "）：\n" + (url || "");
   }
@@ -107,6 +117,8 @@ function distillOpen(rel) {
 // ---- 新蒸馏表单（渲染在右侧阅读区，避免另加浮层） ----
 // prefill: 可选 {url, platform}——由收件箱「→蒸馏」预填；无参时行为不变（向后兼容内联 onclick）
 function distillNew(prefill) {
+  _formExtra = (prefill && typeof prefill === "object" && (prefill.excerpt || prefill.note))
+    ? { excerpt: prefill.excerpt || "", note: prefill.note || "" } : null;
   if (prefill && typeof prefill === "object" && prefill.platform && _plat(prefill.platform)) _formPlat = prefill.platform;
   _formPlat = _formPlat || PLATFORMS[0].v;
   var box = document.getElementById("distillReader");
@@ -133,9 +145,21 @@ function distillNew(prefill) {
         '<button class="button sm" onclick="distillSave()">' + icon("download") + ' 保存进蒸馏库</button>' +
       "</div>" +
     "</div>";
-  if (prefill && typeof prefill === "object" && prefill.url) {
-    var u = document.getElementById("dfUrl");
-    if (u) u.value = prefill.url;
+  if (prefill && typeof prefill === "object") {
+    if (prefill.url) {
+      var u = document.getElementById("dfUrl");
+      if (u) u.value = prefill.url;
+    }
+    // 摘录+感悟预填进正文区：即便不跑 skill，这张卡也已有可用内容
+    if (prefill.excerpt || prefill.note) {
+      var b = document.getElementById("dfBody");
+      if (b && !b.value) {
+        var pre = "";
+        if (prefill.excerpt) pre += "> " + String(prefill.excerpt).replace(/\n/g, "\n> ") + "\n";
+        if (prefill.note) pre += "\n**我的感悟**：" + prefill.note + "\n";
+        b.value = pre;
+      }
+    }
   }
 }
 
@@ -149,7 +173,7 @@ function distillPickPlat(v) {
 
 function distillCopyCmd() {
   var url = (document.getElementById("dfUrl") || {}).value || "";
-  if (typeof window.cmdtext === "function") window.cmdtext(_distillCmd(_formPlat, url));
+  if (typeof window.cmdtext === "function") window.cmdtext(_distillCmd(_formPlat, url, _formExtra));
 }
 
 function distillCancel() { renderDistill(); }
@@ -170,6 +194,7 @@ function distillSave() {
     if (r && r.ok) {
       // 若来源是收件箱「→蒸馏」，回标该条为已蒸馏（薄耦合，inbox.js 注册）
       if (typeof window.inboxOnDistilled === "function") window.inboxOnDistilled();
+      _formExtra = null;
       window.WB.dialog.alert("已存入蒸馏库：\n" + (r.path || r.fileName || ""));
       renderDistill();
     } else if (hint) {

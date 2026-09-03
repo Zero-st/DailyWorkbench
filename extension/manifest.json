@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "工作台收件箱 · 捕获",
+  "version": "1.0.0",
+  "description": "读帖当场选中一段精华 + 写下感悟，一键存进 DailyWorkbench 收件箱，之后可升级成六维经验卡。",
+  "permissions": ["contextMenus", "storage", "activeTab", "scripting"],
+  "host_permissions": ["http://127.0.0.1/*", "http://localhost/*"],
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "存到工作台收件箱",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.xiaohongshu.com/*",
+        "*://*.bilibili.com/*",
+        "*://*.weibo.com/*",
+        "*://*.weibo.cn/*",
+        "*://*.okjike.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -107,6 +107,20 @@ def kb():
     return (os.path.normpath(vault) if vault else ""), (os.path.normpath(deposit) if deposit else "")
 
 
+def inbox_path():
+    """捕获收件箱数据文件路径（默认仓库根 inbox.local.json，已 gitignore）。
+
+    收件箱是「暂存工作集」，故意不写进 Obsidian vault：沉淀根可能是公开库，
+    且状态流转不该靠改 frontmatter。详见 docs/design/捕获收件箱-浏览器扩展-设计.md。
+    """
+    cfg = _LOCAL.get("inbox") or {}
+    return _first(
+        os.environ.get("WB_INBOX_PATH"),
+        cfg.get("path"),
+        os.path.join(ROOT, "inbox.local.json"),
+    )
+
+
 def chat_allow_hosts():
     """AI 聊天代理目标主机白名单；空列表 = 不限制（保持旧行为）。"""
     cp = _LOCAL.get("chatProxy") or {}

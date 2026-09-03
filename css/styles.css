@@ -1084,3 +1084,16 @@ a.dc-chip:hover{background:var(--tint-2)}
 .ib-card-acts .nd{margin-left:auto;background:transparent;border:none;color:var(--sub);cursor:pointer;font-size:14px;line-height:1;padding:0 4px}
 .ib-card-acts .nd:hover{color:var(--red)}
 .ib-card-acts a.button.sm.ghost{text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+
+/* ===== 收件箱 v2：摘录+感悟成对、连接状态、拖拽即存、来源角标 ===== */
+.ib-conn{font-size:11px;font-weight:500;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--sub-2);background:var(--panel-2)}
+.ib-conn.ok{color:var(--candy-green);border-color:var(--line)}
+.ib-conn.warn{color:var(--amber,#c98a00);background:var(--tint)}
+.ib-ta{font-family:inherit;line-height:1.6;resize:vertical;padding:9px 11px}
+.ib-drop-tip{font-size:11px;color:var(--sub-2);margin-left:auto}
+.inbox-capture.ib-dragging{border-color:var(--accent);box-shadow:0 0 0 3px var(--tint)}
+.ib-excerpt{margin:8px 0 0;padding:6px 12px;border-left:3px solid var(--accent-line-2);background:var(--panel-2);border-radius:0 8px 8px 0;font-size:13px;color:var(--ink);line-height:1.6;white-space:pre-wrap}
+.ib-note{margin-top:8px;font-size:13px;color:var(--sub);display:flex;align-items:flex-start;gap:6px;line-height:1.6}
+.ib-note .ic-svg{width:13px;height:13px;flex:none;margin-top:3px}
+.ib-src{font-size:11px;padding:1px 7px;border-radius:999px;background:var(--tint);color:var(--accent);border:1px solid var(--accent-line-2)}
+.ib-src.warn{background:var(--panel-2);color:var(--sub-2);border-color:var(--line)}

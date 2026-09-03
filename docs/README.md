@@ -76,15 +76,18 @@ docs/
 | [TECH_CHARTER.md](TECH_CHARTER.md) | 根 | 技术宪章：北极星（零构建·零依赖·离线）与选型原则 |
 | [版本管理规范.md](版本管理规范.md) | 根 | 版本 / commit / 「what 与思路落在哪」约定 |
 | [开发心法-多维思维总纲.md](principles/开发心法-多维思维总纲.md) | principles | 宪章之上的心法：四顶帽子（产品/设计/工程/决策）× 何时戴 + 产品帽判据 |
-| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 |
+| [AI时代程序员成长-心法.md](principles/AI时代程序员成长-心法.md) | principles | 姊妹篇：AI 替你写代码之后人该长哪些肌肉——定价表 / 四杠杆 / 五转变 / AI 放大的坑 / 练习节律 |
+| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 |
 | [知识飞轮-路线图.md](planning/知识飞轮-路线图.md) | planning | 三层大脑模型 + 四阶段路线图（方向盘） |
 | [项目总览-需求与进度.md](planning/项目总览-需求与进度.md) | planning | 一页总账：需求 / 已完成 / 待优化 / 待完成 |
 | [复盘-MVP闭环首跑.md](planning/复盘-MVP闭环首跑.md) | planning | 蒸馏库 0→1 首张真实经验卡的里程碑复盘 |
+| [复盘-dogfood冲刺-W1.md](planning/复盘-dogfood冲刺-W1.md) | planning | 产品帽 dogfood 一周：每日日志 + 摩擦清单 + 三门筛选 → 决定下一个功能 |
 | [运行时架构-数据流.md](design/运行时架构-数据流.md) | design | 一页架构总图（mermaid）：前端↔后端↔data.json 契约↔三大脑 + 数据流 |
 | [界面设计准则.md](design/界面设计准则.md) | design | 设计系统 v7 索引 + 图标红线 + 新视图检查清单 |
 | [温故复用-设计.md](design/温故复用-设计.md) | design | 「今日温故卡」复用抓手设计（Leitner-lite） |
 | [产品-IA评审.md](design/产品-IA评审.md) | design | 信息架构评审 + 收敛提案 |
 | [工作台走查评审-v0.8.0.md](design/工作台走查评审-v0.8.0.md) | design | chrome-devtools 全链路走查 + 分层优化 backlog |
+| [捕获收件箱-浏览器扩展-设计.md](design/捕获收件箱-浏览器扩展-设计.md) | design | 捕获环设计：选中摘录+感悟成对、扩展零站点解析、inbox.local.json 真源、API 优先+离线队列 |
 | [知识库沉淀存储方案.md](design/知识库沉淀存储方案.md) | design | Obsidian 沉淀写入侧存储规范 |
 | [模型管理模块操作指南.md](guides/模型管理模块操作指南.md) | guides | 模型管理模块操作手册 |
 | [Supabase上线操作指南.md](guides/Supabase上线操作指南.md) | guides | Supabase 接入 / 上线步骤 |
@@ -92,4 +95,4 @@ docs/
 | [工具链-MCP与Skill地图.md](research/工具链-MCP与Skill地图.md) | research | 本项目用过的 MCP / Skill × 开发阶段 |
 | [开发阶段-Skill选型账本.md](research/开发阶段-Skill选型账本.md) | research | 通用 Skill / MCP / SDD 选型账本 |
 | [reference/supabase_schema.sql](reference/supabase_schema.sql) | reference | Supabase 表结构 |
-| [reference/devhtml/](reference/devhtml/) | reference | 生成的 html 产物（产品评分卡、运行时架构-交互版[archify] 等） |
+| [reference/devhtml/](reference/devhtml/) | reference | 生成的 html 产物（产品评分卡、运行时架构-交互版[archify]、餐厅里的软件工程[零基础讲解] 等） |

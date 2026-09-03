@@ -37,6 +37,35 @@
 
 ---
 
+## [0.10.0] · 2026-09-03 — 捕获层：浏览器扩展 + 收件箱上后端
+
+> 补上飞轮**捕获环**：从"事后回工作台补录链接"改成"读帖当场选中一段 + 写下感悟"。
+> 为什么这么做、三条候选路（Obsidian Web Clipper / 书签小工具 / 自研扩展）如何取舍，
+> 见 [`docs/design/捕获收件箱-浏览器扩展-设计.md`](docs/design/捕获收件箱-浏览器扩展-设计.md) 与 [`docs/adr/0006`](docs/adr/0006-self-built-browser-extension-for-capture.md)。
+
+### Added
+- **浏览器扩展 `extension/`**（MV3，开发者模式 load unpacked，无需构建）：三个入口共用一个 shadow DOM 面板——四站选中即现浮按钮、右键菜单（**全站可用**，非四站靠 `scripting` 临时注入，知乎/公众号等文章页也能存）、工具栏 popup（快速存 + 端口/浮按钮设置 + 连接状态）。**零站点解析**：只用 `getSelection()`/`og:*`/`document.title`，不含任何平台专属 DOM 选择器，站点改版不会失效。
+- **收件箱后端化**：`backend/clients/inbox.py` + 五路由（`GET /api/inbox`、`/api/inbox/ping`，`POST /api/inbox/add|update|delete`）。真源为仓根 `inbox.local.json`（gitignore），tmp+`os.replace` 原子写，文件损坏则备份 `.bak` 空启动。
+- **摘录 + 感悟成对**（Readwise 式 highlight+annotation）：条目新增 `title/excerpt/note/source/updatedAt`；卡片渲染摘录引用块 + 感悟 + 来源角标（扩展/工作台）。
+- **`→蒸馏` 内嵌摘录**：带摘录时蒸馏指令改为「据此提炼，无需再抓取页面」。**小红书/微博反爬抓不到正文的问题由"人工取材"绕过**——选中那段就是精华，这是本批次对飞轮的最大加成。
+- **拖拽即存**：选中文字/链接拖到捕获卡即预填（`text/uri-list`/`text/plain`）。
+- 平台枚举扩到 **微博 / 即刻**，并抽出共享模块 `js/core/platforms.js`（inbox 与 distill 共用，避免两处漂移）；`detectPlatform()` 支持无协议头链接。
+
+### Changed
+- **收件箱数据层改「API 优先 + 离线队列」**：后端可达走 API；不可达则写 localStorage 并标 `pending`，下次拉取成功自动补推——守住"离线可跑"北极星。
+- `/api/inbox/*` 写端点加 **Origin 允许列表**（放行无 Origin、本机工作台、`chrome-extension://`，其余 403）。此前后端对 JSON 统一放 `ACAO:*`，任意网页可用简单请求写本地 API。
+- `distillNew()` 支持预填（`url/platform/excerpt/note`），无参时行为不变。
+
+### Fixed
+> 以下三条由 chrome-devtools 全链路走查发现（2026-09-03）。
+
+- **收件箱并发写会毁数据**（走查发现，最严重）：后端是 `ThreadingHTTPServer`，而前端补推用 `Promise.all` 并行、扩展也可能连点，于是多线程同时进 `add()` 的读-改-写：① 都写同一个 `.tmp`，先 `os.replace` 的把它移走、后者找不到源 → 返回「写入失败」(400)；② 各自基于旧快照覆写 → **静默丢条目**。实测无锁时 **25 条并发提交仅 0 条存活**，并把 `inbox.local.json` 写成非法 JSON 触发「损坏恢复」把数据清空。现全局锁包住读-改-写、tmp 名带 pid+线程 id、失败清理残留 tmp；补 2 条并发回归测试（已验证对旧代码会失败）。前端补推同时改为**串行**。
+- **旧版遗留捕获永远上不了后端**：`_flush()` 只推带 `pending` 标记的条目，而升级前纯 localStorage 时代的条目没有该标记 → 既不上云也不在列表显示（联机后列表取自后端），等于静默消失。现队列内一切都视为「后端还没有的」全量补推，连接状态计数同步修正。
+- **感悟文字重复显示**：工作台存的条目没有 `title`，卡片标题回退用感悟，而感悟行的去重比的是 `r.title`（空）没挡住 → 同一句话在标题和感悟行各出现一次。改为标题函数返回「取自哪个字段」，据此隐藏重复的摘录块/感悟行。
+- `distillPickPlat` 重绘平台按钮时读不存在的 `p.emoji`（显示 `undefined`），改用 `icon(p.ic)`，与首次渲染一致。
+
+---
+
 ## [0.9.1] · 2026-09-02 — 表现层修复：emoji→SVG + 深色侧栏 + 主题跟随系统
 
 **思路**：PC-first 收敛后接着消化上一份走查评审的表现层 backlog（见 [`docs/design/工作台走查评审-v0.8.0.md`](docs/design/工作台走查评审-v0.8.0.md) 的 U1/U2/X2）。均为双向门小修，真机走查逐条验证（6 视图零 console error）。

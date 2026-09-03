@@ -31,6 +31,7 @@ from backend.core import config as wb_config
 from backend.core.paths import ROOT
 from backend.clients import supabase as sb
 from backend.clients import kb
+from backend.clients import inbox
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
@@ -104,12 +105,17 @@ class Handler(SimpleHTTPRequestHandler):
         "/api/kb/note": "_get_kb_note",
         "/api/kb/search": "_get_kb_search",
         "/api/kb/deposits": "_get_kb_deposits",
+        "/api/inbox": "_get_inbox",
+        "/api/inbox/ping": "_get_inbox_ping",
     }
     POST_ROUTES = {
         "/api/chat": "_post_chat",
         "/api/models": "_post_models",
         "/api/kb/save": "_post_kb_save",
         "/api/refresh": "_post_refresh",
+        "/api/inbox/add": "_post_inbox_add",
+        "/api/inbox/update": "_post_inbox_update",
+        "/api/inbox/delete": "_post_inbox_delete",
     }
 
     def __init__(self, *a, **kw):
@@ -246,6 +252,72 @@ class Handler(SimpleHTTPRequestHandler):
             sys.stderr.write("[kb-save] %s\n" % e)
             self._json(500, {"error": "internal error"})
 
+    # ---------- 收件箱（捕获层） ----------
+    def _origin_ok(self):
+        """写端点来源校验。
+
+        现后端对 JSON 响应统一放 ACAO:*，若不校验来源，任意网页都能用简单请求
+        （text/plain，无预检）写本地 API。放行：无 Origin(curl/本地脚本)、
+        本机工作台自身、chrome-extension://（捕获扩展）。其余 403。
+        扩展走 background fetch + host_permissions，工作台同源，都不触发预检，
+        故无需 OPTIONS 分支。
+        """
+        origin = self.headers.get("Origin")
+        if not origin:
+            return True  # curl / 本地脚本 / 同源无 Origin 的请求
+        if origin.startswith("chrome-extension://") or origin.startswith("moz-extension://"):
+            return True
+        try:
+            u = urlparse(origin)
+        except Exception:
+            return False
+        return u.scheme in ("http", "https") and u.hostname in ("127.0.0.1", "localhost")
+
+    def _guard_origin(self):
+        """校验失败时回 403 并返回 True（调用方据此提前 return）。"""
+        if self._origin_ok():
+            return False
+        self._json(403, {"ok": False, "error": "forbidden origin"})
+        return True
+
+    def _get_inbox(self):
+        self._json(200, {"ok": True, "items": inbox.list_items()})
+
+    def _get_inbox_ping(self):
+        # 扩展弹窗用它显示「已连上工作台 · N 条」
+        self._json(200, {"ok": True, "count": inbox.count()})
+
+    def _post_inbox_add(self):
+        if self._guard_origin():
+            return
+        try:
+            res = inbox.add(self._body())
+            self._json(200 if res.get("ok") else 400, res)
+        except Exception as e:
+            sys.stderr.write("[inbox-add] %s\n" % e)
+            self._json(500, {"ok": False, "error": "internal error"})
+
+    def _post_inbox_update(self):
+        if self._guard_origin():
+            return
+        try:
+            payload = self._body()
+            res = inbox.update(payload.get("id", ""), payload.get("patch") or {})
+            self._json(200 if res.get("ok") else 400, res)
+        except Exception as e:
+            sys.stderr.write("[inbox-update] %s\n" % e)
+            self._json(500, {"ok": False, "error": "internal error"})
+
+    def _post_inbox_delete(self):
+        if self._guard_origin():
+            return
+        try:
+            res = inbox.delete(self._body().get("id", ""))
+            self._json(200 if res.get("ok") else 400, res)
+        except Exception as e:
+            sys.stderr.write("[inbox-delete] %s\n" % e)
+            self._json(500, {"ok": False, "error": "internal error"})
+
     def _post_refresh(self):
         # 后台线程启动刷新，最多等 200ms 看是否秒返回「已在跑」
         container = {"r": None}
@@ -276,6 +348,7 @@ def main():
         print("GET/POST /api/models -> Supabase (云端配置已启用)")
     else:
         print("GET/POST /api/models -> 未配置 Supabase，回退 localStorage")
+    print("GET/POST /api/inbox/* -> 捕获收件箱: " + (inbox.path() or "(未配置)"))
     if kb.VAULT:
         print("GET /api/kb/* -> Obsidian vault 已启用: " + kb.VAULT)
         print("POST /api/kb/save -> 沉淀根: " + (kb.DEPOSIT or "(未配置 depositRoot)"))

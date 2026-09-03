@@ -5,6 +5,7 @@ schedule.local.json
 supabase.local.json
 kb.local.json
 workbench.local.json
+inbox.local.json
 APK/
 # 调试截图与预览图（不入库）
 debug-*.png

@@ -138,6 +138,35 @@ python -m backend.server 8080     # 端口可省，默认 8080；只绑 127.0.0.
 
 ---
 
+### 场景 E · 浏览器扩展捕获（读帖当场沉淀，推荐搭配场景 B）
+
+刷小红书 / B站 / 微博 / 即刻时，**选中那段精华 + 写一句感悟**，一次点击存进「收件箱」，之后可一键升级成六维经验卡。
+
+```bash
+# 1) 先按场景 B 起后端（扩展要往它写）
+python -m backend.server 8899
+
+# 2) Chrome 打开 chrome://extensions → 右上「开发者模式」打开
+#    → 点「加载已解压的扩展程序」→ 选本仓的 extension/ 目录
+```
+
+装好后三种用法：
+
+| 入口 | 怎么用 | 适用 |
+|---|---|---|
+| **选中浮按钮** | 在小红书/B站/微博/即刻选中文字，旁边浮出「存到工作台」 | 四站读帖时最快 |
+| **右键菜单** | 任意网页选中 → 右键「存到工作台收件箱」 | 知乎/公众号等**全站可用** |
+| **工具栏图标** | 点扩展图标：快速存 + 改后端端口 + 开关浮按钮 + 看连接状态 | 无选区时 / 调设置 |
+
+面板里 `感悟` 会自动聚焦（这是最该趁热写的），`⏎` 保存、`Esc` 取消。
+
+- 扩展只往 `127.0.0.1` 写，**不联外网**；写端点有 Origin 允许列表，别的网页写不进来。
+- 后端没起时会明确提示「工作台后端未启动」，不会静默丢数据。
+- 数据落在仓根 `inbox.local.json`（已 gitignore，不会被提交）。
+- 扩展**零站点解析**（只用选区 + `og:*` 元信息），平台改版不会失效；为什么自研而不用 Obsidian Web Clipper，见 [`docs/adr/0006`](docs/adr/0006-self-built-browser-extension-for-capture.md)。
+
+---
+
 ## 五、数据从哪来（`data.json` 契约）
 
 面板默认读同目录下的 `data.json`——**它就是这个项目的"数据库"**，只不过是拿一个 JSON 文件当账本用（单人、无并发，够用且零依赖）。
@@ -178,6 +207,7 @@ cp workbench.local.json.example workbench.local.json
 | `disks` | 要统计的磁盘，如 `["C:\\","D:\\"]` | 平台默认 |
 | `supabase` | `{url, serviceKey}`，开启 `/api/models` 云端模型配置 | 退回浏览器本地存储 |
 | `kb` | `{vault, depositRoot}`，Obsidian 库路径，开启 `/api/kb/*` | KB 功能返回"未配置" |
+| `inbox` | `{path}`，捕获收件箱数据文件位置（浏览器扩展写入的落点） | 用仓库根 `inbox.local.json` |
 | `chatProxy` | `{allowHosts}`，`/api/chat` 允许中转的上游主机白名单 | 空 = 不限制 |
 
 **三级覆盖优先级**：`环境变量` ＞ `workbench.local.json` ＞ `平台默认`。每个键都能被同名环境变量临时顶掉。**全部可选**——不填就是把对应功能优雅地关掉，主界面照常跑。
@@ -245,8 +275,10 @@ DailyWorkbench/
 │   ├── server.py                  # 本地 HTTP 服务（静态 + /api/{refresh,chat,models,kb}）
 │   ├── core/                      # config（配置层）· paths（路径单一来源）
 │   ├── utils/                     # common（github_push / http_get / frontmatter / log）
-│   ├── clients/                   # supabase · kb（Obsidian vault）
+│   ├── clients/                   # supabase · kb（Obsidian vault）· inbox（捕获收件箱）
 │   └── pipeline/                  # export_data · fetch_* · daily_ai · local_refresh · sync · sync_status
+│  ── 浏览器扩展（捕获层，Chrome load unpacked，无需构建）──
+├── extension/                   # manifest(MV3) · background(右键+fetch出口) · content(浮按钮+shadow面板) · popup · icons/
 │  ── 文档 · 其它交付形态 · 自动化 ──
 ├── docs/                          # README(文档地图) · TECH_CHARTER · 版本管理规范 · adr/
 │   │                              #   guides/ design/ planning/ research/ reference/（按 Diátaxis 改编分类）
@@ -264,8 +296,9 @@ DailyWorkbench/
 
 - [`docs/TECH_CHARTER.md`](docs/TECH_CHARTER.md) —— 技术宪章：北极星原则 + 模块边界红线 + 工程护栏 + 协作流程（改架构先翻它）。
 - [`docs/planning/知识飞轮-路线图.md`](docs/planning/知识飞轮-路线图.md) —— 三层大脑模型 + 四阶段路线图（往哪走）。
-- [`docs/adr/`](docs/adr/) —— 架构决策记录（单向门才写）：0001 零构建北极星 · 0002 原生 ES Modules 不上框架 · 0003 JSDoc+checkJs 而非全量 TS · 0004 经典脚本保留 window 桥接。
+- [`docs/adr/`](docs/adr/) —— 架构决策记录（单向门才写）：0001 零构建北极星 · 0002 原生 ES Modules 不上框架 · 0003 JSDoc+checkJs 而非全量 TS · 0004 经典脚本保留 window 桥接 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展。
 - [`docs/design/知识库沉淀存储方案.md`](docs/design/知识库沉淀存储方案.md) —— Obsidian 沉淀存储设计。
+- [`docs/design/捕获收件箱-浏览器扩展-设计.md`](docs/design/捕获收件箱-浏览器扩展-设计.md) —— 捕获环设计：摘录+感悟成对、扩展零站点解析、API 优先+离线队列。
 - [`docs/guides/Supabase上线操作指南.md`](docs/guides/Supabase上线操作指南.md) · [`docs/reference/supabase_schema.sql`](docs/reference/supabase_schema.sql) —— Supabase 配置上线步骤 + 建表 DDL（前端永不持有 Supabase 密钥，全走本机 `server.py` 的 service_role key）。
 
 ---
@@ -274,4 +307,4 @@ DailyWorkbench/
 
 变更记录统一维护在 **[`CHANGELOG.md`](CHANGELOG.md)**（遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) + 语义化版本）；「为什么这么做、代价取舍」见对应 `docs/design/` 设计文档与 `docs/adr/`；方向见 [`docs/planning/知识飞轮-路线图.md`](docs/planning/知识飞轮-路线图.md)。落位与写法规矩见 [`docs/版本管理规范.md`](docs/版本管理规范.md)。
 
-**当前里程碑**：`v0.9.0`（2026-09-02）· **PC-first 收敛**——移除移动端原生/APK 交付、彻底删除下架视图（能力速达/系统状态/动态/课程表）与死代码，先把桌面端做扎实。（`v0.8.0` · MVP 聚焦：侧边栏收敛到飞轮最窄闭环 6 视图、蒸馏库落下首张真实经验卡。）
+**当前里程碑**：`v0.10.0`（2026-09-03）· **捕获环补齐**——浏览器扩展读帖当场存「摘录+感悟」，收件箱上后端（`inbox.local.json` 真源 + 离线队列）。（`v0.9.0`（2026-09-02）· **PC-first 收敛**——移除移动端原生/APK 交付、彻底删除下架视图（能力速达/系统状态/动态/课程表）与死代码，先把桌面端做扎实。）（`v0.8.0` · MVP 聚焦：侧边栏收敛到飞轮最窄闭环 6 视图、蒸馏库落下首张真实经验卡。）
