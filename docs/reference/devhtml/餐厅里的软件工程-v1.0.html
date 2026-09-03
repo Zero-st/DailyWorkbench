@@ -1,0 +1,1081 @@
+<title>餐厅里的软件工程</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+XiaoWei&display=swap">
+<style>
+  /* ---------- tokens: light is the base ---------- */
+  :root {
+    --ground: #F5F6F2;
+    --surface: #FFFFFF;
+    --surface-2: #ECEFEA;
+    --room: #FAFBF8;
+    --ink: #1E2A2B;
+    --ink-soft: #3D4B4C;
+    --muted: #5C6B6C;
+    --rule: #D8DDD8;
+    --rule-soft: #E6EAE5;
+    --accent: #2F6F73;
+    --accent-ink: #FFFFFF;
+    --accent-tint: #E1EDED;
+    --second: #D9A441;
+    --second-tint: #F6ECD3;
+    --alert: #B4432F;
+    --alert-tint: #F5E3DF;
+    --display: "ZCOOL XiaoWei", "Noto Serif SC", "Songti SC", "SimSun", serif;
+    --body: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #141B1C;
+      --surface: #1C2526;
+      --surface-2: #223031;
+      --room: #1A2324;
+      --ink: #E6EAE7;
+      --ink-soft: #C3CDCC;
+      --muted: #9AA8A8;
+      --rule: #2E3B3C;
+      --rule-soft: #263334;
+      --accent: #6FB3B6;
+      --accent-ink: #0F1A1B;
+      --accent-tint: #1E3435;
+      --second: #E3B65A;
+      --second-tint: #3A3220;
+      --alert: #D8735F;
+      --alert-tint: #3A2521;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #141B1C;
+    --surface: #1C2526;
+    --surface-2: #223031;
+    --room: #1A2324;
+    --ink: #E6EAE7;
+    --ink-soft: #C3CDCC;
+    --muted: #9AA8A8;
+    --rule: #2E3B3C;
+    --rule-soft: #263334;
+    --accent: #6FB3B6;
+    --accent-ink: #0F1A1B;
+    --accent-tint: #1E3435;
+    --second: #E3B65A;
+    --second-tint: #3A3220;
+    --alert: #D8735F;
+    --alert-tint: #3A2521;
+  }
+
+  /* ---------- base ---------- */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  p { margin: 0; }
+  h1, h2, h3, h4 { margin: 0; text-wrap: balance; }
+  h1 { font-family: var(--display); font-weight: 400; font-size: clamp(38px, 5vw, 54px); line-height: 1.15; letter-spacing: .02em; }
+  h2 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 3.4vw, 34px); line-height: 1.25; letter-spacing: .02em; }
+  h3 { font-family: var(--display); font-weight: 400; font-size: 22px; line-height: 1.3; letter-spacing: .02em; }
+  h4 { font-weight: 700; font-size: 16px; }
+  b { font-weight: 700; }
+  .tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .01em;
+    white-space: nowrap;
+  }
+  .k {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .k-alert { color: var(--alert); }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: .12em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .prose { max-width: 68ch; }
+  .prose p + p { margin-top: 14px; }
+  .prose ul { margin: 10px 0 0; padding-left: 1.3em; }
+  .prose li + li { margin-top: 8px; }
+  .scroll { overflow-x: auto; }
+  .stack > * + * { margin-top: 18px; }
+
+  /* ---------- page grid ---------- */
+  .page {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 36px 28px 96px;
+    display: grid;
+    grid-template-columns: 196px minmax(0, 1fr);
+    gap: 64px;
+    align-items: start;
+  }
+  main { min-width: 0; }
+  section { padding-top: 72px; }
+  section + section { border-top: 1px solid var(--rule); margin-top: 72px; }
+  .sec-head { display: grid; gap: 8px; margin-bottom: 36px; }
+  .sec-head .lede { color: var(--ink-soft); max-width: 68ch; margin-top: 8px; }
+
+  /* ---------- toc: the menu ---------- */
+  .toc { position: sticky; top: 28px; }
+  .toc .k { margin-bottom: 10px; }
+  .toc ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .toc li { border-bottom: 1px solid var(--rule-soft); }
+  .toc a {
+    display: block;
+    padding: 10px 0 10px 14px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+  }
+  .toc a small { display: block; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .05em; }
+  .toc a::before {
+    content: "";
+    position: absolute; left: 0; top: 14px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--rule);
+  }
+  .toc a.active { color: var(--ink); }
+  .toc a.active::before { background: var(--accent); }
+  .toc a:hover { text-decoration: none; color: var(--accent); }
+
+  /* ---------- masthead ---------- */
+  .masthead { display: grid; gap: 22px; padding-bottom: 8px; }
+  .masthead .lede { font-size: 18px; line-height: 1.75; color: var(--ink-soft); max-width: 62ch; }
+  .courses {
+    margin-top: 10px;
+    border-top: 3px double var(--rule);
+    border-bottom: 3px double var(--rule);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .course { padding: 20px 20px 22px 0; display: grid; gap: 6px; align-content: start; }
+  .course + .course { padding-left: 20px; border-left: 1px solid var(--rule-soft); }
+  .course .name { font-family: var(--display); font-size: 24px; color: var(--ink); line-height: 1.2; }
+  .course p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .course a { color: inherit; }
+  .course a:hover { text-decoration: none; color: var(--accent); }
+
+  /* ---------- intro strip ---------- */
+  .takeout {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border: 1px solid var(--rule);
+    background: var(--surface);
+  }
+  .takeout > div { padding: 16px 18px; }
+  .takeout > div + div { border-left: 1px solid var(--rule-soft); }
+  .takeout .what { font-family: var(--display); font-size: 20px; color: var(--accent); }
+  .takeout .is { font-size: 13.5px; color: var(--ink-soft); line-height: 1.6; margin-top: 4px; }
+  .howto {
+    margin-top: 28px;
+    padding: 14px 18px;
+    background: var(--accent-tint);
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    line-height: 1.7;
+    max-width: 68ch;
+  }
+  .howto .tag { color: var(--accent); }
+
+  /* ---------- ideas (part 1) ---------- */
+  .ideas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .idea { border: 1px solid var(--rule); background: var(--surface); padding: 22px 24px 20px; display: grid; gap: 14px; align-content: start; }
+  .idea header { display: flex; align-items: baseline; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--rule-soft); }
+  .idea .row { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 12px; }
+  .idea .row p { font-size: 15px; line-height: 1.75; color: var(--ink); }
+  .idea .row .k { padding-top: 3px; }
+
+  .hats { margin-top: 40px; padding: 28px 28px 24px; background: var(--second-tint); display: grid; gap: 16px; }
+  .hats h3 { font-size: 24px; }
+  .hats .prose p { color: var(--ink-soft); font-size: 15px; }
+  .hat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 6px; }
+  .hat { background: var(--surface); padding: 16px 16px 14px; display: grid; gap: 4px; align-content: start; }
+  .hat .hat-name { font-family: var(--display); font-size: 20px; }
+  .hat p { font-size: 14px; line-height: 1.65; color: var(--ink-soft); margin-top: 6px; }
+
+  /* ---------- cutaway (part 2) ---------- */
+  .cutaway { display: grid; grid-template-columns: minmax(0, 1fr) 272px; gap: 20px; align-items: stretch; }
+  .stage { background: var(--surface); border: 1px solid var(--rule); padding: 18px 16px 12px; }
+  .stage svg { width: 100%; height: auto; display: block; font-family: var(--body); }
+  .stage .hint { font-size: 12.5px; color: var(--muted); text-align: center; margin-top: 6px; }
+  .panel { background: var(--surface); border: 1px solid var(--rule); padding: 20px 22px 18px; display: grid; gap: 10px; align-content: start; }
+  .panel .k { margin-bottom: -4px; }
+  .panel .rest { font-family: var(--display); font-size: 26px; line-height: 1.2; }
+  .panel .soft { font-size: 17px; font-weight: 700; color: var(--accent); line-height: 1.4; }
+  .panel p { font-size: 14px; line-height: 1.7; color: var(--ink-soft); }
+  .panel .line { border-top: 1px solid var(--rule-soft); padding-top: 10px; color: var(--ink); font-size: 14px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .legend button {
+    font: inherit; font-size: 13px; line-height: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--rule); border-radius: 999px;
+    background: var(--surface); color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .legend button:hover { border-color: var(--accent); color: var(--accent); }
+  .legend button.is-active { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+  /* svg classes */
+  .shell { fill: var(--surface-2); stroke: var(--ink-soft); stroke-width: 1.5; }
+  .sign { fill: var(--accent); }
+  .sign-t { fill: var(--accent-ink); font-family: var(--display); font-size: 19px; letter-spacing: 3px; }
+  .ln { stroke: var(--muted); stroke-width: 1.2; }
+  .room { fill: var(--room); stroke: var(--rule); stroke-width: 1.2; transition: fill .15s ease, stroke .15s ease; }
+  .zone { fill: var(--ground); stroke: var(--rule); stroke-width: 1.2; stroke-dasharray: 4 4; transition: fill .15s ease, stroke .15s ease; }
+  .door { fill: var(--surface-2); stroke: var(--rule); stroke-width: 1; }
+  .ic { fill: var(--surface); stroke: var(--ink-soft); stroke-width: 1.2; }
+  .ic-paper { fill: var(--second-tint); stroke: var(--ink-soft); stroke-width: 1; }
+  .ic-l { stroke: var(--muted); stroke-width: 1; }
+  .pipe { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 10 6; }
+  .arrow { stroke: var(--muted); stroke-width: 1.4; fill: none; }
+  .lbl-b { fill: var(--ink); font-size: 13px; font-weight: 500; }
+  .lbl-s { fill: var(--muted); font-size: 11px; }
+  .lbl { fill: var(--ink-soft); font-size: 12px; }
+  .tag-bg { fill: var(--room); }
+  .part { cursor: pointer; outline: none; }
+  .part:hover .room, .part.is-active .room,
+  .part:hover .zone, .part.is-active .zone { fill: var(--accent-tint); stroke: var(--accent); stroke-width: 2; stroke-dasharray: none; }
+  .part.is-active .tag-bg, .part:hover .tag-bg { fill: var(--accent-tint); }
+  .part:focus-visible .room, .part:focus-visible .zone { stroke: var(--accent); stroke-width: 2; stroke-dasharray: none; }
+
+  .sub { margin-top: 56px; display: grid; gap: 14px; }
+  .sub h3 { font-size: 24px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; line-height: 1.65; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--rule); }
+  th { font-weight: 700; color: var(--ink); background: var(--surface-2); }
+  td { color: var(--ink-soft); }
+  td:first-child, th:first-child { color: var(--ink); font-weight: 500; white-space: nowrap; }
+  .compare th:nth-child(2) { color: var(--accent); }
+  .compare th:nth-child(3) { color: var(--accent); }
+  .callout {
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--second);
+    font-size: 15px;
+    color: var(--ink-soft);
+    max-width: 68ch;
+  }
+  .callout b { color: var(--ink); }
+
+  .shelf { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 0 20px; border-top: 1px solid var(--rule); }
+  .shelf > div { padding: 14px 0; border-bottom: 1px solid var(--rule-soft); }
+  .shelf .rest { font-family: var(--display); font-size: 19px; }
+  .shelf .rest .tag { display: block; margin-top: 2px; }
+  .shelf p { font-size: 15px; color: var(--ink-soft); }
+
+  /* ---------- timeline (part 3) ---------- */
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .station { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 20px; position: relative; padding-bottom: 44px; }
+  .station::before {
+    content: ""; position: absolute; left: 27px; top: 8px; bottom: 0;
+    width: 2px; background: var(--rule);
+  }
+  .station:last-of-type::before { bottom: 44px; }
+  .marker { position: relative; z-index: 1; }
+  .num {
+    display: grid; place-items: center;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--second); color: #1E2A2B;
+    font-family: var(--display); font-size: 26px; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .station .body { display: grid; gap: 16px; padding-top: 6px; }
+  .station header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+  .station header .rest { font-size: 17px; color: var(--muted); }
+  .station header .to { color: var(--muted); font-size: 17px; }
+  .station header h3 { font-size: 26px; }
+  .four { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); }
+  .four > div { padding: 14px 16px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--surface); }
+  .four p { font-size: 14.5px; line-height: 1.7; color: var(--ink-soft); margin-top: 4px; }
+  .loop {
+    margin-left: 76px; margin-top: -8px;
+    padding: 12px 18px;
+    background: var(--accent-tint);
+    color: var(--ink);
+    font-size: 15px;
+    display: inline-block;
+  }
+
+  /* ---------- wrap (part 4) ---------- */
+  .myths { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--rule); }
+  .myth { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--rule-soft); }
+  .myth dt { color: var(--ink); font-size: 17px; font-family: var(--display); line-height: 1.5; }
+  .myth dt .k { margin-bottom: 2px; }
+  .myth dd { margin: 0; color: var(--ink-soft); font-size: 15px; }
+  .glossary td:nth-child(2) { font-family: var(--mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .recite {
+    margin-top: 12px;
+    padding: 28px 32px;
+    border: 3px double var(--rule);
+    background: var(--surface);
+    max-width: 68ch;
+    font-size: 17px;
+    line-height: 1.95;
+    color: var(--ink);
+  }
+  .recite .k { margin-bottom: 10px; }
+  footer { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 960px) {
+    .page { grid-template-columns: 1fr; gap: 20px; padding: 20px 18px 72px; }
+    .toc { top: 0; z-index: 5; background: var(--ground); padding: 10px 0 8px; margin: 0 -18px; padding-left: 18px; padding-right: 18px; }
+    .toc .k { display: none; }
+    .toc ol { display: flex; gap: 8px; border-top: 0; overflow-x: auto; scrollbar-width: none; }
+    .toc li { border: 0; flex: 0 0 auto; }
+    .toc a { padding: 8px 12px; border: 1px solid var(--rule); border-radius: 999px; font-size: 13px; background: var(--surface); }
+    .toc a small { display: none; }
+    .toc a::before { display: none; }
+    .toc a.active { border-color: var(--accent); color: var(--accent); }
+    section { padding-top: 48px; }
+    section + section { margin-top: 48px; }
+    .courses { grid-template-columns: 1fr; }
+    .course + .course { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule-soft); }
+    .takeout { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .takeout > div:nth-child(3) { border-left: 0; }
+    .takeout > div:nth-child(n+3) { border-top: 1px solid var(--rule-soft); }
+    .ideas { grid-template-columns: 1fr; }
+    .hat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cutaway { grid-template-columns: 1fr; }
+    .shelf { grid-template-columns: 1fr; gap: 0; }
+    .shelf > div:nth-child(odd) { border-bottom: 0; padding-bottom: 4px; }
+    .station { grid-template-columns: 40px minmax(0, 1fr); gap: 14px; }
+    .station::before { left: 19px; }
+    .num { width: 40px; height: 40px; font-size: 20px; }
+    .four { grid-template-columns: 1fr; }
+    .loop { margin-left: 54px; }
+    .myth { grid-template-columns: 1fr; gap: 8px; }
+  }
+  @media (max-width: 560px) {
+    .takeout { grid-template-columns: 1fr; }
+    .takeout > div + div { border-left: 0; border-top: 1px solid var(--rule-soft); }
+    .hat-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+</style>
+
+<div class="page">
+  <nav class="toc" aria-label="本页目录">
+    <span class="k">本页菜单</span>
+    <ol>
+      <li><a href="#intro" class="active"><small>开场</small>一家看不见的店</a></li>
+      <li><a href="#think"><small>第一道</small>怎么想</a></li>
+      <li><a href="#structure"><small>第二道</small>长什么样</a></li>
+      <li><a href="#process"><small>第三道</small>怎么做出来</a></li>
+      <li><a href="#wrap"><small>收尾</small>误区与对照表</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="masthead">
+      <span class="eyebrow">给零基础读者的图解小册</span>
+      <h1>餐厅里的软件工程</h1>
+      <p class="lede">软件看不见摸不着，但它和一家餐厅惊人地像：有顾客看得见的前厅，有看不见的后厨和仓库，也要经历选址、装修、试菜、开业、天天经营。这一页用「开一家餐厅」这件事，把软件的三个问题讲清楚：<b>怎么想、长什么样、怎么做出来</b>。</p>
+      <div class="courses">
+        <div class="course">
+          <span class="tag">第一道</span>
+          <a class="name" href="#think">怎么想</a>
+          <p>软件开发思维。程序员脑子里那 8 个习惯，其实你在厨房里都用过。</p>
+        </div>
+        <div class="course">
+          <span class="tag">第二道</span>
+          <a class="name" href="#structure">长什么样</a>
+          <p>软件工程结构。把一家店从侧面切开，每间屋子对应软件的一个部件。</p>
+        </div>
+        <div class="course">
+          <span class="tag">第三道</span>
+          <a class="name" href="#process">怎么做出来</a>
+          <p>开发全流程。从一句「我想做个 App」，到真正送到用户手里的七站。</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= 开场 ================= -->
+    <section id="intro">
+      <div class="sec-head">
+        <span class="eyebrow">开场</span>
+        <h2>软件是一家你看不见的店</h2>
+      </div>
+      <div class="prose">
+        <p>先看一件你每周都做的事：点外卖。手指戳几下，三十分钟后饭到门口。这中间到底发生了什么？</p>
+        <p>你手机上的 App 是<b>前厅</b>，你只看到菜单和按钮。你的订单被送进某台远处电脑里的<b>后厨</b>，它算钱、派单、通知商家。你的地址、历史订单、余额，都躺在<b>仓库</b>里。而付款、发验证码短信、地图导航，则是店家花钱找的<b>供应商</b>。</p>
+        <p>所以「软件」不是一个东西，是一整家店。「做软件」也远不止「敲代码」三个字，它是开一家店的全流程：想清楚开给谁，画图纸，装修试做，试菜，试营业，开业，然后天天经营、不断换菜单。</p>
+      </div>
+      <div class="takeout" aria-label="点外卖时，软件各部件在做什么">
+        <div><div class="what">前厅</div><div class="is">你手机上看到的菜单、按钮、动画</div></div>
+        <div><div class="what">后厨</div><div class="is">远处那台电脑：算钱、派单、发通知</div></div>
+        <div><div class="what">仓库</div><div class="is">你的地址、历史订单、余额存放处</div></div>
+        <div><div class="what">供应商</div><div class="is">支付、短信验证码、地图，都是外接的</div></div>
+      </div>
+      <p class="howto">本页读法：每个术语第一次出现，先给餐厅比喻，再给大白话，最后附一个小小的英文原词，像这样 <span class="tag">frontend</span>。记不住也没关系，页尾有一张完整的「术语 ↔ 比喻」对照表。</p>
+    </section>
+
+    <!-- ================= 第一道 ================= -->
+    <section id="think">
+      <div class="sec-head">
+        <span class="eyebrow">第一道 · 怎么想</span>
+        <h2>软件开发思维</h2>
+        <p class="lede">程序员并不比别人聪明，只是养成了一套面对复杂事情的固定习惯。这 8 个习惯，每一个你都在厨房和饭桌上用过。</p>
+      </div>
+
+      <div class="ideas">
+        <article class="idea">
+          <header><h3>拆解</h3><span class="tag">decomposition</span></header>
+          <div class="row"><span class="k">生活里</span><p>年夜饭要做十二道菜，没人会直接「开始做年夜饭」。你会先列菜单，再按凉菜、热菜、汤分工，每道菜再拆成买、洗、切、炒。</p></div>
+          <div class="row"><span class="k">软件里</span><p>「做一个外卖 App」这句话没法直接干。先拆成登录、看菜单、下单、支付、配送跟踪五块，每块再拆到一个人几天能做完的小任务。程序员把拆出来的每一块叫<b>模块</b> <span class="tag">module</span>。</p></div>
+          <div class="row"><span class="k k-alert">常见翻车</span><p>不拆就开工。做到一半发现哪都连着哪，改一处坏三处。</p></div>
+        </article>
+
+        <article class="idea">
+          <header><h3>抽象</h3><span class="tag">abstraction</span></header>
+          <div class="row"><span class="k">生活里</span><p>世界上有几万道菜，但每道菜都是「食材、加工、装盘」。厨师学的不是几万套孤立步骤，是这个通用框子，再往里填不同的料。</p></div>
+          <div class="row"><span class="k">软件里</span><p>程序员把反复出现的做法提炼成一个可以反复调用的「模子」，叫<b>函数</b> <span class="tag">function</span>。写一次「算折扣」，全店所有地方都用它；改价格规则时只改这一处。</p></div>
+          <div class="row"><span class="k k-alert">常见翻车</span><p>同一段逻辑复制粘贴到十个地方。有一天要改，漏改了三处，谁也不知道。</p></div>
+        </article>
+
+        <article class="idea">
+          <header><h3>流程即算法</h3><span class="tag">algorithm</span></header>
+          <div class="row"><span class="k">生活里</span><p>菜谱就是算法。「水开后下面」是条件，「翻炒直到金黄」是循环，「最后撒葱花」是顺序。写到什么程度算清楚？到一个从没做过这道菜的人照着也能做出来。</p></div>
+          <div class="row"><span class="k">软件里</span><p>电脑比最笨的新手还笨，一步都不能省。程序就是写给电脑的菜谱，只用三种结构就能描述一切：顺序做、按条件选、重复做。这套写清楚的步骤叫<b>算法</b> <span class="tag">algorithm</span>。</p></div>
+          <div class="row"><span class="k k-alert">常见翻车</span><p>默认电脑「应该懂」。它不懂。「稍微炒一下」这种指令，电脑会当场罢工。</p></div>
+        </article>
+
+        <article class="idea">
+          <header><h3>边界与意外</h3><span class="tag">edge case / error handling</span></header>
+          <div class="row"><span class="k">生活里</span><p>好餐厅不只会做菜，还提前想好了：客人点了菜单上没有的菜怎么办？盐用完了怎么办？二十桌同时进门怎么办？这些不是主流程，却决定了店垮不垮。</p></div>
+          <div class="row"><span class="k">软件里</span><p>顺利的那条路通常只占代码的三成，剩下七成在处理「用户没填手机号、网络断了、余额不够、同一秒一万人抢券」。这些奇怪情况叫<b>边界情况</b> <span class="tag">edge case</span>，处理它们叫<b>异常处理</b> <span class="tag">error handling</span>。</p></div>
+          <div class="row"><span class="k k-alert">常见翻车</span><p>只演示「一切顺利」的路径。上线第一天，被用户多打的一个空格打垮。</p></div>
+        </article>
+
+        <article class="idea">
+          <header><h3>权衡</h3><span class="tag">trade-off</span></header>
+          <div class="row"><span class="k">生活里</span><p>装修一家店，快、好、省三样最多选两样。开业只剩两周？那就先把厨房弄好，墙纸以后再换。你心里清楚这是欠了一笔账。</p></div>
+          <div class="row"><span class="k">软件里</span><p>任何方案都有代价：功能多就慢，安全严就麻烦，做得快就欠账。好程序员不问「哪个最好」，而问「这个阶段什么最重要，我们愿意在哪儿吃亏」。为了赶进度先凑合、以后要还的那笔账，有专门的名字：<b>技术债</b> <span class="tag">technical debt</span>。</p></div>
+          <div class="row"><span class="k k-alert">常见翻车</span><p>追求一次做到完美。两年后店还没开，隔壁已经换了三轮菜单。</p></div>
+        </article>
+
+        <article class="idea">
+          <header><h3>复用</h3><span class="tag">reuse</span></header>
+          <div class="row"><span class="k">生活里</span><p>连锁店不会每家自己磨豆腐，中央厨房统一送半成品。灶台、冰箱直接买成品，没人自己焊。</p></div>
+          <div class="row"><span class="k">软件里</span><p>登录、支付、发短信、画图表，全世界早有人做好了现成的，叫<b>库</b> <span class="tag">library</span>。连整套「后厨怎么布局」都有标准模板，叫<b>框架</b> <span class="tag">framework</span>。程序员大部分工作是选对、装好、接上，而不是从零发明。</p></div>
+          <div class="row"><span class="k k-alert">常见翻车</span><p>什么都自己写。自己写的登录系统，漏洞比现成的多十倍。</p></div>
+        </article>
+
+        <article class="idea">
+          <header><h3>迭代</h3><span class="tag">iteration</span></header>
+          <div class="row"><span class="k">生活里</span><p>聪明的老板先开一个小店，甚至先摆一周摊，看看有没有人买，再决定要不要租大铺面。</p></div>
+          <div class="row"><span class="k">软件里</span><p>先做一个只有核心功能、能跑通的最小版本，叫 <b>MVP</b> <span class="tag">minimum viable product</span>，拿给真实用户用，根据反馈一版一版加。所以你手机里的 App 总在更新：v1.0、v1.1、v2.0，每个数字都是一次「换菜单」。</p></div>
+          <div class="row"><span class="k k-alert">常见翻车</span><p>憋一年做「完整版」。上线才发现，用户根本不想要这个。</p></div>
+        </article>
+
+        <article class="idea">
+          <header><h3>站在顾客那边</h3><span class="tag">user-centered</span></header>
+          <div class="row"><span class="k">生活里</span><p>顾客不关心你后厨用的是德国灶还是日本刀，只关心好吃、上菜快、别拉肚子。</p></div>
+          <div class="row"><span class="k">软件里</span><p>用户不关心你用什么语言、什么架构，只关心能不能三步内做完想做的事、会不会卡、数据会不会丢。所有技术选择最后都要翻译回一句话：用户体验到了什么不同？这叫<b>用户体验</b> <span class="tag">UX, user experience</span>。</p></div>
+          <div class="row"><span class="k k-alert">常见翻车</span><p>技术上很炫的功能，用户找不到入口。</p></div>
+        </article>
+      </div>
+
+      <aside class="hats">
+        <h3>一个人做项目，要轮流戴四顶帽子</h3>
+        <div class="prose"><p>上面 8 条是「厨师」的脑子。但一家店要开好，至少四种人的脑子都得有。人少的时候，就一个人轮着戴。</p></div>
+        <div class="hat-grid">
+          <div class="hat"><span class="hat-name">店长帽</span><span class="tag">产品 · product</span><p>这道菜有人点吗？为谁做？先问值不值得做，再问怎么做。</p></div>
+          <div class="hat"><span class="hat-name">装修师帽</span><span class="tag">设计 · design</span><p>陌生人进门第一眼，会不会觉得这家店「坏了」？功能全对但看着乱，第一印象就没了。</p></div>
+          <div class="hat"><span class="hat-name">厨师长帽</span><span class="tag">工程 · engineering</span><p>三年后换一批厨师、换个铺面，这套流程还跑得起来吗？</p></div>
+          <div class="hat"><span class="hat-name">老板帽</span><span class="tag">决策 · decision</span><p>这扇门走错了，能退回来吗？可逆的事快点试，不可逆的事写下来再定。</p></div>
+        </div>
+        <div class="prose"><p>顺序很重要：先戴店长帽判断值不值得，再戴另外三顶。最常见的病是「厨师帽太舒服」，一直在后厨打磨刀工，回避「这道菜到底有没有人吃」这个难受的问题。</p></div>
+      </aside>
+    </section>
+
+    <!-- ================= 第二道 ================= -->
+    <section id="structure">
+      <div class="sec-head">
+        <span class="eyebrow">第二道 · 长什么样</span>
+        <h2>软件工程结构</h2>
+        <p class="lede">把一家餐厅从侧面切开看。每一间屋子，都对应软件里的一个部件。把鼠标放到图上任意一处（手机上点一下），旁边会告诉你它在软件里叫什么。</p>
+      </div>
+
+      <div class="cutaway">
+        <div class="stage">
+          <svg id="cutaway" viewBox="0 0 800 420" role="img" aria-labelledby="cutaway-title">
+            <title id="cutaway-title">餐厅剖面图：顾客、前厅、服务员、后厨、仓库、供应商、地基、店规与监控</title>
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+              </marker>
+            </defs>
+
+            <line x1="0" y1="350" x2="800" y2="350" class="ln"/>
+            <rect x="140" y="70" width="520" height="280" class="shell"/>
+
+            <rect x="310" y="28" width="180" height="34" rx="3" class="sign"/>
+            <text x="400" y="52" text-anchor="middle" class="sign-t">软件餐厅</text>
+            <line x1="330" y1="62" x2="330" y2="70" class="ln"/>
+            <line x1="470" y1="62" x2="470" y2="70" class="ln"/>
+
+            <!-- 店规手册 · 监控 -->
+            <g class="part" data-part="ops" tabindex="0" role="button" aria-label="店规手册与监控摄像头">
+              <rect x="150" y="80" width="500" height="34" class="room"/>
+              <rect x="160" y="90" width="16" height="10" rx="2" class="ic"/>
+              <circle cx="182" cy="95" r="4" class="ic"/>
+              <rect x="196" y="87" width="14" height="18" rx="1" class="ic-paper"/>
+              <line x1="199" y1="92" x2="207" y2="92" class="ic-l"/>
+              <line x1="199" y1="96" x2="207" y2="96" class="ic-l"/>
+              <line x1="199" y1="100" x2="205" y2="100" class="ic-l"/>
+              <text x="222" y="101" class="lbl">店规手册 · 排班表 · 监控摄像头 · 每日流水账</text>
+            </g>
+
+            <!-- 前厅 -->
+            <g class="part" data-part="front" tabindex="0" role="button" aria-label="前厅">
+              <rect x="150" y="124" width="170" height="216" class="room"/>
+              <text x="160" y="146" class="lbl-b">前厅</text>
+              <rect x="160" y="160" width="44" height="30" rx="2" class="ic"/>
+              <line x1="166" y1="168" x2="198" y2="168" class="ic-l"/>
+              <line x1="166" y1="175" x2="192" y2="175" class="ic-l"/>
+              <line x1="166" y1="182" x2="194" y2="182" class="ic-l"/>
+              <text x="212" y="180" class="lbl-s">菜单</text>
+              <rect x="244" y="154" width="66" height="26" rx="2" class="ic"/>
+              <text x="277" y="171" text-anchor="middle" class="lbl-s">收银台</text>
+              <circle cx="178" cy="276" r="5" class="ic"/><circle cx="200" cy="276" r="5" class="ic"/>
+              <rect x="166" y="282" width="46" height="22" rx="3" class="ic"/>
+              <circle cx="258" cy="276" r="5" class="ic"/><circle cx="280" cy="276" r="5" class="ic"/>
+              <rect x="246" y="282" width="46" height="22" rx="3" class="ic"/>
+              <rect x="140" y="292" width="10" height="48" class="door"/>
+            </g>
+
+            <!-- 服务员 · 传菜口 -->
+            <g class="part" data-part="api" tabindex="0" role="button" aria-label="服务员与点菜单">
+              <rect x="320" y="124" width="50" height="216" class="room"/>
+              <text x="345" y="146" text-anchor="middle" class="lbl-b"><tspan x="345" dy="0">服</tspan><tspan x="345" dy="15">务</tspan><tspan x="345" dy="15">员</tspan></text>
+              <rect x="330" y="196" width="30" height="46" rx="2" class="ic"/>
+              <rect x="336" y="204" width="18" height="24" rx="1" class="ic-paper"/>
+              <line x1="340" y1="210" x2="350" y2="210" class="ic-l"/>
+              <line x1="340" y1="215" x2="350" y2="215" class="ic-l"/>
+              <line x1="340" y1="220" x2="347" y2="220" class="ic-l"/>
+              <circle cx="345" cy="268" r="7" class="ic"/>
+              <rect x="337" y="277" width="16" height="26" rx="4" class="ic"/>
+              <text x="345" y="322" text-anchor="middle" class="lbl-s">点菜单</text>
+            </g>
+
+            <!-- 后厨 -->
+            <g class="part" data-part="backend" tabindex="0" role="button" aria-label="后厨">
+              <rect x="370" y="124" width="180" height="216" class="room"/>
+              <text x="380" y="146" class="lbl-b">后厨</text>
+              <path d="M384 206 h80 l10 20 h-100 z" class="ic"/>
+              <circle cx="472" cy="240" r="7" class="ic"/>
+              <rect x="464" y="249" width="16" height="22" rx="4" class="ic"/>
+              <rect x="384" y="268" width="80" height="36" rx="2" class="ic"/>
+              <circle cx="404" cy="286" r="9" class="ic"/><circle cx="444" cy="286" r="9" class="ic"/>
+              <text x="424" y="320" text-anchor="middle" class="lbl-s">灶台</text>
+              <rect x="480" y="276" width="56" height="28" rx="2" class="ic"/>
+              <text x="508" y="320" text-anchor="middle" class="lbl-s">案板</text>
+              <rect x="550" y="292" width="10" height="48" class="door"/>
+            </g>
+
+            <!-- 仓库 · 冷库 -->
+            <g class="part" data-part="db" tabindex="0" role="button" aria-label="仓库与冷库">
+              <rect x="560" y="124" width="90" height="216" class="room"/>
+              <text x="570" y="146" class="lbl-b">仓库·冷库</text>
+              <rect x="574" y="168" width="14" height="14" class="ic"/><rect x="592" y="168" width="14" height="14" class="ic"/><rect x="610" y="168" width="14" height="14" class="ic"/>
+              <line x1="570" y1="182" x2="640" y2="182" class="ic-l"/>
+              <rect x="574" y="204" width="14" height="14" class="ic"/><rect x="592" y="204" width="14" height="14" class="ic"/>
+              <line x1="570" y1="218" x2="640" y2="218" class="ic-l"/>
+              <rect x="574" y="240" width="14" height="14" class="ic"/><rect x="592" y="240" width="14" height="14" class="ic"/><rect x="610" y="240" width="14" height="14" class="ic"/>
+              <line x1="570" y1="254" x2="640" y2="254" class="ic-l"/>
+              <rect x="582" y="284" width="40" height="28" rx="2" class="ic-paper"/>
+              <text x="602" y="326" text-anchor="middle" class="lbl-s">账本</text>
+              <rect x="650" y="292" width="10" height="48" class="door"/>
+            </g>
+
+            <!-- 顾客 -->
+            <g class="part" data-part="users" tabindex="0" role="button" aria-label="顾客">
+              <rect x="10" y="230" width="120" height="120" class="zone"/>
+              <text x="70" y="252" text-anchor="middle" class="lbl-b">顾客</text>
+              <circle cx="40" cy="292" r="8" class="ic"/><rect x="31" y="302" width="18" height="30" rx="5" class="ic"/>
+              <circle cx="70" cy="288" r="8" class="ic"/><rect x="61" y="298" width="18" height="34" rx="5" class="ic"/>
+              <circle cx="100" cy="292" r="8" class="ic"/><rect x="91" y="302" width="18" height="30" rx="5" class="ic"/>
+              <rect x="112" y="306" width="8" height="14" rx="1" class="ic-paper"/>
+              <path d="M114 268 H134" class="arrow" marker-end="url(#arrow)"/>
+            </g>
+
+            <!-- 供应商 -->
+            <g class="part" data-part="third" tabindex="0" role="button" aria-label="供应商与外卖平台">
+              <rect x="670" y="230" width="120" height="120" class="zone"/>
+              <text x="730" y="252" text-anchor="middle" class="lbl-b">供应商·外卖平台</text>
+              <rect x="686" y="294" width="60" height="36" rx="2" class="ic"/>
+              <rect x="746" y="306" width="30" height="24" rx="2" class="ic"/>
+              <circle cx="702" cy="334" r="7" class="ic"/><circle cx="760" cy="334" r="7" class="ic"/>
+              <path d="M686 268 H666" class="arrow" marker-end="url(#arrow)"/>
+            </g>
+
+            <!-- 地基 · 水电煤 -->
+            <g class="part" data-part="infra" tabindex="0" role="button" aria-label="地基、水电煤与宽带">
+              <rect x="140" y="356" width="520" height="52" class="room"/>
+              <line x1="156" y1="370" x2="644" y2="370" class="pipe"/>
+              <line x1="156" y1="382" x2="644" y2="382" class="pipe"/>
+              <line x1="156" y1="394" x2="644" y2="394" class="pipe"/>
+              <rect x="288" y="372" width="224" height="22" class="tag-bg"/>
+              <text x="400" y="388" text-anchor="middle" class="lbl-b">地基 · 水电煤 · 宽带（都是租的）</text>
+            </g>
+          </svg>
+          <p class="hint">悬停或点击图中任意区域。点击会固定住，方便慢慢读。</p>
+        </div>
+
+        <div class="panel" id="panel" aria-live="polite">
+          <span class="k">餐厅里</span>
+          <div class="rest" id="p-rest">前厅</div>
+          <span class="k">软件里叫</span>
+          <div class="soft" id="p-soft">前端 / 界面</div>
+          <span class="tag" id="p-tag">frontend · UI</span>
+          <p id="p-1"></p>
+          <p id="p-2"></p>
+          <div class="line" id="p-3"></div>
+        </div>
+      </div>
+
+      <div class="legend" id="legend" aria-label="选择一个部件">
+        <button type="button" data-part="users">顾客</button>
+        <button type="button" data-part="front" class="is-active">前厅</button>
+        <button type="button" data-part="api">服务员 · 点菜单</button>
+        <button type="button" data-part="backend">后厨</button>
+        <button type="button" data-part="db">仓库 · 冷库</button>
+        <button type="button" data-part="third">供应商</button>
+        <button type="button" data-part="infra">地基 · 水电煤</button>
+        <button type="button" data-part="ops">店规 · 监控</button>
+      </div>
+
+      <div class="sub">
+        <h3>为什么要分成这么多间屋子</h3>
+        <div class="prose">
+          <p>你可能会想：全塞一间屋不行吗？路边摊可以。但店一大，分屋子的好处就出来了：</p>
+          <ul>
+            <li><b>换菜单不用拆厨房。</b>改界面不必碰后端，后端换更快的做法，前厅一行不动。程序员叫这<b>解耦</b> <span class="tag">decoupling</span>，意思是「彼此不粘着」。</li>
+            <li><b>各干各的。</b>前厅的人不用会炒菜，厨师不用会招呼客人。软件团队也照这个分：前端、后端、数据库、运维，各有专精。</li>
+            <li><b>出事好查。</b>菜咸了查后厨，上菜慢查服务员，账对不上查仓库。屋子分得清，故障就能圈得小。</li>
+          </ul>
+          <p>这种一层一层的划分叫<b>分层架构</b> <span class="tag">layered architecture</span>。「架构」这个词听着高深，其实就是「屋子怎么划分、门开在哪」的那张平面图。</p>
+        </div>
+      </div>
+
+      <div class="sub">
+        <h3>小卖部，还是连锁商场</h3>
+        <div class="prose"><p>屋子怎么分，还有一个更大的选择：所有屋子放在一栋楼里，还是拆成几十家独立门店？这是软件行业争论最多的问题之一。</p></div>
+        <div class="scroll">
+          <table class="compare">
+            <thead>
+              <tr><th></th><th>小卖部 <span class="tag">单体 · monolith</span></th><th>连锁商场 <span class="tag">微服务 · microservices</span></th></tr>
+            </thead>
+            <tbody>
+              <tr><td>像什么</td><td>一间屋子，收银、货架、仓库全在一起，一个老板全管。</td><td>几十个独立门店，各有各的后厨和仓库，靠统一的点菜单格式协作。</td></tr>
+              <tr><td>好处</td><td>简单、开得快、一个人看得懂、出事一眼找到。</td><td>一家店着火不影响别家。每家店可以独立换菜单、独立扩张。</td></tr>
+              <tr><td>代价</td><td>店一大就挤：几十个人同时装修一间屋会互相绊脚。</td><td>管理成本剧增。店与店之间传话可能丢、慢、乱，还得养一整套「商场物业」。</td></tr>
+              <tr><td>适合谁</td><td>绝大多数新项目和小团队。</td><td>团队上百人、用户上亿、小卖部已经真的撑不住的时候。</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">最常见的错误，是刚起步就学大公司拆几十家「门店」，结果一个人管一座空商场。<b>先做小卖部，撑不住了再拆。</b>这本身就是第一道里说的「权衡」。</div>
+      </div>
+
+      <div class="sub">
+        <h3>代码本身放在哪里</h3>
+        <div class="prose"><p>屋子说的是运行中的软件。那程序员写的那些「菜谱」本身怎么管？也有一套对应。</p></div>
+        <div class="shelf">
+          <div class="rest">菜谱本<span class="tag">代码仓库 · repository</span></div>
+          <div><p>所有菜谱装订成一本，放在一个地方，谁都从这本抄，不许各存各的版本。</p></div>
+          <div class="rest">章节<span class="tag">模块 / 目录 · module</span></div>
+          <div><p>凉菜一章、热菜一章、汤一章。对应代码里一个个文件夹，找东西按章翻。</p></div>
+          <div class="rest">修改记录<span class="tag">版本管理 · Git</span></div>
+          <div><p>每次改菜谱都盖章记下「谁、何时、改了哪一行、为什么」，随时能翻回上一版。几个厨师同时改也不会互相覆盖。</p></div>
+          <div class="rest">试做间<span class="tag">开发 / 测试 / 生产环境 · environments</span></div>
+          <div><p>新菜先在试做间做，再到试菜间请内部人尝，最后才上正式菜单。三个地方分开，绝不在营业中的灶台上试新菜。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 第三道 ================= -->
+    <section id="process">
+      <div class="sec-head">
+        <span class="eyebrow">第三道 · 怎么做出来</span>
+        <h2>软件开发全流程</h2>
+        <p class="lede">从「我想开家店」到「顾客天天来」，餐厅要走七站。软件一模一样，行业里叫它<b>软件开发生命周期</b> <span class="tag">SDLC</span>。每一站看四件事：餐厅里做什么、软件里做什么、留下什么东西、最常在哪翻车。</p>
+      </div>
+
+      <ol class="timeline">
+        <li class="station">
+          <div class="marker"><span class="num">1</span></div>
+          <div class="body">
+            <header><span class="rest">想清楚开什么店</span><span class="to">→</span><h3>需求分析</h3><span class="tag">requirements</span></header>
+            <div class="four">
+              <div><span class="k">餐厅里</span><p>开给谁吃？写字楼白领的快餐，还是家庭聚餐？人均多少钱？周边有几家竞品？这些不问清就装修，是最贵的错误。</p></div>
+              <div><span class="k">软件里</span><p>跟用户和老板反复聊：「你说的『像美团』，具体要它哪三个功能？谁用？多久用一次？」把模糊的愿望翻译成一条条能验收的句子。</p></div>
+              <div><span class="k">留下什么</span><p>需求文档 <span class="tag">PRD</span>、用户故事（「作为骑手，我想一眼看到最近的三单，以便……」）、优先级清单。</p></div>
+              <div><span class="k k-alert">最常翻车</span><p>老板一句「做个像美团的」就开工。需求阶段一句没问清的话，到上线时要用一百行代码和三次返工来还。</p></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="station">
+          <div class="marker"><span class="num">2</span></div>
+          <div class="body">
+            <header><span class="rest">画图纸</span><span class="to">→</span><h3>设计</h3><span class="tag">design</span></header>
+            <div class="four">
+              <div><span class="k">餐厅里</span><p>菜单长什么样、桌子怎么摆、顾客从进门到落座走哪条线、后厨灶台和冰箱怎么放才不撞人。</p></div>
+              <div><span class="k">软件里</span><p>分两层。界面设计：页面长什么样、按钮放哪、点了跳哪。技术设计：分几间屋子（架构）、仓库里放哪些格子（数据库设计）、服务员用什么单子（接口设计）。</p></div>
+              <div><span class="k">留下什么</span><p>原型图 <span class="tag">prototype</span>、高保真设计稿、架构图、数据库表结构、接口文档。</p></div>
+              <div><span class="k k-alert">最常翻车</span><p>跳过设计直接开工。等于不画图纸就装修，做完发现冰箱门打不开。</p></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="station">
+          <div class="marker"><span class="num">3</span></div>
+          <div class="body">
+            <header><span class="rest">装修、备料、试做</span><span class="to">→</span><h3>开发编码</h3><span class="tag">development</span></header>
+            <div class="four">
+              <div><span class="k">餐厅里</span><p>按图纸装修、买设备、招厨师、把每道菜一道道试做出来。工期最长、最忙的一段。</p></div>
+              <div><span class="k">软件里</span><p>程序员按设计稿把前厅（前端）、后厨（后端）、仓库（数据库）一块块写出来、接起来。每做完一块，同事互相看一遍，叫<b>代码评审</b> <span class="tag">code review</span>，像老师傅尝一口徒弟的菜。</p></div>
+              <div><span class="k">留下什么</span><p>能运行的代码，提交进代码仓库。每一次改动都有记录、有说明。</p></div>
+              <div><span class="k k-alert">最常翻车</span><p>外行以为这一步就是全部（「程序员不就是写代码吗」）。它通常只占总时间的三到四成。</p></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="station">
+          <div class="marker"><span class="num">4</span></div>
+          <div class="body">
+            <header><span class="rest">试菜、模拟高峰</span><span class="to">→</span><h3>测试</h3><span class="tag">testing</span></header>
+            <div class="four">
+              <div><span class="k">餐厅里</span><p>每道菜自己先尝咸淡；整套菜配着上一遍，看前菜和主菜打不打架；请一屋子朋友来模拟饭点高峰，看后厨顶不顶得住。</p></div>
+              <div><span class="k">软件里</span><p>对应三层：<b>单元测试</b>一道菜一道菜尝；<b>集成测试</b>几道菜一起上；<b>端到端测试</b>完整模拟一个顾客从进门到结账。再加<b>性能测试</b>：一万人同时下单会不会卡死。找出的问题叫 <b>bug</b>（菜咸了），修它叫 debug。</p></div>
+              <div><span class="k">留下什么</span><p>测试用例、bug 清单、测试报告。</p></div>
+              <div><span class="k k-alert">最常翻车</span><p>「没时间了，测试砍掉。」等于不试菜直接开业，第一桌客人就是你的试菜员。</p></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="station">
+          <div class="marker"><span class="num">5</span></div>
+          <div class="body">
+            <header><span class="rest">开业</span><span class="to">→</span><h3>部署上线</h3><span class="tag">deployment / release</span></header>
+            <div class="four">
+              <div><span class="k">餐厅里</span><p>把做好的一切搬进正式铺面，挂招牌，开门。聪明的店会先「试营业」：只请亲友和熟客，没问题了再登广告。</p></div>
+              <div><span class="k">软件里</span><p>把代码放到正式服务器上，让真实用户能用。常用<b>灰度发布</b> <span class="tag">canary release</span>：先放给 1% 的用户，没事再 10%、100%。出大问题立刻<b>回滚</b> <span class="tag">rollback</span>：撤掉新菜，换回昨天的版本。这一套现在多由自动流水线完成，叫 <b>CI/CD</b>。</p></div>
+              <div><span class="k">留下什么</span><p>线上可访问的版本、发布记录、回滚方案。</p></div>
+              <div><span class="k k-alert">最常翻车</span><p>周五晚上全量上线然后下班。行业里有句老话：周五不发版。</p></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="station">
+          <div class="marker"><span class="num">6</span></div>
+          <div class="body">
+            <header><span class="rest">天天经营</span><span class="to">→</span><h3>运维与监控</h3><span class="tag">operations</span></header>
+            <div class="four">
+              <div><span class="k">餐厅里</span><p>开业不是结束，是开始。每天进货、盘点、修灶台、看监控、处理投诉、防火防盗。</p></div>
+              <div><span class="k">软件里</span><p>盯着服务器不宕机、磁盘不满、接口不变慢。看<b>日志</b>查问题，靠<b>监控告警</b>半夜被叫醒，定期<b>备份</b>数据，补安全漏洞。做这些的人叫运维 <span class="tag">Ops</span>，现在常和开发合称 <span class="tag">DevOps</span>。</p></div>
+              <div><span class="k">留下什么</span><p>监控大盘、告警规则、备份、故障复盘报告。</p></div>
+              <div><span class="k k-alert">最常翻车</span><p>没有备份。仓库烧了才想起来账本没抄一份放别处。</p></div>
+            </div>
+          </div>
+        </li>
+
+        <li class="station">
+          <div class="marker"><span class="num">7</span></div>
+          <div class="body">
+            <header><span class="rest">换季菜单、翻新</span><span class="to">→</span><h3>迭代维护</h3><span class="tag">maintenance / iteration</span></header>
+            <div class="four">
+              <div><span class="k">餐厅里</span><p>顾客说太咸就调，夏天上凉菜，三年后重新装修。一家店的大部分寿命都在这个阶段。</p></div>
+              <div><span class="k">软件里</span><p>收集反馈、修 bug、加功能、升级那些外购的「半成品」、淘汰没人用的功能，然后回到第 1 站重新分析需求。软件七成以上的总成本，花在上线之后。</p></div>
+              <div><span class="k">留下什么</span><p>新版本（v1.1、v2.0……）、更新日志 <span class="tag">changelog</span>。</p></div>
+              <div><span class="k k-alert">最常翻车</span><p>以为「做完了」。软件没有做完，只有停止维护。</p></div>
+            </div>
+          </div>
+        </li>
+      </ol>
+      <div class="loop">第 7 站走完，回到第 1 站。这样绕一圈，就叫一次<b>迭代</b>。</div>
+
+      <div class="sub">
+        <h3>店里都有谁</h3>
+        <div class="prose"><p>七站不是一个人走完的。餐厅里的每个岗位，软件团队里都有对应的人。小团队一人兼几职很正常，大公司则每个格子都是一个部门。</p></div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>餐厅里</th><th>软件团队里</th><th>管什么</th></tr></thead>
+            <tbody>
+              <tr><td>店长</td><td>产品经理 <span class="tag">PM</span></td><td>决定做什么、不做什么、先做什么。</td></tr>
+              <tr><td>室内设计师、菜单设计</td><td>设计师 <span class="tag">UI / UX</span></td><td>长什么样，顾客怎么走不会迷路。</td></tr>
+              <tr><td>厨师</td><td>程序员 / 工程师 <span class="tag">developer</span></td><td>把东西做出来。前端、后端、数据库各有专精。</td></tr>
+              <tr><td>试菜员</td><td>测试工程师 <span class="tag">QA</span></td><td>找出问题，拦在开业之前。</td></tr>
+              <tr><td>后勤、物业</td><td>运维 <span class="tag">Ops / DevOps</span></td><td>水电不断、灶台不坏、半夜救火。</td></tr>
+              <tr><td>老板</td><td>技术负责人 / 架构师 <span class="tag">architect</span></td><td>定大方向：开几间屋、用什么设备、哪些门一走就回不了头。</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub">
+        <h3>一次性大装修，还是边营业边改</h3>
+        <div class="scroll">
+          <table class="compare">
+            <thead><tr><th></th><th>瀑布 <span class="tag">waterfall</span></th><th>敏捷 <span class="tag">agile</span></th></tr></thead>
+            <tbody>
+              <tr><td>像什么</td><td>一次性大装修。七站按顺序走完一遍，上一站全部结束才开下一站，像盖楼，图纸定了就不改。</td><td>边营业边调整。两周一小圈（叫一个<b>冲刺</b> <span class="tag">sprint</span>），每圈把七站快速走一遍，做出一点能用的东西给用户看，再调方向。</td></tr>
+              <tr><td>适合</td><td>需求非常确定、改一步极贵的场景：银行核心系统、航天软件。</td><td>需求还在变、要快速试错的场景：今天绝大多数互联网产品。</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">一句话：需求越模糊，越要敏捷；错一步越贵，越要瀑布。这又是一次<b>权衡</b>。</div>
+      </div>
+    </section>
+
+    <!-- ================= 收尾 ================= -->
+    <section id="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">收尾</span>
+        <h2>小白最容易踩的六个坑</h2>
+      </div>
+      <dl class="myths">
+        <div class="myth">
+          <dt><span class="k k-alert">误区</span>「加个按钮很简单吧，半小时的事。」</dt>
+          <dd><span class="k">真相</span>按钮本身十分钟。按钮背后要新增接口、改数据库、写测试、兼容老版本，半小时变三天很正常。你看到的是前厅，改的是整家店。</dd>
+        </div>
+        <div class="myth">
+          <dt><span class="k k-alert">误区</span>「程序员就是修电脑的，或者就是敲代码的。」</dt>
+          <dd><span class="k">真相</span>敲代码占三成，剩下是理解需求、设计、排错、沟通。厨师的活也从来不只是颠勺。</dd>
+        </div>
+        <div class="myth">
+          <dt><span class="k k-alert">误区</span>「上线了就做完了。」</dt>
+          <dd><span class="k">真相</span>上线是开业，不是关门。软件大部分成本花在上线之后。</dd>
+        </div>
+        <div class="myth">
+          <dt><span class="k k-alert">误区</span>「多加几个人就能快一倍。」</dt>
+          <dd><span class="k">真相</span>十个厨师挤一个灶台只会更慢。软件业有条著名的定律：给已经延期的项目加人，会让它更延期。</dd>
+        </div>
+        <div class="myth">
+          <dt><span class="k k-alert">误区</span>「先做完整版再上线，别让用户看到半成品。」</dt>
+          <dd><span class="k">真相</span>憋大招最危险。先开小店试营业，让真实顾客告诉你哪道菜该留。</dd>
+        </div>
+        <div class="myth">
+          <dt><span class="k k-alert">误区</span>「出 bug 就是程序员水平差。」</dt>
+          <dd><span class="k">真相</span>任何足够复杂的系统都有 bug，就像任何餐厅都会偶尔上错菜。关键是发现得快不快、修得快不快、会不会再犯。</dd>
+        </div>
+      </dl>
+
+      <div class="sub">
+        <h3>术语对照表</h3>
+        <div class="prose"><p>以后听到这些词，先想它在餐厅里是什么。</p></div>
+        <div class="scroll">
+          <table class="glossary">
+            <thead><tr><th>你听到的词</th><th>英文</th><th>餐厅里它是</th></tr></thead>
+            <tbody>
+              <tr><td>前端</td><td>frontend</td><td>前厅：顾客看到摸到的一切</td></tr>
+              <tr><td>后端</td><td>backend</td><td>后厨：真正做菜的地方</td></tr>
+              <tr><td>接口</td><td>API</td><td>服务员和点菜单：前厅后厨之间传话的规矩</td></tr>
+              <tr><td>数据库</td><td>database</td><td>仓库、冷库、账本</td></tr>
+              <tr><td>服务器 / 云</td><td>server / cloud</td><td>租来的铺面和水电煤</td></tr>
+              <tr><td>第三方服务</td><td>third-party service</td><td>供应商、外卖平台：自己不造，花钱接上</td></tr>
+              <tr><td>架构</td><td>architecture</td><td>店铺平面图：分几间屋、门开在哪</td></tr>
+              <tr><td>模块</td><td>module</td><td>菜单的一个章节，后厨的一个工位</td></tr>
+              <tr><td>函数</td><td>function</td><td>一道菜的标准做法，可以反复照做</td></tr>
+              <tr><td>算法</td><td>algorithm</td><td>菜谱：写给电脑的一步步指令</td></tr>
+              <tr><td>库 / 框架</td><td>library / framework</td><td>中央厨房的半成品 / 标准化的后厨模板</td></tr>
+              <tr><td>代码仓库 / Git</td><td>repository / Git</td><td>装订好的菜谱本，以及每次修改的盖章记录</td></tr>
+              <tr><td>需求文档</td><td>PRD</td><td>开店计划书：开给谁、卖什么</td></tr>
+              <tr><td>原型</td><td>prototype</td><td>菜单和门店的手绘草图</td></tr>
+              <tr><td>bug</td><td>bug</td><td>菜咸了、上错桌了</td></tr>
+              <tr><td>测试</td><td>testing</td><td>试菜，请朋友来模拟高峰</td></tr>
+              <tr><td>部署 / 上线</td><td>deploy / release</td><td>开业</td></tr>
+              <tr><td>灰度发布</td><td>canary release</td><td>试营业：先只请亲友</td></tr>
+              <tr><td>回滚</td><td>rollback</td><td>新菜撤掉，换回昨天的菜单</td></tr>
+              <tr><td>日志</td><td>log</td><td>流水账：谁几点做了什么</td></tr>
+              <tr><td>监控</td><td>monitoring</td><td>摄像头加烟感报警</td></tr>
+              <tr><td>备份</td><td>backup</td><td>账本抄一份放到别处</td></tr>
+              <tr><td>技术债</td><td>technical debt</td><td>装修时先凑合、以后要还的账</td></tr>
+              <tr><td>MVP</td><td>minimum viable product</td><td>先摆一周摊，看有没有人买</td></tr>
+              <tr><td>迭代</td><td>iteration</td><td>换一次菜单</td></tr>
+              <tr><td>单体 / 微服务</td><td>monolith / microservices</td><td>小卖部 / 连锁商场</td></tr>
+              <tr><td>瀑布 / 敏捷</td><td>waterfall / agile</td><td>一次性大装修 / 边营业边改</td></tr>
+              <tr><td>解耦</td><td>decoupling</td><td>换菜单不用拆厨房</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub">
+        <h3>三十秒讲给别人听</h3>
+        <div class="recite">
+          <span class="k">复述版</span>
+          软件是一家看不见的餐厅。前厅给顾客看，后厨真干活，仓库存东西，服务员按单子传话，水电煤是租来的服务器，付款和发短信找供应商。做软件就是开店：先想清楚开给谁，画好图纸，装修试做，试菜，试营业再开业，然后天天经营、不断换菜单。程序员脑子里最要紧的习惯是：把大事拆小，抓共性，提前想意外，接受取舍，别重复造轮子，先开小店试营业，永远站在顾客那边。
+        </div>
+      </div>
+
+      <footer>
+        <span>餐厅里的软件工程 · v1.0 · 2026 年 9 月</span>
+        <span>本页是图解讲义，用比喻换取好懂，专业细节以教科书为准。</span>
+      </footer>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var PARTS = {
+    users: {
+      rest: '顾客', soft: '用户和他们的设备', tag: 'user · client',
+      p1: '餐厅里：门口排队的顾客。他们不关心后厨长什么样，只关心好吃、快、别出错。',
+      p2: '软件里：用你软件的人，以及他们手里的手机、电脑、浏览器。业内把用户那一端叫「客户端」。',
+      p3: '记住一句：一切从这里开始，也回到这里结束。'
+    },
+    front: {
+      rest: '前厅', soft: '前端 / 界面', tag: 'frontend · UI',
+      p1: '餐厅里：桌椅、菜单、招牌、收银台。顾客看得见、摸得着的一切。',
+      p2: '软件里：你在 App 或网页上看到的每个按钮、每张图、每个动画。它负责「好看、好用、听懂你要什么」，然后把你的要求写成单子递给后厨。',
+      p3: '记住一句：前厅装得再漂亮，后厨没接上，点了菜也不会上。'
+    },
+    api: {
+      rest: '服务员 · 点菜单', soft: '接口', tag: 'API · application programming interface',
+      p1: '餐厅里：顾客不能直接冲进后厨喊，要按规矩填单：几号桌、什么菜、几份、忌口。服务员照单传话。',
+      p2: '软件里：前端和后端之间事先约定好的「话怎么说」：请求要带什么、返回长什么样。有了它，前厅和后厨可以各自换人、各自装修，只要单子格式不变就不会乱。',
+      p3: '记住一句：接口就是一张双方都认的点菜单。'
+    },
+    backend: {
+      rest: '后厨', soft: '后端 / 业务逻辑', tag: 'backend · server-side',
+      p1: '餐厅里：炉灶、案板、厨师。真正把菜做出来的地方，顾客看不见。',
+      p2: '软件里：算价格、验身份、派订单、发通知。所有「真正干活」的规则都写在这里。它从仓库取数据、加工、再把结果交给前厅。',
+      p3: '记住一句：你看到的每一个数字，都是后厨算出来的。'
+    },
+    db: {
+      rest: '仓库 · 冷库', soft: '数据库', tag: 'database',
+      p1: '餐厅里：食材从哪来、还剩多少、今天卖了多少。仓库和账本记着一切。',
+      p2: '软件里：你的账号、订单、聊天记录、余额都躺在这里，断电也不丢。后厨每做一道菜都要来这里取料、记账。',
+      p3: '记住一句：后厨可以重装，仓库烧了店就没了。所以一定要备份。'
+    },
+    third: {
+      rest: '供应商 · 外卖平台', soft: '第三方服务', tag: 'third-party service · SaaS',
+      p1: '餐厅里：菜贩、燃气公司、外卖平台。自己不生产，花钱接上。',
+      p2: '软件里：微信支付、支付宝、短信验证码、地图、云存储。没有人自己造一家银行，接上现成的就行。',
+      p3: '记住一句：接得越多越省事，但供应商一停电，你也停。'
+    },
+    infra: {
+      rest: '地基 · 水电煤', soft: '服务器 / 云', tag: 'server · cloud · infrastructure',
+      p1: '餐厅里：你租的铺面、通的水电燃气、拉的宽带。没有它什么都开不了。',
+      p2: '软件里：程序总得跑在某台电脑上。这台电脑放在机房里 24 小时开着，你按月付租金，这就是「云」。',
+      p3: '记住一句：云不在天上，是别人机房里一台你按月租的电脑。'
+    },
+    ops: {
+      rest: '店规手册 · 监控', soft: '配置 · 日志 · 监控', tag: 'config · logs · monitoring',
+      p1: '餐厅里：墙上的规章、排班表、监控摄像头、每天的流水账。平时没人看，出事全靠它。',
+      p2: '软件里：配置是店规（营业时间、价格表），日志是流水账（谁几点做了什么），监控是摄像头加烟感（哪个灶台着火立刻报警）。',
+      p3: '记住一句：没有日志的故障，就像没有监控的失窃，只能猜。'
+    }
+  };
+
+  var svg = document.getElementById('cutaway');
+  var legend = document.getElementById('legend');
+  var el = {
+    rest: document.getElementById('p-rest'),
+    soft: document.getElementById('p-soft'),
+    tag: document.getElementById('p-tag'),
+    p1: document.getElementById('p-1'),
+    p2: document.getElementById('p-2'),
+    p3: document.getElementById('p-3')
+  };
+  var pinned = 'front';
+
+  function render(key) {
+    var d = PARTS[key];
+    if (!d) return;
+    el.rest.textContent = d.rest;
+    el.soft.textContent = d.soft;
+    el.tag.textContent = d.tag;
+    el.p1.textContent = d.p1;
+    el.p2.textContent = d.p2;
+    el.p3.textContent = d.p3;
+    var parts = svg.querySelectorAll('.part');
+    for (var i = 0; i < parts.length; i++) {
+      parts[i].classList.toggle('is-active', parts[i].getAttribute('data-part') === key);
+    }
+    var btns = legend.querySelectorAll('button');
+    for (var j = 0; j < btns.length; j++) {
+      btns[j].classList.toggle('is-active', btns[j].getAttribute('data-part') === key);
+    }
+  }
+
+  var groups = svg.querySelectorAll('.part');
+  for (var i = 0; i < groups.length; i++) {
+    (function (g) {
+      var key = g.getAttribute('data-part');
+      g.addEventListener('mouseenter', function () { render(key); });
+      g.addEventListener('mouseleave', function () { render(pinned); });
+      g.addEventListener('focus', function () { render(key); });
+      g.addEventListener('blur', function () { render(pinned); });
+      g.addEventListener('click', function () { pinned = key; render(key); });
+      g.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pinned = key; render(key); }
+      });
+    })(groups[i]);
+  }
+  var buttons = legend.querySelectorAll('button');
+  for (var b = 0; b < buttons.length; b++) {
+    (function (btn) {
+      btn.addEventListener('click', function () {
+        pinned = btn.getAttribute('data-part');
+        render(pinned);
+      });
+    })(buttons[b]);
+  }
+  render(pinned);
+
+  /* toc scroll-spy */
+  var links = document.querySelectorAll('.toc a');
+  var sections = [];
+  for (var s = 0; s < links.length; s++) {
+    var id = links[s].getAttribute('href').slice(1);
+    var sec = document.getElementById(id);
+    if (sec) sections.push({ id: id, el: sec, link: links[s] });
+  }
+  function setActive(id) {
+    for (var k = 0; k < sections.length; k++) {
+      sections[k].link.classList.toggle('active', sections[k].id === id);
+    }
+  }
+  if ('IntersectionObserver' in window && sections.length) {
+    var visible = {};
+    var io = new IntersectionObserver(function (entries) {
+      for (var e = 0; e < entries.length; e++) {
+        visible[entries[e].target.id] = entries[e].isIntersecting ? entries[e].boundingClientRect.top : null;
+      }
+      var best = null, bestTop = Infinity;
+      for (var q = 0; q < sections.length; q++) {
+        var t = visible[sections[q].id];
+        if (t !== null && t !== undefined && Math.abs(t) < bestTop) { bestTop = Math.abs(t); best = sections[q].id; }
+      }
+      if (best) setActive(best);
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: [0, 0.1, 0.5] });
+    for (var m = 0; m < sections.length; m++) io.observe(sections[m].el);
+  }
+})();
+</script>

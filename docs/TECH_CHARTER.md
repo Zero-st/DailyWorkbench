@@ -3,7 +3,7 @@
 > 一页定盘的第一原则 + 防复发护栏。遇到设计/选型分歧，先翻这里，别重新纠结。
 > 本宪章是**活文档**：改架构要顺手更新它；冗余条目定期删（它自己也守 YAGNI）。
 > 通用版（未来项目开工即套）见 `~/.claude/templates/project-tech-charter.md`。
-> **上位**：本宪章是「**工程思维**」这顶帽子的红线；其上位是 [`principles/开发心法-多维思维总纲.md`](principles/开发心法-多维思维总纲.md)——讲「一个功能从想法到复盘，**何时该戴哪顶帽子**」（产品/设计/工程/决策）。
+> **上位**：本宪章是「**工程思维**」这顶帽子的红线；其上位是 [`principles/开发心法-多维思维总纲.md`](principles/开发心法-多维思维总纲.md)——讲「一个功能从想法到复盘，**何时该戴哪顶帽子**」（产品/设计/工程/决策）；同层还有 [`principles/AI时代程序员成长-心法.md`](principles/AI时代程序员成长-心法.md)——讲「AI 协作时代人该长哪些肌肉」，本宪章维度四是它的操作红线。
 
 ---
 
@@ -30,7 +30,7 @@
 | 类型 | **JSDoc + checkJs**，只标模块边界 | 同上（那时全量 TS 的收益才够本） |
 | 后端 | Python **stdlib http.server + 路由表**（`server.py` 的 `GET_ROUTES`/`POST_ROUTES`） | 端点激增 / 需请求校验 / 要 OpenAPI → FastAPI |
 | 数据 | **JSON 文件当库**（`data.json`）+ Supabase 只管需云端共享的模型配置 | 出现并发写 / 多人 / 事务 → 才上 DB |
-| 多端 | **PC-first**：桌面 PWA 为主体；原生/APK（Flutter/TWA）已下线（ADR 0005），仅留独立 `lite/`；不长期并行多套 UI（一人维护两套最贵） | 桌面飞轮成型且有真实移动高频诉求时再评估 |
+| 多端 | **PC-first**：桌面 PWA 为主体；原生/APK（Flutter/TWA）与 `lite/` 分叉均已下线（ADR 0005 及修订）；不并行多套 UI（一人维护两套最贵） | 桌面飞轮成型且有真实移动高频诉求时再评估 |
 
 ### 单向门清单（不可逆，必写 ADR 再动）
 主数据库选型 · 对外 API / `data.json` 契约 · 交付形态 · 消息/存储格式。
@@ -54,7 +54,7 @@
 
 - **缓存戳自动化**：`bump_version.py` 按文件内容 hash 自动写 `index.html`/`sw.js` 的 `?v=` 与 CACHE 名。**禁人肉同步三处**——漏一处用户端就吃旧缓存白屏（这是 CI 硬门禁项：`bump_version.py --check`）。
 - **CI 必须真门禁**：`.github/workflows/ci.yml` 里 `bump --check` / flake8(E9,F7…) / pytest / `tsc --noEmit` 都是**真会变红**的。**禁 `|| true` 假绿**——宁可诚实删掉一个测试，也不留"看着在测其实没测"的绿灯。
-- **单一契约**：`data.json` 是前后端唯一契约，类型定义只有一处——`js/core/net.js` 的 `@typedef WBData`。前端各视图、`lite/`（及未来移动端）都消费它；后端 `export_data.py` 产出它。改契约 = 单向门。
+- **单一契约**：`data.json` 是前后端唯一契约，类型定义只有一处——`js/core/net.js` 的 `@typedef WBData`。前端各视图（及来日的移动端）都消费它；后端 `export_data.py` 产出它。改契约 = 单向门。
 - **类型化边界化**：checkJs 当前只覆盖 `state.js`/`net.js` 两个干净边界（`jsconfig.json`）。视图层是字符串拼接渲染，**不强求全覆盖**——硬追会淹没在 DOM cast 噪音里，是过度投入。日后按文件逐个加 `// @ts-check` 增量扩。
 - **可移植**：环境绑定（路径 / 盘符 / 密钥 / 主机白名单）一律进配置——`wb_config.py` 按 **环境变量 > `workbench.local.json` > 平台默认** 三级读取（`workspace()`/`ollama_exe()`/`disks()`…）。**逻辑常量留代码**（如"日报保留 14 天"这类业务规则，进配置反而更难懂）。跨平台探测优雅降级，非 Windows 不抛异常。
   - 反例存档：曾硬编码 `E:\AITools\...`、`C:\Users\lenovo\...`，换机即废。判据一句话：**环境绑定 → 进配置；逻辑本身 → 留代码。**
