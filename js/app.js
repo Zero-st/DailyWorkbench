@@ -24,10 +24,6 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
 
 
 
-  // ---------- 交互 ----------
-  // 历史遗留：曾与 switchView 双路由并存。现统一委托 switchView（保留导出与全部调用者）。
-  function switchTab(id) { switchView(id); }
-
   // 我的速记 已剥到 js/features/notes.js
   // 我的收藏/稍后读 已剥到 js/features/favs.js
 
@@ -74,7 +70,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
 
   // toggleNS/toggleNews/renderNewsItem 与资讯(news)渲染 已剥到 js/views/info.js
 
-  window.switchTab = switchTab; window.toggleTheme = toggleTheme;
+  window.toggleTheme = toggleTheme;
 
   // 待办清单 已剥到 js/features/todos.js
 
@@ -657,7 +653,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     var p2 = function (n) { return ("0" + n).slice(-2); };
     el.innerHTML = ic("clock") + " " + (now.getMonth() + 1) + "-" + p2(now.getDate()) + " 周" + wd + " " + p2(now.getHours()) + ":" + p2(now.getMinutes()) + ":" + p2(now.getSeconds());
   }
-  window.exportAll = exportAll; window.updateClock = updateClock; window.backupExport = backupExport; window.backupImport = backupImport;
+  window.exportAll = exportAll; window.updateClock = updateClock;
   window.addLink = addLink; window.delLink = delLink; window.renderLinks = renderLinks;
 
   window.selfCheck = selfCheck;

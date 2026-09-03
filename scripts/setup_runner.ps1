@@ -1,25 +1,25 @@
 # setup_runner.ps1
-# Register this machine as a GitHub self-hosted runner for personal-workbench
+# Register this machine as a GitHub self-hosted runner for DailyWorkbench
 # and configure it to start automatically on login (hidden foreground mode).
 #
 # Why hidden foreground? The "install as Windows service" approach requires the
 # account to have "Log on as a service" rights and often ends up running as
-# NETWORK SERVICE, which cannot read C:\Users\13115\.workbuddy. Foreground
+# NETWORK SERVICE, which cannot read the current user's ~\.workbuddy. Foreground
 # mode runs as your normal user and "just works"; we use a VBS launcher so
 # no black console window pops up on every boot.
 #
-# Usage (run PowerShell as your normal user 13115):
-#   & "D:\Users\qingdeng-ws\personal-workbench\setup_runner.ps1" -Token "PASTE_TOKEN_HERE"
+# Usage (run PowerShell as your normal user, from the repo root; no machine paths hardcoded):
+#   .\scripts\setup_runner.ps1 -Token "PASTE_TOKEN_HERE" [-RunnerDir "D:\actions-runner"]
 #
 # The Token is the short-lived --token value from:
 #   GitHub repo -> Settings -> Actions -> Runners -> New self-hosted runner
 param(
     [Parameter(Mandatory=$true)][string]$Token,
+    [string]$RunnerDir = "D:\actions-runner",
     [switch]$RunAsService
 )
 
 $ErrorActionPreference = "Stop"
-$RunnerDir = "D:\actions-runner"
 $RepoUrl   = "https://github.com/Zero-st/DailyWorkbench"
 $StartupDir = [Environment]::GetFolderPath("Startup")
 

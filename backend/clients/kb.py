@@ -216,7 +216,8 @@ def _extra_front(extra):
 def save(module, source, title, body, extra=None):
     """沉淀写入：三级目录 + 同名冲突 + frontmatter + _index.jsonl。返回 dict。
     extra: 可选元数据 dict（platform/author/url/topic/actionable），非空则并入 frontmatter，
-    并把 platform/topic 记进 _index.jsonl，供「蒸馏库」等视图检索。其它模块不传则行为不变。"""
+    并把 platform/topic 记进 _index.jsonl，供「蒸馏库」等视图检索。其它模块不传则行为不变。
+    title：frontmatter/索引存用户原标题；_clean_title 的清洗结果只用作文件名。"""
     if not DEPOSIT:
         return {"ok": False, "error": "未配置 depositRoot"}
     if module not in MODULES:
@@ -247,8 +248,11 @@ def save(module, source, title, body, extra=None):
         fpath = os.path.join(day_dir, fname)
         n += 1
     rel = os.path.relpath(fpath, DEPOSIT).replace("\\", "/")
-    front = "---\nmodule: %s\ndate: %s\nsource: %s\nsavedAt: %s\ntitle: %s\ntags: [AI工作台, %s]\n%s---\n\n" % (
-        module, date, source, ts, base, module, _extra_front(extra))
+    # title 存原标题（清洗名只做文件名，否则蒸馏库/温故卡显示成 a-b-c）；加引号防标题含冒号
+    # 破坏 YAML，_parse_fm 读回时会去引号；标题内的双引号降为单引号。
+    disp = _fm_scalar(title or "").replace('"', "'") or base
+    front = "---\nmodule: %s\ndate: %s\nsource: %s\nsavedAt: %s\ntitle: \"%s\"\ntags: [AI工作台, %s]\n%s---\n\n" % (
+        module, date, source, ts, disp, module, _extra_front(extra))
     try:
         with open(fpath, "w", encoding="utf-8") as _f:
             _f.write(front + (body or "") + "\n")
@@ -257,7 +261,7 @@ def save(module, source, title, body, extra=None):
         return {"ok": False, "error": "写文件失败: %s" % e}
     # 追加 _index.jsonl
     rec = {"savedAt": ts, "module": module, "date": date, "relPath": rel,
-           "fileName": fname, "title": base, "source": source, "bytes": bsz}
+           "fileName": fname, "title": disp, "source": source, "bytes": bsz}
     if extra and isinstance(extra, dict):
         for k in ("platform", "topic"):
             if extra.get(k):

@@ -199,7 +199,7 @@
 
   // ---- 轮询同步（30s，sig 变化才重建树；与 app.js maybeReload 同节奏） ----
   setInterval(function () {
-    if (typeof __view !== "undefined" && window.__view !== "kb") return;
+    if (window.__view !== "kb") return; // 路由真源 state.js 的 setView 镜像到 window.__view（原读裸 __view，靠全局名解析偶然可用）
     if (!document.getElementById("kbTree")) return;
     fetch("/api/kb/tree").then(function (r) { return r.json(); }).then(function (d) {
       if (d.configured && d.sig !== SIG) { buildIndex(d); drawTree(); }

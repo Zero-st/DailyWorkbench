@@ -1,7 +1,7 @@
 // 视图：AI 助手（Agnes / 智谱 GLM 双可选，浏览器直连，Key 存本机）+ 长期记忆 +
 // @知识库提及 + 沉淀到知识库。从 app.js 剥出，行为不变。
 // getAiActiveConfig/kbSave/kbMentionList 等经 window 全局取用（sibling 经典脚本）；
-// switchTab/switchView 亦经 window 桥接。aiAsk/renderAI 既 export（app.js router/首页调用）
+// switchView 亦经 window 桥接。aiAsk/renderAI 既 export（app.js router/首页调用）
 // 又挂 window（内联 onclick）。
 import { esc, ic } from "../core/util.js";
 import { getData } from "../core/state.js";
@@ -115,7 +115,7 @@ function aiSaveKey() {
 }
 // 从其他卡片一键跳转 AI 助手：切 tab → 内容填入输入框（可选自动发送）
 function aiAsk(text, autoSend) {
-  switchTab("ai");
+  switchView("ai");
   var box = document.getElementById("aiBox");
   if (box) {
     box.value = text || "";
