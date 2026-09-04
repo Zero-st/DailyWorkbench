@@ -53,7 +53,8 @@
 ## 维度三 · 工程护栏 + 可移植
 
 - **缓存戳自动化**：`bump_version.py` 按文件内容 hash 自动写 `index.html`/`sw.js` 的 `?v=` 与 CACHE 名。**禁人肉同步三处**——漏一处用户端就吃旧缓存白屏（这是 CI 硬门禁项：`bump_version.py --check`）。
-- **CI 必须真门禁**：`.github/workflows/ci.yml` 里 `bump --check` / flake8(E9,F7…) / pytest / `tsc --noEmit` 都是**真会变红**的。**禁 `|| true` 假绿**——宁可诚实删掉一个测试，也不留"看着在测其实没测"的绿灯。
+- **设计准则是契约不是愿望**：`check_design_tokens.py` 校验 `css/styles.css` 令牌——**引用未定义变量（孤儿）直接红**；**化石令牌只许降不许升**（棘轮基线写在脚本常量，清一批就下调）。缘起：准则 v1.1 写「只用 `--space-*`」，实测裸 px 四百余处 vs 令牌几十处——**准则说的规矩必须有脚本查**，否则和任何文档一样漂移。CI 硬门禁项。新视觉 / 新组件先出 HTML 效果图过目再写代码（准则 §6.0）。
+- **CI 必须真门禁**：`.github/workflows/ci.yml` 里 `bump --check` / `check_design_tokens` / flake8(E9,F7…) / pytest / `tsc --noEmit` 都是**真会变红**的。**禁 `|| true` 假绿**——宁可诚实删掉一个测试，也不留"看着在测其实没测"的绿灯。
 - **单一契约**：`data.json` 是前后端唯一契约，类型定义只有一处——`js/core/net.js` 的 `@typedef WBData`。前端各视图（及来日的移动端）都消费它；后端 `export_data.py` 产出它。改契约 = 单向门。
 - **类型化边界化**：checkJs 当前只覆盖 `state.js`/`net.js` 两个干净边界（`jsconfig.json`）。视图层是字符串拼接渲染，**不强求全覆盖**——硬追会淹没在 DOM cast 噪音里，是过度投入。日后按文件逐个加 `// @ts-check` 增量扩。
 - **可移植**：环境绑定（路径 / 盘符 / 密钥 / 主机白名单）一律进配置——`wb_config.py` 按 **环境变量 > `workbench.local.json` > 平台默认** 三级读取（`workspace()`/`ollama_exe()`/`disks()`…）。**逻辑常量留代码**（如"日报保留 14 天"这类业务规则，进配置反而更难懂）。跨平台探测优雅降级，非 Windows 不抛异常。

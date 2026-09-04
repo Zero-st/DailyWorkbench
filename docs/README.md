@@ -83,7 +83,7 @@ docs/
 | [复盘-MVP闭环首跑.md](planning/复盘-MVP闭环首跑.md) | planning | 蒸馏库 0→1 首张真实经验卡的里程碑复盘 |
 | [复盘-dogfood冲刺-W1.md](planning/复盘-dogfood冲刺-W1.md) | planning | 产品帽 dogfood 一周：每日日志 + 摩擦清单 + 三门筛选 → 决定下一个功能 |
 | [运行时架构-数据流.md](design/运行时架构-数据流.md) | design | 一页架构总图（mermaid）：前端↔后端↔data.json 契约↔三大脑 + 数据流 |
-| [界面设计准则.md](design/界面设计准则.md) | design | 设计系统 v7 索引 + 图标红线 + 新视图检查清单 |
+| [界面设计准则.md](design/界面设计准则.md) | design | **本仓的 DESIGN.md**：设计系统 v7 索引 + 令牌健康度基线（`check_design_tokens.py` 产出）+ 效果图门禁 + 图标红线 + 新视图检查清单 |
 | [温故复用-设计.md](design/温故复用-设计.md) | design | 「今日温故卡」复用抓手设计（Leitner-lite） |
 | [产品-IA评审.md](design/产品-IA评审.md) | design | 信息架构评审 + 收敛提案 |
 | [工作台走查评审-v0.8.0.md](design/工作台走查评审-v0.8.0.md) | design | chrome-devtools 全链路走查 + 分层优化 backlog |

@@ -35,6 +35,16 @@
 ### Added
 - `kb.save`/`list_deposits` 回归测试 ×3（飞轮唯一写路径此前零覆盖；含同名后缀、越界标题、非白名单 source）+ `bump_version` 扫描/FILES 校验/「新增模块必换 CACHE」测试 ×3。
 
+> **2026-09-04 设计契约批次**（缘起：X 帖「先 design.md → 出效果图 → 再写代码」；回查 `styles.css` 全史 21 次提交 +1987/−888、08-26 单日四次换皮——准则写了没人查就漂，实测差距见 [`界面设计准则.md`](docs/design/界面设计准则.md) §2.1）：
+
+### Added
+- **`check_design_tokens.py` 令牌门禁进 CI**：引用未定义 CSS 变量（孤儿）直接红；化石令牌（定义了全仓无人引用）只许降不许升（棘轮基线 19）；裸 px 466 vs 令牌 57、硬编码 hex 22 行先只统计立基线。思路见 [`TECH_CHARTER.md`](docs/TECH_CHARTER.md) 维度三。
+- **项目级 `CLAUDE.md`**（10 行纯指针）：agent 开工自动读到文档归位 / 宪章 / 界面准则(=DESIGN.md) / bump / 令牌门禁 / 心法。
+- **效果图门禁**（准则 §6.0）：新视觉语言 / 新组件类 / 新布局骨架 → 先用 `artifact-design` 出一页 HTML 效果图存 `docs/reference/devhtml/` 过目，再碰 `styles.css`；沿用现成类的小改不触发；不替代走查。
+
+### Changed
+- 界面设计准则 v1.2 定位改「本仓的 DESIGN.md」，§0 订正 `frontend-design` 从未安装、HTML 产物实由内置 `artifact-design` 产出；开发心法总纲 v1.2 设计步补一行；选型账本 v1.6 §3 补「视觉契约先定 / 效果图门禁」两条做法与 Claude Design（未实测）；工具链地图 v1.4 设计规范「由谁强制」改为脚本。
+
 ---
 
 ## [0.10.0] · 2026-09-03 — 捕获层：浏览器扩展 + 收件箱上后端

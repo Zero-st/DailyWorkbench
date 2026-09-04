@@ -32,6 +32,10 @@ jobs:
         # 前端资产改了却漏 bump 版本戳 → 用户端白屏。CI 硬性校验，不同步即失败。
         run: python bump_version.py --check
 
+      - name: Check design tokens (orphans / fossil ratchet)
+        # 设计准则是契约不是愿望：引用未定义 CSS 变量直接红；化石令牌只许降不许升。
+        run: python check_design_tokens.py --check
+
       - name: Lint (syntax/undefined-name only, non-blocking style)
         run: |
           flake8 . --select=E9,F63,F7,F82 --show-source
