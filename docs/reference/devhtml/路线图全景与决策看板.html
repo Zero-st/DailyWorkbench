@@ -1,0 +1,414 @@
+<title>知识飞轮路线三视图</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+  :root{
+    --ground:#F1F3F5;
+    --surface:#FFFFFF;
+    --surface-2:#F7F8FA;
+    --canvas:#FBFCFD;
+    --ink:#1B2230;
+    --ink-mut:#586173;
+    --ink-faint:#8A93A3;
+    --line:#E0E4EA;
+    --line-strong:#CBD2DC;
+    --accent:#3D5A80;
+    --accent-soft:#E7ECF4;
+    --go:#2F7D55;      --go-soft:#E4F1E9;
+    --defer:#B0741A;   --defer-soft:#F6ECD9;
+    --hold:#6B7280;    --hold-soft:#ECEEF1;
+    --now:#3D5A80;     --now-soft:#E7ECF4;
+    --shadow:0 1px 2px rgba(24,33,48,.05), 0 6px 20px rgba(24,33,48,.06);
+    --radius:12px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#12151B;
+      --surface:#1A1E26;
+      --surface-2:#20252F;
+      --canvas:#EEF1F4;
+      --ink:#E7EBF1;
+      --ink-mut:#A2AAB8;
+      --ink-faint:#6E7787;
+      --line:#2A303B;
+      --line-strong:#3A424F;
+      --accent:#83A0CB;
+      --accent-soft:#242C3A;
+      --go:#6FC494;      --go-soft:#1D2A24;
+      --defer:#D6A24E;   --defer-soft:#2C2519;
+      --hold:#9AA3B2;    --hold-soft:#242932;
+      --now:#83A0CB;     --now-soft:#242C3A;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#12151B;
+    --surface:#1A1E26;
+    --surface-2:#20252F;
+    --canvas:#EEF1F4;
+    --ink:#E7EBF1;
+    --ink-mut:#A2AAB8;
+    --ink-faint:#6E7787;
+    --line:#2A303B;
+    --line-strong:#3A424F;
+    --accent:#83A0CB;
+    --accent-soft:#242C3A;
+    --go:#6FC494;      --go-soft:#1D2A24;
+    --defer:#D6A24E;   --defer-soft:#2C2519;
+    --hold:#9AA3B2;    --hold-soft:#242932;
+    --now:#83A0CB;     --now-soft:#242C3A;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"IBM Plex Sans","Noto Sans SC",system-ui,-apple-system,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 22px 72px}
+
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  /* ---- masthead ---- */
+  .mast{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px}
+  .flywheel{flex:none;width:46px;height:46px;margin-top:4px;color:var(--accent)}
+  @media (prefers-reduced-motion:no-preference){
+    .flywheel .spin{transform-origin:24px 24px;animation:rot 26s linear infinite}
+  }
+  @keyframes rot{to{transform:rotate(360deg)}}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 4px}
+  h1{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:clamp(24px,4.2vw,33px);line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
+  .sub{margin:8px 0 0;color:var(--ink-mut);max-width:60ch;font-size:15px}
+  .sub b{color:var(--ink);font-weight:600}
+
+  /* ---- flywheel status strip ---- */
+  .strip{margin:22px 0 6px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .strip-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:13px 18px 11px;border-bottom:1px solid var(--line)}
+  .strip-head h2{font-family:"IBM Plex Sans";font-size:13px;font-weight:600;margin:0;letter-spacing:.02em}
+  .strip-head .legend{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);display:flex;gap:14px;flex-wrap:wrap}
+  .strip-head .legend i{font-style:normal}
+  .rings{display:grid;grid-template-columns:repeat(6,1fr);gap:0}
+  .ring{padding:14px 14px 15px;border-right:1px solid var(--line);position:relative;min-width:0}
+  .ring:last-child{border-right:none}
+  .ring::before{content:"";position:absolute;left:0;top:0;height:3px;width:100%;background:var(--bar,var(--hold))}
+  .ring .rn{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-faint);letter-spacing:.08em}
+  .ring .rt{font-size:14px;font-weight:600;margin:3px 0 5px;letter-spacing:-.01em}
+  .ring .rs{font-size:11.5px;color:var(--ink-mut);display:flex;align-items:center;gap:5px}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--bar,var(--hold))}
+  .s-done{--bar:var(--go)} .s-part{--bar:var(--defer)} .s-todo{--bar:var(--hold)}
+  .s-todo .dot{background:transparent;border:1.5px solid var(--hold)}
+  @media(max-width:720px){.rings{grid-template-columns:repeat(2,1fr)}.ring{border-bottom:1px solid var(--line)}.ring:nth-child(2n){border-right:none}}
+
+  /* ---- tabs ---- */
+  .tabs{display:flex;gap:4px;margin:26px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tab{appearance:none;background:none;border:none;cursor:pointer;font-family:"IBM Plex Sans";font-size:14.5px;font-weight:600;color:var(--ink-mut);padding:11px 15px 13px;border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;align-items:center;gap:8px;transition:color .15s}
+  .tab .tnum{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint)}
+  .tab:hover{color:var(--ink)}
+  .tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+  .tab[aria-selected="true"] .tnum{color:var(--accent)}
+  .tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+  .panel{padding-top:24px}
+  .panel-lead{color:var(--ink-mut);font-size:14px;margin:0 0 18px;max-width:64ch}
+  .panel-lead b{color:var(--ink);font-weight:600}
+
+  /* ---- view A: mindmap canvas ---- */
+  .canvas{background:var(--canvas);border:1px solid var(--line-strong);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;overflow-x:auto}
+  .canvas pre.mermaid{margin:0;background:transparent;text-align:center;min-width:640px}
+  .canvas-note{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);margin:10px 2px 0;text-align:center}
+
+  /* ---- view B: now/next/later ---- */
+  .lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:820px){.lanes{grid-template-columns:1fr}}
+  .lane{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+  .lane-head{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .lane-head .lh{display:flex;align-items:center;gap:9px}
+  .lane-head h3{margin:0;font-size:15px;font-weight:700;letter-spacing:.01em}
+  .lane-head .lk{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-faint);letter-spacing:.05em}
+  .lane-head .pin{width:9px;height:9px;border-radius:2px}
+  .lane-now .pin{background:var(--now)} .lane-next .pin{background:var(--defer)} .lane-later .pin{background:var(--hold)}
+  .lane-body{padding:12px;display:flex;flex-direction:column;gap:10px}
+  .item{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:11px 12px}
+  .item .it{font-size:14px;font-weight:600;margin:0 0 4px;line-height:1.35}
+  .item .id{font-size:12.5px;color:var(--ink-mut);margin:0;line-height:1.45}
+  .item .tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.04em;padding:1px 6px;border-radius:4px;margin-top:8px;color:var(--ink-mut);background:var(--ground);border:1px solid var(--line)}
+  .item .tag.adr{color:var(--defer);border-color:var(--defer);background:var(--defer-soft)}
+
+  /* ---- view C: decision board ---- */
+  .hint{display:flex;gap:11px;align-items:flex-start;background:var(--accent-soft);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:9px;padding:12px 14px;margin-bottom:18px;font-size:13px;color:var(--ink-mut)}
+  .hint svg{flex:none;margin-top:2px;color:var(--accent)}
+  .hint b{color:var(--ink)}
+  .hint .mono{color:var(--accent);font-size:12px}
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:720px;font-size:13.5px}
+  thead th{text-align:left;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);padding:12px 14px;border-bottom:1px solid var(--line-strong);background:var(--surface-2);white-space:nowrap}
+  thead th.gate{text-align:center}
+  tbody td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--surface-2)}
+  .cand{font-weight:600;font-size:14px;line-height:1.35;min-width:170px}
+  .cand small{display:block;font-weight:400;color:var(--ink-faint);font-family:"IBM Plex Mono",monospace;font-size:10.5px;margin-top:3px;letter-spacing:.02em}
+  td.gate{text-align:center;white-space:nowrap}
+  .g{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px}
+  .g-pass{color:var(--go)} .g-warn{color:var(--defer)} .g-na{color:var(--ink-faint)}
+  td.gate small{display:block;font-size:10px;color:var(--ink-faint);font-weight:400;margin-top:1px;font-family:"IBM Plex Sans"}
+  .invest{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-mut);white-space:nowrap}
+  .verdict{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .v-go{color:var(--go);background:var(--go-soft)}
+  .v-defer{color:var(--defer);background:var(--defer-soft)}
+  .v-now{color:var(--now);background:var(--now-soft)}
+  .verdict small{display:block;font-weight:400;font-size:10px;opacity:.85;margin-top:1px}
+
+  .foot{margin-top:30px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-faint);display:flex;flex-wrap:wrap;gap:6px 18px}
+  .foot .mono{font-size:11.5px}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <svg class="flywheel" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <g class="spin" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <circle cx="24" cy="24" r="14" opacity=".35"/>
+        <circle cx="24" cy="24" r="4.4" fill="currentColor" stroke="none"/>
+        <path d="M24 6 v6 M24 36 v6 M6 24 h6 M36 24 h6 M11.3 11.3 l4.2 4.2 M32.5 32.5 l4.2 4.2 M36.7 11.3 l-4.2 4.2 M15.5 32.5 l-4.2 4.2"/>
+      </g>
+      <path d="M40 10 a18 18 0 0 1 2.5 9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+      <path d="M40 10 l3.4 .2 -1.2 3.2 z" fill="currentColor"/>
+    </svg>
+    <div>
+      <p class="eyebrow">DailyWorkbench · 路线三视图 · 2026-09-07</p>
+      <h1>知识飞轮：现状盘点与下一步该做什么</h1>
+      <p class="sub">同一份数据，三种看法 —— 一张<b>飞轮全景</b>挂着看，一栏<b>Now / Next / Later</b> 排优先级，一块<b>候选 × 三道门决策看板</b>服务 <b>09-10 dogfood 冲刺</b>那个「下一个功能」的定夺。判据结论全部引用你自己心法与路线图的已有裁定，未新造。</p>
+    </div>
+  </header>
+
+  <!-- flywheel status strip: the at-rest summary -->
+  <section class="strip" aria-label="飞轮六环完成度">
+    <div class="strip-head">
+      <h2>飞轮六环 · 完成度</h2>
+      <div class="legend">
+        <i style="color:var(--go)">● 完整</i>
+        <i style="color:var(--defer)">● 半成品</i>
+        <i style="color:var(--hold)">○ 未做</i>
+      </div>
+    </div>
+    <div class="rings">
+      <div class="ring s-done"><div class="rn">01 · 输入</div><div class="rt">资讯</div><div class="rs"><span class="dot"></span>AI日报·新闻·HN</div></div>
+      <div class="ring s-done"><div class="rn">02 · 捕获</div><div class="rt">收件箱</div><div class="rs"><span class="dot"></span>扩展 + 后端·最扎实</div></div>
+      <div class="ring s-done"><div class="rn">03 · 沉淀</div><div class="rt">知识库</div><div class="rs"><span class="dot"></span>Obsidian vault</div></div>
+      <div class="ring s-part"><div class="rn">04 · 蒸馏</div><div class="rt">经验卡</div><div class="rs"><span class="dot"></span>半自动·人工搬运</div></div>
+      <div class="ring s-todo"><div class="rn">05 · 输出</div><div class="rt">→ ima</div><div class="rs"><span class="dot"></span>零实现</div></div>
+      <div class="ring s-part"><div class="rn">06 · 反哺</div><div class="rt">复盘</div><div class="rs"><span class="dot"></span>温故 MVP</div></div>
+    </div>
+  </section>
+
+  <!-- tabs -->
+  <div class="tabs" role="tablist" aria-label="三种视图">
+    <button class="tab" role="tab" id="tab-a" aria-controls="panel-a" aria-selected="true"><span class="tnum">A</span>全景 · 思维导图</button>
+    <button class="tab" role="tab" id="tab-b" aria-controls="panel-b" aria-selected="false"><span class="tnum">B</span>Now · Next · Later</button>
+    <button class="tab" role="tab" id="tab-c" aria-controls="panel-c" aria-selected="false"><span class="tnum">C</span>决策看板</button>
+  </div>
+
+  <!-- ===== View A: panorama mindmap ===== -->
+  <section class="panel" role="tabpanel" id="panel-a" aria-labelledby="tab-a">
+    <p class="panel-lead">飞轮六环各挂已落地功能与状态；外圈两条治理主轴 —— <b>北极星</b>（零构建·零依赖·离线可跑）与<b>三层大脑</b>（Obsidian 权威 / Supabase 云收件箱 / ima 最终）。适合挂着看、对外讲。</p>
+    <div class="canvas">
+<pre class="mermaid">
+mindmap
+  root((知识飞轮))
+    输入·资讯 ●
+      AI日报 ●
+      每日新闻 ●
+      HackerNews·OpenCLI ●
+    捕获 ●
+      Chrome MV3 扩展 ●
+      收件箱后端·离线队列 ●
+    沉淀 ●
+      Obsidian vault ●
+      检索·双链 ●
+    蒸馏 ◐
+      六维经验卡 ●
+      自动萃取·尚缺 ◐
+    输出 ○
+      归拢到 ima·未做 ○
+    反哺 ◐
+      今日温故·间隔重复 ●
+      该深挖什么·聚合 ○
+    北极星
+      零构建
+      零依赖
+      离线可跑
+    三层大脑
+      Obsidian·权威副本
+      Supabase·云收件箱
+      ima·最终大脑
+</pre>
+    </div>
+    <p class="canvas-note">// 思维导图由 Artifact 原生渲染，无外部依赖 —— 与本仓「零依赖」北极星同源</p>
+  </section>
+
+  <!-- ===== View B: Now / Next / Later ===== -->
+  <section class="panel" role="tabpanel" id="panel-b" aria-labelledby="tab-b" hidden>
+    <p class="panel-lead">把现有<b>四阶段路线图</b>换成优先级视角（不改 Phase 定义）。排序原则沿用路线图：<b>低成本·可逆·本地先行，大门压后且触发前先写 ADR</b>。</p>
+    <div class="lanes">
+
+      <div class="lane lane-now">
+        <div class="lane-head"><span class="lh"><span class="pin"></span><h3>Now</h3></span><span class="lk">本周~两周 · 低成本可逆</span></div>
+        <div class="lane-body">
+          <div class="item"><p class="it">每日灵感留存</p><p class="id">localStorage + kbSave 到 Obsidian <span class="mono">灵感/YYYY-MM-DD/</span>；补上「随手记且留得下」。</p><span class="tag">Phase 2</span></div>
+          <div class="item"><p class="it">vault git 自动备份</p><p class="id">复用 self-hosted runner 给 Obsidian 库上定时 git 备份，防御「怕丢」。</p><span class="tag">Phase 2</span></div>
+          <div class="item"><p class="it">data.json 补 hackerNews 键</p><p class="id">代码已写、快照滞后 —— 卫生债，随手清。</p><span class="tag">卫生债</span></div>
+        </div>
+      </div>
+
+      <div class="lane lane-next">
+        <div class="lane-head"><span class="lh"><span class="pin"></span><h3>Next</h3></span><span class="lk">一次冲刺 · 有产品价值</span></div>
+        <div class="lane-body">
+          <div class="item"><p class="it">复用端「相关时浮现」</p><p class="id">今日温故按 topic/tag 精确匹配，不再随机。心法原判「值得，从第 3 档最小做起」。</p><span class="tag">飞轮·复用环</span></div>
+          <div class="item"><p class="it">本机 WorkBuddy 数据线补厚</p><p class="id">skills / sessions / knowledge 等 KPI 现多为空数组，接入这条线让首页真正有料。</p><span class="tag">输入·补厚</span></div>
+        </div>
+      </div>
+
+      <div class="lane lane-later">
+        <div class="lane-head"><span class="lh"><span class="pin"></span><h3>Later</h3></span><span class="lk">大门 · 触发前先写 ADR</span></div>
+        <div class="lane-body">
+          <div class="item"><p class="it">蒸馏自动化 / 捕获→卡一步化</p><p class="id">后端直跑萃取。撞「人在环中」门（=替我思考），心法判推迟。</p><span class="tag adr">先写 ADR</span></div>
+          <div class="item"><p class="it">云端薄收件箱 + 多端同步</p><p class="id">Supabase capture_inbox。YAGNI：没触真实多端需求前不建云表。</p><span class="tag adr">Phase 3 · ADR</span></div>
+          <div class="item"><p class="it">手机全功能 + ima 出口闭环</p><p class="id">把 <span class="mono">/api/*</span> 安全暴露 + 一键归拢到 <span class="mono">待入ima/</span>。全路线最大的门。</p><span class="tag">Phase 4 · 压轴</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== View C: decision board ===== -->
+  <section class="panel" role="tabpanel" id="panel-c" aria-labelledby="tab-c" hidden>
+    <p class="panel-lead">每个剩余候选过你自己的<b>三道产品门</b>（频率 / 飞轮 / 人在环中）+ 投入档位，给出结论。这是服务 <b>09-10</b> 决策的核心视图。</p>
+    <div class="hint">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+      <div>本看板是<b>候选池 + 已有判据</b>，不是结论。最终「下一个功能」由 <span class="mono">复盘-dogfood冲刺-W1.md §4</span> 的<b>真实摩擦</b>拍板 —— 让这周实际卡在哪，决定先做谁。</div>
+    </div>
+    <div class="tbl-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>候选功能</th>
+            <th class="gate">频率门</th>
+            <th class="gate">飞轮门</th>
+            <th class="gate">人在环中</th>
+            <th>投入档位</th>
+            <th>结论</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cand">复用端「相关时浮现」<small>topic/tag 匹配温故</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>每天温故</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>复用·反哺环</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>帮我思考</small></td>
+            <td class="invest">③ 产品最小</td>
+            <td><span class="verdict v-go">做<small>心法原判</small></span></td>
+          </tr>
+          <tr>
+            <td class="cand">每日灵感留存<small>localStorage + kbSave</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>每天</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>捕获环</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>纯留存·我记</small></td>
+            <td class="invest">② 脚本→③</td>
+            <td><span class="verdict v-go">做<small>低成本可逆</small></span></td>
+          </tr>
+          <tr>
+            <td class="cand">vault git 自动备份<small>复用 self-hosted runner</small></td>
+            <td class="gate"><span class="g g-na">—</span><small>后台自动</small></td>
+            <td class="gate"><span class="g g-na">保险</span><small>非功能</small></td>
+            <td class="gate"><span class="g g-na">—</span></td>
+            <td class="invest">② 脚本</td>
+            <td><span class="verdict v-go">做<small>防御性·可逆</small></span></td>
+          </tr>
+          <tr>
+            <td class="cand">data.json 补 hackerNews 键<small>快照滞后</small></td>
+            <td class="gate"><span class="g g-na">—</span></td>
+            <td class="gate"><span class="g g-na">卫生债</span></td>
+            <td class="gate"><span class="g g-na">—</span></td>
+            <td class="invest">① 手动</td>
+            <td><span class="verdict v-now">随手做<small>清债</small></span></td>
+          </tr>
+          <tr>
+            <td class="cand">本机 WorkBuddy 数据线补厚<small>skills/sessions 补料</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>每天看首页</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>输入环</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>我看·我判</small></td>
+            <td class="invest">② 脚本</td>
+            <td><span class="verdict v-go">做<small>让首页有料</small></span></td>
+          </tr>
+          <tr>
+            <td class="cand">蒸馏自动化<small>后端直跑萃取</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>高频</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>蒸馏环</small></td>
+            <td class="gate"><span class="g g-warn">⚠</span><small>替我思考</small></td>
+            <td class="invest">大门</td>
+            <td><span class="verdict v-defer">推迟<small>先写 ADR</small></span></td>
+          </tr>
+          <tr>
+            <td class="cand">捕获→卡一步化<small>少切窗口</small></td>
+            <td class="gate"><span class="g g-warn">中</span></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>捕获环</small></td>
+            <td class="gate"><span class="g g-warn">⚠</span><small>替我思考</small></td>
+            <td class="invest">较大门</td>
+            <td><span class="verdict v-defer">推迟<small>先写 ADR</small></span></td>
+          </tr>
+          <tr>
+            <td class="cand">云端薄收件箱 + 多端同步<small>Supabase capture_inbox</small></td>
+            <td class="gate"><span class="g g-warn">低</span><small>未触发</small></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>捕获环</small></td>
+            <td class="gate"><span class="g g-na">—</span></td>
+            <td class="invest">Phase 3</td>
+            <td><span class="verdict v-defer">推迟<small>YAGNI 到摩擦</small></span></td>
+          </tr>
+          <tr>
+            <td class="cand">手机全功能 + ima 出口<small>/api 暴露 + 出口闭环</small></td>
+            <td class="gate"><span class="g g-na">—</span></td>
+            <td class="gate"><span class="g g-pass">✓</span><small>输出环</small></td>
+            <td class="gate"><span class="g g-na">—</span></td>
+            <td class="invest">Phase 4</td>
+            <td><span class="verdict v-defer">推迟<small>压轴最大门</small></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span class="mono">真源 · docs/planning/知识飞轮-路线图.md</span>
+    <span class="mono">判据 · docs/principles/开发心法-多维思维总纲.md §4</span>
+    <span class="mono">决策 · 复盘-dogfood冲刺-W1.md</span>
+  </footer>
+
+</div>
+
+<script>
+  (function(){
+    var tabs=[].slice.call(document.querySelectorAll('.tab'));
+    var KEY='wb-roadmap-tab';
+    function select(id,save){
+      tabs.forEach(function(t){
+        var on=t.id===id;
+        t.setAttribute('aria-selected',on?'true':'false');
+        var p=document.getElementById(t.getAttribute('aria-controls'));
+        if(p) p.hidden=!on;
+      });
+      if(save){try{localStorage.setItem(KEY,id);}catch(e){}}
+    }
+    tabs.forEach(function(t,i){
+      t.addEventListener('click',function(){select(t.id,true);});
+      t.addEventListener('keydown',function(e){
+        var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;
+        if(!d)return;e.preventDefault();
+        var n=tabs[(i+d+tabs.length)%tabs.length];n.focus();select(n.id,true);
+      });
+    });
+    var saved=null;try{saved=localStorage.getItem(KEY);}catch(e){}
+    if(saved&&document.getElementById(saved))select(saved,false);
+  })();
+</script>

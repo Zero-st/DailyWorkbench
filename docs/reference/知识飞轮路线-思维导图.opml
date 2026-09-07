@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>知识飞轮路线全景</title>
+  </head>
+  <body>
+    <outline text="知识飞轮">
+      <outline text="输入·资讯 ●">
+        <outline text="AI日报 ●"/>
+        <outline text="每日新闻 ●"/>
+        <outline text="HackerNews·OpenCLI ●"/>
+      </outline>
+      <outline text="捕获 ●">
+        <outline text="Chrome MV3 扩展 ●"/>
+        <outline text="收件箱后端·离线队列 ●"/>
+      </outline>
+      <outline text="沉淀 ●">
+        <outline text="Obsidian vault ●"/>
+        <outline text="检索·双链 ●"/>
+      </outline>
+      <outline text="蒸馏 ◐">
+        <outline text="六维经验卡 ●"/>
+        <outline text="自动萃取·尚缺 ◐"/>
+      </outline>
+      <outline text="输出 ○">
+        <outline text="归拢到 ima·未做 ○"/>
+      </outline>
+      <outline text="反哺 ◐">
+        <outline text="今日温故·间隔重复 ●"/>
+        <outline text="该深挖什么·聚合 ○"/>
+      </outline>
+      <outline text="北极星（治理）">
+        <outline text="零构建"/>
+        <outline text="零依赖"/>
+        <outline text="离线可跑"/>
+      </outline>
+      <outline text="三层大脑（数据）">
+        <outline text="Obsidian·权威副本"/>
+        <outline text="Supabase·云收件箱"/>
+        <outline text="ima·最终大脑"/>
+      </outline>
+      <outline text="下一步优先级">
+        <outline text="Now · 低成本可逆">
+          <outline text="每日灵感留存（Phase 2）"/>
+          <outline text="vault git 自动备份（Phase 2）"/>
+          <outline text="data.json 补 hackerNews 键（卫生债）"/>
+        </outline>
+        <outline text="Next · 有产品价值">
+          <outline text="复用端「相关时浮现」topic/tag"/>
+          <outline text="本机 WorkBuddy 数据线补厚"/>
+        </outline>
+        <outline text="Later · 大门·先写 ADR">
+          <outline text="蒸馏自动化 / 捕获一步化（撞人在环中门）"/>
+          <outline text="云端薄收件箱 + 多端同步（Phase 3）"/>
+          <outline text="手机全功能 + ima 出口闭环（Phase 4·压轴）"/>
+        </outline>
+      </outline>
+    </outline>
+  </body>
+</opml>
