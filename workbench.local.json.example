@@ -3,6 +3,8 @@
 
   "workspace": "E:/AITools/workbuddy/workspace",
   "ollamaExe": "auto",
+  "_opencliCmd说明": "取数层调用 OpenCLI（Node>=20）的命令；留空/缺失=该源(Hacker News)自动跳过，不影响其余管道。装了就填 \"opencli\"（在 PATH 时可留空自动探测），或 \"node D:/path/OpenCLI/dist/src/main.js\"",
+  "opencliCmd": "",
   "diagLog": "",
   "disks": ["C:\\", "D:\\"],
 

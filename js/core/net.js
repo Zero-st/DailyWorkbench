@@ -12,6 +12,7 @@
  * @property {{recent?:Array, heatmap?:Array}} [sessions] 会话档案与热力图
  * @property {{count?:number, date?:string, source?:string, fetchedAt?:string, canonical?:string, sections?:Array, history?:Array}} [aiDaily] AI 日报
  * @property {{count?:number, date?:string, source?:string, fetchedAt?:string, canonical?:string, cover?:string, tip?:string, items?:Array, history?:Array}} [dailyNews] 每日新闻
+ * @property {{count?:number, date?:string, source?:string, fetchedAt?:string, canonical?:string, items?:Array, history?:Array}} [hackerNews] Hacker News 热帖（经 OpenCLI 取数层）
  * @property {Array} [weekly] 本周动态
  * @property {string[]} [guide] 今日引导
  * @property {Array<{icon:string, label:string, cmd:string}>} [quickActions] 快捷启动

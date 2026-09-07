@@ -1,0 +1,130 @@
+{
+  "date": "2026-09-07",
+  "fetchedAt": "2026-09-07 15:55",
+  "source": "Hacker News (via OpenCLI)",
+  "canonical": "https://news.ycombinator.com/",
+  "count": 20,
+  "items": [
+    {
+      "title": "Keep Our Servers Running",
+      "summary": "▲332 · sonicrocketman · 73 评论",
+      "url": "https://blog.archive.org/2026/09/01/keep-our-servers-running-your-recurring-donation-goes-3x-this-september/",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Making a Python interpreter in 1024 bytes",
+      "summary": "▲206 · azhenley · 75 评论",
+      "url": "https://austinhenley.com/blog/python1024.html",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Ask HN: Fable hacked my piano, can I release the results?",
+      "summary": "▲125 · jmpman · 68 评论",
+      "url": "https://news.ycombinator.com/item?id=49577129",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Ask HN: How do you manage skills files?",
+      "summary": "▲95 · imadtaieber · 74 评论",
+      "url": "https://news.ycombinator.com/item?id=49589914",
+      "source": "Hacker News"
+    },
+    {
+      "title": "It took a year to ship WebAssembly in Anubis",
+      "summary": "▲248 · xena · 126 评论",
+      "url": "https://anubis.techaro.lol/blog/2026/anubis-wasm/",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Has anybody seen my keys? A key-hierarchy strategy for rack-level security",
+      "summary": "▲24 · cyb0rg0 · 1 评论",
+      "url": "https://rfd.shared.oxide.computer/rfd/0301",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Show HN: Engrim – A universal, local-first SQLite memory engine for AI CLIs",
+      "summary": "▲18 · timgordontg · 3 评论",
+      "url": "https://github.com/timgordontg/engrim",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Ask HN: Would you read a statistics textbook?",
+      "summary": "▲67 · usernametaken29 · 35 评论",
+      "url": "https://news.ycombinator.com/item?id=49583440",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Switzerland's Federal Government Is Replacing Microsoft on 3k Computers",
+      "summary": "▲43 · ivell · 13 评论",
+      "url": "https://itsfoss.com/news/switzerland-replace-microssoft-pilot/",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Nitter and XCancel resume service after legal advice",
+      "summary": "▲687 · zImPatrick · 306 评论",
+      "url": "https://github.com/zedeus/nitter/commit/1428b4c2b4246f92a7e5b2673438e5fb39fcc4a3",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Babylonian Lamb Stew with Beets (1750–1730 BCE)",
+      "summary": "▲134 · yubblegum · 92 评论",
+      "url": "https://babylonian-collection.yale.edu/about/babylonian-cooking",
+      "source": "Hacker News"
+    },
+    {
+      "title": "I'm a seeing-eye dog for a computer",
+      "summary": "▲63 · claytonwramsey · 61 评论",
+      "url": "https://claytonwramsey.com/blog/seeing-eye/",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Show HN: GET Together – A social network where you don't need POST to Post",
+      "summary": "▲40 · nchudleigh · 13 评论",
+      "url": "https://gettogether.dev",
+      "source": "Hacker News"
+    },
+    {
+      "title": "GrapheneOS Overhauled Default Apps and Secure Clipboard",
+      "summary": "▲274 · Cider9986 · 195 评论",
+      "url": "https://grapheneos.social/@GrapheneOS/117225539756835649",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Bot Detection Without JavaScript: What My Blog Measured",
+      "summary": "▲6 · gogakoreli · 0 评论",
+      "url": "https://gkoreli.com/how-i-separate-readers-from-bots-without-javascript",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Harnessing the Universal Geometry of Embeddings",
+      "summary": "▲72 · ur-whale · 25 评论",
+      "url": "https://arxiv.org/abs/2505.12540",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Every Novel Is Boring–Until It Isn't",
+      "summary": "▲51 · samclemens · 37 评论",
+      "url": "https://www.publicbooks.org/every-novel-is-boring-until-it-isnt/",
+      "source": "Hacker News"
+    },
+    {
+      "title": "Research acceleration: The view inside OpenAI",
+      "summary": "▲162 · iamsyr · 109 评论",
+      "url": "https://openai.com/index/research-acceleration-view-inside-openai",
+      "source": "Hacker News"
+    },
+    {
+      "title": "TiVo to charge money for skipping commercials in your own recordings",
+      "summary": "▲46 · dmitrygr · 14 评论",
+      "url": "https://cordcuttersnews.com/tivo-plans-to-end-free-automatic-commercial-skipping-in-november-tests-paid-premium-replacement-service/",
+      "source": "Hacker News"
+    },
+    {
+      "title": "The NX bit is not just about security",
+      "summary": "▲66 · torutofu · 34 评论",
+      "url": "https://purplesyringa.moe/blog/guest/the-nx-bit-is-not-just-about-security/",
+      "source": "Hacker News"
+    }
+  ],
+  "warnings": []
+}

@@ -79,9 +79,11 @@ function newsDateChanged() {
 export function renderInfo(d) {
   renderNews(d);
   renderDailyNews(d);
+  renderHackerNews(d);
   var dot = document.getElementById("infoDot");
   if (dot) {
-    var n = ((d.aiDaily || {}).count || 0) + ((d.dailyNews || {}).count || 0);
+    var n = ((d.aiDaily || {}).count || 0) + ((d.dailyNews || {}).count || 0) +
+      ((d.hackerNews || {}).count || 0);
     dot.style.display = n > 0 ? "inline-block" : "none";
   }
 }
@@ -188,7 +190,64 @@ function renderDNewsBody(date) {
   box.innerHTML = html;
 }
 
+// ---------- Hacker News 热帖（经 OpenCLI 取数层，支持历史日期切换） ----------
+var HNEWS_DATA = null;
+function renderHackerNews(d) {
+  HNEWS_DATA = d;
+  var a = d.hackerNews || {};
+  var box = document.getElementById("hnewsBlock");
+  if (!box) return;
+  var dot = document.getElementById("hnewsDot");
+  if (dot) dot.style.display = ((a.count || 0) > 0) ? "inline-block" : "none";
+
+  var hist = a.history || [];
+  var curDate = a.date || "";
+  var selHtml = "";
+  if (hist.length > 1) {
+    selHtml = '<div class="news-sel">历史热帖：' +
+      '<select id="hnewsSel" onchange="hnewsDateChanged()">' +
+      hist.map(function (h) {
+        return '<option value="' + escAttr(h.date) + '"' + (h.date === curDate ? " selected" : "") + '>' +
+          esc(h.date) + ' (' + (h.count || 0) + ' 条)</option>';
+      }).join("") + '</select></div>';
+  }
+  box.innerHTML = selHtml + '<div id="hnewsBody"></div>';
+  renderHNBody(curDate);
+}
+function hnewsDateChanged() {
+  var sel = document.getElementById("hnewsSel");
+  if (sel) renderHNBody(sel.value);
+}
+function renderHNBody(date) {
+  var box = document.getElementById("hnewsBody");
+  if (!box || !HNEWS_DATA) return;
+  var a = HNEWS_DATA.hackerNews || {};
+  var day = (a.history || []).filter(function (h) { return h.date === date; })[0] || a;
+  var items = day.items || [];
+  if (!items.length) {
+    box.innerHTML = '<div class="card"><h2><span class="ic">' + ic("trendingUp") + '</span>Hacker News 热帖</h2>' +
+      '<div class="empty">还没有抓到 Hacker News 数据。点「立即刷新」让本机经 OpenCLI 抓一次；若本机没装 OpenCLI（Node ≥20），该源会自动跳过，不影响其它资讯。</div></div>';
+    return;
+  }
+  var html = '<div class="card news-head"><h2>' + esc(day.date || "") + ' Hacker News 热帖' +
+    '<span class="news-n">' + (day.count || 0) + ' 条</span></h2>' +
+    '<div class="news-meta">数据源 ' + esc(day.source || a.source || "Hacker News") + ' · 抓取于 ' + esc(day.fetchedAt || "-") +
+    (day.canonical ? ' · <a href="' + escAttr(day.canonical) + '" target="_blank" rel="noopener">去 HN ↗</a>' : "") + "</div></div>";
+  html += '<div class="card"><h2><span class="ic">' + ic("trendingUp") + '</span>今日热帖</h2><div class="nw-grid">';
+  items.forEach(function (it, i) {
+    html += renderNewsItem(it, {
+      prefix: '<span style="color:var(--accent2);font-weight:600;margin-right:7px;flex:0 0 auto">' + (i + 1) + ".</span>",
+      defaultSrc: "Hacker News",
+      showSummary: true,
+      ask: "用大白话讲讲这条 Hacker News 热帖在讨论什么、为什么值得关注："
+    });
+  });
+  html += "</div></div>";
+  box.innerHTML = html;
+}
+
 window.toggleNS = toggleNS;
 window.toggleNews = toggleNews;
 window.newsDateChanged = newsDateChanged;
 window.dnewsDateChanged = dnewsDateChanged;
+window.hnewsDateChanged = hnewsDateChanged;

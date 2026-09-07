@@ -77,11 +77,12 @@ docs/
 | [版本管理规范.md](版本管理规范.md) | 根 | 版本 / commit / 「what 与思路落在哪」约定 |
 | [开发心法-多维思维总纲.md](principles/开发心法-多维思维总纲.md) | principles | 宪章之上的心法：四顶帽子（产品/设计/工程/决策）× 何时戴 + 产品帽判据 |
 | [AI时代程序员成长-心法.md](principles/AI时代程序员成长-心法.md) | principles | 姊妹篇：AI 替你写代码之后人该长哪些肌肉——定价表 / 四杠杆 / 五转变 / AI 放大的坑 / 练习节律 |
-| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 |
+| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 |
 | [知识飞轮-路线图.md](planning/知识飞轮-路线图.md) | planning | 三层大脑模型 + 四阶段路线图（方向盘） |
 | [项目总览-需求与进度.md](planning/项目总览-需求与进度.md) | planning | 一页总账：需求 / 已完成 / 待优化 / 待完成 |
 | [复盘-MVP闭环首跑.md](planning/复盘-MVP闭环首跑.md) | planning | 蒸馏库 0→1 首张真实经验卡的里程碑复盘 |
 | [复盘-dogfood冲刺-W1.md](planning/复盘-dogfood冲刺-W1.md) | planning | 产品帽 dogfood 一周：每日日志 + 摩擦清单 + 三门筛选 → 决定下一个功能 |
+| [复盘-OpenCLI取数层接入.md](planning/复盘-OpenCLI取数层接入.md) | planning | 把 OpenCLI 作可劣化取数层接入的里程碑复盘：执行步骤 / 优雅劣化实测 / 踩坑 / 可迁移的「外部取数源接入」心智模型 |
 | [运行时架构-数据流.md](design/运行时架构-数据流.md) | design | 一页架构总图（mermaid）：前端↔后端↔data.json 契约↔三大脑 + 数据流 |
 | [界面设计准则.md](design/界面设计准则.md) | design | **本仓的 DESIGN.md**：设计系统 v7 索引 + 令牌健康度基线（`check_design_tokens.py` 产出）+ 效果图门禁 + 图标红线 + 新视图检查清单 |
 | [温故复用-设计.md](design/温故复用-设计.md) | design | 「今日温故卡」复用抓手设计（Leitner-lite） |

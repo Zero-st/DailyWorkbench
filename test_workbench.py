@@ -389,3 +389,80 @@ def test_inbox_no_tmp_residue_after_concurrent_writes(_inbox_sandbox):
         t.join()
     d = os.path.dirname(_inbox_sandbox)
     assert not [f for f in os.listdir(d) if ".tmp" in f], "并发写后残留 tmp 文件"
+
+
+# ---------- Hacker News 源（OpenCLI 取数层）----------
+from backend.pipeline import fetch_hacker_news  # noqa: E402
+from backend.pipeline import export_data  # noqa: E402
+
+
+def test_hn_build_maps_columns_to_unified_items(monkeypatch):
+    # 喂假 OpenCLI 行对象，验证映射成本仓统一 item {title,summary,url,source}
+    rows = [
+        {"rank": 1, "id": 111, "title": "Show HN: cool thing", "score": 240,
+         "author": "pg", "comments": 88, "url": "https://example.com/x"},
+        {"rank": 2, "id": 222, "title": "Ask HN: no url", "score": 12,
+         "author": "alice", "comments": 3, "url": ""},          # 无 url -> 回退 HN 讨论页
+        {"rank": 3, "id": 333, "title": "", "score": 5, "author": "bob",
+         "comments": 0, "url": "https://drop.me"},               # 无标题 -> 丢弃
+    ]
+    monkeypatch.setattr(fetch_hacker_news, "fetch", lambda: rows)
+    out = fetch_hacker_news.build()
+    assert out["count"] == 2                                     # 空标题被丢
+    assert out["source"].startswith("Hacker News")
+    it0, it1 = out["items"]
+    assert it0["title"] == "Show HN: cool thing"
+    assert it0["url"] == "https://example.com/x"
+    assert it0["source"] == "Hacker News"
+    assert "▲240" in it0["summary"] and "pg" in it0["summary"] and "88" in it0["summary"]
+    assert it1["url"] == "https://news.ycombinator.com/item?id=222"  # 回退
+
+
+def test_hn_build_raises_when_no_valid_items(monkeypatch):
+    monkeypatch.setattr(fetch_hacker_news, "fetch", lambda: [{"title": ""}])
+    with pytest.raises(Exception):
+        fetch_hacker_news.build()
+
+
+def test_get_hacker_news_accumulates_history(tmp_path, monkeypatch):
+    hn = tmp_path / "hacker_news.json"
+    data = tmp_path / "data.json"
+    data.write_text(json.dumps({"hackerNews": {"history": [
+        {"date": "2026-09-06", "count": 1, "items": [{"title": "old"}]},
+    ]}}), encoding="utf-8")
+    hn.write_text(json.dumps({
+        "date": "2026-09-07", "fetchedAt": "2026-09-07 10:00", "count": 1,
+        "items": [{"title": "new", "url": "u", "source": "Hacker News"}],
+        "source": "Hacker News (via OpenCLI)", "canonical": "https://news.ycombinator.com/",
+    }), encoding="utf-8")
+    monkeypatch.setattr(export_data, "HACKER_NEWS_JSON", str(hn))
+    monkeypatch.setattr(export_data, "DATA_JSON", str(data))
+    out = export_data.get_hacker_news()
+    assert [h["date"] for h in out["history"]] == ["2026-09-07", "2026-09-06"]  # 新的在前
+    assert out["count"] == 1 and out["items"][0]["title"] == "new"
+
+
+def test_get_hacker_news_missing_file_is_safe(tmp_path, monkeypatch):
+    # OpenCLI 缺失 / 从未抓过：hacker_news.json 不存在 -> 空壳、不抛（优雅劣化）
+    monkeypatch.setattr(export_data, "HACKER_NEWS_JSON", str(tmp_path / "nope.json"))
+    monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
+    out = export_data.get_hacker_news()
+    assert out["count"] == 0 and out["items"] == [] and out["history"] == []
+
+
+def test_opencli_cmd_none_when_unconfigured(monkeypatch):
+    # 未配置任何来源时应返回 None，抓取器据此优雅跳过
+    from backend.core import config as wb_config
+    monkeypatch.delenv("WB_OPENCLI_CMD", raising=False)
+    monkeypatch.setattr(wb_config, "_LOCAL", {})
+    monkeypatch.setattr(wb_config.shutil, "which", lambda _n: None)
+    assert wb_config.opencli_cmd() is None
+
+
+def test_opencli_cmd_parses_string_and_list(monkeypatch):
+    from backend.core import config as wb_config
+    monkeypatch.setenv("WB_OPENCLI_CMD", "node /p/main.js")
+    assert wb_config.opencli_cmd() == ["node", "/p/main.js"]
+    monkeypatch.delenv("WB_OPENCLI_CMD", raising=False)
+    monkeypatch.setattr(wb_config, "_LOCAL", {"opencliCmd": ["opencli", "--x"]})
+    assert wb_config.opencli_cmd() == ["opencli", "--x"]

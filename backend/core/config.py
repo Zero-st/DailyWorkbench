@@ -12,6 +12,7 @@
 import json
 import os
 import platform
+import shlex
 import shutil
 import tempfile
 
@@ -57,6 +58,25 @@ def ollama_exe():
     if cfg and cfg != "auto":
         return cfg  # 交给调用方 os.path.isfile 判断是否真实存在
     return None
+
+
+def opencli_cmd():
+    """OpenCLI 调用命令（argv 列表），供**取数层**抓取器 subprocess 调用。
+
+    OpenCLI 把网站封装成确定性 CLI（需 Node>=20），只在抓数据时被调用，**不进 App 运行时**，
+    故属「环境绑定」参数：优先级 env WB_OPENCLI_CMD > workbench.local.json opencliCmd >
+    PATH 上的 opencli。值可为字符串（"opencli" 或 "node /path/to/dist/src/main.js"，按 shell
+    词法切分）或数组（["node", "/path/to/main.js"]）。**返回 None 表示未配置**——抓取器据此
+    优雅跳过、保留旧数据，不影响其余管道（守北极星：App 仍零依赖离线可跑）。
+    """
+    raw = os.environ.get("WB_OPENCLI_CMD") or _LOCAL.get("opencliCmd")
+    if isinstance(raw, list):
+        argv = [str(x) for x in raw if str(x).strip()]
+        return argv or None
+    if isinstance(raw, str) and raw.strip():
+        return shlex.split(raw)
+    found = shutil.which("opencli")
+    return [found] if found else None
 
 
 def diag_log():

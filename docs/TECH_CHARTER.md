@@ -28,7 +28,7 @@
 |---|---|---|
 | 前端语言 | 原生 JS + **ES Modules**，不上 React/Vue、不引构建 | 引入了构建步骤 / 出现第二人长期维护 |
 | 类型 | **JSDoc + checkJs**，只标模块边界 | 同上（那时全量 TS 的收益才够本） |
-| 后端 | Python **stdlib http.server + 路由表**（`server.py` 的 `GET_ROUTES`/`POST_ROUTES`） | 端点激增 / 需请求校验 / 要 OpenAPI → FastAPI |
+| 后端 | Python **stdlib http.server + 路由表**（`server.py` 的 `GET_ROUTES`/`POST_ROUTES`）。**取数层**可调用外部 CLI（如 OpenCLI/Node，见 [ADR 0007](adr/0007-opencli-ingestion-source.md)），但**仅限可优雅劣化、不进 App 运行时** | 端点激增 / 需请求校验 / 要 OpenAPI → FastAPI；外部取数工具从「可选劣化」升为「核心链路硬依赖」时回 ADR 0007 重估 |
 | 数据 | **JSON 文件当库**（`data.json`）+ Supabase 只管需云端共享的模型配置 | 出现并发写 / 多人 / 事务 → 才上 DB |
 | 多端 | **PC-first**：桌面 PWA 为主体；原生/APK（Flutter/TWA）与 `lite/` 分叉均已下线（ADR 0005 及修订）；不并行多套 UI（一人维护两套最贵） | 桌面飞轮成型且有真实移动高频诉求时再评估 |
 

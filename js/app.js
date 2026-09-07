@@ -170,6 +170,9 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     d.dailyNews = d.dailyNews || {};
     d.dailyNews.items = Array.isArray(d.dailyNews.items) ? d.dailyNews.items : [];
     d.dailyNews.history = Array.isArray(d.dailyNews.history) ? d.dailyNews.history : [];
+    d.hackerNews = d.hackerNews || {};
+    d.hackerNews.items = Array.isArray(d.hackerNews.items) ? d.hackerNews.items : [];
+    d.hackerNews.history = Array.isArray(d.hackerNews.history) ? d.hackerNews.history : [];
     d.weekly = Array.isArray(d.weekly) ? d.weekly : [];
     d.guide = Array.isArray(d.guide) ? d.guide : [];
     d.quickActions = Array.isArray(d.quickActions) ? d.quickActions : [];

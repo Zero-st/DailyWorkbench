@@ -25,6 +25,7 @@ LOG_MAX = 512 * 1024  # 超过 512KB 轮转，防无限增长
 STEPS = [
     ("AI 日报", "fetch_ai_daily"),
     ("每日新闻", "fetch_daily_news"),
+    ("Hacker News", "fetch_hacker_news"),  # 经 OpenCLI 取数层；缺 node/opencli 自动跳过
     ("数据聚合", "export_data"),
 ]
 

@@ -22,7 +22,9 @@ from datetime import datetime, date, timedelta
 
 from backend.core import config as wb_config
 from backend.utils import common as wb_common
-from backend.core.paths import DATA_JSON, AI_DAILY_JSON, DAILY_NEWS_JSON
+from backend.core.paths import (
+    DATA_JSON, AI_DAILY_JSON, DAILY_NEWS_JSON, HACKER_NEWS_JSON,
+)
 
 WB = os.path.expanduser(r"~\.workbuddy")
 WS = wb_config.workspace()
@@ -469,6 +471,37 @@ def get_daily_news():
     return d
 
 
+def get_hacker_news():
+    """读取 fetch_hacker_news.py 抓好的 hacker_news.json；把历史累积进 history。
+
+    与 get_daily_news 同机制：从上一次 data.json 恢复 history，upsert 当天，留最近 14 天，
+    随 data.json 经 sync.py 推送天然持久化。**OpenCLI 缺失时 hacker_news.json 保持旧值/缺失**，
+    该源静默沿用上一次（或空壳），不抛异常、不影响其余聚合。
+    """
+    p = HACKER_NEWS_JSON
+    try:
+        d = json.load(open(p, encoding="utf-8"))
+    except Exception:
+        d = {"date": "", "fetchedAt": "", "count": 0, "items": [],
+             "source": "Hacker News (via OpenCLI)", "canonical": "https://news.ycombinator.com/"}
+    hist = []
+    old = DATA_JSON
+    if os.path.isfile(old):
+        try:
+            hist = (json.load(open(old, encoding="utf-8")).get("hackerNews") or {}).get("history", [])
+        except Exception:
+            hist = []
+    if d.get("date"):
+        hist = [h for h in hist if h.get("date") != d["date"]]
+        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
+                     "count": d.get("count"), "items": d.get("items"),
+                     "source": d.get("source", ""), "canonical": d.get("canonical", "")})
+        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
+        hist = hist[:14]
+    d["history"] = hist
+    return d
+
+
 def main():
     sk = get_skills()
     autos = get_automations()
@@ -483,6 +516,7 @@ def main():
     wk = get_weekly_changes()
     aid = get_ai_daily()
     dn = get_daily_news()
+    hn = get_hacker_news()
     now = datetime.now()
 
     # 技能使用统计：从会话标题反推每个 skill 的提及次数与最近使用日期
@@ -518,6 +552,8 @@ def main():
             guide.append("🗞️ 今日 AI 日报已更新（%d 条）：%s" % (aid["count"], top))
     if dn.get("count"):
         guide.append("📰 今日国内新闻已更新（%d 条），点「每日新闻」标签看看" % dn["count"])
+    if hn.get("count"):
+        guide.append("🟠 Hacker News 今日热帖已更新（%d 条），在「资讯」里看看" % hn["count"])
     if autos:
         a = autos[0]
         if a["next"]:
@@ -563,6 +599,7 @@ def main():
         "weekly": wk,
         "aiDaily": aid,
         "dailyNews": dn,
+        "hackerNews": hn,
     }
     wb_common.write_json_atomic(OUT, data)  # 原子替换，前端轮询不会读到半写文件
     print("✅ 已生成 data.json")
