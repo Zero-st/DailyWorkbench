@@ -5,31 +5,15 @@ import { esc, jsStr } from "../core/util.js";
 import { icon } from "../core/icons.js";
 // 平台枚举与收件箱 inbox 共享，避免两处漂移（含 B站/小红书/微博/即刻/文章）
 import { PLATFORMS, platform as _plat, platformBadge as _badge } from "../core/platforms.js";
+// 蒸馏指令 + 六维 + tier：单一权威源（六维不再在此硬编码，见 core/distill-template.js）
+import { buildDistillCmd, TIERS } from "../core/distill-template.js";
 
 var _deposits = [];   // /api/kb/deposits 结果（新→旧）
 var _filter = "";     // 平台筛选（""=全部）
+var _tier = "";       // tier 筛选（""=全部）
 var _formPlat = "";   // 新蒸馏表单当前平台
+var _formTier = "";   // 新蒸馏表单当前 tier（萃取端建议、人工确认后落库）
 var _formExtra = null; // 来自收件箱「→蒸馏」的摘录/感悟（有则蒸馏指令走"据此提炼"）
-
-// 六维拆解模板：交接给 skill 时明确要什么，保证产出可结构化成经验卡
-function _distillCmd(plat, url, extra) {
-  var p = _plat(plat);
-  if (!p) return "";
-  var six = "核心观点 / 方法步骤 / 适用场景 / 边界反例 / 可复用动作 / 出处";
-  // 有人工摘录时走「据此提炼」——小红书/微博反爬抓不到正文，选中那段就是精华，
-  // 这样蒸馏不再依赖抓页面（设计见 docs/design/捕获收件箱-浏览器扩展-设计.md §1）
-  if (extra && extra.excerpt) {
-    var t = "以下是我从该 " + p.label + " " + p.kind + " 中选中的摘录与当时的感悟，" +
-            "请直接据此提炼六维经验卡（" + six + "），无需再抓取页面：\n\n【摘录】\n" + extra.excerpt;
-    if (extra.note) t += "\n\n【我的感悟】\n" + extra.note;
-    if (url) t += "\n\n【出处】\n" + url;
-    return t;
-  }
-  if (p.skill === "creator-video-decoder") {
-    return "用 creator-video-decoder 拆解以下 " + p.label + " " + p.kind + "，输出六维经验卡（" + six + "）：\n" + (url || "");
-  }
-  return "用 baoyu-url-to-markdown 抓取以下 " + p.label + " " + p.kind + " 转 markdown，再提炼成六维经验卡（" + six + "）：\n" + (url || "");
-}
 
 export function renderDistill() {
   var col = document.getElementById("col-distill");
@@ -68,18 +52,26 @@ function _drawFilter() {
   PLATFORMS.forEach(function (p) {
     chips.push('<button class="chip' + (_filter === p.v ? " on" : "") + '" onclick="distillFilter(' + "'" + jsStr(p.v) + "'" + ')">' + icon(p.ic) + " " + esc(p.label) + "</button>");
   });
-  el.innerHTML = chips.join("");
+  // tier 筛选行（内容价值分档，与平台筛选叠加）
+  var tchips = ['<button class="chip' + (_tier === "" ? " on" : "") + '" onclick="distillTier(\'\')">全档</button>'];
+  TIERS.forEach(function (t) {
+    tchips.push('<button class="chip' + (_tier === t ? " on" : "") + '" onclick="distillTier(' + "'" + jsStr(t) + "'" + ')">' + esc(t) + "</button>");
+  });
+  el.innerHTML = chips.join("") + '<div class="distill-filter" style="margin-top:6px">' + tchips.join("") + "</div>";
 }
 
 function _drawList() {
   var el = document.getElementById("distillList");
   if (!el) return;
-  var rows = _deposits.filter(function (r) { return !_filter || r.platform === _filter; });
+  var rows = _deposits.filter(function (r) {
+    return (!_filter || r.platform === _filter) && (!_tier || r.tier === _tier);
+  });
   var cnt = document.getElementById("distillCnt");
   if (cnt) cnt.textContent = rows.length + " 张卡";
-  if (!rows.length) { el.innerHTML = '<div class="empty">' + (_deposits.length ? "该平台暂无卡" : "还没有经验卡，点「新蒸馏」开始") + "</div>"; return; }
+  if (!rows.length) { el.innerHTML = '<div class="empty">' + (_deposits.length ? "该筛选下暂无卡" : "还没有经验卡，点「新蒸馏」开始") + "</div>"; return; }
   el.innerHTML = rows.map(function (r) {
     var meta = [_badge(r.platform)];
+    if (r.tier) meta.push("tier " + esc(r.tier));
     if (r.topic) meta.push(esc(r.topic));
     if (r.date) meta.push(esc(r.date));
     return '<div class="distill-card" onclick="distillOpen(' + "'" + jsStr(r.vaultPath || r.relPath || "") + "'" + ')">' +
@@ -89,6 +81,7 @@ function _drawList() {
 }
 
 function distillFilter(v) { _filter = v; _drawFilter(); _drawList(); }
+function distillTier(v) { _tier = v; _drawFilter(); _drawList(); }
 
 function distillOpen(rel) {
   var box = document.getElementById("distillReader");
@@ -104,6 +97,7 @@ function distillOpen(rel) {
         ? window.marked.parse(body) : "<pre>" + esc(body) + "</pre>";
       var chips = [];
       if (fm.platform) chips.push('<span class="dc-chip">' + _badge(fm.platform) + "</span>");
+      if (fm.tier) chips.push('<span class="dc-chip">tier ' + esc(fm.tier) + "</span>");
       if (fm.author) chips.push('<span class="dc-chip">' + icon("edit") + " " + esc(fm.author) + "</span>");
       if (fm.topic) chips.push('<span class="dc-chip"># ' + esc(fm.topic) + "</span>");
       if (fm.url) chips.push('<a class="dc-chip" href="' + esc(fm.url) + '" target="_blank" rel="noopener">' + icon("link") + " 原文</a>");
@@ -121,11 +115,13 @@ function distillNew(prefill) {
     ? { excerpt: prefill.excerpt || "", note: prefill.note || "" } : null;
   if (prefill && typeof prefill === "object" && prefill.platform && _plat(prefill.platform)) _formPlat = prefill.platform;
   _formPlat = _formPlat || PLATFORMS[0].v;
+  _formTier = "";  // 每次新蒸馏重置：tier 由萃取端建议、人工据产出确认
   var box = document.getElementById("distillReader");
   if (!box) return;
   var platBtns = PLATFORMS.map(function (p) {
     return '<button class="chip' + (_formPlat === p.v ? " on" : "") + '" onclick="distillPickPlat(' + "'" + jsStr(p.v) + "'" + ')">' + icon(p.ic) + " " + esc(p.label) + "</button>";
   }).join("");
+  var tierBtns = _tierBtnsHtml();
   box.innerHTML =
     '<div class="distill-form">' +
       "<h3>" + icon("plus") + " 新蒸馏一条经验卡</h3>" +
@@ -138,6 +134,7 @@ function distillNew(prefill) {
       '<div class="df-step">② 把 AI 产出粘回来</div>' +
       '<div class="df-row"><label>标题</label><input id="dfTitle" class="sf" placeholder="经验卡标题（做文件名）"></div>' +
       '<textarea id="dfBody" rows="10" placeholder="把六维拆解产出粘这里（Markdown）…"></textarea>' +
+      '<div class="df-row"><label>价值分档</label><div class="distill-filter" id="dfTier">' + tierBtns + '</div></div>' +
       '<div class="df-row"><label>可复用动作</label><textarea id="dfAct" rows="3" placeholder="每行一条可复用动作（可选）"></textarea></div>' +
       '<div class="df-actions">' +
         '<span id="dfHint" class="empty"></span>' +
@@ -171,9 +168,24 @@ function distillPickPlat(v) {
   }).join("");
 }
 
+// tier 选择器 html（空档 + S/A/B/C/D）；萃取端在产出顶部给建议 tier，人工据此点选
+function _tierBtnsHtml() {
+  var btns = ['<button class="chip' + (_formTier === "" ? " on" : "") + '" onclick="distillPickTier(\'\')">未评</button>'];
+  TIERS.forEach(function (t) {
+    btns.push('<button class="chip' + (_formTier === t ? " on" : "") + '" onclick="distillPickTier(' + "'" + jsStr(t) + "'" + ')">' + esc(t) + "</button>");
+  });
+  return btns.join("");
+}
+
+function distillPickTier(v) {
+  _formTier = v;
+  var el = document.getElementById("dfTier");
+  if (el) el.innerHTML = _tierBtnsHtml();
+}
+
 function distillCopyCmd() {
   var url = (document.getElementById("dfUrl") || {}).value || "";
-  if (typeof window.cmdtext === "function") window.cmdtext(_distillCmd(_formPlat, url, _formExtra));
+  if (typeof window.cmdtext === "function") window.cmdtext(buildDistillCmd({ plat: _plat(_formPlat), url: url, extra: _formExtra }));
 }
 
 function distillCancel() { renderDistill(); }
@@ -189,7 +201,7 @@ function distillSave() {
   if (hint) hint.textContent = "保存中…";
   window.kbSave({
     module: "蒸馏库", source: "distill", title: title, body: body,
-    extra: { platform: _formPlat, author: author, url: url, topic: topic, actionable: act }
+    extra: { platform: _formPlat, author: author, url: url, topic: topic, tier: _formTier, actionable: act }
   }).then(function (r) {
     if (r && r.ok) {
       // 若来源是收件箱「→蒸馏」，回标该条为已蒸馏（薄耦合，inbox.js 注册）
@@ -206,9 +218,11 @@ function distillSave() {
 // ---- window 桥接（内联 onclick 用；遵项目"文件末尾挂自己的处理器"约定） ----
 window.renderDistill = renderDistill;
 window.distillFilter = distillFilter;
+window.distillTier = distillTier;
 window.distillOpen = distillOpen;
 window.distillNew = distillNew;
 window.distillPickPlat = distillPickPlat;
+window.distillPickTier = distillPickTier;
 window.distillCopyCmd = distillCopyCmd;
 window.distillCancel = distillCancel;
 window.distillSave = distillSave;

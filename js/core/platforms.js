@@ -1,10 +1,12 @@
 // 平台枚举（收件箱 inbox 与蒸馏库 distill 共享，避免两处漂移）。
 // v: 存 frontmatter 的平台值；label: 展示名；ic: 内联 SVG 图标名（见 icons.js）；
-// skill: 蒸馏时交接哪把萃取器；kind: 内容形态；hosts: 用于从链接自动识别平台的域名片段。
+// skill: 说明性——图文类用 baoyu-url-to-markdown；视频类不绑死具体 skill（蒸馏指令按 kind 分支，
+//   让萃取端用可用工具取字幕/文字稿，creator-video-decoder 已从本机移除，故留空）；
+// kind: 内容形态（蒸馏指令据此分支）；hosts: 用于从链接自动识别平台的域名片段。
 import { icon } from "./icons.js";
 
 export var PLATFORMS = [
-  { v: "bilibili", label: "B站", ic: "tv", skill: "creator-video-decoder", kind: "视频", hosts: ["bilibili.com", "b23.tv"] },
+  { v: "bilibili", label: "B站", ic: "tv", skill: "", kind: "视频", hosts: ["bilibili.com", "b23.tv"] },
   { v: "xhs", label: "小红书", ic: "book", skill: "baoyu-url-to-markdown", kind: "图文", hosts: ["xiaohongshu.com", "xhslink.com"] },
   { v: "weibo", label: "微博", ic: "book", skill: "baoyu-url-to-markdown", kind: "图文", hosts: ["weibo.com", "weibo.cn"] },
   { v: "jike", label: "即刻", ic: "file", skill: "baoyu-url-to-markdown", kind: "图文", hosts: ["okjike.com"] },

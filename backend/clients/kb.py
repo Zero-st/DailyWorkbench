@@ -194,12 +194,13 @@ def _fm_scalar(v):
 
 
 def _extra_front(extra):
-    """把经验卡额外元数据（platform/author/url/topic/actionable）渲染成 frontmatter 行。
-    未知/空字段跳过；actionable 支持字符串或列表。返回附加的 YAML 文本（可能为空）。"""
+    """把经验卡额外元数据（platform/author/url/topic/tier/actionable）渲染成 frontmatter 行。
+    未知/空字段跳过；actionable 支持字符串或列表。返回附加的 YAML 文本（可能为空）。
+    tier: 内容价值分档 S/A/B/C/D（见 docs/research/蒸馏方法论-开源参考地图.md）。"""
     if not extra or not isinstance(extra, dict):
         return ""
     lines = ""
-    for k in ("platform", "author", "url", "topic"):
+    for k in ("platform", "author", "url", "topic", "tier"):
         v = extra.get(k)
         if v:
             lines += "%s: %s\n" % (k, _fm_scalar(v))
@@ -263,7 +264,7 @@ def save(module, source, title, body, extra=None):
     rec = {"savedAt": ts, "module": module, "date": date, "relPath": rel,
            "fileName": fname, "title": disp, "source": source, "bytes": bsz}
     if extra and isinstance(extra, dict):
-        for k in ("platform", "topic"):
+        for k in ("platform", "topic", "tier"):
             if extra.get(k):
                 rec[k] = _fm_scalar(extra[k])
     try:
