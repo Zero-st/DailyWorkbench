@@ -32,3 +32,7 @@
 - **推广到 10+ 源**：把 `fetch_hacker_news` 泛化成参数化的「源注册表」（读 `cli-manifest.json` 过滤 `browser==false && access=="read"` 自动生成源清单/字段映射），届时改本 ADR。
 - **要登录墙内源**（Twitter/知乎/小红书）：需 Chrome Bridge + daemon + 登录态，是有人值守/交互式的独立形态，另写 ADR。
 - **跑通后觉得不划算**：删 `fetch_hacker_news.py` + `hackerNews` 字段，本 ADR 追一条「已回退」修订即可（前端 `normalizeData` 兜底，可逆）。
+
+## 修订记录
+
+- **2026-09-07 · 扩第二源 GitHub Trending**：新增 `fetch_github_trending.py`（`opencli github-trending repos --since daily`），`data.json` 加顶层字段 `githubTrending`，完全镜像 `hackerNews` 那套（同「取数层 + 优雅劣化」范式）。这是本 ADR 决策的**直接延续**，非新决策——契约变更（加 `githubTrending`）在此留证。**仍 <10 源，未抽「源注册表」**（按上「何时重估」，到 10+ 源才泛化）。复盘见 [`../planning/复盘-OpenCLI取数层接入.md`](../planning/复盘-OpenCLI取数层接入.md)。

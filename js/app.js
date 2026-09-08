@@ -173,6 +173,9 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     d.hackerNews = d.hackerNews || {};
     d.hackerNews.items = Array.isArray(d.hackerNews.items) ? d.hackerNews.items : [];
     d.hackerNews.history = Array.isArray(d.hackerNews.history) ? d.hackerNews.history : [];
+    d.githubTrending = d.githubTrending || {};
+    d.githubTrending.items = Array.isArray(d.githubTrending.items) ? d.githubTrending.items : [];
+    d.githubTrending.history = Array.isArray(d.githubTrending.history) ? d.githubTrending.history : [];
     d.weekly = Array.isArray(d.weekly) ? d.weekly : [];
     d.guide = Array.isArray(d.guide) ? d.guide : [];
     d.quickActions = Array.isArray(d.quickActions) ? d.quickActions : [];

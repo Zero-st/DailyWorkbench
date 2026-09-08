@@ -99,9 +99,9 @@
 - **端口 8899 已被占**：我起的后端因 `Address already in use` 失败——原是**用户自己在跑的进程**（`pgrep` 确认属主，未动）。
 
 **下一步（二选一或并行）**
-- **扩第二个源**（arXiv / GitHub Trending）：接法完全一致，只换命令与字段映射。
+- ~~**扩第二个源**~~ ✅ **已做（2026-09-07）**：选 GitHub Trending（`github-trending repos --since daily`，裸跑日榜、无人值守友好），完全镜像 `hackerNews` 那套（`data.githubTrending`）——**范式可复用得到验证**：加源=复制 `fetch_hacker_news.py` + `get_hacker_news` + `renderHackerNews` 改字段。`hacker_news.json`/`github_trending.json` 均已入库（与 `daily_news.json` 一致）。
 - **上生产**：生产机装 OpenCLI，让每小时 `sync` 自动带上。
-- **收尾 commit** + 决定 `hacker_news.json` 是否入库（**单独征询后做**）。
+- **扩到 10+ 源**：届时才抽「源注册表」（读 `cli-manifest.json` 参数化），见 ADR 0007「何时重估」。
 
 ---
 
@@ -136,3 +136,4 @@
 ## 9 · 变更记录
 
 - 2026-09-07 · v1.0 · 首版·OpenCLI 取数层 MVP 复盘 · 缘起：Hacker News 端到端接入完成，把这次的思想/步骤/优缺点/心智模型沉淀留证。
+- 2026-09-07 · v1.1 · 扩第二源 GitHub Trending（`data.githubTrending`），镜像 hackerNews，范式复用得到验证；§6 下一步「扩第二源」标记已做。详见 ADR 0007 修订记录。

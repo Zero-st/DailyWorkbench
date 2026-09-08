@@ -26,6 +26,7 @@ STEPS = [
     ("AI 日报", "fetch_ai_daily"),
     ("每日新闻", "fetch_daily_news"),
     ("Hacker News", "fetch_hacker_news"),  # 经 OpenCLI 取数层；缺 node/opencli 自动跳过
+    ("GitHub Trending", "fetch_github_trending"),  # 同上，OpenCLI 取数层
     ("数据聚合", "export_data"),
 ]
 

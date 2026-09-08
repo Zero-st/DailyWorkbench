@@ -4,6 +4,29 @@
 import { esc, escAttr, jsStr, ic } from "../core/util.js";
 import { isFav } from "../features/favs.js";
 
+// 源级折叠状态记忆（照 recall.js 的 map + try/catch 兜底）：{ news:true, dnews:false, ... }
+var COLLAPSE_KEY = "wb_info_collapsed";
+function _collapsed() {
+  try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY) || "{}") || {}; }
+  catch (e) { return {}; }
+}
+function _saveCollapsed(m) {
+  try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify(m)); } catch (e) { /* 忽略配额/隐私模式 */ }
+}
+// 生成裸放的源标题条（复用 .ns-h/.ns-car，与 AI 日报内部 section 折叠同款视觉）
+function sourceHead(key, label, count, unit, iconName) {
+  var closed = _collapsed()[key] === true;
+  return '<div class="ns-h source-h' + (closed ? " closed" : "") + '" data-src="' + key +
+    '" onclick="toggleSource(this)" tabindex="0">' +
+    (iconName ? '<span class="ic">' + ic(iconName) + '</span>' : "") + esc(label) +
+    '<span class="news-n">' + (count || 0) + ' ' + esc(unit) + '</span>' +
+    '<span class="ns-car">' + (closed ? "▸" : "▾") + '</span></div>';
+}
+// 折叠体开标签（按记忆的折叠态决定初始 display）
+function nsBodyOpen(key) {
+  return '<div class="ns-b"' + (_collapsed()[key] === true ? ' style="display:none"' : '') + '>';
+}
+
 function toggleNS(h) {
   var b = h.nextElementSibling;
   if (!b) return;
@@ -12,6 +35,23 @@ function toggleNS(h) {
   h.classList.toggle("closed", open);
   var car = h.querySelector(".ns-car");
   if (car) car.textContent = open ? "▸" : "▾";
+}
+
+// 源级折叠：复用 toggleNS 逻辑（折 nextElementSibling=.ns-b），额外把状态写进 localStorage
+function toggleSource(h) {
+  var b = h.nextElementSibling;
+  if (!b) return;
+  var open = b.style.display !== "none";
+  b.style.display = open ? "none" : "";
+  h.classList.toggle("closed", open);
+  var car = h.querySelector(".ns-car");
+  if (car) car.textContent = open ? "▸" : "▾";
+  var key = h.getAttribute("data-src");
+  if (key) {
+    var m = _collapsed();
+    if (open) m[key] = true; else delete m[key];  // 只存"折叠"，展开=删键，map 保持精简
+    _saveCollapsed(m);
+  }
 }
 
 function toggleNews(btn) {
@@ -68,7 +108,8 @@ function renderNews(d) {
           esc(h.date) + ' (' + (h.count || 0) + ' 条)</option>';
       }).join("") + '</select></div>';
   }
-  box.innerHTML = selHtml + '<div id="newsBody"></div>';
+  box.innerHTML = sourceHead("news", "AI 日报", a.count, "条", "fileText") +
+    nsBodyOpen("news") + selHtml + '<div id="newsBody"></div></div>';
   renderNewsBody(curDate);
 }
 function newsDateChanged() {
@@ -80,10 +121,11 @@ export function renderInfo(d) {
   renderNews(d);
   renderDailyNews(d);
   renderHackerNews(d);
+  renderGithubTrending(d);
   var dot = document.getElementById("infoDot");
   if (dot) {
     var n = ((d.aiDaily || {}).count || 0) + ((d.dailyNews || {}).count || 0) +
-      ((d.hackerNews || {}).count || 0);
+      ((d.hackerNews || {}).count || 0) + ((d.githubTrending || {}).count || 0);
     dot.style.display = n > 0 ? "inline-block" : "none";
   }
 }
@@ -143,7 +185,8 @@ function renderDailyNews(d) {
           esc(h.date) + ' (' + (h.count || 0) + ' 条)</option>';
       }).join("") + '</select></div>';
   }
-  box.innerHTML = selHtml + '<div id="dnewsBody"></div>';
+  box.innerHTML = sourceHead("dnews", "每日新闻", a.count, "条", "fileText") +
+    nsBodyOpen("dnews") + selHtml + '<div id="dnewsBody"></div></div>';
   renderDNewsBody(curDate);
 }
 function dnewsDateChanged() {
@@ -211,7 +254,8 @@ function renderHackerNews(d) {
           esc(h.date) + ' (' + (h.count || 0) + ' 条)</option>';
       }).join("") + '</select></div>';
   }
-  box.innerHTML = selHtml + '<div id="hnewsBody"></div>';
+  box.innerHTML = sourceHead("hnews", "Hacker News 热帖", a.count, "条", "trendingUp") +
+    nsBodyOpen("hnews") + selHtml + '<div id="hnewsBody"></div></div>';
   renderHNBody(curDate);
 }
 function hnewsDateChanged() {
@@ -246,8 +290,67 @@ function renderHNBody(date) {
   box.innerHTML = html;
 }
 
+// ---------- GitHub Trending 今日热门（经 OpenCLI 取数层，支持历史日期切换） ----------
+var GT_DATA = null;
+function renderGithubTrending(d) {
+  GT_DATA = d;
+  var a = d.githubTrending || {};
+  var box = document.getElementById("gtBlock");
+  if (!box) return;
+  var dot = document.getElementById("gtDot");
+  if (dot) dot.style.display = ((a.count || 0) > 0) ? "inline-block" : "none";
+
+  var hist = a.history || [];
+  var curDate = a.date || "";
+  var selHtml = "";
+  if (hist.length > 1) {
+    selHtml = '<div class="news-sel">历史热门：' +
+      '<select id="gtSel" onchange="gtDateChanged()">' +
+      hist.map(function (h) {
+        return '<option value="' + escAttr(h.date) + '"' + (h.date === curDate ? " selected" : "") + '>' +
+          esc(h.date) + ' (' + (h.count || 0) + ' 个)</option>';
+      }).join("") + '</select></div>';
+  }
+  box.innerHTML = sourceHead("gt", "GitHub Trending 今日热门", a.count, "个", "trendingUp") +
+    nsBodyOpen("gt") + selHtml + '<div id="gtBody"></div></div>';
+  renderGTBody(curDate);
+}
+function gtDateChanged() {
+  var sel = document.getElementById("gtSel");
+  if (sel) renderGTBody(sel.value);
+}
+function renderGTBody(date) {
+  var box = document.getElementById("gtBody");
+  if (!box || !GT_DATA) return;
+  var a = GT_DATA.githubTrending || {};
+  var day = (a.history || []).filter(function (h) { return h.date === date; })[0] || a;
+  var items = day.items || [];
+  if (!items.length) {
+    box.innerHTML = '<div class="card"><h2><span class="ic">' + ic("trendingUp") + '</span>GitHub Trending 今日热门</h2>' +
+      '<div class="empty">还没有抓到 GitHub Trending 数据。点「立即刷新」让本机经 OpenCLI 抓一次；若本机没装 OpenCLI（Node ≥20），该源会自动跳过，不影响其它资讯。</div></div>';
+    return;
+  }
+  var html = '<div class="card news-head"><h2>' + esc(day.date || "") + ' GitHub Trending 今日热门' +
+    '<span class="news-n">' + (day.count || 0) + ' 个</span></h2>' +
+    '<div class="news-meta">数据源 ' + esc(day.source || a.source || "GitHub Trending") + ' · 抓取于 ' + esc(day.fetchedAt || "-") +
+    (day.canonical ? ' · <a href="' + escAttr(day.canonical) + '" target="_blank" rel="noopener">去 Trending ↗</a>' : "") + "</div></div>";
+  html += '<div class="card"><h2><span class="ic">' + ic("trendingUp") + '</span>今日热门仓库</h2><div class="nw-grid">';
+  items.forEach(function (it, i) {
+    html += renderNewsItem(it, {
+      prefix: '<span style="color:var(--accent2);font-weight:600;margin-right:7px;flex:0 0 auto">' + (i + 1) + ".</span>",
+      defaultSrc: "GitHub Trending",
+      showSummary: true,
+      ask: "用大白话讲讲这个 GitHub 仓库是做什么的、解决了什么问题、什么时候该用它："
+    });
+  });
+  html += "</div></div>";
+  box.innerHTML = html;
+}
+
 window.toggleNS = toggleNS;
+window.toggleSource = toggleSource;
 window.toggleNews = toggleNews;
 window.newsDateChanged = newsDateChanged;
 window.dnewsDateChanged = dnewsDateChanged;
 window.hnewsDateChanged = hnewsDateChanged;
+window.gtDateChanged = gtDateChanged;

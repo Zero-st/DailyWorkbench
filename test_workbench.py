@@ -466,3 +466,59 @@ def test_opencli_cmd_parses_string_and_list(monkeypatch):
     monkeypatch.delenv("WB_OPENCLI_CMD", raising=False)
     monkeypatch.setattr(wb_config, "_LOCAL", {"opencliCmd": ["opencli", "--x"]})
     assert wb_config.opencli_cmd() == ["opencli", "--x"]
+
+
+# ---------- GitHub Trending 源（OpenCLI 取数层，镜像 HN）----------
+from backend.pipeline import fetch_github_trending  # noqa: E402
+
+
+def test_gt_build_maps_columns_to_unified_items(monkeypatch):
+    rows = [
+        {"rank": 1, "repo": "microsoft/markitdown", "description": "files to Markdown",
+         "language": "Python", "stars": 180479, "forks": 13271, "starsSince": 886,
+         "url": "https://github.com/microsoft/markitdown"},
+        {"rank": 2, "repo": "owner/no-url", "description": "", "language": "",
+         "stars": 12, "forks": 0, "starsSince": 0, "url": ""},          # 无 url -> 由 repo 拼
+        {"rank": 3, "repo": "", "description": "x", "stars": 5, "url": "u"},  # 无 repo -> 丢弃
+    ]
+    monkeypatch.setattr(fetch_github_trending, "fetch", lambda: rows)
+    out = fetch_github_trending.build()
+    assert out["count"] == 2                                            # 空 repo 被丢
+    assert out["source"].startswith("GitHub Trending")
+    it0, it1 = out["items"]
+    assert it0["title"] == "microsoft/markitdown"
+    assert it0["url"] == "https://github.com/microsoft/markitdown"
+    assert it0["source"] == "GitHub Trending"
+    assert "180,479" in it0["summary"] and "886" in it0["summary"] and "Python" in it0["summary"]
+    assert it1["url"] == "https://github.com/owner/no-url"             # 无 url 由 repo 兜底
+
+
+def test_gt_build_raises_when_no_valid_items(monkeypatch):
+    monkeypatch.setattr(fetch_github_trending, "fetch", lambda: [{"repo": ""}])
+    with pytest.raises(Exception):
+        fetch_github_trending.build()
+
+
+def test_get_github_trending_accumulates_history(tmp_path, monkeypatch):
+    gt = tmp_path / "github_trending.json"
+    data = tmp_path / "data.json"
+    data.write_text(json.dumps({"githubTrending": {"history": [
+        {"date": "2026-09-06", "count": 1, "items": [{"title": "old/repo"}]},
+    ]}}), encoding="utf-8")
+    gt.write_text(json.dumps({
+        "date": "2026-09-07", "fetchedAt": "2026-09-07 10:00", "count": 1,
+        "items": [{"title": "new/repo", "url": "u", "source": "GitHub Trending"}],
+        "source": "GitHub Trending (via OpenCLI)", "canonical": "https://github.com/trending",
+    }), encoding="utf-8")
+    monkeypatch.setattr(export_data, "GITHUB_TRENDING_JSON", str(gt))
+    monkeypatch.setattr(export_data, "DATA_JSON", str(data))
+    out = export_data.get_github_trending()
+    assert [h["date"] for h in out["history"]] == ["2026-09-07", "2026-09-06"]  # 新的在前
+    assert out["count"] == 1 and out["items"][0]["title"] == "new/repo"
+
+
+def test_get_github_trending_missing_file_is_safe(tmp_path, monkeypatch):
+    monkeypatch.setattr(export_data, "GITHUB_TRENDING_JSON", str(tmp_path / "nope.json"))
+    monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
+    out = export_data.get_github_trending()
+    assert out["count"] == 0 and out["items"] == [] and out["history"] == []
