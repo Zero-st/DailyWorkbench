@@ -14,7 +14,7 @@
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="css/styles.css?v=74b48d37">
+<link rel="stylesheet" href="css/styles.css?v=bb641133">
 </head>
 <body>
 <div class="app">
@@ -34,7 +34,6 @@
         <button class="side-item" data-view="inbox" onclick="switchView('inbox')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span><span class="label">收件箱</span></button>
         <button class="side-item" data-view="kb" onclick="switchView('kb')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="label">知识库</span></button>
         <button class="side-item" data-view="distill" onclick="switchView('distill')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.31l-5.7 9.32A1 1 0 0 0 5.16 20h13.68a1 1 0 0 0 .86-1.37L14 9.31V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg></span><span class="label">蒸馏库</span></button>
-        <button class="side-item" data-view="ai" onclick="switchView('ai')"><span class="si"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></span><span class="label">AI 助手</span></button>
       </div>
       <div class="side-group">
         <div class="side-group-title">设置</div>
@@ -150,9 +149,7 @@
         </details>
       </section>
 
-      <section class="view" id="view-ai">
-        <div class="wrap"><div class="col" id="col-ai"></div></div>
-      </section>
+      <!-- AI 助手已升为右侧「AI 副驾 dock」（js/features/convo-dock.js 在 body 级挂载 #col-ai），不再是整页视图 -->
       <section class="view" id="view-models">
         <div class="wrap"><div class="col" id="col-models"></div></div>
       </section>
@@ -192,6 +189,6 @@
 <script src="js/model-manager.js?v=63ef892f"></script>
 <script src="vendor/marked.min.js?v=b7319d77"></script>
 <script src="js/kb.js?v=ee0706b0"></script>
-<script type="module" src="js/app.js?v=e2ecd25d"></script>
+<script type="module" src="js/app.js?v=07bb73a2"></script>
 </body>
 </html>

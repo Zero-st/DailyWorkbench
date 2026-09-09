@@ -642,6 +642,36 @@ body.light #todoInput { background: var(--input-bg); color: var(--ink); }
 @keyframes agentPulse{0%,100%{box-shadow:0 0 0 0 rgba(43,191,106,0.45)}50%{box-shadow:0 0 0 5px rgba(43,191,106,0.06)}}
 @media (prefers-reduced-motion:reduce){.agent-dot{animation:none}}
 
+/* ---- 右侧全局「AI 副驾 dock」（浮遊·可调宽高·记忆；取代原 AI 助手整页视图，见 js/features/convo-dock.js） ---- */
+/* 显隐用 .open 类：CSS 里 display:flex 会盖过 [hidden]，故不用 hidden 属性 */
+.convo-dock{position:fixed;z-index:900;display:none;flex-direction:column;background:var(--panel);border:1px solid var(--accent-line-2);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);overflow:hidden}
+.convo-dock.open{display:flex;animation:fadeIn .2s ease both}
+.dock-head{display:flex;align-items:center;gap:8px;padding:9px 8px 9px 14px;border-bottom:1px solid var(--line-soft);background:linear-gradient(135deg,var(--tint),transparent);flex:0 0 auto}
+.dock-title{font-weight:800;font-size:var(--text-sm);color:var(--ink-strong);display:inline-flex;align-items:center;gap:6px}
+.dock-title .ic-svg{width:15px;height:15px;color:var(--accent)}
+.dock-sp{flex:1}
+.dock-ico{background:transparent;border:none;color:var(--sub);cursor:pointer;padding:5px;border-radius:8px;display:inline-flex;line-height:1}
+.dock-ico:hover{background:var(--panel-2);color:var(--ink)}
+.dock-ico .ic-svg{width:16px;height:16px}
+.dock-body{flex:1;min-height:0;overflow:hidden;display:flex}
+/* 宿主：复用现成 AI 卡片，去掉卡片外框让它铺满 dock；隐藏卡片内标题（dock 头部已有标题） */
+.convo-dock .dock-body > .card{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;border:none;border-radius:0;box-shadow:none;background:transparent;margin:0;padding:12px 14px;animation:none}
+.convo-dock .dock-body > .card > h2{display:none}
+.convo-dock .ai-chat{flex:1;min-height:0;max-height:none;margin-bottom:10px}
+.convo-dock .ai-set{margin-bottom:8px}
+/* resize 手柄：右钉→左缘调宽、下缘调高、左下角双向 */
+.dock-rz-l{position:absolute;left:-3px;top:0;bottom:0;width:9px;cursor:ew-resize;display:flex;align-items:center;justify-content:center;z-index:2}
+.dock-rz-l .grip{width:4px;height:44px;border-radius:999px;background:var(--line-mid);transition:background .15s}
+.dock-rz-l:hover .grip{background:var(--accent)}
+.dock-rz-b{position:absolute;left:9px;right:9px;bottom:-3px;height:9px;cursor:ns-resize;z-index:2}
+.dock-rz-c{position:absolute;left:-3px;bottom:-3px;width:18px;height:18px;cursor:nesw-resize;z-index:3}
+/* 收起态：右缘竖排 launcher 标签 */
+.dock-launcher{position:fixed;z-index:900;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;background:linear-gradient(180deg,var(--accent),var(--accent-strong));color:var(--accent-ink);border:none;border-radius:12px 0 0 12px;padding:14px 8px;cursor:pointer;box-shadow:var(--sh-btn);font-size:12px;font-weight:800;letter-spacing:.02em;transition:padding-right .15s}
+.dock-launcher:hover{padding-right:12px}
+.dock-launcher .ic-svg{width:16px;height:16px}
+.dock-launcher .dl-t{writing-mode:vertical-rl}
+.dock-launcher.hide{display:none}
+
 /* ===== 我的收藏（稍后读）卡片 ===== */
 .fav-card{grid-column:span 2}
 .fav-card .fav-list{

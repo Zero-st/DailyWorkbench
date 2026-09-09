@@ -79,10 +79,16 @@ function renderNewsItem(it, opt) {
   }
   var on = isFav(it.url);
   var fav = '<button class="fav-btn' + (on ? " on" : "") + '" onclick="favToggle(this,' + "'" + jsStr(it.title) + "','" + jsStr(it.url) + "','" + jsStr(it.source || "") + "'" + ')">' + (on ? "★" : "☆") + '</button>';
+  // 讲讲：带全上下文 {标题+摘要+链接+来源}（data-*，修「只带标题」），点开 → 右侧副驾开讲
+  var askBtn = '<button class="nw-ask" onclick="newsExplain(this)"' +
+    ' data-t="' + escAttr(it.title || "") + '"' +
+    ' data-s="' + escAttr(it.summary || "") + '"' +
+    ' data-u="' + escAttr(it.url || "") + '"' +
+    ' data-src="' + escAttr(it.source || opt.defaultSrc || "") + '"' +
+    ' data-ask="' + escAttr(askText) + '">让 AI 讲讲</button>';
   return '<div class="nw"><div class="nw-t">' + prefix + esc(it.title) + "</div>" +
     dHtml +
-    '<div class="nw-f">' + src + link + fav +
-    '<button class="nw-ask" onclick="aiAsk(' + "'" + jsStr(askText + it.title) + "'" + ')">让 AI 讲讲</button>' +
+    '<div class="nw-f">' + src + link + fav + askBtn +
     "</div></div>";
 }
 
@@ -135,6 +141,8 @@ function renderNewsBody(date) {
   var a = NEWS_DATA.aiDaily || {};
   var day = (a.history || []).filter(function (h) { return h.date === date; })[0] || a;
   var secs = day.sections || [];
+  _aiDigest = _digestSections(secs, 40);   // 供顶部「提炼/存库」内嵌当日 digest（修「数据带不过去」）
+  _aiCount = day.count || 0;
   if (!secs.length) {
     box.innerHTML = '<div class="card"><h2><span class="ic">' + ic("fileText") + '</span>AI 日报</h2>' +
       '<div class="empty">这一天还没有抓到日报数据。可以点「立即刷新」让本机重新抓一次；也可以让 WorkBuddy 手动跑 <code>fetch_ai_daily.py</code>。</div>' +
@@ -147,8 +155,8 @@ function renderNewsBody(date) {
     (day.canonical ? ' · <a href="' + escAttr(day.canonical) + '" target="_blank" rel="noopener">看完整日报 ↗</a>' : "") + "</div></div>" +
     '<div class="card"><h2><span class="ic">' + ic("compass") + '</span>基于日报做点什么</h2>' +
     '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-    '<button class="btn" onclick="aiAsk(' + "'把今天工作台里的 AI 日报总结成 3 条对我最有用的要点，并各给一个可以今天动手试的小实验'" + ')">提炼 3 条要点</button>' +
-    '<button class="btn-sm" onclick="aiAsk(' + "'把今天的 AI 日报存进 vault/ 知识库，按主题归档'" + ')">存进知识库</button>' +
+    '<button class="btn" onclick="feedAsk(\'refine-ai\')">提炼 3 条要点</button>' +
+    '<button class="btn-sm" onclick="feedAsk(\'archive-ai\')">存进知识库</button>' +
     "</div></div>";
 
   secs.forEach(function (s) {
@@ -199,6 +207,8 @@ function renderDNewsBody(date) {
   var a = DNEWS_DATA.dailyNews || {};
   var day = (a.history || []).filter(function (h) { return h.date === date; })[0] || a;
   var items = day.items || [];
+  _dnewsDigest = _digestItems(items, 40);   // 供顶部「挑3条/存库」内嵌当日 digest
+  _dnewsCount = day.count || 0;
   var tip = day.tip || "";
   var cover = day.cover || a.cover || "";
   if (!items.length) {
@@ -216,8 +226,8 @@ function renderDNewsBody(date) {
     (tip ? '<div style="margin-top:8px;color:var(--sub);font-style:italic;line-height:1.5">' + esc(tip) + "</div>" : "") + "</div>" +
     '<div class="card"><h2><span class="ic">' + ic("compass") + '</span>基于新闻做点什么</h2>' +
     '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-    '<button class="btn" onclick="aiAsk(' + "'把今天工作台里的每日新闻挑 3 条跟我最相关的，说说为什么值得关注'" + ')">挑 3 条相关的</button>' +
-    '<button class="btn-sm" onclick="aiAsk(' + "'把今天的每日新闻存进 vault/ 知识库，按主题归档'" + ')">存进知识库</button>' +
+    '<button class="btn" onclick="feedAsk(\'refine-dnews\')">挑 3 条相关的</button>' +
+    '<button class="btn-sm" onclick="feedAsk(\'archive-dnews\')">存进知识库</button>' +
     "</div></div>";
 
   html += '<div class="card"><h2><span class="ic">' + ic("trendingUp") + '</span>今日头条</h2><div class="nw-grid">';
@@ -347,6 +357,52 @@ function renderGTBody(date) {
   box.innerHTML = html;
 }
 
+// ---------- 「让 AI 讲讲」/顶部动作 → 右侧 AI 副驾 dock（取代原跳转到 AI 助手整页视图） ----------
+// 每卡讲讲：带全上下文 {标题+摘要+链接+来源}；有链接则让 agent 先 WebFetch 原文再讲（深挖）。
+function newsExplain(btn) {
+  var t = btn.getAttribute("data-t") || "";
+  var s = btn.getAttribute("data-s") || "";
+  var u = btn.getAttribute("data-u") || "";
+  var src = btn.getAttribute("data-src") || "";
+  var ask = btn.getAttribute("data-ask") || "用大白话讲讲这条：";
+  var p = ask + (u ? "\n先用 WebFetch 抓取下面链接的原文拿到全文，再讲。" : "") +
+    "\n\n标题：" + t + (s ? "\n摘要：" + s : "") + (u ? "\n原文：" + u : "") + (src ? "\n来源：" + src : "");
+  if (typeof window.dockAsk === "function") window.dockAsk(p, { agent: true, autoSend: true });
+  else if (typeof window.aiAsk === "function") window.aiAsk(p, true);
+}
+// 顶部「提炼要点 / 存进知识库」：把当日 digest 内嵌进 prompt（修「数据带不过去」= Loss B）。
+var _aiDigest = "", _aiCount = 0, _dnewsDigest = "", _dnewsCount = 0;
+function _digestSections(secs, max) {
+  var out = [], n = 0;
+  (secs || []).forEach(function (sec) {
+    (sec.items || []).forEach(function (it) {
+      if (max && n >= max) return;
+      out.push("- " + (it.title || "") + (it.summary ? "：" + String(it.summary).slice(0, 90) : ""));
+      n++;
+    });
+  });
+  return out.join("\n");
+}
+function _digestItems(items, max) {
+  var out = [];
+  (items || []).forEach(function (it, i) {
+    if (max && i >= max) return;
+    out.push("- " + (it.title || "") + (it.summary ? "：" + String(it.summary).slice(0, 90) : ""));
+  });
+  return out.join("\n");
+}
+function feedAsk(kind) {
+  var p = "", has;
+  if (kind === "refine-ai") { p = "下面是今天的 AI 日报（" + _aiCount + " 条）。挑出对我最有用的 3 条要点，各配一个今天就能动手试的小实验。\n\n" + _aiDigest; has = !!_aiDigest; }
+  else if (kind === "archive-ai") { p = "把今天这份 AI 日报整理成一篇可归档的主题化摘要（Markdown，分主题、要点式）。整理好后我自己点「存知识库」入库。\n\n" + _aiDigest; has = !!_aiDigest; }
+  else if (kind === "refine-dnews") { p = "下面是今天的每日新闻（" + _dnewsCount + " 条）。挑 3 条跟我最相关的，说说为什么值得关注。\n\n" + _dnewsDigest; has = !!_dnewsDigest; }
+  else if (kind === "archive-dnews") { p = "把今天这份每日新闻整理成一篇可归档的主题化摘要（Markdown）。整理好后我自己点「存知识库」入库。\n\n" + _dnewsDigest; has = !!_dnewsDigest; }
+  else return;
+  if (!has) { if (typeof window.dockOpen === "function") window.dockOpen(); return; }  // 无数据只开 dock
+  if (typeof window.dockAsk === "function") window.dockAsk(p, { agent: true, autoSend: true });
+}
+window.newsExplain = newsExplain;
+window.feedAsk = feedAsk;
 window.toggleNS = toggleNS;
 window.toggleSource = toggleSource;
 window.toggleNews = toggleNews;

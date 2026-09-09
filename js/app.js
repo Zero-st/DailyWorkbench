@@ -13,6 +13,7 @@ import { renderQuick, renderTodayReview } from "./views/dash.js";
 import { renderDistill } from "./views/distill.js";
 import { renderInbox } from "./features/inbox.js";
 import { renderRecall } from "./features/recall.js";
+import { initConvoDock } from "./features/convo-dock.js";
 
 // WB 命名空间（dialog/esc/ic/jsStr）由 util.js 挂载到 window.WB；本模块内沿用 WB.dialog.*
 var WB = window.WB;
@@ -146,8 +147,8 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     if (!d) return;
     // 用 __view 路由（P0 后 DOM 已无 .tab 按钮，不能再依赖 .tab.active）
     var id = getView() || "home";
-    if (id === "ai") renderAI(d);
-    else if (id === "models") renderModels();
+    // AI 助手已升为右侧「AI 副驾 dock」（js/features/convo-dock.js），不再是整页视图，故此处无 ai 分支
+    if (id === "models") renderModels();
     else if (id === "info") renderInfo(d);
     else if (id === "kb") { if (typeof renderKb === "function") renderKb(); }
     else if (id === "distill") renderDistill();
@@ -214,7 +215,6 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     });
     var titles = {
       home: ["今日", "捕获 + 复盘中枢（代办 / 速记 / 收藏 / 温故）"],
-      ai: ["AI 助手", "用大白话回答你的问题"],
       models: ["模型管理", "AI 平台与模型配置"],
       info: ["资讯", "AI 日报与每日新闻"],
       inbox: ["收件箱", "刷到好帖子/好想法秒存 → 之后一键蒸馏"],
@@ -671,6 +671,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   updateClock();
   setInterval(updateClock, 1000);
   pomoRender();
+  initConvoDock();   // 右侧全局 AI 副驾 dock（浮遊·可调宽高·记忆；讲讲/提炼/存库 与 AI 对话统一入口）
   var ni = document.getElementById("noteInput");
   if (ni) ni.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addNote(); } });
   var ti = document.getElementById("todoInput");
@@ -686,7 +687,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   try { lastTab = localStorage.getItem("wb_tab") || ""; } catch (e) {}
   if (lastTab === "news" || lastTab === "dnews") lastTab = "info"; // 资讯 Tab 合并兼容
   // 历史标签兼容：已删除的视图（dash/stats/week/schedule/cap/sess/ov）重定向到今日，避免旧 wb_tab 落空
-  var __tabRemap = { dash: "home", stats: "home", week: "home", schedule: "home", cap: "home", sess: "home", ov: "home" };
+  var __tabRemap = { dash: "home", stats: "home", week: "home", schedule: "home", cap: "home", sess: "home", ov: "home", ai: "home" };
   if (__tabRemap[lastTab]) lastTab = __tabRemap[lastTab];
   if (lastTab && lastTab !== "home") switchView(lastTab);
 

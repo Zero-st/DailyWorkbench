@@ -128,9 +128,10 @@ function aiSaveKey() {
   var h = document.getElementById("aiKeyHint");
   if (h) h.textContent = aiKeyLoad() ? "✓ 已保存（仅本机浏览器）" : "已清除";
 }
-// 从其他卡片一键跳转 AI 助手：切 tab → 内容填入输入框（可选自动发送）
+// 从其他卡片一键唤起 AI 副驾 dock：开 dock → 内容填入输入框（可选自动发送）。
+// 原先是 switchView("ai") 跳整页视图，Phase 2.1 改为右侧浮遊 dock（唯一 AI 面）。
 function aiAsk(text, autoSend) {
-  switchView("ai");
+  if (typeof window.dockOpen === "function") window.dockOpen();
   var box = document.getElementById("aiBox");
   if (box) {
     box.value = text || "";
@@ -139,6 +140,19 @@ function aiAsk(text, autoSend) {
   if (autoSend) {
     setTimeout(function () { aiSend(); }, 80);
   }
+}
+// 卡片「讲讲」/顶部动作统一入口：开 dock（+可选切「带工具」模式）→ 填输入框 → 自动发。
+// agent=true 时走后端 claude（可 WebFetch/查库、无需用户 API Key），讲讲的深挖抓原文靠它。
+function dockAsk(prompt, opts) {
+  opts = opts || {};
+  if (typeof window.dockOpen === "function") window.dockOpen();
+  if (opts.agent) aiSetMode(1);   // 带工具（会重渲染 #col-ai，chip 同步）
+  var box = document.getElementById("aiBox");
+  if (box) {
+    box.value = prompt || "";
+    try { box.focus(); } catch (e) {}
+  }
+  if (opts.autoSend !== false) setTimeout(function () { aiSend(); }, 90);
 }
 function aiAppend(role, text) {
   var chat = document.getElementById("aiChat");
@@ -462,7 +476,7 @@ function aiMemoryClear() {
     if (getData()) renderAI(getData());
   });
 }
-window.aiSaveKey = aiSaveKey; window.aiSend = aiSend; window.aiSetProv = aiSetProv; window.aiAsk = aiAsk; window.aiClear = aiClear; window.aiMemoryAdd = aiMemoryAdd; window.aiMemoryDel = aiMemoryDel; window.aiMemoryClear = aiMemoryClear; window.aiSetMode = aiSetMode;
+window.aiSaveKey = aiSaveKey; window.aiSend = aiSend; window.aiSetProv = aiSetProv; window.aiAsk = aiAsk; window.dockAsk = dockAsk; window.aiClear = aiClear; window.aiMemoryAdd = aiMemoryAdd; window.aiMemoryDel = aiMemoryDel; window.aiMemoryClear = aiMemoryClear; window.aiSetMode = aiSetMode;
 // 经典脚本桥接：model-manager.js 改模型配置后 `renderAI(window.__data)` 刷新 AI 视图需此。
 window.renderAI = renderAI;
 
