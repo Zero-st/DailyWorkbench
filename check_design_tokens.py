@@ -30,8 +30,8 @@ CSS = "css/styles.css"
 # 引用扫描范围：样式本身、全部前端脚本（含 style 字符串拼接）、入口页内联样式。
 REF_GLOBS = ("css/*.css", "js/**/*.js", "index.html")
 
-# 化石棘轮基线：2026-09-04 实测 19。只许下调，不许上调。
-FOSSIL_BASELINE = 19
+# 化石棘轮基线：2026-09-04 实测 19；2026-09-09 Phase 2 引用了 --candy-green* 等，降到 18。只许下调，不许上调。
+FOSSIL_BASELINE = 18
 
 _COMMENT = re.compile(r"/\*.*?\*/", re.S)
 # 定义：`--name:`，前面不是字母/`(`/`-`（排除 var(--x) 与 --a--b 这类）。按出现位置匹配，同一行多个令牌全抓。

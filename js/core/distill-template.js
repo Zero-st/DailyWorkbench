@@ -76,3 +76,24 @@ export function buildDistillCmd(args) {
     (url || "")
   );
 }
+
+// 页面「▶ 直接蒸馏」用：给**无头 agent**（只有 WebFetch + 只读知识库工具，见 backend/clients/agent.py）的提示。
+// 复用同一套 _shell 六维/评级骨架（craft 单一真源、不漂移），只把「怎么拿材料」换成 WebFetch；
+// 末尾要求「产出即最终答复本身」，便于前端把 result 文本直接填进起草区（人核对后点保存）。
+export function buildDistillAgentPrompt(args) {
+  args = args || {};
+  var p = args.plat, url = args.url || "", extra = args.extra;
+  var tail = "\n\n（直接把这张卡作为你的最终答复输出，不要额外解释；你没有写库工具，落库由用户在页面确认。）";
+  // 有人工摘录：据此提炼，无需抓页面（同 buildDistillCmd 分支①）
+  if (extra && extra.excerpt) {
+    var mat = "以下是我选中的摘录与当时的感悟，据此提炼、无需再抓取页面。\n\n【摘录】\n" + extra.excerpt;
+    if (extra.note) mat += "\n\n【我的感悟】\n" + extra.note;
+    if (url) mat += "\n\n【出处】\n" + url;
+    return _shell("把下面的材料提炼成一张六维经验卡。", mat) + tail;
+  }
+  var label = p ? (p.label + " " + p.kind) : "网页";
+  return _shell(
+    "先用 WebFetch 工具抓取以下" + label + "的正文（抓不到就如实说明并就已知信息提炼），再提炼成一张六维经验卡。",
+    (url || "")
+  ) + tail;
+}

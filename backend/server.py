@@ -32,6 +32,7 @@ from backend.core.paths import ROOT
 from backend.clients import supabase as sb
 from backend.clients import kb
 from backend.clients import inbox
+from backend.clients import agent
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
@@ -113,6 +114,7 @@ class Handler(SimpleHTTPRequestHandler):
         "/api/models": "_post_models",
         "/api/kb/save": "_post_kb_save",
         "/api/refresh": "_post_refresh",
+        "/api/agent": "_post_agent",
         "/api/inbox/add": "_post_inbox_add",
         "/api/inbox/update": "_post_inbox_update",
         "/api/inbox/delete": "_post_inbox_delete",
@@ -333,6 +335,48 @@ class Handler(SimpleHTTPRequestHandler):
             result["running"] = True
             result["msg"] = "已有任务在跑，本轮跳过"
         self._json(200, result)
+
+    def _post_agent(self):
+        """页面触发的无头 agent（流式 SSE）。只读白名单 + Origin 门 + 优雅劣化。见 ADR 0009。
+
+        它起子进程（claude -p），故照收件箱写端点先过 _guard_origin（无 Origin 的本地请求仍放行）。
+        不复用 _raw（那钉 Content-Length 一次写死）：这里手动发 text/event-stream 头 + 逐事件 flush。
+        HTTP/1.0 默认下靠连接关闭定界，stream-then-close 即可，无需设 protocol_version。
+        """
+        if self._guard_origin():
+            return
+        try:
+            body = self._body()
+        except Exception:
+            self._json(400, {"ok": False, "error": "bad request body"})
+            return
+        task = (body.get("task") or "chat").strip()
+        payload = body.get("payload") or {}
+
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Connection", "close")
+        self.end_headers()
+
+        gen = agent.stream(task, payload)
+        try:
+            for ev in gen:
+                chunk = "data: " + json.dumps(ev, ensure_ascii=False) + "\n\n"
+                self.wfile.write(chunk.encode("utf-8"))
+                self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError):
+            gen.close()  # 客户端断连 → 触发生成器 finally 杀子进程，防孤儿
+        except Exception as e:
+            sys.stderr.write("[agent] %s\n" % e)
+            try:
+                err = "data: " + json.dumps({"type": "error", "error": "internal error"}) + "\n\n"
+                self.wfile.write(err.encode("utf-8"))
+                self.wfile.flush()
+            except Exception:
+                pass
+            gen.close()
 
     def log_message(self, fmt, *args):
         sys.stderr.write("[%s] %s\n" % (self.log_date_time_string(), fmt % args))

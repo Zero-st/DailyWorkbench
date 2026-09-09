@@ -6,6 +6,8 @@
 import { esc, ic } from "../core/util.js";
 import { getData } from "../core/state.js";
 import { fetchT } from "../core/net.js";
+// 带工具的 agent 对话：流式驱动后端无头 claude（Phase 2，见 ADR 0009）
+import { agentStream } from "../core/agent-stream.js";
 
 var WB = window.WB;
 
@@ -17,6 +19,12 @@ var AI_PROVIDERS = {
 var aiProv = localStorage.getItem("wb_ai_prov") === "glm" ? "glm" : "agnes";
 var aiMsgs = [];   // 会话内消息历史
 var aiBusy = false;
+// 「带工具」agent 模式：走后端 /api/agent（claude 无头·可查库/抓网页·只读）；关则走现成 /api/chat 直连。
+function aiAgentMode() { try { return localStorage.getItem("wb_ai_agent_mode") === "1"; } catch (e) { return false; } }
+function aiSetMode(on) {
+  try { localStorage.setItem("wb_ai_agent_mode", on ? "1" : "0"); } catch (e) {}
+  if (getData()) renderAI(getData());
+}
 function aiKeyLoad() { try { return localStorage.getItem(AI_PROVIDERS[aiProv].keyKey) || ""; } catch (e) { return ""; } }
 function aiKeySave(k) { try { localStorage.setItem(AI_PROVIDERS[aiProv].keyKey, k); } catch (e) {} }
 // 记忆：会话历史（刷新/重开不丢）长期记忆库（跨会话注入系统提示词）
@@ -65,6 +73,7 @@ function renderAI(d) {
   var legacyProv = AI_PROVIDERS[aiProv];
   if (!cfg && legacyProv) cfg = { label: legacyProv.label, url: legacyProv.url, model: legacyProv.model, key: aiKeyLoad(), maxTokens: aiProv === "agnes" ? 4000 : 800 };
   var hasKey = !!(cfg && cfg.key);
+  var agentMode = aiAgentMode();
   var mem = aiMemLoad();
   var memHtml = aiMemHtml();
   var activeHint = cfg
@@ -76,8 +85,14 @@ function renderAI(d) {
     '<button class="btn-sm" onclick="switchView(\'models\')">' + ic("cpu") + ' 模型管理</button>' +
     '</div>' +
     '<div class="ai-bar">' +
+    '<span style="display:inline-flex;gap:6px;align-items:center">' +
+      '<button class="chip' + (agentMode ? "" : " on") + '" onclick="aiSetMode(0)">普通</button>' +
+      '<button class="chip' + (agentMode ? " on" : "") + '" onclick="aiSetMode(1)">' + ic("tool") + ' 带工具</button>' +
+    '</span>' +
     '<button class="btn-sm" onclick="aiClear()">清空对话</button>' +
-    (hasKey ? "" : '<span class="ai-guide">' + ic("alertTriangle") + ' 还没设置 API Key，请到「模型管理」添加并激活一个模型。</span>') +
+    (agentMode
+      ? '<span class="ai-guide" style="color:var(--sub);background:var(--panel-2);border-color:var(--line)">' + ic("zap") + ' 带工具：经后端 claude 跑，可查知识库 / 抓网页，只读不写库</span>'
+      : (hasKey ? "" : '<span class="ai-guide">' + ic("alertTriangle") + ' 还没设置 API Key，请到「模型管理」添加并激活一个模型。</span>')) +
     '</div>' +
     '<details class="ai-mem"><summary>长期记忆库（' + mem.length + ' 条）· 点开管理</summary>' +
     '<div class="ai-mem-add"><input id="aiMemInput" class="sf" placeholder="记一笔长期记忆，如：我偏好简洁回答 / 我在学 Flutter…">' +
@@ -260,15 +275,48 @@ function kbSaveReview() {
 window.kbSaveChat = kbSaveChat;
 window.kbSaveReview = kbSaveReview;
 window.__kbMentionPick = __kbMentionPick;
+// 蒸馏交接指令识别：这类指令要抓网页/字幕正文再提炼，是写给 Claude Code（有抓取 skill）的。
+// 粘进站内助手，无抓取工具的 glm 只会幻觉调用、把 <tool_call>/<think> 特殊 token 当正文吐出来。
+// 标记见 core/distill-template.js 的 _shell（四段结构化骨架）。
+function _looksLikeDistillCmd(t) {
+  if (!t) return false;
+  return t.indexOf("<六维经验卡") >= 0 || (t.indexOf("<任务>") >= 0 && t.indexOf("<材料>") >= 0);
+}
+// 过滤模型泄漏的思考/函数调用特殊 token（推理模型偶尔把 <think>/<tool_call> 当正文返回）。
+// 全被过滤成空时回退原文，避免把整条回复吃没。
+function _stripLeakedTokens(s) {
+  if (!s) return s;
+  var out = s.replace(/<think>[\s\S]*?<\/think>/gi, "");
+  out = out.replace(/<\/?(think|tool_call|tool_calls|arg_key|arg_value|tool_response|function_call)\b[^>]*>/gi, "");
+  out = out.trim();
+  return out || s.trim();
+}
 function aiSend() {
   if (aiBusy) return;
   var box = document.getElementById("aiBox");
+  var q = (box ? box.value : "").trim();
+  if (!q) return;
+  // 带工具模式：走后端 claude agent（多步·查库·抓网页），用后端配置的 claude，不需要用户自己的 API Key
+  if (aiAgentMode()) { _aiAgentSend(q); return; }
+  // 普通模式：现有浏览器直连（需 cfg + key）
   var cfg = (typeof getAiActiveConfig === "function") ? getAiActiveConfig() : null;
   if (!cfg) cfg = AI_PROVIDERS[aiProv] ? { label: AI_PROVIDERS[aiProv].label, url: AI_PROVIDERS[aiProv].url, model: AI_PROVIDERS[aiProv].model, key: aiKeyLoad(), maxTokens: aiProv === "agnes" ? 4000 : 800 } : null;
   if (!cfg || !cfg.url) { WB.dialog.alert("请先前往「模型管理」添加并激活一个 AI 模型。"); return; }
   if (!cfg.key) { WB.dialog.alert("「" + cfg.label + "」尚未设置 API Key，请到「模型管理」编辑后保存。"); return; }
-  var q = (box ? box.value : "").trim();
-  if (!q) return;
+  // 护栏：像蒸馏交接指令就拦一下——普通模式抓不了网页/字幕，应去 Claude Code 或切「带工具」跑（确认可强发）
+  if (_looksLikeDistillCmd(q)) {
+    WB.dialog.confirm(
+      "这条像是「蒸馏交接指令」，需要先抓取网页/字幕正文再提炼。\n\n" +
+      "站内 AI 助手没有抓取工具，glm 只会假装调用工具、吐出乱码。这类指令请复制到 Claude Code 里跑" +
+      "（那里有 baoyu-url-to-markdown / 抓取能力）。\n\n仍要在这里发送吗？",
+      function () { _aiSendNow(q, cfg); }
+    );
+    return;
+  }
+  _aiSendNow(q, cfg);
+}
+function _aiSendNow(q, cfg) {
+  var box = document.getElementById("aiBox");
   if (box) box.value = "";
   aiAppend("user", q);
   aiMsgs.push({ role: "user", content: q });
@@ -303,6 +351,7 @@ function aiSend() {
       var msg = j.choices && j.choices[0] && j.choices[0].message;
       // 推理模型可能把 token 都花在思考上：正文空时回退展示思考片段
       var ans = (msg && msg.content && msg.content.trim()) || (msg && msg.reasoning_content ? "（思考中：）\n" + msg.reasoning_content : "（空回复）");
+      ans = _stripLeakedTokens(ans);
       aiMsgs.push({ role: "assistant", content: ans });
       aiHistSave();
       var chat = document.getElementById("aiChat");
@@ -323,6 +372,72 @@ function aiSend() {
       aiAppend("bot", m);
     })
     .then(function () { aiBusy = false; });
+}
+// 带工具 agent 对话：流式驱动后端无头 claude。工具步骤 chip + 正文随 SSE 原位增量刷。
+// 只读（查库/抓网页）；要落库同样是「起草→人工存」，此处不写库。
+function _aiAgentSend(q) {
+  var box = document.getElementById("aiBox");
+  if (box) box.value = "";
+  aiAppend("user", q);
+  aiMsgs.push({ role: "user", content: q });
+  aiHistSave();
+  aiBusy = true;
+  var chat = document.getElementById("aiChat");
+  var wrap = document.createElement("div");
+  wrap.className = "ai-msg bot";
+  var steps = document.createElement("div");
+  steps.className = "agent-steps";
+  var runPill = document.createElement("span");
+  runPill.className = "agent-step run";
+  runPill.innerHTML = '<span class="agent-dot"></span> 运行中…';
+  steps.appendChild(runPill);
+  var bodyEl = document.createElement("div");
+  bodyEl.className = "ai-bot-body";
+  bodyEl.textContent = "";
+  wrap.appendChild(steps);
+  wrap.appendChild(bodyEl);
+  if (chat) { chat.appendChild(wrap); chat.scrollTop = chat.scrollHeight; }
+  var acc = "", started = false;
+  function finish(text) {
+    if (runPill && runPill.parentNode) runPill.remove();
+    if (!steps.children.length) steps.style.display = "none";
+    var t = _stripLeakedTokens((text || "").trim()) || "（空回复）";
+    bodyEl.textContent = t;
+    if (!wrap.querySelector(".ai-copy")) {
+      var cp = document.createElement("button");
+      cp.className = "ai-copy"; cp.textContent = "复制"; cp.title = "复制这条回复";
+      cp.onclick = function () { copyText(t); cp.textContent = "已复制"; setTimeout(function () { cp.textContent = "复制"; }, 1500); };
+      wrap.appendChild(cp);
+    }
+    aiMsgs.push({ role: "assistant", content: t });
+    aiHistSave();
+    aiBusy = false;
+    if (chat) chat.scrollTop = chat.scrollHeight;
+  }
+  agentStream({ task: "chat", payload: { prompt: q } }, {
+    onTool: function (ev) {
+      var s = document.createElement("span");
+      s.className = "agent-step done";
+      s.innerHTML = '<span class="mk">✓</span> <span class="tname">' + esc(ev.name || "tool") + "</span>";
+      steps.insertBefore(s, runPill);
+      if (chat) chat.scrollTop = chat.scrollHeight;
+    },
+    onText: function (t) {
+      if (!started) { bodyEl.textContent = ""; started = true; }
+      acc += t;
+      bodyEl.textContent = acc;
+      if (chat) chat.scrollTop = chat.scrollHeight;
+    },
+    onResult: function (ev) { finish(acc || ev.text || ""); },
+    onError: function (ev) {
+      if (runPill && runPill.parentNode) runPill.remove();
+      if (!steps.children.length) steps.style.display = "none";
+      var m = (ev && ev.error) || "出错了";
+      if (ev && ev.configured === false) m = "「带工具」需后端配置 claude：workbench.local.json 设 claudeCmd（或 PATH 有 claude）后重开后端。切回「普通」可用你自己的模型。";
+      bodyEl.textContent = (acc ? acc + "\n\n" : "") + "⚠️ " + m;
+      aiBusy = false;
+    }
+  });
 }
 function aiMemoryAdd() {
   var inp = document.getElementById("aiMemInput");
@@ -347,7 +462,7 @@ function aiMemoryClear() {
     if (getData()) renderAI(getData());
   });
 }
-window.aiSaveKey = aiSaveKey; window.aiSend = aiSend; window.aiSetProv = aiSetProv; window.aiAsk = aiAsk; window.aiClear = aiClear; window.aiMemoryAdd = aiMemoryAdd; window.aiMemoryDel = aiMemoryDel; window.aiMemoryClear = aiMemoryClear;
+window.aiSaveKey = aiSaveKey; window.aiSend = aiSend; window.aiSetProv = aiSetProv; window.aiAsk = aiAsk; window.aiClear = aiClear; window.aiMemoryAdd = aiMemoryAdd; window.aiMemoryDel = aiMemoryDel; window.aiMemoryClear = aiMemoryClear; window.aiSetMode = aiSetMode;
 // 经典脚本桥接：model-manager.js 改模型配置后 `renderAI(window.__data)` 刷新 AI 视图需此。
 window.renderAI = renderAI;
 

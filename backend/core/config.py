@@ -14,6 +14,7 @@ import os
 import platform
 import shlex
 import shutil
+import sys
 import tempfile
 
 from backend.core.paths import ROOT  # *.local.json 配置钉在仓库根
@@ -77,6 +78,59 @@ def opencli_cmd():
         return shlex.split(raw)
     found = shutil.which("opencli")
     return [found] if found else None
+
+
+def claude_cmd():
+    """Claude Code CLI 调用命令（argv 列表），供**页面触发的无头 agent** subprocess 拉起。
+
+    同 opencli_cmd 心法：claude 是「集成层重工具」（需 Node/联网/鉴权），只在页面点触发时
+    被 `backend/clients/agent.py` 调用，**不进 App 核心运行时**，故属「环境绑定」参数：
+    优先级 env WB_CLAUDE_CMD > workbench.local.json claudeCmd > PATH 上的 claude。
+    值可为字符串（"claude" 或 "/abs/claude"，按 shell 词法切分）或数组。**返回 None 表示
+    未配置**——agent 层据此产出 error 事件优雅劣化（页面显示「未配置」），App 仍零依赖离线可跑。
+    """
+    raw = os.environ.get("WB_CLAUDE_CMD") or _LOCAL.get("claudeCmd")
+    if isinstance(raw, list):
+        argv = [str(x) for x in raw if str(x).strip()]
+        return argv or None
+    if isinstance(raw, str) and raw.strip():
+        return shlex.split(raw)
+    found = shutil.which("claude")
+    return [found] if found else None
+
+
+def mcp_server_argv():
+    """dailyworkbench MCP server 的启动 argv：[python, server.py]。
+
+    供 agent 层组 `--strict-mcp-config --mcp-config` 内联配置用——只挂我们这一个 server，
+    与用户其余（可能未授权的）MCP 隔离，且不依赖 Phase 1 的 `claude mcp add` user-scope 注册。
+    python：env WB_MCP_PYTHON > workbench.local.json mcpPython > 跑本后端的解释器（sys.executable，
+    通常即装了 mcp 的那个 anaconda）。server.py 路径由仓库根推导。
+    """
+    py = os.environ.get("WB_MCP_PYTHON") or _LOCAL.get("mcpPython") or sys.executable
+    server = os.path.join(ROOT, "backend", "mcp", "server.py")
+    return [py, server]
+
+
+def agent_model():
+    """页面触发 agent 的模型别名（控成本：CLI 默认可能是 opus，路由级蒸馏太贵）。
+
+    env WB_AGENT_MODEL > workbench.local.json agentModel > 'sonnet'。
+    显式设为空串 "" 表示「用 CLI/账户默认模型」（不传 --model）。
+    """
+    v = os.environ.get("WB_AGENT_MODEL")
+    if v is None:
+        v = _LOCAL.get("agentModel")
+    return "sonnet" if v is None else v
+
+
+def agent_budget_usd():
+    """单次 agent 运行的花费上限（--max-budget-usd），兜底防跑飞。默认 1.0 美元。"""
+    v = os.environ.get("WB_AGENT_BUDGET") or _LOCAL.get("agentBudgetUsd")
+    try:
+        return float(v) if v else 1.0
+    except (TypeError, ValueError):
+        return 1.0
 
 
 def diag_log():

@@ -6,7 +6,9 @@ import { icon } from "../core/icons.js";
 // 平台枚举与收件箱 inbox 共享，避免两处漂移（含 B站/小红书/微博/即刻/文章）
 import { PLATFORMS, platform as _plat, platformBadge as _badge } from "../core/platforms.js";
 // 蒸馏指令 + 六维 + tier：单一权威源（六维不再在此硬编码，见 core/distill-template.js）
-import { buildDistillCmd, TIERS } from "../core/distill-template.js";
+import { buildDistillCmd, buildDistillAgentPrompt, TIERS } from "../core/distill-template.js";
+// 页面直接蒸馏：流式驱动无头 agent（Phase 2，见 ADR 0009）
+import { agentStream } from "../core/agent-stream.js";
 
 var _deposits = [];   // /api/kb/deposits 结果（新→旧）
 var _filter = "";     // 平台筛选（""=全部）
@@ -129,9 +131,13 @@ function distillNew(prefill) {
       '<div class="df-row"><label>链接</label><input id="dfUrl" class="sf" placeholder="粘贴 B站/小红书/文章 链接"></div>' +
       '<div class="df-row"><label>作者</label><input id="dfAuthor" class="sf" placeholder="up 主 / 作者（可选）"></div>' +
       '<div class="df-row"><label>主题</label><input id="dfTopic" class="sf" placeholder="主题分类，如 RAG / Agent（可选）"></div>' +
-      '<div class="df-step">① 复制蒸馏指令 → 到 AI 里跑（六维拆解）</div>' +
-      '<button class="button sm" onclick="distillCopyCmd()">' + icon("copy") + ' 复制蒸馏指令</button>' +
-      '<div class="df-step">② 把 AI 产出粘回来</div>' +
+      '<div class="df-step">① 萃取：直接跑 agent（自动 WebFetch 抓正文 + 六维拆解），或复制指令去别处跑</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+        '<button class="button sm" id="dfRunBtn" onclick="distillRun()">' + icon("play") + ' 直接蒸馏</button>' +
+        '<button class="button sm ghost" onclick="distillCopyCmd()">' + icon("copy") + ' 复制蒸馏指令</button>' +
+      '</div>' +
+      '<div class="agent-log" id="distillAgentLog" style="display:none"></div>' +
+      '<div class="df-step">② 核对 AI 起草的卡（跑完自动填入，或手动粘回）</div>' +
       '<div class="df-row"><label>标题</label><input id="dfTitle" class="sf" placeholder="经验卡标题（做文件名）"></div>' +
       '<textarea id="dfBody" rows="10" placeholder="把六维拆解产出粘这里（Markdown）…"></textarea>' +
       '<div class="df-row"><label>价值分档</label><div class="distill-filter" id="dfTier">' + tierBtns + '</div></div>' +
@@ -215,6 +221,91 @@ function distillSave() {
   }).catch(function () { if (hint) hint.textContent = "保存失败（网络/后端）"; });
 }
 
+// ---- ▶ 直接蒸馏：页面里流式驱动无头 agent（Phase 2）----
+// 只读 agent（WebFetch + kb 读工具）抓取 + 六维起草；产出自动填入正文区，人核对后点「保存进蒸馏库」落库。
+var _running = false;
+function distillRun() {
+  if (_running) return;
+  var url = ((document.getElementById("dfUrl") || {}).value || "").trim();
+  var hint = document.getElementById("dfHint");
+  if (!url && !(_formExtra && _formExtra.excerpt)) {
+    if (hint) hint.textContent = "先填链接（或从收件箱带摘录进来）";
+    return;
+  }
+  var prompt = buildDistillAgentPrompt({ plat: _plat(_formPlat), url: url, extra: _formExtra });
+  var log = document.getElementById("distillAgentLog");
+  var runBtn = document.getElementById("dfRunBtn");
+  if (!log) return;
+  log.style.display = "";
+  log.innerHTML =
+    '<div class="agent-metaline"><span class="m" id="daModel">启动 agent…</span>' +
+    '<span style="margin-left:auto;color:var(--sub-2)">只读 · 不写库</span></div>' +
+    '<div class="agent-steps" id="daSteps"><span class="agent-step run" id="daRun"><span class="agent-dot"></span> 运行中…</span></div>' +
+    '<div class="ai-bot-body" id="daText" style="font-size:var(--text-sm);color:var(--ink)"></div>';
+  if (runBtn) runBtn.disabled = true;
+  if (hint) hint.textContent = "agent 运行中…";
+  _running = true;
+  var acc = "", started = false;
+  var done = function () { _running = false; if (runBtn) runBtn.disabled = false; };
+  agentStream({ task: "distill", payload: { prompt: prompt } }, {
+    onMeta: function (ev) {
+      if (ev.phase === "init") {
+        var m = document.getElementById("daModel");
+        if (m) m.textContent = (ev.model || "agent") + (Array.isArray(ev.mcp) && ev.mcp.length ? " · MCP✓" : "");
+      }
+    },
+    onTool: function (ev) {
+      var steps = document.getElementById("daSteps");
+      if (!steps) return;
+      var s = document.createElement("span");
+      s.className = "agent-step done";
+      s.innerHTML = '<span class="mk">✓</span> <span class="tname">' + esc(ev.name || "tool") + "</span>";
+      var runEl = document.getElementById("daRun");
+      if (runEl) steps.insertBefore(s, runEl); else steps.appendChild(s);
+    },
+    onText: function (t) {
+      var el = document.getElementById("daText");
+      if (!started && el) { el.textContent = ""; started = true; }
+      acc += t;
+      if (el) el.textContent = acc;
+    },
+    onResult: function (ev) {
+      var r = document.getElementById("daRun"); if (r) r.remove();
+      _fillDraft((acc || ev.text || "").trim());
+      var m = document.getElementById("daModel");
+      if (m) m.textContent += (typeof ev.cost_usd === "number" ? " · 完成 $" + ev.cost_usd.toFixed(3) : " · 完成");
+      done();
+    },
+    onError: function (ev) {
+      var r = document.getElementById("daRun"); if (r) r.remove();
+      var el = document.getElementById("daText");
+      var msg = (ev && ev.error) || "出错";
+      if (ev && ev.configured === false) msg = "agent 未配置：在 workbench.local.json 设 claudeCmd（或 PATH 有 claude），重开后端后再试。复制指令去 Claude Code 跑是离线退路。";
+      if (el) el.textContent = "⚠️ " + msg;
+      if (hint) hint.textContent = "";
+      done();
+    }
+  });
+}
+
+// 起草卡回填：填正文区，尽量从卡里抽标题 + tier（人可改）；不自动保存（写库=人工点「保存」闸）。
+function _fillDraft(cardMd) {
+  if (!cardMd) return;
+  var body = document.getElementById("dfBody");
+  if (body) body.value = cardMd;
+  var titleEl = document.getElementById("dfTitle");
+  if (titleEl && !titleEl.value) {
+    var line = cardMd.split("\n")
+      .map(function (s) { return s.replace(/^#+\s*/, "").replace(/^[-*]\s*/, "").trim(); })
+      .filter(function (s) { return s && !/^tier\s*[:：]/i.test(s); })[0] || "";
+    titleEl.value = line.slice(0, 40);
+  }
+  var mt = cardMd.match(/tier\s*[:：]\s*([SABCD])/i);
+  if (mt) distillPickTier(mt[1].toUpperCase());
+  var hint = document.getElementById("dfHint");
+  if (hint) hint.textContent = "AI 起草完成 · 请核对后点「保存进蒸馏库」";
+}
+
 // ---- window 桥接（内联 onclick 用；遵项目"文件末尾挂自己的处理器"约定） ----
 window.renderDistill = renderDistill;
 window.distillFilter = distillFilter;
@@ -224,5 +315,6 @@ window.distillNew = distillNew;
 window.distillPickPlat = distillPickPlat;
 window.distillPickTier = distillPickTier;
 window.distillCopyCmd = distillCopyCmd;
+window.distillRun = distillRun;
 window.distillCancel = distillCancel;
 window.distillSave = distillSave;
