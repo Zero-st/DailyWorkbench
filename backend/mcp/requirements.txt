@@ -1,0 +1,6 @@
+# DailyWorkbench MCP 集成层的**隔离依赖** —— 只有运行 backend/mcp 才需要。
+# App 核心（backend/server.py + 前端 SPA）不 import backend.mcp，故装不装本文件
+# 都不影响「git clone 就能跑 / 双击 index.html / python -m backend.server」的零依赖离线形态。
+# 安装：<anaconda-python> -m pip install -r backend/mcp/requirements.txt
+# 代码用的是 mcp 2.x API（MCPServer；v1 的 FastMCP 已改名）。钉在 2.x，避免装到 v1（无 MCPServer）或 v3 破坏性变更。
+mcp>=2.2,<3
