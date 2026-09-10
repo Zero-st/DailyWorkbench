@@ -6,6 +6,7 @@ supabase.local.json
 kb.local.json
 workbench.local.json
 inbox.local.json
+enrich_cache.json
 APK/
 # 调试截图与预览图（不入库）
 debug-*.png

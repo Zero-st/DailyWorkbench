@@ -1,0 +1,125 @@
+{
+  "date": "2026-09-10",
+  "fetchedAt": "2026-09-10 16:38",
+  "source": "少数派 (sspai.com RSS)",
+  "canonical": "https://sspai.com",
+  "count": 10,
+  "items": [
+    {
+      "title": "App+1｜下一节：教学工作紧张忙碌，下一节课从从容容",
+      "summary": "祝每一位老师教师节快乐！",
+      "url": "https://sspai.com/post/114384",
+      "source": "少数派",
+      "aiSummary": "少数派介绍备课应用“下一节”，帮助教师从容安排课程。",
+      "aiTags": [
+        "工具",
+        "效率",
+        "产品"
+      ]
+    },
+    {
+      "title": "派早报：Apple 发布 iPhone Duo 折叠屏等",
+      "summary": "奥之心发布 OM SYSTEM PEN 相机、Sonos 更新音频系统等。",
+      "url": "https://sspai.com/post/114394",
+      "source": "少数派",
+      "aiSummary": "Apple 发布 iPhone Duo 折叠屏，奥之心推出 PEN 相机，Sonos 更新音频系统",
+      "aiTags": [
+        "硬件",
+        "产品",
+        "行业"
+      ]
+    },
+    {
+      "title": "一图流 | 一张图带你看完 2026 Apple 秋季发布会",
+      "summary": "9 月 10 日凌晨，Apple 召开新品发布会。推出了新一代的 iPhone 18 Pro 系列、Apple Watch Series 12、Apple Watch Ultra 4 以及 AirPods 5 系列。",
+      "url": "https://sspai.com/post/114393",
+      "source": "少数派",
+      "aiSummary": "Apple 秋季发布会推出 iPhone 18 Pro、Apple Watch Series 12 与 AirPods 5 等新品",
+      "aiTags": [
+        "硬件",
+        "产品"
+      ]
+    },
+    {
+      "title": "可以「折」的 iPhone 正式亮相：Apple 发布会看点回顾",
+      "summary": "9 月 10 日凌晨，Apple 召开新品发布会。推出了新一代的 iPhone 18 Pro 系列、Apple Watch Series 12、Apple Watch Ultra 4 以及 AirPods 5 系列。",
+      "url": "https://sspai.com/post/114392",
+      "source": "少数派",
+      "aiSummary": "Apple 发布会回顾：折叠屏 iPhone 正式亮相，还有 iPhone 18 Pro 等多款新品",
+      "aiTags": [
+        "硬件",
+        "产品"
+      ]
+    },
+    {
+      "title": "我一定会回来……吗？小手用户与 iPhone 17 Pro Max 的一年",
+      "summary": "为啥那么多人喜欢大手机呢？既然上了 70 mm 我都握不住，要不买个 Pro Max 试试？",
+      "url": "https://sspai.com/post/114366",
+      "source": "少数派",
+      "aiSummary": "小手用户分享使用 iPhone 17 Pro Max 一年的真实体验与是否回归的思考",
+      "aiTags": [
+        "产品",
+        "硬件"
+      ]
+    },
+    {
+      "title": "华人世界被忽视的游戏主机：扩写中国家用游戏主机的时间线",
+      "summary": "Matrix首页推荐Matrix是少数派的写作社区，我们主张分享真实的产品体验，有实用价值的经验与思考。我们会不定期挑选Matrix最优质的文章，展示来自用户的最真实的体验和观点。文章代表作者个人观点 ...",
+      "url": "https://sspai.com/post/113842",
+      "source": "少数派",
+      "aiSummary": "梳理华人世界被忽视的中国家用游戏主机发展时间线",
+      "aiTags": [
+        "行业",
+        "硬件",
+        "游戏"
+      ]
+    },
+    {
+      "title": "Velastar：喜欢仰望星空的你，有了一个探索异星的新选择",
+      "summary": "Matrix首页推荐Matrix是少数派的写作社区，我们主张分享真实的产品体验，有实用价值的经验与思考。我们会不定期挑选Matrix最优质的文章，展示来自用户的最真实的体验和观点。文章代表作者个人观点 ...",
+      "url": "https://sspai.com/post/113668",
+      "source": "少数派",
+      "aiSummary": "Velastar 为喜欢仰望星空的用户提供探索异星的新选择",
+      "aiTags": [
+        "产品",
+        "游戏"
+      ]
+    },
+    {
+      "title": "派早报：LG 电视被曝存在后门、《塞尔达传说：时之笛》重制版公布等",
+      "summary": "Arm 发布 C2 CPU 与新 Mali GPU，索尼推出全画幅鱼眼变焦镜头等。",
+      "url": "https://sspai.com/post/114352",
+      "source": "少数派",
+      "aiSummary": "LG 电视被曝存在后门，《时之笛》重制版公布，Arm 发布 C2 CPU 等",
+      "aiTags": [
+        "安全",
+        "硬件",
+        "行业"
+      ]
+    },
+    {
+      "title": "Apple「随航」的无感体验里，藏着多少流畅的秘密？",
+      "summary": "相较于 Jobs 时代令人惊叹的「iPhone 时刻」，过去十五年的 Apple 或许少了一些足以重新定义一个品类的震撼——但围绕「体验」本身展开的技术革新却从未停止。 本文为会员文章，出自 《单篇文章》 ，订阅后可阅读全文。",
+      "url": "https://sspai.com/prime/story/sidecar-optimizations",
+      "source": "少数派",
+      "aiSummary": "解析 Apple 随航功能实现无感流畅体验背后的技术细节",
+      "aiTags": [
+        "产品",
+        "研究"
+      ]
+    },
+    {
+      "title": "社区速递 157 | NuPhy 全铝磁轴键盘与派友拒绝算法的「反投喂」信息源",
+      "summary": "除了首页时间流和侧栏的精选展位，少数派Matrix社区还有很多优秀内容因条件所限无法得到有效曝光，因此我们决定重启Matrix周报，并在此基础上添加更多社区内容、作者投稿新玩意呈现给大家。上周社区速递 ...",
+      "url": "https://sspai.com/post/114327",
+      "source": "少数派",
+      "aiSummary": "社区速递介绍 NuPhy 全铝磁轴键盘与拒绝算法推荐的「反投喂」信息源",
+      "aiTags": [
+        "硬件",
+        "工具",
+        "效率"
+      ]
+    }
+  ],
+  "warnings": []
+}

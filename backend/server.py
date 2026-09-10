@@ -118,6 +118,7 @@ class Handler(SimpleHTTPRequestHandler):
         "/api/inbox/add": "_post_inbox_add",
         "/api/inbox/update": "_post_inbox_update",
         "/api/inbox/delete": "_post_inbox_delete",
+        "/api/info/search": "_post_info_search",
     }
 
     def __init__(self, *a, **kw):
@@ -335,6 +336,41 @@ class Handler(SimpleHTTPRequestHandler):
             result["running"] = True
             result["msg"] = "已有任务在跑，本轮跳过"
         self._json(200, result)
+
+    def _post_info_search(self):
+        """资讯语义检索：embed(查询) -> Zilliz 近邻搜索 -> 返回排序卡片。
+
+        Zilliz token / embedding key 只在后端（wb_config），绝不下放浏览器（安全边界）。
+        未配置 -> {configured:false}，前端据此隐藏语义搜索、只留客户端关键词/标签筛选。见 ADR 0011。
+        """
+        try:
+            from backend.clients import llm
+            from backend.clients import zilliz
+            body = self._body()
+            q = (body.get("q") or "").strip()
+            base_e, model_e, key_e, _dim = wb_config.enrich_embedding()
+            if not (base_e and model_e and key_e and zilliz.configured()):
+                self._json(200, {"configured": False, "results": []})
+                return
+            if not q:
+                self._json(200, {"configured": True, "results": [], "q": q})
+                return
+            try:  # 非数字 topk 不该落 500，兜底默认 20（见 code-review F5）
+                topk = int(body.get("topk") or 20)
+            except (TypeError, ValueError):
+                topk = 20
+            vecs = llm.embed(base_e, model_e, key_e, [q])
+            if not vecs or not vecs[0]:
+                self._json(200, {"configured": True, "results": [], "q": q, "error": "embed failed"})
+                return
+            ok, hits = zilliz.search(vecs[0], topk=max(1, min(topk, 50)))
+            if not ok:
+                self._json(200, {"configured": True, "results": [], "q": q, "error": str(hits)[:200]})
+                return
+            self._json(200, {"configured": True, "results": hits, "q": q})
+        except Exception as e:
+            sys.stderr.write("[info-search] %s\n" % e)
+            self._json(500, {"configured": True, "results": [], "error": "internal error"})
 
     def _post_agent(self):
         """页面触发的无头 agent（流式 SSE）。只读白名单 + Origin 门 + 优雅劣化。见 ADR 0009。

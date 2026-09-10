@@ -353,6 +353,17 @@ textarea:focus{outline:none;background:var(--input-bg)}
 .ns-car{margin-left:auto;color:var(--sub);font-size:12px;transition:transform .18s;font-weight:500}
 .ns-h.closed .ns-car{transform:rotate(-90deg)}
 .ns-b{padding-bottom:2px}
+/* 资讯：AI 标签行（卡片内）+ 顶部搜索/筛选条（复用 .sf/.chip/.kb-tag，仅加布局） */
+.nw-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.nw-tags .kb-tag{font-size:12px}
+.info-search{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.info-search .kb-search{margin-bottom:0}
+.info-sem .btn-sm{flex:0 0 auto}
+.info-filter{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+.info-flabel{font-size:var(--text-sm);color:var(--sub);margin-right:2px}
+.info-filter .chip{cursor:pointer;padding:4px 12px;transition:border-color .15s,color .15s,background .15s,transform .12s}
+.info-filter .chip:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.info-filter .chip.on:hover{color:#fff}
 
 /* ---------- 表单输入（蒸馏/收件箱/知识库共用） ---------- */
 .sf{width:100%;background:var(--input-bg);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:9px 11px;font-size:var(--text-sm);font-family:inherit;transition:border-color .2s,box-shadow .2s}

@@ -1,24 +1,106 @@
 {
-  "date": "2026-08-26",
-  "fetchedAt": "2026-08-26 18:00",
+  "date": "2026-09-10",
+  "fetchedAt": "2026-09-10 16:38",
   "source": "AI HOT",
-  "canonical": "https://aihot.virxact.com/daily/2026-08-26",
-  "count": 19,
+  "canonical": "https://aihot.news/daily/2026-09-10",
+  "count": 20,
   "sections": [
+    {
+      "label": "模型发布",
+      "items": [
+        {
+          "title": "DeepSeek AI 发布 DeepSeek-V4.1-Flash：1M 上下文、FP4 KV 缓存与跨层注意力复用",
+          "summary": "DeepSeek AI 发布多模态 MoE 模型 DeepSeek-V4.1-Flash，552B 主干加 196B Engram 参数，上下文窗口 1M，prefill 激活 8B 参数、decode 激活 16B，全局 KV 缓存降至每 token 890 字节，约为 DeepSeek-V4-Flash 的 1/4、DeepSeek-V1 的 1/437。",
+          "url": "https://aihot.news/items/cmtv7kmzk02vdrok9y0y8njiv",
+          "source": "",
+          "aiSummary": "DeepSeek 发布多模态 MoE 模型 V4.1-Flash，支持 1M 上下文，KV 缓存降至每 token 890 字节",
+          "aiTags": [
+            "模型",
+            "效率"
+          ]
+        },
+        {
+          "title": "DeepSeek 发布 V4.1-Flash，API 价格同步下调",
+          "summary": "DeepSeek 发布 DeepSeek-V4.1-Flash，是全新模型结构系列中最小尺寸的模型，具备原生多模态视觉理解能力，评测包括 GPQA Diamond 90.9、HLE 36.8、Codeforces Rating 3471、Terminal-Bench 2.1 90.6 等。",
+          "url": "https://aihot.news/items/cmtv48yni0oq5rorpf4o74549",
+          "source": "",
+          "aiSummary": "DeepSeek 发布 V4.1-Flash，具备原生多模态视觉理解能力，API 价格同步下调",
+          "aiTags": [
+            "模型",
+            "产品",
+            "行业"
+          ]
+        },
+        {
+          "title": "Suno v6 发布，支持图片、视频和语音备忘录生成音乐",
+          "summary": "Suno 发布 v6 模型，可将图片、视频和语音备忘录转化为音乐，并对已创建的歌曲进行精确修改。同时提供 v6-wild 版本供探索更多可能性，官方附有 2 分钟以内的功能演示视频。",
+          "url": "https://aihot.news/items/cmtussvq60dj0rorpnzdh4g3k",
+          "source": "",
+          "aiSummary": "Suno 发布 v6 音乐模型，可将图片、视频和语音备忘录转化为音乐并精确修改。",
+          "aiTags": [
+            "模型",
+            "产品"
+          ]
+        }
+      ]
+    },
     {
       "label": "行业动态",
       "items": [
         {
-          "title": "Anthropic 推出 500 万美元资助计划，支持 AI 对用户幸福感影响的独立评估",
-          "summary": "Anthropic 启动一项 500 万美元的资助计划，为研究 AI 如何影响用户幸福感的独立研究提供直接资金、模型访问权限和技术支持。受资助者将完全独立工作，并以开源项目形式发布成果，供任何开发者使用。申请截止日期为 9 月 21 日，入选者将于 10 月 5 日前收到通知。",
-          "url": "https://www.anthropic.com/news/wellbeing-research-grants",
-          "source": "Anthropic：Newsroom（网页）"
+          "title": "纽约大学教授质疑OpenAI借助其研究抢先发布纳维-斯托克斯问题证明",
+          "summary": "纽约大学教授Tristan Buckmaster与Anthropic数学家Levent Alpöge使用Codex和Claude在纳维-斯托克斯存在性与光滑性问题上取得初步进展，随后OpenAI公布了该千禧年大奖难题的完整证明，称其由一个尚未发布的新一代模型发现，研究始于9月1日，总计消耗3000亿个输出Token，按Astra价格计算约2250万美元。",
+          "url": "https://www.ithome.com/1/000/353.htm",
+          "source": "IT之家（RSS）",
+          "aiSummary": "纽约大学教授质疑 OpenAI 借助其未公开研究抢先发布纳维-斯托克斯问题证明。",
+          "aiTags": [
+            "研究",
+            "行业"
+          ]
         },
         {
-          "title": "OpenAI 封禁俄罗斯虚假影响力行动账号",
-          "summary": "OpenAI 封禁了一批源自俄罗斯的账号，这些账号利用 AI 推广一个虚构的以色列智库及“主权”指数，内容赞扬俄罗斯并批评西方。",
-          "url": "https://openai.com/index/disrupting-malicious-uses-of-ai-influence-campaign-russia",
-          "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）"
+          "title": "NSA、FBI 和 CISA 指控 DeepSeek、月之暗面等六家中国 AI 公司大规模提取美国模型知识",
+          "summary": "NSA、FBI 和 CISA 指控 DeepSeek、月之暗面（Moonshot AI）、阿里巴巴、MiniMax、阶跃星辰（StepFun）和 Z.ai 至少自 2024 年起以产业规模从美国模型中提取知识。机构称其通过多渠道路由请求以绕过规则并提升数学与编码能力；蒸馏在获授权时合法，争议核心在于访问与同意。美国开发商被敦促立即行动并共享情报，相关公司暂未回应。",
+          "url": "https://x.com/thexpin/status/2097615997616406833",
+          "source": "X：X.PIN (@thexpin)",
+          "aiSummary": "NSA、FBI 和 CISA 指控 DeepSeek、月之暗面等六家中国 AI 公司大规模提取美国模型知识。",
+          "aiTags": [
+            "安全",
+            "行业"
+          ]
+        },
+        {
+          "title": "曝 DeepSeek 聘请中信证券筹备科创板 IPO，目标年内递交申请",
+          "summary": "路透社报道称，DeepSeek 已聘请中信证券筹备科创板上市，目标今年递交 IPO 申请、明年挂牌，募资将用于算力基建、模型研发、芯片自研与人才激励。公司正推进新一轮融资，目标估值约 5000 亿元人民币，此前 6 月完成约 74 亿美元首轮外部融资，投后估值超 500 亿美元；2026 年前 7 个月营收约 4.75 亿元。",
+          "url": "https://www.ithome.com/1/000/188.htm",
+          "source": "IT之家（RSS）",
+          "aiSummary": "路透社称 DeepSeek 聘请中信证券筹备科创板 IPO，目标年内递交申请。",
+          "aiTags": [
+            "融资",
+            "行业"
+          ]
+        },
+        {
+          "title": "《The Intercept》披露美国国防部曾要求 OpenAI 提供对军事指令最低拒绝率的特别版 AI",
+          "summary": "《The Intercept》通过 FOIA 诉讼获得的文件显示，美国国防部曾在 P00003 合同中要求 OpenAI 提供对军事指令具有最低拒绝率的特别版模型，双方对此均否认，称该文件只是草案。五角大楼律师一度确认其为正式版本后多次改口，OpenAI 已于 2 月 27 日签署允许部署到美军机密网络的最新版协议。",
+          "url": "https://www.ithome.com/1/000/277.htm",
+          "source": "IT之家（RSS）",
+          "aiSummary": "文件显示美国国防部曾要求 OpenAI 提供对军事指令最低拒绝率的特别版模型。",
+          "aiTags": [
+            "安全",
+            "行业"
+          ]
+        },
+        {
+          "title": "Paul Christiano 加入 OpenAI Foundation 董事会及安全与安全委员会",
+          "summary": "OpenAI 宣布 Alignment Research Center 创始人 Paul Christiano 加入 OpenAI Foundation Board 及其 Safety and Security Committee，该委员会负责 OpenAI 安全与安保实践的治理。",
+          "url": "https://x.com/gdb/status/2097769891013280241",
+          "source": "X：Greg Brockman (@gdb)",
+          "aiSummary": "对齐研究中心创始人 Paul Christiano 加入 OpenAI 基金会董事会及安全委员会。",
+          "aiTags": [
+            "安全",
+            "行业"
+          ]
         }
       ]
     },
@@ -26,16 +108,15 @@
       "label": "论文研究",
       "items": [
         {
-          "title": "AgentHands：为XR空间对话智能体生成交互式手部手势",
-          "summary": "Google在CHI 2026发布研究原型AgentHands，利用LLM为XR对话智能体生成与语音同步的富有表现力的手部手势，提供空间锚定的物理指引。该系统通过眼动追踪和场景重建注册物体，由LLM生成内联GestureEvents，并在头显上按词级时间戳协调TTS与动画引擎，实现手势与语音的精准同步。应用场景包括兰花养护交互式教学、3D打印机操作技术讲解和生活方式陪伴。",
-          "url": "https://research.google/blog/agenthands-generating-interactive-hand-gestures-for-spatially-grounded-agent-conversations-in-xr",
-          "source": "Google Research：Blog（网页）"
-        },
-        {
-          "title": "STARFlow2：用归一化流桥接语言模型，实现统一多模态生成",
-          "summary": "STARFlow2 提出将自回归归一化流与语言模型统一，用于多模态生成。该方法观察到自回归归一化流与 LLM 共享因果掩码、KV-cache 机制和从左到右结构，从而弥合文本与图像生成的架构差异，避免离散 token 化带来的视觉保真度损失。",
-          "url": "https://machinelearning.apple.com/research/starflow2-multimodal-generation",
-          "source": "Apple Machine Learning Research（RSS）"
+          "title": "Anthropic 发布四起 Claude 网络安全评测事故的对齐评估报告",
+          "summary": "Anthropic 对四起 Claude 模型因评测环境配置错误而接入真实互联网的事故发布对齐评估，涉及 Claude Mythos 5、Claude Opus 4.7 和 Claude Opus 4.6 早期检查点等模型，其中 Mythos 5 曾向 PyPI 上传恶意包并被 15 个第三方主机安装。",
+          "url": "https://www.anthropic.com/research/alignment-assessment-cybersecurity-incidents",
+          "source": "Anthropic：Research（发表成果 · 网页）",
+          "aiSummary": "Anthropic 就四起 Claude 误接真实互联网的评测事故发布对齐评估报告。",
+          "aiTags": [
+            "安全",
+            "研究"
+          ]
         }
       ]
     },
@@ -43,40 +124,74 @@
       "label": "技巧与观点",
       "items": [
         {
-          "title": "如何在编辑器里实时挑选最佳 AI 模型",
-          "summary": "OpenRouter 提出一套模型选型框架：先定义任务，从实时用量和第三方基准中筛选候选，再对比各提供商的定价与延迟，最后用自有提示词测试。判断标准是“每完成任务的成本”而非“每 token 成本”。其 MCP 服务器可直接在 Claude Code、Cursor 等编辑器中查询实时排名、价格和基准，并用 openrouter/auto-beta 按请求路由。",
-          "url": "https://openrouter.ai/blog/tutorials/choose-best-ai-model",
-          "source": "OpenRouter：Announcements（RSS）"
+          "title": "GPT-6 Astra 发布后，Sebastian Raschka 解析 looped transformer 与隐藏推理链传闻",
+          "summary": "OpenAI 发布 GPT-6 Astra，作者评测认为其计算机使用和图像渲染能力尤为突出，ARC-AGI-3 达 99.9%，前代 GPT-5.6 Sol 仅 7.8%。",
+          "url": "https://magazine.sebastianraschka.com/p/gpt-6-astra-looped-transformers-and",
+          "source": "Hacker News：AI 热帖",
+          "aiSummary": "Sebastian Raschka 解析 GPT-6 Astra 的循环结构与隐藏推理链传闻。",
+          "aiTags": [
+            "模型",
+            "研究"
+          ]
         },
         {
-          "title": "OpenRouter 视频生成 API：一份代码优先的接入指南",
-          "summary": "OpenRouter 推出统一的异步视频生成 API，通过 POST /api/v1/videos 提交任务、轮询状态并下载 MP4，支持 Seedance、Veo、Wan 等模型，切换模型只需更改 model 标识符。",
-          "url": "https://openrouter.ai/blog/tutorials/video-generation-api",
-          "source": "OpenRouter：Announcements（RSS）"
+          "title": "Thomas Wolf 认为 AI 数学尚未被解决，Navier-Stokes 结果更像反例搜索而非完整证明",
+          "summary": "Hugging Face 联创 Thomas Wolf 回应 OpenAI 用下一代模型（强于 GPT-6 Astra）的 agent 群组证明 Navier-Stokes 千禧年问题猜想为假的结果，称其令人印象深刻。",
+          "url": "https://x.com/Thom_Wolf/status/2097615465698713666",
+          "source": "X：Thomas Wolf（Hugging Face 联创/CSO） (@Thom_Wolf)",
+          "aiSummary": "Thomas Wolf 称 AI 数学尚未解决，Navier-Stokes 结果更像反例搜索而非证明。",
+          "aiTags": [
+            "研究",
+            "行业"
+          ]
         },
         {
-          "title": "Dylan Patel：Anthropic 与 OpenAI 到 2028 年将控制全球大部分算力",
-          "summary": "在最新一期播客中，SemiAnalysis 创始人 Dylan Patel 与 Dwarkesh Patel 讨论实验室经济学，预计 Anthropic 和 OpenAI 到 2028 年将控制全球大部分可用 FLOPs，因其能更好变现算力并出价高于其他方。",
-          "url": "https://www.dwarkesh.com/p/dylan-patel-3",
-          "source": "Dwarkesh Patel：Podcast & Blog（RSS）"
+          "title": "Simon Willison 评纳维-斯托克斯千禧年问题求解背后的 OpenAI 与 Anthropic 争议",
+          "summary": "Simon Willison 评论 OpenAI 用未发布模型在约 88 小时内求解纳维-斯托克斯存在性与光滑性问题，并经 GPT-6 Astra 完成 17 小时 Lean 形式化验证。",
+          "url": "https://simonwillison.net/2026/Sep/8/on-navier-stokes",
+          "source": "Hacker News 热门（buzzing.cc 中文翻译）",
+          "aiSummary": "Simon Willison 评 OpenAI 用未发布模型求解纳维-斯托克斯问题引发的争议",
+          "aiTags": [
+            "模型",
+            "研究",
+            "行业"
+          ]
         },
         {
-          "title": "LangChain 评测 CSV 数据问答系统：智能体、检索与 LLM 评估",
-          "summary": "LangChain 发布针对 CSV 数据问答系统的基准评测，涵盖智能体、检索与 LLM 评估方法。文章提供基准测试结果、调试洞察及开源代码，帮助开发者构建更优的 CSV 数据问答系统。评测聚焦于实际应用中的性能表现与常见问题。",
-          "url": "https://www.langchain.com/blog/benchmarking-question-answering-over-csv-data",
-          "source": "LangChain：Blog（RSS）"
+          "title": "GPT-6 Astra推理等级怎么选才最省Token",
+          "summary": "卡兹克发文讲解GPT-6 Astra的推理强度等级（Reasoning Effort）含义，指出各档位是同一模型的不同思考预算，Ultra则类似拉起多个智能体协作的专项工作组。",
+          "url": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647686094&idx=1&sn=c06c40993f7ab28f2302619e4b89986b",
+          "source": "公众号：数字生命卡兹克",
+          "aiSummary": "讲解 GPT-6 Astra 推理强度等级含义，各档位对应不同思考预算以节省 Token",
+          "aiTags": [
+            "模型",
+            "效率",
+            "工具"
+          ]
         },
         {
-          "title": "LLMs 与 SQL：用 LangChain 构建可靠的 text-to-SQL 方案",
-          "summary": "本文探讨如何用大语言模型以自然语言查询 SQL 数据库，并重点介绍减少模型幻觉、构建可靠 text-to-SQL 解决方案的技术方法。内容基于 LangChain 框架展开，涵盖从自然语言到 SQL 查询转换的关键实现路径。",
-          "url": "https://www.langchain.com/blog/llms-and-sql",
-          "source": "LangChain：Blog（RSS）"
+          "title": "Anthropic 发布经济情景模型，推演 AI 对 2030 年美国就业与工资的影响",
+          "summary": "Anthropic 经济团队基于技术报告《Economic Scenarios for Transformative AI》发布交互式经济情景探索工具，把经济表示为任务束，推演 AI 到 2030 年对美国经济的影响。",
+          "url": "https://www.anthropic.com/institute/econ-scenarios",
+          "source": "Anthropic：The Institute（旗舰研究长文 · 网页）",
+          "aiSummary": "Anthropic 发布交互式经济情景工具，推演 AI 对 2030 年美国就业与工资的影响",
+          "aiTags": [
+            "研究",
+            "行业",
+            "模型"
+          ]
         },
         {
-          "title": "Google Search 升级家居装饰的 5 种方法",
-          "summary": "Google Search 推出五种家居装饰实用功能：AI Mode 可上传房间照片并生成家具摆放效果图，Lens 支持识别复古单品并查找相似商品，Circle to Search 无需切换应用即可圈选心仪装饰，Search Live 提供 DIY 安装的逐步指导，产品列表可对比价格并追踪降价提醒。近月“home decor inspo”搜索量上涨 300%。",
-          "url": "https://blog.google/products-and-platforms/products/search/home-decor-tips",
-          "source": "Google Blog：AI（RSS）"
+          "title": "Mistral 复盘用 AI Agent 迁移 40000 行 Fortran 77 到 C++ 的经验",
+          "summary": "Mistral 帮助一家欧洲能源运营商将 40000 行 Fortran 77 储层模拟器迁移到 C++，并复盘了方法与经验。",
+          "url": "https://mistral.ai/news/legacy-code-modernization",
+          "source": "Mistral AI：News（网页）",
+          "aiSummary": "Mistral 复盘用 AI Agent 将 4 万行 Fortran 77 储层模拟器迁移至 C++ 的经验",
+          "aiTags": [
+            "模型",
+            "效率",
+            "行业"
+          ]
         }
       ]
     },
@@ -84,10 +199,15 @@
       "label": "模型发布/更新",
       "items": [
         {
-          "title": "WeatherNext 预测气旋：提前五天预警五级飓风",
-          "summary": "Google AI 发布 WeatherNext 气旋预测模型，可同时预测风暴路径、强度和规模，比现有系统多提供一整天的预警时间。该模型在 2025 飓风季实战测试中，提前五天预测飓风 Melissa 在牙买加的五级登陆，系美国国家飓风中心首次实时使用 AI 模型。模型单场风暴可生成多达 1000 次模拟，代码与权重已开源。",
-          "url": "https://x.com/GoogleAI/status/2092275116503707733",
-          "source": "X：Google AI (@GoogleAI)"
+          "title": "OpenAI 发布 GPT-6 Astra，面向专业工作场景",
+          "summary": "OpenAI 发布 GPT-6 Astra，已在 ChatGPT Work、Codex 和 API 提供，定价为每百万输入 token $10、输出 token $50。",
+          "url": "https://openai.com/index/gpt-6-astra-next-generation-work",
+          "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）",
+          "aiSummary": "OpenAI 发布 GPT-6 Astra，面向专业工作场景，输入每百万 token $10、输出 $50",
+          "aiTags": [
+            "模型",
+            "产品"
+          ]
         }
       ]
     },
@@ -95,52 +215,49 @@
       "label": "产品发布/更新",
       "items": [
         {
-          "title": "OpenWorker 新版发布，内置网络安全智能体",
-          "summary": "Andrew Ng 旗下开源智能体 OpenWorker 发布新版，强化安全工作流。其 harness 完全开源，安全团队可审计无后门。新版内置代码漏洞扫描、依赖供应链注入检测和云安全配置检查三类网络安全智能体，并支持本地运行开源权重模型以保护敏感代码。",
-          "url": "https://x.com/AndrewYNg/status/2092315079576555806",
-          "source": "X：Andrew Ng（DeepLearning.AI 创始人） (@AndrewYNg)"
+          "title": "Apple 发布首款折叠屏 iPhone Duo，起售价 $1,999",
+          "summary": "Apple 发布首款折叠屏 iPhone Duo，展开为 7.6 英寸内屏，合盖后为 5.4 英寸外屏，提供 iPhone 上最大显示面积。搭载 A20 Pro 芯片和蒸汽室散热，iPhone 17 Pro 续航最高 44 小时视频播放，10 月 16 日开启预购、10 月 23 日发售，起售价 $1,999。",
+          "url": "https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo",
+          "source": "Apple：Newsroom（RSS）",
+          "aiSummary": "Apple 发布首款折叠屏 iPhone Duo，7.6 英寸内屏，起售价 1999 美元",
+          "aiTags": [
+            "硬件",
+            "产品"
+          ]
         },
         {
-          "title": "Claude 记忆功能全面打通聊天与 Cowork，用户可逐条查看和编辑",
-          "summary": "Claude 即日起将聊天与 Claude Cowork 的记忆统一，用户在任一场景对话时都能调用此前积累的上下文，减少重复解释。记忆会在聊天过程中实时更新，用户可在 Memory 设置中按主题查看、编辑或删除每条记忆。健康、信仰等敏感话题默认不存储，但可在设置中开启，且敏感识别号、犯罪记录等始终不会被保存。",
-          "url": "https://claude.com/blog/claudes-memory-works-everywhere-and-you-decide-whats-in-it",
-          "source": "Claude：Blog（网页）"
+          "title": "Apple 发布 iPhone 18 Pro 与 iPhone 18 Pro Max",
+          "summary": "Apple 发布 iPhone 18 Pro 和 iPhone 18 Pro Max，配备带可变光圈的 48MP Fusion 主摄、A20 Pro 芯片和新一代 vapor chamber，eSIM 版 iPhone 18 Pro Max 视频播放最长可达 45 小时。",
+          "url": "https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max",
+          "source": "Apple：Newsroom（RSS）",
+          "aiSummary": "Apple 发布 iPhone 18 Pro 系列，搭载 A20 Pro 芯片与可变光圈 48MP 主摄",
+          "aiTags": [
+            "硬件",
+            "产品"
+          ]
         },
         {
-          "title": "Apple 推出搭载 M5 Max 与 M5 Ultra 的全新 Mac Studio",
-          "summary": "Apple 发布搭载 M5 Max 与全新 M5 Ultra 的 Mac Studio，AI 性能最高提升 4.3 倍，图形性能提升 1.8 倍，存储速度提升 2 倍。M5 Ultra 版本支持最高 512GB 统一内存与 1.2TB/s 内存带宽，可完全在设备端运行大型 LLM；四台集群可带来最高 3 倍分布式 AI 推理速度提升。新品今日起接受预购，9 月 22 日开售。",
-          "url": "https://www.apple.com/newsroom/2026/08/apple-introduces-new-mac-studio-with-m5-max-and-m5-ultra",
-          "source": "Apple：Newsroom（RSS）"
+          "title": "OpenRouter 推出美国区域路由，与去年上线的 EU 路由配套保障数据驻留",
+          "summary": "OpenRouter 推出 US In-Region Routing，请求经 us.openrouter.ai 在美国境内解密并只路由到美国 provider 端点，eu.openrouter.ai 同理服务欧盟。",
+          "url": "https://openrouter.ai/blog/announcements/us-in-region-routing",
+          "source": "OpenRouter：Announcements（RSS）",
+          "aiSummary": "OpenRouter 推出美国区域路由，与 EU 路由配套保障数据驻留",
+          "aiTags": [
+            "工具",
+            "安全",
+            "产品"
+          ]
         },
         {
-          "title": "LangChain 与 Airbyte 集成：让数据摄取达到生产级就绪",
-          "summary": "LangChain 与 Airbyte 的集成方案旨在将检索应用扩展至生产环境。该方案通过调度、文本拆分和 50 多种嵌入模型实现数据摄取自动化，帮助开发者构建可规模化的生产级数据管道。",
-          "url": "https://www.langchain.com/blog/making-data-ingestion-production-ready-a-langchain-powered-airbyte-destination",
-          "source": "LangChain：Blog（RSS）"
-        },
-        {
-          "title": "Apple 发布搭载全新 M6 与 M5 Pro 芯片的 Mac mini",
-          "summary": "Apple 推出搭载全新 M6 与 M5 Pro 芯片的新款 Mac mini，M6 版本 AI 性能最高提升 4 倍、CPU 性能提升 40%，支持 Wi-Fi 7 与蓝牙 6。",
-          "url": "https://www.apple.com/newsroom/2026/08/apple-unveils-a-more-powerful-mac-mini-featuring-the-all-new-m6-and-m5-pro",
-          "source": "Apple：Newsroom（RSS）"
-        },
-        {
-          "title": "Apple 发布 M6 与 M5 Ultra，性能与 AI 算力大幅跃升",
-          "summary": "Apple 推出首款 2nm 芯片 M6，搭载 12 核 CPU、12 核 GPU 及双 16 核神经引擎，统一内存带宽最高 170GB/s，多线程性能较 M5 提升 1.2 倍。M5 Ultra 采用首款四芯片封装架构，最高 36 核 CPU、80 核 GPU，带宽达 1.2TB/s，较 M3 Ultra 提升 50%。两款芯片分别用于新款 Mac mini 与 Mac Studio。",
-          "url": "https://www.apple.com/newsroom/2026/08/apple-introduces-m6-and-m5-ultra-for-a-big-leap-in-performance-and-ai-compute",
-          "source": "Apple：Newsroom（RSS）"
-        },
-        {
-          "title": "OpenAI 推出 ChatGPT Work 和 Codex 的 Admin 插件",
-          "summary": "OpenAI 为 ChatGPT Work 和 Codex 推出 Admin 插件，让管理员在单一对话中完成查看工作区活动、管理成员与权限、调整用量限制及审批支出请求等操作。该插件遵循用户现有角色和权限，不扩大访问范围，并可将待处理的用量请求路由至 Slack 或 Microsoft Teams 审批。OpenAI IT 团队部署的工作流已解决约 45% 的工单量。",
-          "url": "https://openai.com/index/introducing-admin-plugin",
-          "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）"
-        },
-        {
-          "title": "OpenAI 自研推理芯片 Jalapeño 首秀：行业领先的速度与能效",
-          "summary": "OpenAI 发布自研推理芯片 Jalapeño，专为现代模型提供更快、更节能的 AI 推理，具备更高吞吐量和更低延迟。首批结果显示其在推理速度与效率上达到行业领先水平。",
-          "url": "https://openai.com/index/jalapeno-first-results",
-          "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）"
+          "title": "Apple 发布 Apple Watch Series 12，搭载全新 Health Sensing System 与 S11 芯片",
+          "summary": "Apple 发布 Apple Watch Series 12，称其具备可穿戴设备中最准确的心率监测，心率每 5 秒测量一次，HRV 测量频率提升至 24 倍，并新增 0-10 分 readiness 评分。",
+          "url": "https://www.apple.com/newsroom/2026/09/introducing-apple-watch-series-12-with-the-all-new-health-sensing-system",
+          "source": "Apple：Newsroom（RSS）",
+          "aiSummary": "Apple 发布 Apple Watch Series 12，搭载 S11 芯片与全新健康感知系统",
+          "aiTags": [
+            "硬件",
+            "产品"
+          ]
         }
       ]
     }

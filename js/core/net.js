@@ -21,6 +21,10 @@
  * @property {Array<{icon:string, label:string, cmd:string}>} [quickActions] 快捷启动
  * @property {{types?:Object, files?:Array}} [knowledge] 知识库
  * @property {{lastRun?:string, nextRun?:string, status?:string, staleHours?:number}} [sync] 同步健康度
+ *
+ * 资讯各源的单条 item 形如 {title, url, summary, source}；enrich 步骤（backend/pipeline/enrich.py）
+ * 会额外注入 aiSummary(string, 统一质量一句话摘要) 与 aiTags(string[], 标签)——前端优先展示、
+ * 缺失则回退原始 summary。此为 data.json 契约扩字段（单向门，见 ADR 0011）。
  */
 
 /**

@@ -1,129 +1,232 @@
 {
-  "date": "2026-09-07",
-  "fetchedAt": "2026-09-07 15:55",
+  "date": "2026-09-10",
+  "fetchedAt": "2026-09-10 16:38",
   "source": "Hacker News (via OpenCLI)",
   "canonical": "https://news.ycombinator.com/",
   "count": 20,
   "items": [
     {
-      "title": "Keep Our Servers Running",
-      "summary": "▲332 · sonicrocketman · 73 评论",
-      "url": "https://blog.archive.org/2026/09/01/keep-our-servers-running-your-recurring-donation-goes-3x-this-september/",
-      "source": "Hacker News"
+      "title": "DeepSeek v4.1 Flash",
+      "summary": "▲213 · Liwink · 72 评论",
+      "url": "https://twitter.com/deepseek_ai/status/2097930608790167907",
+      "source": "Hacker News",
+      "aiSummary": "DeepSeek V4.1-Flash 发布，在 Hacker News 获 213 赞引发热议",
+      "aiTags": [
+        "模型",
+        "行业"
+      ]
     },
     {
-      "title": "Making a Python interpreter in 1024 bytes",
-      "summary": "▲206 · azhenley · 75 评论",
-      "url": "https://austinhenley.com/blog/python1024.html",
-      "source": "Hacker News"
+      "title": "iPhone Duo",
+      "summary": "▲1179 · thecosmicfrog · 2066 评论",
+      "url": "https://www.apple.com/iphone-duo/",
+      "source": "Hacker News",
+      "aiSummary": "Hacker News 热议苹果双屏折叠 iPhone 概念“iPhone Duo”",
+      "aiTags": [
+        "硬件",
+        "产品"
+      ]
     },
     {
-      "title": "Ask HN: Fable hacked my piano, can I release the results?",
-      "summary": "▲125 · jmpman · 68 评论",
-      "url": "https://news.ycombinator.com/item?id=49577129",
-      "source": "Hacker News"
+      "title": "Show HN: What if the speed of light was 5 km/h?",
+      "summary": "▲276 · dmitrybrant · 119 评论",
+      "url": "https://rivendell.dmitrybrant.com/relativity/",
+      "source": "Hacker News",
+      "aiSummary": "开发者发布模拟工具，可视化光速降至每小时5公里时的相对论世界",
+      "aiTags": [
+        "工具",
+        "研究"
+      ]
     },
     {
-      "title": "Ask HN: How do you manage skills files?",
-      "summary": "▲95 · imadtaieber · 74 评论",
-      "url": "https://news.ycombinator.com/item?id=49589914",
-      "source": "Hacker News"
+      "title": "Larger Pacific Striped Octopus",
+      "summary": "▲47 · olalonde · 22 评论",
+      "url": "https://en.wikipedia.org/wiki/Larger_Pacific_striped_octopus",
+      "source": "Hacker News",
+      "aiSummary": "Hacker News 热议大太平洋条纹章鱼的独特习性",
+      "aiTags": [
+        "研究",
+        "科学"
+      ]
     },
     {
-      "title": "It took a year to ship WebAssembly in Anubis",
-      "summary": "▲248 · xena · 126 评论",
-      "url": "https://anubis.techaro.lol/blog/2026/anubis-wasm/",
-      "source": "Hacker News"
+      "title": "Shopify acquires Tailwind",
+      "summary": "▲1014 · EdwinHoksberg · 389 评论",
+      "url": "https://tailwindcss.com/blog/tailwind-is-joining-shopify",
+      "source": "Hacker News",
+      "aiSummary": "Shopify 宣布收购 CSS 框架 Tailwind",
+      "aiTags": [
+        "行业",
+        "工具"
+      ]
     },
     {
-      "title": "Has anybody seen my keys? A key-hierarchy strategy for rack-level security",
-      "summary": "▲24 · cyb0rg0 · 1 评论",
-      "url": "https://rfd.shared.oxide.computer/rfd/0301",
-      "source": "Hacker News"
+      "title": "What do Visa and Mastercard do? An intro to card networks",
+      "summary": "▲512 · evakhoury · 291 评论",
+      "url": "https://tautology.town/2026/06/01/card-networks.html",
+      "source": "Hacker News",
+      "aiSummary": "科普文章介绍Visa与Mastercard等银行卡网络的运作方式与商业模式。",
+      "aiTags": [
+        "行业",
+        "金融"
+      ]
     },
     {
-      "title": "Show HN: Engrim – A universal, local-first SQLite memory engine for AI CLIs",
-      "summary": "▲18 · timgordontg · 3 评论",
-      "url": "https://github.com/timgordontg/engrim",
-      "source": "Hacker News"
+      "title": "Growing proof that autonomous cars save lives",
+      "summary": "▲333 · bookofjoe · 582 评论",
+      "url": "https://spectrum.ieee.org/are-self-driving-cars-safe",
+      "source": "Hacker News",
+      "aiSummary": "越来越多证据显示自动驾驶汽车有助于减少交通事故、拯救生命。",
+      "aiTags": [
+        "安全",
+        "行业",
+        "研究"
+      ]
     },
     {
-      "title": "Ask HN: Would you read a statistics textbook?",
-      "summary": "▲67 · usernametaken29 · 35 评论",
-      "url": "https://news.ycombinator.com/item?id=49583440",
-      "source": "Hacker News"
+      "title": "All grown-ups were once children, but only few of them remember it",
+      "summary": "▲143 · yurivish · 90 评论",
+      "url": "https://mathstodon.xyz/@tao/117244102901892965",
+      "source": "Hacker News",
+      "aiSummary": "《小王子》式随笔：所有大人都曾是孩子，但很少有人记得这一点。",
+      "aiTags": [
+        "随笔",
+        "文化"
+      ]
     },
     {
-      "title": "Switzerland's Federal Government Is Replacing Microsoft on 3k Computers",
-      "summary": "▲43 · ivell · 13 评论",
-      "url": "https://itsfoss.com/news/switzerland-replace-microssoft-pilot/",
-      "source": "Hacker News"
+      "title": "No Man's Sky Cosmos",
+      "summary": "▲373 · Limb · 386 评论",
+      "url": "https://www.nomanssky.com/cosmos-update/",
+      "source": "Hacker News",
+      "aiSummary": "《无人深空》推出Cosmos大型更新内容。",
+      "aiTags": [
+        "游戏",
+        "产品"
+      ]
     },
     {
-      "title": "Nitter and XCancel resume service after legal advice",
-      "summary": "▲687 · zImPatrick · 306 评论",
-      "url": "https://github.com/zedeus/nitter/commit/1428b4c2b4246f92a7e5b2673438e5fb39fcc4a3",
-      "source": "Hacker News"
+      "title": "GPT-6 Astra, looped transformers, and hidden reasoning",
+      "summary": "▲411 · ModelForge · 134 评论",
+      "url": "https://magazine.sebastianraschka.com/p/gpt-6-astra-looped-transformers-and",
+      "source": "Hacker News",
+      "aiSummary": "Sebastian Raschka 解析 GPT-6 Astra 的循环结构与隐藏推理链传闻。",
+      "aiTags": [
+        "模型",
+        "研究"
+      ]
     },
     {
-      "title": "Babylonian Lamb Stew with Beets (1750–1730 BCE)",
-      "summary": "▲134 · yubblegum · 92 评论",
-      "url": "https://babylonian-collection.yale.edu/about/babylonian-cooking",
-      "source": "Hacker News"
+      "title": "AirPods 5",
+      "summary": "▲445 · awad · 363 评论",
+      "url": "https://www.apple.com/newsroom/2026/09/apple-introduces-airpods-5-with-best-in-class-open-ear-active-noise-cancellation/",
+      "source": "Hacker News",
+      "aiSummary": "苹果推出第五代AirPods无线耳机。",
+      "aiTags": [
+        "硬件",
+        "产品"
+      ]
     },
     {
-      "title": "I'm a seeing-eye dog for a computer",
-      "summary": "▲63 · claytonwramsey · 61 评论",
-      "url": "https://claytonwramsey.com/blog/seeing-eye/",
-      "source": "Hacker News"
+      "title": "iPhone 18 Pro and iPhone 18 Pro Max",
+      "summary": "▲354 · meetpateltech · 384 评论",
+      "url": "https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/",
+      "source": "Hacker News",
+      "aiSummary": "iPhone 18 Pro与iPhone 18 Pro Max新机信息曝光。",
+      "aiTags": [
+        "硬件",
+        "产品"
+      ]
     },
     {
-      "title": "Show HN: GET Together – A social network where you don't need POST to Post",
-      "summary": "▲40 · nchudleigh · 13 评论",
-      "url": "https://gettogether.dev",
-      "source": "Hacker News"
+      "title": "Show HN: Compute polynomials twice as fast",
+      "summary": "▲80 · thomasahle · 27 评论",
+      "url": "https://thomasahle.com/fast-polynomials/",
+      "source": "Hacker News",
+      "aiSummary": "Show HN项目展示可将多项式计算速度提升一倍的算法工具。",
+      "aiTags": [
+        "工具",
+        "效率",
+        "算法"
+      ]
     },
     {
-      "title": "GrapheneOS Overhauled Default Apps and Secure Clipboard",
-      "summary": "▲274 · Cider9986 · 195 评论",
-      "url": "https://grapheneos.social/@GrapheneOS/117225539756835649",
-      "source": "Hacker News"
+      "title": "Training a 3.8B LLM to 0.384 CORE for $998",
+      "summary": "▲66 · Anon84 · 13 评论",
+      "url": "https://hugovergnes.github.io/little-lm-3-8b/",
+      "source": "Hacker News",
+      "aiSummary": "开发者以998美元成本训练38亿参数LLM，达到0.384 CORE成绩。",
+      "aiTags": [
+        "模型",
+        "效率",
+        "研究"
+      ]
     },
     {
-      "title": "Bot Detection Without JavaScript: What My Blog Measured",
-      "summary": "▲6 · gogakoreli · 0 评论",
-      "url": "https://gkoreli.com/how-i-separate-readers-from-bots-without-javascript",
-      "source": "Hacker News"
+      "title": "Automattic's board forces CEO Matt Mullenweg into leave of absence",
+      "summary": "▲241 · LeoPanthera · 174 评论",
+      "url": "https://techcrunch.com/2026/09/09/automattics-board-forces-ceo-matt-mullenweg-into-leave-of-absence/",
+      "source": "Hacker News",
+      "aiSummary": "Automattic董事会迫使CEO Matt Mullenweg停职休假。",
+      "aiTags": [
+        "行业",
+        "开源"
+      ]
     },
     {
-      "title": "Harnessing the Universal Geometry of Embeddings",
-      "summary": "▲72 · ur-whale · 25 评论",
-      "url": "https://arxiv.org/abs/2505.12540",
-      "source": "Hacker News"
+      "title": "Version control second coming",
+      "summary": "▲78 · bananaboy · 51 评论",
+      "url": "https://psantosl.github.io/posts/version-control-second-coming/",
+      "source": "Hacker News",
+      "aiSummary": "探讨版本控制技术迎来“第二次复兴”的观点文章",
+      "aiTags": [
+        "工具",
+        "研究"
+      ]
     },
     {
-      "title": "Every Novel Is Boring–Until It Isn't",
-      "summary": "▲51 · samclemens · 37 评论",
-      "url": "https://www.publicbooks.org/every-novel-is-boring-until-it-isnt/",
-      "source": "Hacker News"
+      "title": "Factoring RSA 260",
+      "summary": "▲88 · samyok · 11 评论",
+      "url": "https://cognition.com/blog/factoring-rsa-260",
+      "source": "Hacker News",
+      "aiSummary": "RSA-260 大整数分解项目引发社区关注与讨论",
+      "aiTags": [
+        "安全",
+        "研究"
+      ]
     },
     {
-      "title": "Research acceleration: The view inside OpenAI",
-      "summary": "▲162 · iamsyr · 109 评论",
-      "url": "https://openai.com/index/research-acceleration-view-inside-openai",
-      "source": "Hacker News"
+      "title": "OpenAI might have stolen another major proof",
+      "summary": "▲200 · tamnd · 81 评论",
+      "url": "https://twitter.com/ValerioCapraro/status/2097791836269977996",
+      "source": "Hacker News",
+      "aiSummary": "Hacker News 热议 OpenAI 或再次涉嫌窃取重要数学证明成果",
+      "aiTags": [
+        "行业",
+        "研究"
+      ]
     },
     {
-      "title": "TiVo to charge money for skipping commercials in your own recordings",
-      "summary": "▲46 · dmitrygr · 14 评论",
-      "url": "https://cordcuttersnews.com/tivo-plans-to-end-free-automatic-commercial-skipping-in-november-tests-paid-premium-replacement-service/",
-      "source": "Hacker News"
+      "title": "Qwen 3.8 follows GPT-5.5 Pro reasoning prefills",
+      "summary": "▲211 · wsxiaoys · 82 评论",
+      "url": "https://gist.github.com/wsxiaoys/e0286dc6bb624ff5fdf49e7f4c528ba3",
+      "source": "Hacker News",
+      "aiSummary": "Qwen 3.8 被发现会跟随 GPT-5.5 Pro 的推理预填充内容",
+      "aiTags": [
+        "模型",
+        "研究"
+      ]
     },
     {
-      "title": "The NX bit is not just about security",
-      "summary": "▲66 · torutofu · 34 评论",
-      "url": "https://purplesyringa.moe/blog/guest/the-nx-bit-is-not-just-about-security/",
-      "source": "Hacker News"
+      "title": "Aardman (Wallace and Gromit) Is Selling Its Original Movie Puppets",
+      "summary": "▲41 · Gaishan · 9 评论",
+      "url": "https://gizmodo.com/aardman-is-selling-its-original-movie-puppets-this-month-2000807968",
+      "source": "Hacker News",
+      "aiSummary": "阿德曼工作室将出售《超级无敌掌门狗》系列原始电影木偶",
+      "aiTags": [
+        "行业",
+        "文化"
+      ]
     }
   ],
   "warnings": []

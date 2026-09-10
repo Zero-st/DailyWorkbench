@@ -3,6 +3,7 @@
 // toggleNS/toggleNews/newsDateChanged/dnewsDateChanged 挂 window 供内联 onclick。
 import { esc, escAttr, jsStr, ic } from "../core/util.js";
 import { isFav } from "../features/favs.js";
+import { mountInfoSearch } from "../features/infosearch.js";
 
 // 源级折叠状态记忆（照 recall.js 的 map + try/catch 兜底）：{ news:true, dnews:false, ... }
 var COLLAPSE_KEY = "wb_info_collapsed";
@@ -71,23 +72,32 @@ function renderNewsItem(it, opt) {
   var src = it.source
     ? '<span class="nw-s">' + esc(it.source) + "</span>"
     : (opt.defaultSrc ? '<span class="nw-s">' + esc(opt.defaultSrc) + "</span>" : "");
+  // 摘要优先用 enrich 生成的 aiSummary（统一质量），回退各源原始 summary
+  var sum = it.aiSummary || it.summary || "";
   var dHtml = "";
-  if (opt.showSummary && it.summary) {
-    var long = it.summary.length > 90;
-    dHtml = '<div class="nw-d' + (long ? " clamp" : "") + '">' + esc(it.summary) + "</div>" +
+  if (opt.showSummary && sum) {
+    var long = sum.length > 90;
+    dHtml = '<div class="nw-d' + (long ? " clamp" : "") + '">' + esc(sum) + "</div>" +
       (long ? '<button class="nw-toggle" onclick="toggleNews(this)">展开 ▾</button>' : "");
   }
+  // AI 标签（点击→按标签过滤，见 infosearch.js）；无标签则不渲染
+  var tags = Array.isArray(it.aiTags) ? it.aiTags : [];
+  var tagsHtml = tags.length
+    ? '<div class="nw-tags">' + tags.map(function (t) {
+        return '<span class="kb-tag" onclick="infoTag(' + "'" + jsStr(t) + "'" + ')">' + esc(t) + "</span>";
+      }).join("") + "</div>"
+    : "";
   var on = isFav(it.url);
   var fav = '<button class="fav-btn' + (on ? " on" : "") + '" onclick="favToggle(this,' + "'" + jsStr(it.title) + "','" + jsStr(it.url) + "','" + jsStr(it.source || "") + "'" + ')">' + (on ? "★" : "☆") + '</button>';
   // 讲讲：带全上下文 {标题+摘要+链接+来源}（data-*，修「只带标题」），点开 → 右侧副驾开讲
   var askBtn = '<button class="nw-ask" onclick="newsExplain(this)"' +
     ' data-t="' + escAttr(it.title || "") + '"' +
-    ' data-s="' + escAttr(it.summary || "") + '"' +
+    ' data-s="' + escAttr(sum) + '"' +
     ' data-u="' + escAttr(it.url || "") + '"' +
     ' data-src="' + escAttr(it.source || opt.defaultSrc || "") + '"' +
     ' data-ask="' + escAttr(askText) + '">让 AI 讲讲</button>';
   return '<div class="nw"><div class="nw-t">' + prefix + esc(it.title) + "</div>" +
-    dHtml +
+    dHtml + tagsHtml +
     '<div class="nw-f">' + src + link + fav + askBtn +
     "</div></div>";
 }
@@ -122,8 +132,14 @@ function newsDateChanged() {
   var sel = document.getElementById("newsSel");
   if (sel) renderNewsBody(sel.value);
 }
+// 单条卡片渲染的对外入口（供 infosearch 检索结果面板复用同款卡片，含摘要/标签/收藏/讲讲）
+export function renderCard(it, opt) {
+  return renderNewsItem(it, Object.assign({ showSummary: true }, opt || {}));
+}
+
 // 资讯 Tab（AI 日报 + 每日新闻合并渲染，红点任一有更新即亮）
 export function renderInfo(d) {
+  mountInfoSearch(d, renderCard);  // 顶部搜索/筛选条 + 语义检索（叠加式面板）
   renderNews(d);
   renderDailyNews(d);
   renderHackerNews(d);

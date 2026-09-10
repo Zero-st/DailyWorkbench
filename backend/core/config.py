@@ -199,3 +199,67 @@ def chat_allow_hosts():
     """AI 聊天代理目标主机白名单；空列表 = 不限制（保持旧行为）。"""
     cp = _LOCAL.get("chatProxy") or {}
     return list(cp.get("allowHosts") or [])
+
+
+# ---------- 资讯语义检索：enrich（摘要/标签/向量）与 Zilliz 向量库 ----------
+# 全属「环境绑定 + 密钥」：只填在 workbench.local.json（gitignore），缺失即整条能力
+# 优雅停用（enrich 跳过、语义搜索端点回 configured:false），App 其余部分不受影响。
+# 见 ADR 0011。
+
+def enrich_chat():
+    """enrich 生成「摘要+标签」用的 chat 模型：返回 (base_url, model, key)。
+
+    OpenAI 兼容 /chat/completions；base_url 填到 /v1 层级（如 https://.../v1）。
+    缺任一即视为未配置 -> enrich 跳过摘要/标签（保留各源原始 summary）。
+    """
+    e = (_LOCAL.get("enrich") or {}).get("chat") or {}
+    base = os.environ.get("WB_ENRICH_CHAT_BASEURL") or e.get("baseUrl") or ""
+    model = os.environ.get("WB_ENRICH_CHAT_MODEL") or e.get("model") or ""
+    key = os.environ.get("WB_ENRICH_CHAT_KEY") or e.get("key") or ""
+    return base.rstrip("/"), model, key
+
+
+def enrich_embedding():
+    """enrich/查询向量化用的 embedding 模型：返回 (base_url, model, key, dim)。
+
+    OpenAI 兼容 /embeddings；dim 可留空(0)，由建库脚本探测、检索时以实际返回维度为准。
+    查询与文档必须同一模型（对称性），故语义搜索端点复用本配置。
+    """
+    e = (_LOCAL.get("enrich") or {}).get("embedding") or {}
+    base = os.environ.get("WB_ENRICH_EMBED_BASEURL") or e.get("baseUrl") or ""
+    model = os.environ.get("WB_ENRICH_EMBED_MODEL") or e.get("model") or ""
+    key = os.environ.get("WB_ENRICH_EMBED_KEY") or e.get("key") or ""
+    dim = e.get("dim")
+    try:
+        dim = int(dim) if dim else 0
+    except (TypeError, ValueError):
+        dim = 0
+    return base.rstrip("/"), model, key, dim
+
+
+def enrich_limits():
+    """enrich 成本护栏：返回 (max_items_per_run, batch_size)。默认 200 / 10。"""
+    e = _LOCAL.get("enrich") or {}
+    try:
+        mx = int(e.get("maxItemsPerRun") or 200)
+    except (TypeError, ValueError):
+        mx = 200
+    try:
+        bs = int(e.get("batchSize") or 10)
+    except (TypeError, ValueError):
+        bs = 10
+    return max(1, mx), max(1, bs)
+
+
+def zilliz():
+    """Zilliz Cloud 向量库：返回 (endpoint, token, collection)。
+
+    endpoint = serverless 集群地址（https://in03-....cloud.zilliz.com，REST v2 直接拼 /v2/vectordb/...）。
+    缺 endpoint/token 即未配置 -> 向量 upsert/search 跳过（enrich 仍可只写摘要/标签）。
+    collection 缺省 'wb_info'。
+    """
+    z = _LOCAL.get("zilliz") or {}
+    endpoint = os.environ.get("WB_ZILLIZ_ENDPOINT") or z.get("endpoint") or ""
+    token = os.environ.get("WB_ZILLIZ_TOKEN") or z.get("token") or ""
+    collection = os.environ.get("WB_ZILLIZ_COLLECTION") or z.get("collection") or "wb_info"
+    return endpoint.rstrip("/"), token, collection

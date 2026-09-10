@@ -29,6 +29,7 @@ STEPS = [
     ("GitHub Trending", "fetch_github_trending"),  # 同上，OpenCLI 取数层
     ("Product Hunt", "fetch_producthunt"),  # 路 A · stdlib Atom，抓取失败保留旧数据
     ("少数派", "fetch_sspai"),  # 路 A · stdlib RSS，抓取失败保留旧数据
+    ("AI 摘要标签向量", "enrich"),  # 理解层：摘要+标签+向量(Zilliz)；未配置则跳过，见 ADR 0011
     ("数据聚合", "export_data"),
 ]
 

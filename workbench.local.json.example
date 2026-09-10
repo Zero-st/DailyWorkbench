@@ -11,5 +11,16 @@
   "supabase": { "url": "", "serviceKey": "" },
   "kb": { "vault": "", "depositRoot": "" },
   "inbox": { "path": "" },
-  "chatProxy": { "allowHosts": [] }
+  "chatProxy": { "allowHosts": [] },
+
+  "_enrich说明": "资讯理解层（摘要/标签/向量）。chat/embedding 均为 OpenAI 兼容端点；baseUrl 填到 /v1（或厂商对应）层级，代码自动补 /chat/completions、/embeddings。缺失=该能力优雅停用（enrich 跳过、语义搜索返回 configured:false）。dim 留 null 由建库脚本探测。见 ADR 0011。",
+  "_embedding提示": "注意：火山方舟 Coding Plan 的 key 只含对话、不含 embedding。embedding 可另配一家（与 chat 不同厂商/key 均可）：硅基流动 baseUrl=https://api.siliconflow.cn/v1 model=BAAI/bge-m3；智谱 baseUrl=https://open.bigmodel.cn/api/paas/v4 model=embedding-3；OpenAI model=text-embedding-3-small；或火山正式版开通 doubao-embedding 后用接入点 id ep-xxxx。",
+  "enrich": {
+    "chat": { "baseUrl": "https://ark.cn-beijing.volces.com/api/coding/v3", "model": "glm-5.3", "key": "" },
+    "embedding": { "baseUrl": "https://api.siliconflow.cn/v1", "model": "BAAI/bge-m3", "key": "", "dim": null },
+    "maxItemsPerRun": 200,
+    "batchSize": 10
+  },
+  "_zilliz说明": "Zilliz Cloud serverless 向量库。endpoint=集群地址(https://in03-....cloud.zilliz.com)，REST v2 直接拼 /v2/vectordb/...。token 为 API Key。缺失=不做向量、只写摘要/标签。密钥只在本地、勿入库。",
+  "zilliz": { "endpoint": "", "token": "", "collection": "wb_info" }
 }
