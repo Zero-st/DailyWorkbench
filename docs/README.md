@@ -74,12 +74,12 @@ docs/
 
 | 文档 | 目录 | 是什么 |
 |---|---|---|
-| [TECH_CHARTER.md](TECH_CHARTER.md) | 根 | 技术宪章：北极星（零构建·零依赖·离线）与选型原则 |
+| [TECH_CHARTER.md](TECH_CHARTER.md) | 根 | 技术宪章：北极星（零构建·依赖极简可撤回·本地起服务即可跑，ADR 0010 修订）与选型原则 |
 | [版本管理规范.md](版本管理规范.md) | 根 | 版本 / commit / 「what 与思路落在哪」约定 |
 | [开发心法-多维思维总纲.md](principles/开发心法-多维思维总纲.md) | principles | 宪章之上的心法：四顶帽子（产品/设计/工程/决策）× 何时戴 + 产品帽判据 |
 | [AI时代程序员成长-心法.md](principles/AI时代程序员成长-心法.md) | principles | 姊妹篇：AI 替你写代码之后人该长哪些肌肉——定价表 / 四杠杆 / 五转变 / AI 放大的坑 / 练习节律 |
 | [产品思维-心法.md](principles/产品思维-心法.md) | principles | 第三姊妹：产品判断力怎么练——五根判断轴 + 平台采矿手册（GitHub/X/中文博主/小红书）+ 真实案例卡（均可核实） |
-| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 · 0008 MCP 集成层工具化（in-repo，不进运行时） · 0009 页面驱动 agent（subprocess `claude -p` + SSE 流式，只读白名单 + 人工写闸） |
+| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 · 0008 MCP 集成层工具化（in-repo，不进运行时） · 0009 页面驱动 agent（subprocess `claude -p` + SSE 流式，只读白名单 + 人工写闸） · 0010 松绑「零依赖」为「依赖极简且可撤回」（修订 0001；构建步骤仍是单向门） |
 | [知识飞轮-路线图.md](planning/知识飞轮-路线图.md) | planning | 三层大脑模型 + 四阶段路线图（方向盘） |
 | [项目总览-需求与进度.md](planning/项目总览-需求与进度.md) | planning | 一页总账：需求 / 已完成 / 待优化 / 待完成 |
 | [复盘-MVP闭环首跑.md](planning/复盘-MVP闭环首跑.md) | planning | 蒸馏库 0→1 首张真实经验卡的里程碑复盘 |
