@@ -19,6 +19,9 @@ var AI_PROVIDERS = {
 var aiProv = localStorage.getItem("wb_ai_prov") === "glm" ? "glm" : "agnes";
 var aiMsgs = [];   // 会话内消息历史
 var aiBusy = false;
+// 话题隔离续接（仅 agent 模式）：本话题上一轮后端 claude 的 session_id，纯内存不持久化。
+// 输入框追问带它 → 后端 --resume 续接（原文/上文都在）；讲讲/提炼/清空/新话题 → 清零开新会话。
+var _dockSessionId = "";
 // 「带工具」agent 模式：走后端 /api/agent（claude 无头·可查库/抓网页·只读）；关则走现成 /api/chat 直连。
 function aiAgentMode() { try { return localStorage.getItem("wb_ai_agent_mode") === "1"; } catch (e) { return false; } }
 function aiSetMode(on) {
@@ -89,6 +92,7 @@ function renderAI(d) {
       '<button class="chip' + (agentMode ? "" : " on") + '" onclick="aiSetMode(0)">普通</button>' +
       '<button class="chip' + (agentMode ? " on" : "") + '" onclick="aiSetMode(1)">' + ic("tool") + ' 带工具</button>' +
     '</span>' +
+    (agentMode ? '<button class="btn-sm" onclick="dockNewTopic()" title="断开与上文的续接，接下来的提问从零开始（保留上面的记录）">' + ic("zap") + ' 新话题</button>' : "") +
     '<button class="btn-sm" onclick="aiClear()">清空对话</button>' +
     (agentMode
       ? '<span class="ai-guide" style="color:var(--sub);background:var(--panel-2);border-color:var(--line)">' + ic("zap") + ' 带工具：经后端 claude 跑，可查知识库 / 抓网页，只读不写库</span>'
@@ -145,6 +149,9 @@ function aiAsk(text, autoSend) {
 // agent=true 时走后端 claude（可 WebFetch/查库、无需用户 API Key），讲讲的深挖抓原文靠它。
 function dockAsk(prompt, opts) {
   opts = opts || {};
+  // 话题边界：按钮入口（讲讲/提炼/存库）默认开新会话，绝不带上一篇文章/上一话题的问答。
+  // 首轮带链接重抓原文；后续输入框追问才续接。opts.keepSession 可让某入口改为「接着聊」。
+  if (!opts.keepSession) _dockSessionId = "";
   if (typeof window.dockOpen === "function") window.dockOpen();
   if (opts.agent) aiSetMode(1);   // 带工具（会重渲染 #col-ai，chip 同步）
   var box = document.getElementById("aiBox");
@@ -196,10 +203,23 @@ function copyText(t) {
 function aiClear() {
   WB.dialog.confirm("清空当前对话？记忆库和长期记忆不受影响。", function () {
     aiMsgs = [];
+    _dockSessionId = "";   // 清空 = 开新会话，语义一致
     try { localStorage.removeItem(AI_HIST_KEY); } catch (e) {}
     var chat = document.getElementById("aiChat");
     if (chat) chat.innerHTML = '<div class="empty">对话已清空。输入问题，AI 会用大白话回答…</div>';
   });
+}
+// 「新话题」：断开续接（清 session_id）但保留可见历史。用于连续手打不相关问题时防串。
+function dockNewTopic() {
+  _dockSessionId = "";
+  var chat = document.getElementById("aiChat");
+  if (chat && !chat.querySelector(".empty")) {
+    var d = document.createElement("div");
+    d.className = "ai-topic-sep";
+    d.textContent = "— 新话题 —";
+    chat.appendChild(d);
+    chat.scrollTop = chat.scrollHeight;
+  }
 }
 // ---------- 知识库 @提及注入（输入 @笔记标题 引用笔记正文作上下文） ----------
 var __kbMentions = [];      // [{name, rel}]
@@ -428,7 +448,13 @@ function _aiAgentSend(q) {
     aiBusy = false;
     if (chat) chat.scrollTop = chat.scrollHeight;
   }
-  agentStream({ task: "chat", payload: { prompt: q } }, {
+  agentStream({ task: "chat", payload: { prompt: q, session_id: _dockSessionId || undefined } }, {
+    onMeta: function (ev) {
+      // init 带回本会话 session_id → 记住，供本话题下一轮 --resume 续接。
+      if (ev && ev.session_id) _dockSessionId = ev.session_id;
+      // 续接失败（会话过期/缺失）→ 后端已降级开新会话，旧 id 作废等新 init 覆盖。
+      if (ev && ev.phase === "resume_failed") _dockSessionId = "";
+    },
     onTool: function (ev) {
       var s = document.createElement("span");
       s.className = "agent-step done";
@@ -442,7 +468,7 @@ function _aiAgentSend(q) {
       bodyEl.textContent = acc;
       if (chat) chat.scrollTop = chat.scrollHeight;
     },
-    onResult: function (ev) { finish(acc || ev.text || ""); },
+    onResult: function (ev) { if (ev && ev.session_id) _dockSessionId = ev.session_id; finish(acc || ev.text || ""); },
     onError: function (ev) {
       if (runPill && runPill.parentNode) runPill.remove();
       if (!steps.children.length) steps.style.display = "none";
@@ -476,7 +502,7 @@ function aiMemoryClear() {
     if (getData()) renderAI(getData());
   });
 }
-window.aiSaveKey = aiSaveKey; window.aiSend = aiSend; window.aiSetProv = aiSetProv; window.aiAsk = aiAsk; window.dockAsk = dockAsk; window.aiClear = aiClear; window.aiMemoryAdd = aiMemoryAdd; window.aiMemoryDel = aiMemoryDel; window.aiMemoryClear = aiMemoryClear; window.aiSetMode = aiSetMode;
+window.aiSaveKey = aiSaveKey; window.aiSend = aiSend; window.aiSetProv = aiSetProv; window.aiAsk = aiAsk; window.dockAsk = dockAsk; window.aiClear = aiClear; window.dockNewTopic = dockNewTopic; window.aiMemoryAdd = aiMemoryAdd; window.aiMemoryDel = aiMemoryDel; window.aiMemoryClear = aiMemoryClear; window.aiSetMode = aiSetMode;
 // 经典脚本桥接：model-manager.js 改模型配置后 `renderAI(window.__data)` 刷新 AI 视图需此。
 window.renderAI = renderAI;
 

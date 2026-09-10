@@ -615,6 +615,7 @@ body.light #todoInput { background: var(--input-bg); color: var(--ink); }
 .ai-msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:var(--text-sm);line-height:1.6;white-space:pre-wrap;word-break:break-word;animation:fadeIn .25s ease both}
 .ai-msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#fff;border-bottom-right-radius:5px;box-shadow:var(--sh-btn)}
 .ai-msg.bot{align-self:flex-start;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:5px}
+.ai-topic-sep{align-self:center;font-size:11px;color:var(--sub);letter-spacing:.08em;margin:6px 0;opacity:.75}
 .ai-input{display:flex;gap:8px;align-items:flex-end}
 .ai-input textarea{flex:1;background:var(--input-bg);border:1px solid var(--accent);color:var(--ink);border-radius:12px;padding:11px;font-size:var(--text-sm);resize:vertical;line-height:1.5}
 .ai-mem{margin:0 0 10px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:9px 11px}

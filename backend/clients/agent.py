@@ -24,6 +24,7 @@
 """
 import json
 import os
+import re
 import subprocess
 import threading
 
@@ -41,6 +42,10 @@ READ_ONLY_TOOLS = [
 
 # 后端墙钟兜底（秒）：CLI 无 --timeout，超时直接杀子进程，防单发跑飞占住连接。
 _WALL_CLOCK_TIMEOUT = 180
+
+# session_id 形态门：只放行 UUID 样式（36 位 hex+连字符）。前端传来的值若以 '--' 开头，
+# 会被 claude 当成参数——argv 传递虽非 shell，仍须挡住 flag 形态，故白名单式校验。
+_SESSION_ID_RE = re.compile(r"^[0-9a-fA-F-]{36}$")
 
 
 def _mcp_config_json():
@@ -84,6 +89,7 @@ def _map_event(ev):
             "type": "meta", "phase": "init",
             "model": ev.get("model"),
             "mcp": ev.get("mcp_servers"),
+            "session_id": ev.get("session_id"),  # 前端据此续接（--resume）本话题的下一轮
         }]
     if t == "stream_event":
         e = ev.get("event") or {}
@@ -107,35 +113,32 @@ def _map_event(ev):
             "cost_usd": ev.get("total_cost_usd"),
             "stop": ev.get("stop_reason") or ev.get("terminal_reason"),
             "denials": ev.get("permission_denials") or [],
+            "session_id": ev.get("session_id"),  # 兜底：init 若漏，从终答再取一次
         }]
     return []
 
 
-def stream(task, payload):
-    """生成器：拉起 claude -p，逐行解析 stream-json，yield 精简事件 dict。
+def _valid_session_id(v):
+    """只放行 UUID 样式的 session_id，其余（含 None/空/`--flag` 形态）一律回空串 = 开新会话。"""
+    v = (v or "").strip()
+    return v if _SESSION_ID_RE.match(v) else ""
 
-    未配置 claude → 只 yield 一条 error(configured=False) 后返回（优雅劣化）。
-    finally 里 cancel 看门狗 + kill 子进程 + wait，确保客户端断连（生成器被 close）时不留孤儿进程。
+
+def _build_argv(cmd, prompt, session_id):
+    """组 claude -p 的 argv。
+
+    安全边界（纵深；每一层都经真机验证，见 ADR 0009 / 模块 docstring）：
+      --restricted        移除 Bash/PowerShell/REPL 等跑代码工具，且**无视 user/project/local 设置**
+                          （这台机 ambient 已放行 Bash，只有 restricted 能压住；WebFetch 须 --tools 点名才留）
+      --tools             收窄「可用工具集」= 只读 kb + WebFetch
+      --allowedTools      预批这些工具，免被 --permission-prompts none 误拦
+      --permission-prompts none  任何还会弹窗的动作一律自动拒（dontAsk 反而是「别问·放行」，切勿用）
+      --strict-mcp-config 只挂 --mcp-config 里的 dailyworkbench，且该 server 以 --read-only 拉起（无 kb_save）
+
+    这套安全 argv **每次都重传**——`--resume` 不恢复原会话的权限模式（以本次 -p 传入为准），
+    故续接旧会话**不会**放宽只读白名单（话题隔离续接的安全前提，见 ADR 0009 续接一节）。
     """
-    cmd = wb_config.claude_cmd()
-    if not cmd:
-        yield {"type": "error", "configured": False,
-               "error": "claude 未配置：在 workbench.local.json 设 claudeCmd，或把 claude 加到 PATH"}
-        return
-
-    prompt = _build_prompt(task, payload)
-    if not prompt:
-        yield {"type": "error", "error": "空 prompt（缺 payload.prompt 或 payload.url）"}
-        return
-
     tools_csv = ",".join(READ_ONLY_TOOLS)
-    # 安全边界（纵深；每一层都经真机验证，见 ADR 0009 / 模块 docstring）：
-    #   --restricted        移除 Bash/PowerShell/REPL 等跑代码工具，且**无视 user/project/local 设置**
-    #                       （这台机 ambient 已放行 Bash，只有 restricted 能压住；WebFetch 须 --tools 点名才留）
-    #   --tools             收窄「可用工具集」= 只读 kb + WebFetch
-    #   --allowedTools      预批这些工具，免被 --permission-prompts none 误拦
-    #   --permission-prompts none  任何还会弹窗的动作一律自动拒（dontAsk 反而是「别问·放行」，切勿用）
-    #   --strict-mcp-config 只挂 --mcp-config 里的 dailyworkbench，且该 server 以 --read-only 拉起（无 kb_save）
     argv = [
         *cmd, "-p", prompt,
         "--output-format", "stream-json", "--verbose", "--include-partial-messages",
@@ -146,13 +149,19 @@ def stream(task, payload):
         "--strict-mcp-config", "--mcp-config", _mcp_config_json(),
         "--max-budget-usd", str(wb_config.agent_budget_usd()),
     ]
+    if session_id:
+        argv += ["--resume", session_id]  # 话题隔离续接：带上本话题上一轮的 session_id
     model = wb_config.agent_model()
     if model:
         argv += ["--model", model]
+    return argv
 
-    env = dict(os.environ)
-    env["PYTHONIOENCODING"] = "utf-8"
 
+def _run_once(argv, env, state):
+    """拉起一次 claude -p，逐行解析 stream-json，yield 精简事件；退出码写回 state['rc']。
+
+    finally 里 cancel 看门狗 + kill 子进程 + wait，确保客户端断连（生成器被 close）时不留孤儿进程。
+    """
     try:
         proc = subprocess.Popen(
             argv, cwd=ROOT, env=env, text=True, bufsize=1,
@@ -161,12 +170,12 @@ def stream(task, payload):
         )
     except Exception as e:  # noqa: BLE001 —— 启动失败也要优雅告知页面，不让 handler 崩
         yield {"type": "error", "error": "启动 claude 失败：%s" % e}
+        state["rc"] = -1
         return
 
     watchdog = threading.Timer(_WALL_CLOCK_TIMEOUT, proc.kill)
     watchdog.daemon = True
     watchdog.start()
-    yield {"type": "meta", "phase": "started"}
     try:
         for line in proc.stdout:
             line = line.strip()
@@ -188,3 +197,51 @@ def stream(task, payload):
             proc.wait(timeout=5)
         except Exception:
             pass
+        state["rc"] = proc.returncode
+
+
+def stream(task, payload):
+    """生成器：拉起 claude -p，逐行解析 stream-json，yield 精简事件 dict。
+
+    话题隔离续接：payload 带合法 session_id → 以 `--resume` 续接本话题上一轮（原文全文/上文都在
+    服务端会话里，追问不重抓）；不带 → 全新会话。会话过期/文件缺失导致续接失败时，降级去掉
+    --resume 重跑一次 = 开新会话，新 session_id 经 init 事件回给前端刷新（见 ADR 0009）。
+
+    未配置 claude → 只 yield 一条 error(configured=False) 后返回（优雅劣化）。
+    """
+    cmd = wb_config.claude_cmd()
+    if not cmd:
+        yield {"type": "error", "configured": False,
+               "error": "claude 未配置：在 workbench.local.json 设 claudeCmd，或把 claude 加到 PATH"}
+        return
+
+    prompt = _build_prompt(task, payload)
+    if not prompt:
+        yield {"type": "error", "error": "空 prompt（缺 payload.prompt 或 payload.url）"}
+        return
+
+    env = dict(os.environ)
+    env["PYTHONIOENCODING"] = "utf-8"
+
+    session_id = _valid_session_id(payload.get("session_id"))
+    # 带 --resume 先跑；续接失败（用了 resume、没产出任何正文、非零退出，多因会话过期/缺失）→
+    # 落到下一次（无 resume）重跑 = 开新会话。无 session_id 时只跑一次全新会话。
+    attempts = [session_id, None] if session_id else [None]
+
+    yield {"type": "meta", "phase": "started"}
+    for i, sid in enumerate(attempts):
+        state = {"rc": None}
+        saw_content = False
+        inner = _run_once(_build_argv(cmd, prompt, sid), env, state)
+        try:
+            for out in inner:
+                if out.get("type") in ("text", "result", "tool"):
+                    saw_content = True
+                yield out
+        finally:
+            inner.close()  # 客户端断连时显式关内层生成器 → 触发其 finally 杀子进程防孤儿
+        resume_failed = bool(sid) and not saw_content and state["rc"] not in (0, None)
+        if resume_failed and i + 1 < len(attempts):
+            yield {"type": "meta", "phase": "resume_failed"}  # 前端可据此清掉旧 session_id
+            continue
+        break

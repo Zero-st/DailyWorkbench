@@ -52,3 +52,20 @@ Phase 1（ADR 0008）把知识库能力工具化成 MCP，但**入口只在终�
 - **上常驻服务 / 多端**：stdio 无碍（subprocess 每次拉起），但需评估并发、鉴权、成本配额。
 - **Phase 3 · `distill` skill**：把六维 craft（现在 `js/core/distill-template.js`）收成 CC skill，页面与 agent 共用同一真源，避免 JS/Python 双份。
 - **回退**：删 `/api/agent` handler + `backend/clients/agent.py` + `js/core/agent-stream.js` + 两处入口按钮即断；`backend/mcp/server.py` 的 `--read-only` 开关对 Phase 1 无副作用（终端注册那路不带此标志，`kb_save` 照常）。
+
+## 补遗（2026-09-10）· 跨轮 `--resume`：话题隔离续接
+
+**问题**：agent 模式每轮都是全新 `claude -p` 子进程（用完即杀、argv 无续接标志），前端又只发当前输入框那一句 → 双重失忆。表现为 AI 副驾「讲讲」后**追问丢原文**：首轮 WebFetch 抓到的整篇原文只活在那个已死进程里，追问拿不到，无法继续分析总结。
+
+**决策**：跨轮用官方 `claude -p --resume <session_id>` 续接（**仍是一次性子进程，不养常驻进程**——常驻进程 + stdin 流官方无成文支持；Agent SDK 要 pip 撞零依赖红线）。claude 从 `~/.claude/projects/<cwd>/<id>.jsonl` 读回会话，**上一轮抓的原文全文/上文留在服务端会话里，追问不重抓**。session_id 从 `stream-json` 的 `system/init`（及 `result`）事件取，经 SSE 回前端。
+
+**话题隔离（核心约束，防「串味」与上下文膨胀）**：若把整个 dock 生命周期串成一个会话 → 上下文无限累积（涨 token、易幻觉），且不同问题会吃到无关旧问答。故给记忆划**话题边界**——记忆只在同一话题内有效：
+- **按钮入口（讲讲/提炼/存库，`dockAsk`）= 开新会话**（清 `_dockSessionId`，首轮带链接重抓）；
+- **输入框手打追问 = `--resume` 续接当前话题**；
+- **「清空对话」/ 新增「新话题」按钮 = 清零**（`_dockSessionId` 纯内存不持久化，刷新即自然新话题）。
+
+**安全边界不破**：`--resume` **不恢复**原会话权限模式（以本次 `-p` 传入为准）。故安全 argv（`--restricted --tools --allowedTools --permission-prompts none --strict-mcp-config`）**每轮照旧重传**，续接旧会话不会放宽只读白名单。`session_id` 经 UUID 正则（`^[0-9a-fA-F-]{36}$`）白名单校验后才入 argv，挡住 `--flag` 形态的参数注入。
+
+**兜底**：会话过期（默认 30 天）/文件缺失 → `--resume` 失败（非零退出且无正文）时**降级去掉 `--resume` 重跑一次** = 开新会话，新 `session_id` 经 init 回前端刷新。话题隔离下会话寿命短，此兜底主要防边缘。
+
+**代价**：同一话题内多轮仍会随轮次累积（但有话题边界兜住，不会跨话题滚雪球）；`session_id` 由 claude 生成、CLI 版本敏感（`--resume` 语义已对本机 claude 核实）。落地：`backend/clients/agent.py`（`_build_argv`/`_run_once`/`stream` 两段式 resume + 降级、`_map_event` 透出 `session_id`）、`js/views/ai.js`（`dockAsk` 重置、`_aiAgentSend` 发/收 `session_id`、`aiClear`/`dockNewTopic`）。
