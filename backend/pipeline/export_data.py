@@ -24,6 +24,7 @@ from backend.core import config as wb_config
 from backend.utils import common as wb_common
 from backend.core.paths import (
     DATA_JSON, AI_DAILY_JSON, DAILY_NEWS_JSON, HACKER_NEWS_JSON, GITHUB_TRENDING_JSON,
+    PRODUCTHUNT_JSON, SSPAI_JSON,
 )
 
 WB = os.path.expanduser(r"~\.workbuddy")
@@ -533,6 +534,66 @@ def get_github_trending():
     return d
 
 
+def get_producthunt():
+    """读取 fetch_producthunt.py 抓好的 producthunt.json；把历史累积进 history。
+
+    与 get_github_trending 同机制：从上一次 data.json 恢复 history，upsert 当天，留最近 14 天，
+    随 data.json 经 sync.py 推送天然持久化。**抓取失败时 producthunt.json 保持旧值/缺失**，
+    该源静默沿用上一次（或空壳），不抛异常、不影响其余聚合（路 A · stdlib RSS，无 Node 依赖）。
+    """
+    p = PRODUCTHUNT_JSON
+    try:
+        d = json.load(open(p, encoding="utf-8"))
+    except Exception:
+        d = {"date": "", "fetchedAt": "", "count": 0, "items": [],
+             "source": "Product Hunt (Atom feed)", "canonical": "https://www.producthunt.com"}
+    hist = []
+    old = DATA_JSON
+    if os.path.isfile(old):
+        try:
+            hist = (json.load(open(old, encoding="utf-8")).get("productHunt") or {}).get("history", [])
+        except Exception:
+            hist = []
+    if d.get("date"):
+        hist = [h for h in hist if h.get("date") != d["date"]]
+        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
+                     "count": d.get("count"), "items": d.get("items"),
+                     "source": d.get("source", ""), "canonical": d.get("canonical", "")})
+        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
+        hist = hist[:14]
+    d["history"] = hist
+    return d
+
+
+def get_sspai():
+    """读取 fetch_sspai.py 抓好的 sspai.json；把历史累积进 history。
+
+    与 get_producthunt 同机制（路 A · stdlib RSS，无 Node 依赖），优雅劣化同上。
+    """
+    p = SSPAI_JSON
+    try:
+        d = json.load(open(p, encoding="utf-8"))
+    except Exception:
+        d = {"date": "", "fetchedAt": "", "count": 0, "items": [],
+             "source": "少数派 (sspai.com RSS)", "canonical": "https://sspai.com"}
+    hist = []
+    old = DATA_JSON
+    if os.path.isfile(old):
+        try:
+            hist = (json.load(open(old, encoding="utf-8")).get("sspai") or {}).get("history", [])
+        except Exception:
+            hist = []
+    if d.get("date"):
+        hist = [h for h in hist if h.get("date") != d["date"]]
+        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
+                     "count": d.get("count"), "items": d.get("items"),
+                     "source": d.get("source", ""), "canonical": d.get("canonical", "")})
+        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
+        hist = hist[:14]
+    d["history"] = hist
+    return d
+
+
 def main():
     sk = get_skills()
     autos = get_automations()
@@ -549,6 +610,8 @@ def main():
     dn = get_daily_news()
     hn = get_hacker_news()
     gt = get_github_trending()
+    ph = get_producthunt()
+    sp = get_sspai()
     now = datetime.now()
 
     # 技能使用统计：从会话标题反推每个 skill 的提及次数与最近使用日期
@@ -588,6 +651,10 @@ def main():
         guide.append("🟠 Hacker News 今日热帖已更新（%d 条），在「资讯」里看看" % hn["count"])
     if gt.get("count"):
         guide.append("🐙 GitHub Trending 今日热门已更新（%d 个仓库），在「资讯」里看看" % gt["count"])
+    if ph.get("count"):
+        guide.append("🚀 Product Hunt 每日新品已更新（%d 个），去「资讯」拆一个练产品感" % ph["count"])
+    if sp.get("count"):
+        guide.append("📓 少数派上新（%d 篇），在「资讯」里挑一篇产品体验文读读" % sp["count"])
     if autos:
         a = autos[0]
         if a["next"]:
@@ -635,6 +702,8 @@ def main():
         "dailyNews": dn,
         "hackerNews": hn,
         "githubTrending": gt,
+        "productHunt": ph,
+        "sspai": sp,
     }
     wb_common.write_json_atomic(OUT, data)  # 原子替换，前端轮询不会读到半写文件
     print("✅ 已生成 data.json")
@@ -649,6 +718,8 @@ def main():
     print("   MCP    : %s" % mc)
     print("   AI日报 : %s · %d 条" % (aid.get("date") or "无", aid.get("count") or 0))
     print("   每日新闻: %s · %d 条" % (dn.get("date") or "无", dn.get("count") or 0))
+    print("   ProductHunt: %s · %d 条" % (ph.get("date") or "无", ph.get("count") or 0))
+    print("   少数派 : %s · %d 条" % (sp.get("date") or "无", sp.get("count") or 0))
     print("   输出   : %s" % OUT)
 
 

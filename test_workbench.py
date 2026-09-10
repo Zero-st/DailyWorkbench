@@ -522,3 +522,117 @@ def test_get_github_trending_missing_file_is_safe(tmp_path, monkeypatch):
     monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
     out = export_data.get_github_trending()
     assert out["count"] == 0 and out["items"] == [] and out["history"] == []
+
+
+# ---------- RSS/Atom 资讯源（路 A · stdlib，Product Hunt + 少数派）----------
+from backend.pipeline import fetch_producthunt  # noqa: E402
+from backend.pipeline import fetch_sspai  # noqa: E402
+
+_ATOM_SAMPLE = """<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Product Hunt</title>
+  <entry>
+    <title>Diiverge</title>
+    <link rel="alternate" type="text/html" href="https://www.producthunt.com/products/diiverge"/>
+    <content type="html">&lt;p&gt;Turn any picture into a playable AI adventure&lt;/p&gt;&lt;p&gt;&lt;a href="x"&gt;Discussion&lt;/a&gt; | &lt;a href="y"&gt;Link&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>NoLink Product</title>
+    <content type="html">&lt;p&gt;just a tagline&lt;/p&gt;</content>
+  </entry>
+</feed>"""
+
+_RSS_SAMPLE = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>少数派</title><link>https://sspai.com</link>
+<item><title>派早报：某某发布</title><link>https://sspai.com/post/1</link>
+<description>摘要正文。&lt;a href="https://sspai.com/post/1"&gt;查看全文&lt;/a&gt;</description></item>
+<item><title>一图流</title><link>https://sspai.com/post/2</link><description>看点回顾</description></item>
+</channel></rss>"""
+
+
+def test_parse_feed_atom_maps_title_altlink_and_strips_html():
+    rows = wb_common.parse_feed(_ATOM_SAMPLE, limit=20)
+    assert len(rows) == 2
+    r0 = rows[0]
+    assert r0["title"] == "Diiverge"
+    assert r0["url"] == "https://www.producthunt.com/products/diiverge"  # rel=alternate href
+    assert r0["summary"] == "Turn any picture into a playable AI adventure"  # 标签/Discussion|Link 已剥
+    assert "Discussion" not in r0["summary"] and "<" not in r0["summary"]
+
+
+def test_parse_feed_rss_maps_title_link_and_strips_readmore():
+    rows = wb_common.parse_feed(_RSS_SAMPLE, limit=20)
+    assert len(rows) == 2
+    r0 = rows[0]
+    assert r0["title"] == "派早报：某某发布"
+    assert r0["url"] == "https://sspai.com/post/1"  # RSS <link> 文本
+    assert r0["summary"] == "摘要正文。"  # "查看全文" 与 <a> 已剥
+    assert "查看全文" not in r0["summary"]
+
+
+def test_parse_feed_bad_xml_is_safe():
+    assert wb_common.parse_feed("not xml at all") == []
+    assert wb_common.parse_feed("") == []
+
+
+def test_producthunt_build_maps_to_unified_items(monkeypatch):
+    monkeypatch.setattr(fetch_producthunt.wb_common, "http_get_text", lambda *a, **k: _ATOM_SAMPLE)
+    out = fetch_producthunt.build()
+    assert out["count"] == 2
+    assert out["source"].startswith("Product Hunt")
+    it0 = out["items"][0]
+    assert it0["title"] == "Diiverge" and it0["source"] == "Product Hunt"
+    assert it0["url"].endswith("/diiverge")
+
+
+def test_producthunt_build_raises_when_empty(monkeypatch):
+    monkeypatch.setattr(fetch_producthunt.wb_common, "http_get_text", lambda *a, **k: "<feed></feed>")
+    with pytest.raises(Exception):
+        fetch_producthunt.build()
+
+
+def test_sspai_build_maps_to_unified_items(monkeypatch):
+    monkeypatch.setattr(fetch_sspai.wb_common, "http_get_text", lambda *a, **k: _RSS_SAMPLE)
+    out = fetch_sspai.build()
+    assert out["count"] == 2
+    assert out["source"].startswith("少数派")
+    assert out["items"][0]["source"] == "少数派"
+    assert out["items"][0]["url"] == "https://sspai.com/post/1"
+
+
+def test_get_producthunt_accumulates_history(tmp_path, monkeypatch):
+    ph = tmp_path / "producthunt.json"
+    data = tmp_path / "data.json"
+    data.write_text(json.dumps({"productHunt": {"history": [
+        {"date": "2026-09-09", "count": 1, "items": [{"title": "old"}]},
+    ]}}), encoding="utf-8")
+    ph.write_text(json.dumps({
+        "date": "2026-09-10", "fetchedAt": "2026-09-10 10:00", "count": 1,
+        "items": [{"title": "new", "url": "u", "source": "Product Hunt"}],
+        "source": "Product Hunt (Atom feed)", "canonical": "https://www.producthunt.com",
+    }), encoding="utf-8")
+    monkeypatch.setattr(export_data, "PRODUCTHUNT_JSON", str(ph))
+    monkeypatch.setattr(export_data, "DATA_JSON", str(data))
+    out = export_data.get_producthunt()
+    assert [h["date"] for h in out["history"]] == ["2026-09-10", "2026-09-09"]
+    assert out["count"] == 1 and out["items"][0]["title"] == "new"
+
+
+def test_get_producthunt_missing_file_is_safe(tmp_path, monkeypatch):
+    monkeypatch.setattr(export_data, "PRODUCTHUNT_JSON", str(tmp_path / "nope.json"))
+    monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
+    out = export_data.get_producthunt()
+    assert out["count"] == 0 and out["items"] == [] and out["history"] == []
+
+
+def test_get_sspai_missing_file_is_safe(tmp_path, monkeypatch):
+    monkeypatch.setattr(export_data, "SSPAI_JSON", str(tmp_path / "nope.json"))
+    monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
+    out = export_data.get_sspai()
+    assert out["count"] == 0 and out["items"] == [] and out["history"] == []
+
+
+def test_kb_module_whitelist_includes_teardown():
+    # 产品拆解沉淀线：module 与 source 均已进白名单（否则 kb.save 报错）
+    assert "产品拆解" in kb_service.MODULES
+    assert "teardown" in kb_service.SOURCES

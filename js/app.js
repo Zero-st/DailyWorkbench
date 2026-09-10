@@ -177,6 +177,12 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     d.githubTrending = d.githubTrending || {};
     d.githubTrending.items = Array.isArray(d.githubTrending.items) ? d.githubTrending.items : [];
     d.githubTrending.history = Array.isArray(d.githubTrending.history) ? d.githubTrending.history : [];
+    d.productHunt = d.productHunt || {};
+    d.productHunt.items = Array.isArray(d.productHunt.items) ? d.productHunt.items : [];
+    d.productHunt.history = Array.isArray(d.productHunt.history) ? d.productHunt.history : [];
+    d.sspai = d.sspai || {};
+    d.sspai.items = Array.isArray(d.sspai.items) ? d.sspai.items : [];
+    d.sspai.history = Array.isArray(d.sspai.history) ? d.sspai.history : [];
     d.weekly = Array.isArray(d.weekly) ? d.weekly : [];
     d.guide = Array.isArray(d.guide) ? d.guide : [];
     d.quickActions = Array.isArray(d.quickActions) ? d.quickActions : [];

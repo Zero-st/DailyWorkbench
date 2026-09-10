@@ -8,12 +8,15 @@
 语义不同（后者处理列表/引号/正文），强合并会引入错误抽象，得不偿失。
 """
 import base64
+import html
 import json
 import os
+import re
 import ssl
 import sys
 import urllib.request
 import urllib.error
+import xml.etree.ElementTree as ET
 
 # 抓公开资讯用的浏览器 UA（默认 python/curl UA 会被部分站点 403）
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -35,6 +38,89 @@ def http_get_json(url, timeout=25, ua=UA):
         ctx = ssl._create_unverified_context()
         with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
             return json.loads(r.read().decode("utf-8"))
+
+
+def http_get_text(url, timeout=25, ua=UA):
+    """GET 文本（HTML/XML/RSS/Atom）；带浏览器 UA；证书链异常时降级为不校验重试。
+
+    与 http_get_json 同款降级策略（公开只读资讯），供 RSS/Atom 资讯源抓取器共用。
+    """
+    req = urllib.request.Request(url, headers={"User-Agent": ua, "Accept": "*/*"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout, context=ssl.create_default_context()) as r:
+            return r.read().decode("utf-8", "replace")
+    except Exception:
+        ctx = ssl._create_unverified_context()
+        with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
+            return r.read().decode("utf-8", "replace")
+
+
+def _clean_summary(raw, maxlen=200):
+    """把 RSS description / Atom content 里的 HTML 摘要清成纯文本一行。
+
+    去 script/style、去标签、解实体、压空白，并剥掉 RSS/Atom 常见的尾部导流词
+    （"查看全文" / Product Hunt 的 "Discussion | Link"），最后截断。
+    """
+    s = raw or ""
+    s = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", s)
+    s = re.sub(r"(?s)<[^>]+>", " ", s)
+    s = html.unescape(s)
+    s = re.sub(r"\s+", " ", s).strip()  # 先压空白，导流词才能被下面按整串匹配剥掉
+    for junk in ("Discussion | Link", "Discussion |", "| Link", "查看全文"):
+        s = s.replace(junk, " ")
+    s = re.sub(r"\s+", " ", s).strip()
+    return s[:maxlen]
+
+
+def parse_feed(xml_text, limit=20):
+    """解析 RSS 2.0 或 Atom feed，返回统一 item 列表 [{title, summary, url}]。
+
+    命名空间无关（按 local-name 匹配），两种格式通吃：
+      - RSS : channel/item(title / link 文本 / description)
+      - Atom: feed/entry(title / link[rel=alternate]@href / content|summary)
+    单条缺 title 则跳过；整体解析失败（非 XML/空）返回 []，供抓取器优雅劣化。
+    """
+    if not xml_text:
+        return []
+    try:
+        root = ET.fromstring(xml_text)
+    except Exception:
+        return []
+
+    def local(el):
+        return el.tag.rsplit("}", 1)[-1].lower()
+
+    out = []
+    for it in root.iter():
+        if local(it) not in ("item", "entry"):
+            continue
+        title = ""
+        url = ""
+        summary = ""
+        alt = ""
+        first_href = ""
+        for ch in it:
+            name = local(ch)
+            if name == "title" and not title:
+                title = (ch.text or "").strip()
+            elif name == "link":
+                href = ch.get("href")
+                if href:  # Atom: <link href rel>
+                    if (ch.get("rel") or "alternate") == "alternate" and not alt:
+                        alt = href
+                    if not first_href:
+                        first_href = href
+                elif ch.text and not url:  # RSS: <link>text</link>
+                    url = ch.text.strip()
+            elif name in ("description", "summary", "content") and not summary:
+                summary = _clean_summary(ch.text or "")
+        if not url:
+            url = alt or first_href
+        if title:
+            out.append({"title": title, "summary": summary, "url": url})
+        if len(out) >= limit:
+            break
+    return out
 
 
 def write_json_atomic(path, obj, indent=2):

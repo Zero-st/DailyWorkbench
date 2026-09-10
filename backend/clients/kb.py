@@ -17,8 +17,8 @@ from backend.core import config as wb_config
 
 VAULT, DEPOSIT = wb_config.kb()
 # 沉淀模块白名单（与工作台侧边栏一致，去空格）
-MODULES = ["今日", "资讯", "AI助手", "会话档案", "知识库", "蒸馏库", "收件箱"]
-SOURCES = ["review", "ai-daily", "news", "ai-chat", "session", "note", "distill"]
+MODULES = ["今日", "资讯", "AI助手", "会话档案", "知识库", "蒸馏库", "收件箱", "产品拆解"]
+SOURCES = ["review", "ai-daily", "news", "ai-chat", "session", "note", "distill", "teardown"]
 SKIP_DIRS = {".obsidian", ".git", ".claude", ".trash", ".cache", "node_modules"}
 
 _FM_RE = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)$", re.DOTALL)

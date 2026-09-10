@@ -27,6 +27,8 @@ STEPS = [
     ("每日新闻", "fetch_daily_news"),
     ("Hacker News", "fetch_hacker_news"),  # 经 OpenCLI 取数层；缺 node/opencli 自动跳过
     ("GitHub Trending", "fetch_github_trending"),  # 同上，OpenCLI 取数层
+    ("Product Hunt", "fetch_producthunt"),  # 路 A · stdlib Atom，抓取失败保留旧数据
+    ("少数派", "fetch_sspai"),  # 路 A · stdlib RSS，抓取失败保留旧数据
     ("数据聚合", "export_data"),
 ]
 

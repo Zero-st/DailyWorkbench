@@ -128,10 +128,13 @@ export function renderInfo(d) {
   renderDailyNews(d);
   renderHackerNews(d);
   renderGithubTrending(d);
+  renderProductHunt(d);
+  renderSspai(d);
   var dot = document.getElementById("infoDot");
   if (dot) {
     var n = ((d.aiDaily || {}).count || 0) + ((d.dailyNews || {}).count || 0) +
-      ((d.hackerNews || {}).count || 0) + ((d.githubTrending || {}).count || 0);
+      ((d.hackerNews || {}).count || 0) + ((d.githubTrending || {}).count || 0) +
+      ((d.productHunt || {}).count || 0) + ((d.sspai || {}).count || 0);
     dot.style.display = n > 0 ? "inline-block" : "none";
   }
 }
@@ -357,6 +360,114 @@ function renderGTBody(date) {
   box.innerHTML = html;
 }
 
+// ---------- Product Hunt 每日新品（stdlib Atom 取数，支持历史日期切换） ----------
+var PH_DATA = null;
+function renderProductHunt(d) {
+  PH_DATA = d;
+  var a = d.productHunt || {};
+  var box = document.getElementById("phBlock");
+  if (!box) return;
+  var hist = a.history || [];
+  var curDate = a.date || "";
+  var selHtml = "";
+  if (hist.length > 1) {
+    selHtml = '<div class="news-sel">历史新品：' +
+      '<select id="phSel" onchange="phDateChanged()">' +
+      hist.map(function (h) {
+        return '<option value="' + escAttr(h.date) + '"' + (h.date === curDate ? " selected" : "") + '>' +
+          esc(h.date) + ' (' + (h.count || 0) + ' 个)</option>';
+      }).join("") + '</select></div>';
+  }
+  box.innerHTML = sourceHead("ph", "Product Hunt 每日新品", a.count, "个", "trendingUp") +
+    nsBodyOpen("ph") + selHtml + '<div id="phBody"></div></div>';
+  renderPHBody(curDate);
+}
+function phDateChanged() {
+  var sel = document.getElementById("phSel");
+  if (sel) renderPHBody(sel.value);
+}
+function renderPHBody(date) {
+  var box = document.getElementById("phBody");
+  if (!box || !PH_DATA) return;
+  var a = PH_DATA.productHunt || {};
+  var day = (a.history || []).filter(function (h) { return h.date === date; })[0] || a;
+  var items = day.items || [];
+  if (!items.length) {
+    box.innerHTML = '<div class="card"><h2><span class="ic">' + ic("trendingUp") + '</span>Product Hunt 每日新品</h2>' +
+      '<div class="empty">还没有抓到 Product Hunt 数据。点「立即刷新」让本机抓一次（走公开 Atom feed，无需 Node/OpenCLI）。</div></div>';
+    return;
+  }
+  var html = '<div class="card news-head"><h2>' + esc(day.date || "") + ' Product Hunt 每日新品' +
+    '<span class="news-n">' + (day.count || 0) + ' 个</span></h2>' +
+    '<div class="news-meta">数据源 ' + esc(day.source || a.source || "Product Hunt") + ' · 抓取于 ' + esc(day.fetchedAt || "-") +
+    (day.canonical ? ' · <a href="' + escAttr(day.canonical) + '" target="_blank" rel="noopener">去 Product Hunt ↗</a>' : "") + "</div></div>";
+  html += '<div class="card"><h2><span class="ic">' + ic("trendingUp") + '</span>今日上新（挑一个拆产品感）</h2><div class="nw-grid">';
+  items.forEach(function (it, i) {
+    html += renderNewsItem(it, {
+      prefix: '<span style="color:var(--accent2);font-weight:600;margin-right:7px;flex:0 0 auto">' + (i + 1) + ".</span>",
+      defaultSrc: "Product Hunt",
+      showSummary: true,
+      ask: "用大白话讲讲这个新产品解决了谁的什么需求、亮点在哪、我能从它的设计里学到什么："
+    });
+  });
+  html += "</div></div>";
+  box.innerHTML = html;
+}
+
+// ---------- 少数派上新（stdlib RSS 取数，支持历史日期切换） ----------
+var SSPAI_DATA = null;
+function renderSspai(d) {
+  SSPAI_DATA = d;
+  var a = d.sspai || {};
+  var box = document.getElementById("sspaiBlock");
+  if (!box) return;
+  var hist = a.history || [];
+  var curDate = a.date || "";
+  var selHtml = "";
+  if (hist.length > 1) {
+    selHtml = '<div class="news-sel">历史上新：' +
+      '<select id="sspaiSel" onchange="sspaiDateChanged()">' +
+      hist.map(function (h) {
+        return '<option value="' + escAttr(h.date) + '"' + (h.date === curDate ? " selected" : "") + '>' +
+          esc(h.date) + ' (' + (h.count || 0) + ' 篇)</option>';
+      }).join("") + '</select></div>';
+  }
+  box.innerHTML = sourceHead("sspai", "少数派上新", a.count, "篇", "fileText") +
+    nsBodyOpen("sspai") + selHtml + '<div id="sspaiBody"></div></div>';
+  renderSspaiBody(curDate);
+}
+function sspaiDateChanged() {
+  var sel = document.getElementById("sspaiSel");
+  if (sel) renderSspaiBody(sel.value);
+}
+function renderSspaiBody(date) {
+  var box = document.getElementById("sspaiBody");
+  if (!box || !SSPAI_DATA) return;
+  var a = SSPAI_DATA.sspai || {};
+  var day = (a.history || []).filter(function (h) { return h.date === date; })[0] || a;
+  var items = day.items || [];
+  if (!items.length) {
+    box.innerHTML = '<div class="card"><h2><span class="ic">' + ic("fileText") + '</span>少数派上新</h2>' +
+      '<div class="empty">还没有抓到少数派数据。点「立即刷新」让本机抓一次（走公开 RSS，无需 Node/OpenCLI）。</div></div>';
+    return;
+  }
+  var html = '<div class="card news-head"><h2>' + esc(day.date || "") + ' 少数派上新' +
+    '<span class="news-n">' + (day.count || 0) + ' 篇</span></h2>' +
+    '<div class="news-meta">数据源 ' + esc(day.source || a.source || "少数派") + ' · 抓取于 ' + esc(day.fetchedAt || "-") +
+    (day.canonical ? ' · <a href="' + escAttr(day.canonical) + '" target="_blank" rel="noopener">去少数派 ↗</a>' : "") + "</div></div>";
+  html += '<div class="card"><h2><span class="ic">' + ic("fileText") + '</span>近期文章</h2><div class="nw-grid">';
+  items.forEach(function (it, i) {
+    html += renderNewsItem(it, {
+      prefix: '<span style="color:var(--accent2);font-weight:600;margin-right:7px;flex:0 0 auto">' + (i + 1) + ".</span>",
+      defaultSrc: "少数派",
+      showSummary: true,
+      ask: "用大白话讲讲这篇文章在说什么、对提升产品品味/效率有什么启发："
+    });
+  });
+  html += "</div></div>";
+  box.innerHTML = html;
+}
+
 // ---------- 「让 AI 讲讲」/顶部动作 → 右侧 AI 副驾 dock（取代原跳转到 AI 助手整页视图） ----------
 // 每卡讲讲：带全上下文 {标题+摘要+链接+来源}；有链接则让 agent 先 WebFetch 原文再讲（深挖）。
 function newsExplain(btn) {
@@ -410,3 +521,5 @@ window.newsDateChanged = newsDateChanged;
 window.dnewsDateChanged = dnewsDateChanged;
 window.hnewsDateChanged = hnewsDateChanged;
 window.gtDateChanged = gtDateChanged;
+window.phDateChanged = phDateChanged;
+window.sspaiDateChanged = sspaiDateChanged;
