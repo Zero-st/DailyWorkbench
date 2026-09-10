@@ -5,6 +5,7 @@
 3. **动前端必读**：`docs/design/界面设计准则.md` = 本仓的 DESIGN.md。
    - 新视觉语言 / 新组件类 / 新布局骨架 → **先按准则 §6.0 出一页 HTML 效果图过目，再写代码**；沿用现成类的小改不用。
    - 只用 token 变量，不硬编码颜色，不写裸像素；图标内联 SVG（准则 §4）。
-4. **改了 `css/ js/ index.html` 任何资产** → 跑 `python bump_version.py`（CI `--check` 会红）。
-5. **令牌门禁**：`python check_design_tokens.py`——引用未定义变量直接红；化石令牌只许降不许升。
-6. **心法**：`docs/principles/开发心法-多维思维总纲.md`——每一步只戴一顶帽子，想法阶段别跳到写代码。
+4. **开工业务功能**：`docs/guides/业务功能开工-图先行指南.md`——按不确定性分档，先思维导图捋业务 → 再流程图/时序图定实现思路 + 先定契约缝，再写码（软自检，小改免图）。收尾对接 `docs/guides/功能图解复盘-指南.md`。
+5. **改了 `css/ js/ index.html` 任何资产** → 跑 `python bump_version.py`（CI `--check` 会红）。
+6. **令牌门禁**：`python check_design_tokens.py`——引用未定义变量直接红；化石令牌只许降不许升。
+7. **心法**：`docs/principles/开发心法-多维思维总纲.md`——每一步只戴一顶帽子，想法阶段别跳到写代码。
