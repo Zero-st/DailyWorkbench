@@ -636,3 +636,64 @@ def test_kb_module_whitelist_includes_teardown():
     # 产品拆解沉淀线：module 与 source 均已进白名单（否则 kb.save 报错）
     assert "产品拆解" in kb_service.MODULES
     assert "teardown" in kb_service.SOURCES
+
+
+# ---------- X/推特取数引擎 grok.py 的纯解析（无 subprocess、无网络，见 ADR 0012） ----------
+from backend.clients import grok as grok_client
+
+
+def test_grok_extract_text_shapes():
+    # 直接文本字段
+    assert grok_client._extract_text({"type": "result", "result": "hi"}) == "hi"
+    assert grok_client._extract_text({"text": "world"}) == "world"
+    # assistant/message.content 块数组
+    ev = {"type": "assistant",
+          "message": {"content": [{"type": "text", "text": "a"}, {"type": "tool_use"}, {"type": "text", "text": "b"}]}}
+    assert grok_client._extract_text(ev) == "a\nb"
+    # 裸字符串 / 未知事件
+    assert grok_client._extract_text("raw line") == "raw line"
+    assert grok_client._extract_text({"type": "noise"}) == ""
+
+
+def test_grok_parse_posts_plain_array():
+    text = '[{"title":"t1","url":"https://x.com/a","summary":"s1"},{"title":"t2","url":"","summary":"s2"}]'
+    posts = grok_client._parse_posts(text, 20)
+    assert len(posts) == 2
+    assert posts[0] == {"title": "t1", "summary": "s1", "url": "https://x.com/a"}
+
+
+def test_grok_parse_posts_strips_fence_and_prose():
+    text = "好的，结果如下：\n```json\n[{\"title\":\"x\",\"url\":\"u\",\"summary\":\"y\"}]\n```\n完毕"
+    posts = grok_client._parse_posts(text, 20)
+    assert posts == [{"title": "x", "summary": "y", "url": "u"}]
+
+
+def test_grok_parse_posts_respects_limit_and_skips_empty():
+    text = '[{"title":"a"},{"title":"","summary":""},{"title":"b"},{"title":"c"}]'
+    posts = grok_client._parse_posts(text, 2)
+    assert [p["title"] for p in posts] == ["a", "b"]  # 空项被跳过、超限截断
+
+
+def test_grok_parse_posts_raises_without_array():
+    with pytest.raises(ValueError):
+        grok_client._parse_posts("这里没有任何 JSON 数组", 20)
+    with pytest.raises(ValueError):
+        grok_client._parse_posts("[]", 20)  # 空数组 = 无有效帖子
+
+
+def test_grok_configured_gating(monkeypatch):
+    monkeypatch.setattr(grok_client.wb_config, "grok_cmd", lambda: None)
+    monkeypatch.setattr(grok_client.wb_config, "grok_api_key", lambda: "")
+    assert grok_client.configured() is False
+    with pytest.raises(RuntimeError):
+        grok_client.search_x("test")  # 未配置 → 抛异常，供上游优雅跳过
+    monkeypatch.setattr(grok_client.wb_config, "grok_cmd", lambda: ["grok"])
+    monkeypatch.setattr(grok_client.wb_config, "grok_api_key", lambda: "k")
+    assert grok_client.configured() is True
+
+
+def test_get_x_missing_file_is_safe(tmp_path, monkeypatch):
+    monkeypatch.setattr(export_data, "X_JSON", str(tmp_path / "nope.json"))
+    monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
+    out = export_data.get_x()
+    assert out["count"] == 0 and out["items"] == [] and out["history"] == []

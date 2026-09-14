@@ -20,7 +20,7 @@ import sys
 
 from backend.core.paths import (
     ROOT, DATA_JSON, AI_DAILY_JSON, DAILY_NEWS_JSON, HACKER_NEWS_JSON,
-    GITHUB_TRENDING_JSON, PRODUCTHUNT_JSON, SSPAI_JSON,
+    GITHUB_TRENDING_JSON, PRODUCTHUNT_JSON, SSPAI_JSON, X_JSON,
 )
 from backend.core import config as wb_config
 from backend.clients import llm
@@ -37,6 +37,7 @@ SOURCES = [
     (GITHUB_TRENDING_JSON, "items"),
     (PRODUCTHUNT_JSON, "items"),
     (SSPAI_JSON, "items"),
+    (X_JSON, "items"),
 ]
 
 SYS_PROMPT = (
@@ -80,7 +81,7 @@ def _seed_cache_from_data_json(cache):
     d = _load_json(DATA_JSON)
     if not d:
         return
-    for key in ("aiDaily", "dailyNews", "hackerNews", "githubTrending", "productHunt", "sspai"):
+    for key in ("aiDaily", "dailyNews", "hackerNews", "githubTrending", "productHunt", "sspai", "x"):
         blk = d.get(key) or {}
         kind = "sections" if key == "aiDaily" else "items"
         for it in _iter_items(blk, kind):

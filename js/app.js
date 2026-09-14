@@ -183,6 +183,9 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     d.sspai = d.sspai || {};
     d.sspai.items = Array.isArray(d.sspai.items) ? d.sspai.items : [];
     d.sspai.history = Array.isArray(d.sspai.history) ? d.sspai.history : [];
+    d.x = d.x || {};
+    d.x.items = Array.isArray(d.x.items) ? d.x.items : [];
+    d.x.history = Array.isArray(d.x.history) ? d.x.history : [];
     d.weekly = Array.isArray(d.weekly) ? d.weekly : [];
     d.guide = Array.isArray(d.guide) ? d.guide : [];
     d.quickActions = Array.isArray(d.quickActions) ? d.quickActions : [];

@@ -37,6 +37,7 @@ READ_ONLY_TOOLS = [
     "mcp__dailyworkbench__kb_note",
     "mcp__dailyworkbench__kb_deposits",
     "mcp__dailyworkbench__kb_tree",
+    "mcp__dailyworkbench__x_search",  # 只读（不写本地）；供副驾按需查 X。注意会消耗 xAI 额度，见 ADR 0012
     "WebFetch",
 ]
 

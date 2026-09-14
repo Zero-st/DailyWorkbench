@@ -80,6 +80,50 @@ def opencli_cmd():
     return [found] if found else None
 
 
+def grok_cmd():
+    """grok-cli 调用命令（argv 列表），供 X/推特取数引擎 backend/clients/grok.py subprocess 调用。
+
+    同 opencli_cmd/claude_cmd 心法：grok-cli 是「取数/集成层重工具」（Bun 运行时 + xAI 付费 key），
+    只在抓 X 数据 / 按需查询时被调用，**不进 App 核心运行时**，故属「环境绑定」参数：
+    优先级 env WB_GROK_CMD > workbench.local.json grokCmd > PATH 上的 grok。值可为字符串
+    （"grok" 或 "bun /abs/grok.js"，按 shell 词法切分）或数组。**返回 None 表示未配置**——
+    引擎据此抛异常、上游优雅跳过该源，App 仍零依赖离线可跑。见 ADR 0012。
+    """
+    raw = os.environ.get("WB_GROK_CMD") or _LOCAL.get("grokCmd")
+    if isinstance(raw, list):
+        argv = [str(x) for x in raw if str(x).strip()]
+        return argv or None
+    if isinstance(raw, str) and raw.strip():
+        return shlex.split(raw)
+    found = shutil.which("grok")
+    return [found] if found else None
+
+
+def grok_api_key():
+    """xAI 的 GROK_API_KEY（grok-cli 的 search_x 底层调 xAI，必须付费 key）。
+
+    优先级 env GROK_API_KEY > workbench.local.json grokApiKey > ""。
+    **红线：只在 gitignored 的 workbench.local.json，绝不入库、不推前端。**
+    缺失即视为未配置 -> X 源优雅停用（见 ADR 0012）。
+    """
+    return os.environ.get("GROK_API_KEY") or _LOCAL.get("grokApiKey") or ""
+
+
+def x_queries():
+    """定时 X 源要跟踪的查询/关键词列表（workbench.local.json x.queries）。
+
+    缺省给两个示例词，避免空跑；用户按兴趣改。每个 query 会各调一次 grok-cli，
+    故条数即成本乘数——保持精简。
+    """
+    x = _LOCAL.get("x") or {}
+    qs = x.get("queries")
+    if isinstance(qs, list):
+        qs = [str(q).strip() for q in qs if str(q).strip()]
+        if qs:
+            return qs
+    return ["AI agent", "LLM 新模型"]
+
+
 def claude_cmd():
     """Claude Code CLI 调用命令（argv 列表），供**页面触发的无头 agent** subprocess 拉起。
 

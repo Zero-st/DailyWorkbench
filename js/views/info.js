@@ -146,11 +146,13 @@ export function renderInfo(d) {
   renderGithubTrending(d);
   renderProductHunt(d);
   renderSspai(d);
+  renderX(d);
   var dot = document.getElementById("infoDot");
   if (dot) {
     var n = ((d.aiDaily || {}).count || 0) + ((d.dailyNews || {}).count || 0) +
       ((d.hackerNews || {}).count || 0) + ((d.githubTrending || {}).count || 0) +
-      ((d.productHunt || {}).count || 0) + ((d.sspai || {}).count || 0);
+      ((d.productHunt || {}).count || 0) + ((d.sspai || {}).count || 0) +
+      ((d.x || {}).count || 0);
     dot.style.display = n > 0 ? "inline-block" : "none";
   }
 }
@@ -484,6 +486,60 @@ function renderSspaiBody(date) {
   box.innerHTML = html;
 }
 
+// ---------- X/推特热议（经 grok-cli 取数层，支持历史日期切换） ----------
+var X_DATA = null;
+function renderX(d) {
+  X_DATA = d;
+  var a = d.x || {};
+  var box = document.getElementById("xBlock");
+  if (!box) return;
+  var hist = a.history || [];
+  var curDate = a.date || "";
+  var selHtml = "";
+  if (hist.length > 1) {
+    selHtml = '<div class="news-sel">历史热议：' +
+      '<select id="xSel" onchange="xDateChanged()">' +
+      hist.map(function (h) {
+        return '<option value="' + escAttr(h.date) + '"' + (h.date === curDate ? " selected" : "") + '>' +
+          esc(h.date) + ' (' + (h.count || 0) + ' 条)</option>';
+      }).join("") + '</select></div>';
+  }
+  box.innerHTML = sourceHead("x", "X/推特热议", a.count, "条", "messageCircle") +
+    nsBodyOpen("x") + selHtml + '<div id="xBody"></div></div>';
+  renderXBody(curDate);
+}
+function xDateChanged() {
+  var sel = document.getElementById("xSel");
+  if (sel) renderXBody(sel.value);
+}
+function renderXBody(date) {
+  var box = document.getElementById("xBody");
+  if (!box || !X_DATA) return;
+  var a = X_DATA.x || {};
+  var day = (a.history || []).filter(function (h) { return h.date === date; })[0] || a;
+  var items = day.items || [];
+  if (!items.length) {
+    box.innerHTML = '<div class="card"><h2><span class="ic">' + ic("messageCircle") + '</span>X/推特热议</h2>' +
+      '<div class="empty">还没有抓到 X 数据。该源经 grok-cli（需 Bun + xAI 付费 key）抓取，未配置时自动跳过——在 <code>workbench.local.json</code> 填好 grokCmd / grokApiKey 后，点「立即刷新」即可。</div></div>';
+    return;
+  }
+  var html = '<div class="card news-head"><h2>' + esc(day.date || "") + ' X/推特热议' +
+    '<span class="news-n">' + (day.count || 0) + ' 条</span></h2>' +
+    '<div class="news-meta">数据源 ' + esc(day.source || a.source || "X (via grok-cli)") + ' · 抓取于 ' + esc(day.fetchedAt || "-") +
+    (day.canonical ? ' · <a href="' + escAttr(day.canonical) + '" target="_blank" rel="noopener">去 X ↗</a>' : "") + "</div></div>";
+  html += '<div class="card"><h2><span class="ic">' + ic("messageCircle") + '</span>近期热议（挑一条深挖）</h2><div class="nw-grid">';
+  items.forEach(function (it, i) {
+    html += renderNewsItem(it, {
+      prefix: '<span style="color:var(--accent2);font-weight:600;margin-right:7px;flex:0 0 auto">' + (i + 1) + ".</span>",
+      defaultSrc: "X",
+      showSummary: true,
+      ask: "用大白话讲讲这条 X 帖子在说什么、背景是什么、值不值得我关注："
+    });
+  });
+  html += "</div></div>";
+  box.innerHTML = html;
+}
+
 // ---------- 「让 AI 讲讲」/顶部动作 → 右侧 AI 副驾 dock（取代原跳转到 AI 助手整页视图） ----------
 // 每卡讲讲：带全上下文 {标题+摘要+链接+来源}；有链接则让 agent 先 WebFetch 原文再讲（深挖）。
 function newsExplain(btn) {
@@ -539,3 +595,4 @@ window.hnewsDateChanged = hnewsDateChanged;
 window.gtDateChanged = gtDateChanged;
 window.phDateChanged = phDateChanged;
 window.sspaiDateChanged = sspaiDateChanged;
+window.xDateChanged = xDateChanged;

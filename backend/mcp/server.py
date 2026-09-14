@@ -30,6 +30,7 @@ if _ROOT not in sys.path:
 
 from mcp.server.mcpserver import MCPServer  # 第三方依赖（mcp 2.x，v1 的 FastMCP 已改名）：仅本集成层需要，App 核心不引用
 from backend.clients import kb  # 数据层单一真源（纯函数；import 时经 config 解析 vault/depositRoot）
+from backend.clients import grok  # X/推特取数引擎（subprocess grok-cli；未配置时 x_search 返回 configured:False）
 
 mcp = MCPServer("dailyworkbench")
 
@@ -92,6 +93,28 @@ def kb_deposits(module: str = "") -> dict:
         return {"configured": False, "deposits": []}
     module = (module or "").strip() or None
     return {"configured": True, "deposits": kb.list_deposits(module)}
+
+
+@mcp.tool()
+def x_search(query: str, limit: int = 15) -> dict:
+    """检索 X（推特）上关于某主题的高相关近期帖子（经 grok-cli，底层 xAI search_x）。
+
+    只读（不写任何本地文件），故只读模式下也照常注册——供 AI 副驾按需问「X 上在聊什么」。
+    ⚠ 每次调用会 subprocess 拉起 grok-cli 跑一轮 Agent，消耗 xAI 付费额度；未配置
+    （grokCmd / grokApiKey 缺失）时返回 {configured: False}，不报错（优雅劣化）。
+
+    query：检索主题（中英文皆可）；limit：最多返回条数（1~50，默认 15）。
+    返回 {configured, query, posts:[{title, summary, url}]} 或 {configured: False} / {error}。"""
+    if not grok.configured():
+        return {"configured": False}
+    q = (query or "").strip()
+    if not q:
+        return {"error": "missing query"}
+    try:
+        posts = grok.search_x(q, limit=limit)
+    except Exception as e:
+        return {"configured": True, "error": "X 检索失败：%s" % e, "posts": []}
+    return {"configured": True, "query": q, "posts": posts}
 
 
 if not _READONLY:

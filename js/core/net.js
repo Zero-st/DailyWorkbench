@@ -16,6 +16,7 @@
  * @property {{count?:number, date?:string, source?:string, fetchedAt?:string, canonical?:string, items?:Array, history?:Array}} [githubTrending] GitHub Trending 今日热门（经 OpenCLI 取数层）
  * @property {{count?:number, date?:string, source?:string, fetchedAt?:string, canonical?:string, items?:Array, history?:Array}} [productHunt] Product Hunt 每日新品（stdlib Atom 取数）
  * @property {{count?:number, date?:string, source?:string, fetchedAt?:string, canonical?:string, items?:Array, history?:Array}} [sspai] 少数派上新（stdlib RSS 取数）
+ * @property {{count?:number, date?:string, source?:string, fetchedAt?:string, canonical?:string, items?:Array, history?:Array}} [x] X/推特热议（经 grok-cli 取数层，见 ADR 0012）
  * @property {Array} [weekly] 本周动态
  * @property {string[]} [guide] 今日引导
  * @property {Array<{icon:string, label:string, cmd:string}>} [quickActions] 快捷启动

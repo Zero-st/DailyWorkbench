@@ -17,3 +17,4 @@ HACKER_NEWS_JSON = os.path.join(ROOT, "hacker_news.json")
 GITHUB_TRENDING_JSON = os.path.join(ROOT, "github_trending.json")
 PRODUCTHUNT_JSON = os.path.join(ROOT, "producthunt.json")
 SSPAI_JSON = os.path.join(ROOT, "sspai.json")
+X_JSON = os.path.join(ROOT, "x.json")  # X/推特（经 grok-cli 取数层，见 ADR 0012）

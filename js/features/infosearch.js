@@ -26,7 +26,7 @@ function collect(d) {
     (sec.items || []).forEach(function (it) { out.push(withSrc(it, "AI 日报")); });
   });
   [["dailyNews", "每日60秒"], ["hackerNews", "Hacker News"], ["githubTrending", "GitHub Trending"],
-   ["productHunt", "Product Hunt"], ["sspai", "少数派"]].forEach(function (pair) {
+   ["productHunt", "Product Hunt"], ["sspai", "少数派"], ["x", "X"]].forEach(function (pair) {
     ((d[pair[0]] || {}).items || []).forEach(function (it) { out.push(withSrc(it, pair[1])); });
   });
   return out;
