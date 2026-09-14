@@ -81,7 +81,7 @@ docs/
 | [开发心法-多维思维总纲.md](principles/开发心法-多维思维总纲.md) | principles | 宪章之上的心法：四顶帽子（产品/设计/工程/决策）× 何时戴 + 产品帽判据 |
 | [AI时代程序员成长-心法.md](principles/AI时代程序员成长-心法.md) | principles | 姊妹篇：AI 替你写代码之后人该长哪些肌肉——定价表 / 四杠杆 / 五转变 / AI 放大的坑 / 练习节律 |
 | [产品思维-心法.md](principles/产品思维-心法.md) | principles | 第三姊妹：产品判断力怎么练——五根判断轴 + 平台采矿手册（GitHub/X/中文博主/小红书）+ 真实案例卡（均可核实） |
-| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 · 0008 MCP 集成层工具化（in-repo，不进运行时） · 0009 页面驱动 agent（subprocess `claude -p` + SSE 流式，只读白名单 + 人工写闸） · 0010 松绑「零依赖」为「依赖极简且可撤回」（修订 0001；构建步骤仍是单向门） · 0011 引入 Zilliz Cloud 向量库做资讯语义检索（REST/urlopen·BYO embedding·扩 data.json 契约=单向门） |
+| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 · 0008 MCP 集成层工具化（in-repo，不进运行时） · 0009 页面驱动 agent（subprocess `claude -p` + SSE 流式，只读白名单 + 人工写闸） · 0010 松绑「零依赖」为「依赖极简且可撤回」（修订 0001；构建步骤仍是单向门） · 0011 引入 Zilliz Cloud 向量库做资讯语义检索（REST/urlopen·BYO embedding·扩 data.json 契约=单向门） · 0012 接入 X/推特资讯源（经 grok-cli 取数引擎·定时源+按需 MCP 工具·扩 data.json 契约=单向门） |
 | [知识飞轮-路线图.md](planning/知识飞轮-路线图.md) | planning | 三层大脑模型 + 四阶段路线图（方向盘） |
 | [项目总览-需求与进度.md](planning/项目总览-需求与进度.md) | planning | 一页总账：需求 / 已完成 / 待优化 / 待完成 |
 | [复盘-MVP闭环首跑.md](planning/复盘-MVP闭环首跑.md) | planning | 蒸馏库 0→1 首张真实经验卡的里程碑复盘 |
@@ -95,6 +95,7 @@ docs/
 | [捕获收件箱-浏览器扩展-设计.md](design/捕获收件箱-浏览器扩展-设计.md) | design | 捕获环设计：选中摘录+感悟成对、扩展零站点解析、inbox.local.json 真源、API 优先+离线队列 |
 | [知识库沉淀存储方案.md](design/知识库沉淀存储方案.md) | design | Obsidian 沉淀写入侧存储规范 |
 | [资讯语义检索-设计.md](design/资讯语义检索-设计.md) | design | 资讯 enrich(摘要+标签+向量)→Zilliz 语义检索：第一性原理+流程/时序图+契约+配置+回滚（ADR 0011） |
+| [grok-cli-key边界-原理.md](design/grok-cli-key边界-原理.md) | design | grok-cli 第一性原理(大脑+手+循环)+「xAI key 卡在哪」：本地手免费·服务端手 search_x 必须付费，含图（ADR 0012） |
 | [功能图解/图解-页面驱动agent.md](design/功能图解/图解-页面驱动agent.md) | design/功能图解 | 单功能图解复盘**样板**：页面驱动 agent(ADR 0009) 的架构切片 / 时序 / 业务流程三图 |
 | [业务功能开工-图先行指南.md](guides/业务功能开工-图先行指南.md) | guides | **开工准则**：动手前按不确定性分档，先思维导图捋业务→再流程图/时序图定实现思路+先定契约，再写码(软自检·图可抛)；与图解复盘闭环 |
 | [功能图解复盘-指南.md](guides/功能图解复盘-指南.md) | guides | 每个功能模块「一图三看」怎么写：何时写 + 三图规格(mermaid 起手式) + 模板骨架 + 归位 `design/功能图解/` |
@@ -106,4 +107,4 @@ docs/
 | [蒸馏方法论-开源参考地图.md](research/蒸馏方法论-开源参考地图.md) | research | 蒸馏「知识工艺层」调研：三空白诊断 + fabric pattern 结构 + 打分 rubric + 提示词骨架 + 方法论框架 + 最小落地路径 |
 | [接入deepseekHarness-选型.md](research/接入deepseekHarness-选型.md) | research | 工作台作为工具接入 DeepSeek harness 的可行性评估：谁调谁的心法 + 三条路径对比(bash·tool 插件·MCP server) + 坑位；**路径③已落地为 Claude Code 变体**（ADR 0008，in-repo `backend/mcp/`） |
 | [reference/supabase_schema.sql](reference/supabase_schema.sql) | reference | Supabase 表结构 |
-| [reference/devhtml/](reference/devhtml/) | reference | 生成的 html 产物（产品评分卡、运行时架构-交互版[archify]、餐厅里的软件工程[零基础讲解] 等） |
+| [reference/devhtml/](reference/devhtml/) | reference | 生成的 html 产物（产品评分卡、运行时架构-交互版[archify]、餐厅里的软件工程[零基础讲解]、grok-cli-key边界-图解[mermaid]、grok-cli-key边界-archify[交互版] 等） |
