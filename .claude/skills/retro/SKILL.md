@@ -1,44 +1,44 @@
 ---
 name: retro
-description: "Conduct a retrospective on a coding session."
+description: "对一次编码会话做复盘(retrospective)。"
 disable-model-invocation: true
 ---
 
-The user has asked for a **retrospective**. You are suggesting improvements to the coding agent's **environment** to improve future runs.
+用户要求做一次**复盘(retrospective)**。你要给这个编码 agent 所处的**环境**提改进建议,目的是让以后的运行更顺。
 
-## Steps
+## 步骤
 
-1. Call the Skill tool with `writing-for-agents` for the writing style guide.
+1. 用 Skill 工具调用 `writing-for-agents`,取它的写作风格指南。
 
-2. Read the primary sources for the session the user specifies. This may mean searching through session logs on this machine. If the user doesn't specify a session, default to the current one.
+2. 读用户指定的那次会话的一手材料。这可能意味着要在本机上翻会话日志。如果用户没指定具体是哪次会话,默认就是当前这次。
 
-3. Look for candidates for improvement in these categories.
+3. 按下面几个维度找可以改进的候选项。
 
-- **Navigation**: how easy was it for the agent to find the right files? Are there hidden dependencies between files? Would a **navigation pointer** make it easier? _Use when_ the session took a long time to find a piece of information.
-- **Automated checks**: are there automated checks that could catch errors the agent made? Linting, typing, tests, filesystem linters? _Use when_ the agent made a mistake that could have been caught by an automated check.
-- **Coding standards**: should the **reviewer agent** be given a new rule to enforce? Should an existing rule be removed or clarified? _Use when_ the reviewer agent failed to catch a mistake.
-- **Global AGENTS.md**: are there any steering instructions that should be moved to coding standards (or automated checks) instead? _Use when_ the AGENTS.md file is particularly large - in the repo OR the user's global scope.
-- **Tool economy**: did the agent make expensive tool calls that could be streamlined? Is there any custom tooling (CLI's, MCP's) that is particularly token-inefficient? _Use when_ the agent made an expensive tool call.
-- **No-ops**: look for instructions in steering files that don't modify the agent's behavior. _Use when_ the steering files are large and unwieldy.
-- **Information access**: look for opportunities to increase the agent's access to information. Teeing dev server logs, readonly access to third-party services. _Use when_ a crucial piece of information was not available to the agent.
+- **导航(navigation)**:agent 找对文件容易吗?文件之间有没有隐藏的依赖关系?加一条**导航指针(navigation pointer)** 会不会更好找?_适用场景_:这次会话花了很久才找到某条信息的时候。
+- **自动化检查(automated checks)**:有没有自动化检查本可以拦下 agent 犯的这个错?Lint、类型检查、测试、文件系统层面的 linter?_适用场景_:agent 犯的错误本该被某种自动化检查拦住的时候。
+- **编码规范(coding standards)**:要不要给**审查代理(reviewer agent)** 加一条新规则去把关?要不要删掉或澄清某条已有规则?_适用场景_:审查代理这次没能拦住某个失误的时候。
+- **全局 AGENTS.md**:有没有哪些指导性说明该挪到编码规范(或自动化检查)里,而不是留在这里?_适用场景_:AGENTS.md 文件(仓库内的,或用户的全局那份)已经明显偏大的时候。
+- **工具经济性(tool economy)**:agent 有没有发起过本可以精简的昂贵工具调用?有没有哪个自定义工具(CLI、MCP)特别耗 token?_适用场景_:agent 发起过一次代价很高的工具调用的时候。
+- **空指令(no-ops)**:找找指导性文件里有没有实际不改变 agent 行为的说明。_适用场景_:指导性文件已经又大又乱的时候。
+- **信息可得性(information access)**:有没有机会扩大 agent 能拿到的信息面——比如把 dev server 日志接进来、给第三方服务开只读访问。_适用场景_:某条关键信息这次 agent 根本拿不到的时候。
 
-4. Present these candidates to the user, in order of severity.
+4. 把这些候选项按严重程度排序,呈现给用户。
 
-## Reference
+## 参考
 
-### Implementation vs Review
+### 实现 vs 审查
 
-Remember that all work goes through two stages: implementation and review. The implementation agent has the most **context pressure**. They are responsible for exploration, writing code, and debugging failures.
+记住:所有工作都要经过两个阶段——实现和审查。实现阶段的 agent **上下文压力(context pressure)** 最大,它要负责探索代码、写代码、排查失败。
 
-The review agent has the least context pressure - it receives a diff, so no exploration needed. It often does not need to write code or debug.
+审查阶段的 agent 上下文压力最小——它拿到的是一份 diff,不需要探索,往往也不需要写代码或调试。
 
-This means that the review agent should be responsible for imposing coding standards, not the implementation agent.
+这意味着:该由审查代理去落实编码规范,而不是实现阶段的 agent。
 
-### Files
+### 文件
 
-You have access to several files in the repo:
+你在仓库里能接触到这几类文件:
 
-- `CLAUDE.md`/`AGENTS.md`: these files are pushed to the context window of any agent working in this repo. They should be used incredibly sparingly, usually only for **navigation pointers** to other files.
-- `CODING_STANDARDS.md`: this file is read during review, not implementation. Add **navigation pointers** to docs folders if the standards file gets more than 1,000 lines long.
-- Docs: use docs as references files, pointed to by other files. Look for existing docs before writing new ones.
-- Skills: use skills for docs (since their description goes into the agent's context window), or for user-invoked commands. Follow the advice in the `writing-for-agents` skill.
+- `CLAUDE.md`/`AGENTS.md`:这些文件会被塞进任何在这个仓库里工作的 agent 的上下文窗口。要用得极其克制,通常只用来放**导航指针**,指向别的文件。
+- `CODING_STANDARDS.md`:这个文件是在审查阶段才被读到的,不是在实现阶段。如果这份规范文件超过 1000 行,就该给它的 docs 目录加**导航指针**了。
+- Docs:把文档当作被别的文件指向的参考资料来用。写新文档前先看看有没有现成的。
+- Skills:要么把 skill 当文档用(因为它的 description 会被塞进 agent 的上下文窗口),要么用来做用户手动触发的命令。具体怎么写,遵循 `writing-for-agents` 这个 skill 里的建议。

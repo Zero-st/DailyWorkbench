@@ -1,44 +1,44 @@
 ---
 name: wizard
-description: Generate an interactive bash wizard that walks a human through steps only they can perform. Use when provisioning infrastructure, setting up credentials or CI secrets, walking an unfamiliar third-party dashboard, or running a one-off migration or cutover. Don't invoke this for steps the agent can perform itself.
+description: 生成一个交互式 bash 向导(wizard),带人走完那些只有人自己才能做的步骤。用于配置基础设施、设置凭据或 CI secrets、走一遍不熟悉的第三方后台、或跑一次性的迁移/割接。agent 自己能做的步骤,不要调用这个。
 ---
 
-# Wizard
+# 向导(Wizard)
 
-A **wizard** is a bash script that walks a human, step by step, through a manual procedure that's tedious to do by hand and tedious to re-explain to an AI every time. It opens each URL, says exactly what to click and copy, captures the values, writes them where they belong (`.env`, GitHub secrets), confirms at every stage, and shows how many stages are left. It might configure third-party services, run a one-off migration, or move the project from one state to another.
+一个**向导(wizard)** 是一段 bash 脚本,一步步带一个真人走完一套手动流程——这套流程手动做很繁琐,每次都要重新讲给 AI 听也很繁琐。它会打开每一个网址、说清楚该点哪里、该复制什么,把值采集下来,写到该去的地方(`.env`、GitHub secrets),每个阶段都做确认,并且随时告诉你还剩几个阶段。它可能是在配置第三方服务、跑一次性迁移,或者把项目从一个状态挪到另一个状态。
 
-The delightful UX is already solved by [template.sh](template.sh): stage-by-stage progress, confirmation gates, cross-platform URL opening (including WSL), hidden secret entry, idempotent `.env` upserts, `gh secret`/`gh variable` writes, and a closing summary. **Your job is only to scope the procedure and author its stages.** The library above the `STAGES` marker is identical in every wizard; that consistency is the point: never hand-edit it.
+这套讨喜的交互体验,[template.sh](template.sh) 已经写好了:逐阶段的进度展示、确认关卡、跨平台打开网址(含 WSL)、隐藏式的密钥录入、幂等的 `.env` upsert、`gh secret`/`gh variable` 写入,以及收尾汇总。**你要做的只是划定流程范围、写出各个阶段。** `STAGES` 标记以上的库代码,在每一个向导里都完全一样;保持一致正是它的意义所在——绝不要手动改动它。
 
-A wizard is ephemeral by default: built for one run, saved to a scratch or `scripts/` path, deleted when the job's done. Commit it only when the user wants a repeatable setup path that should live in the repo.
+一个向导默认是一次性的:为一次运行而写,存到临时目录或 `scripts/` 路径下,活干完就删掉。只有当用户希望这是一条可反复使用的配置路径、该长期留在仓库里时,才提交它。
 
-## Process
+## 流程
 
-### 1. Scope the procedure
+### 1. 划定流程范围
 
-Work out every manual step the human must take and every value that gets captured along the way. Read the repo first, don't ask cold:
+理清人必须手动完成的每一步,以及沿途要采集的每一个值。先读仓库,不要空手去问用户:
 
-- For setup: `.env`, `.env.example`, `.env.*`, `README`, `docker-compose*`, framework config, and `.github/workflows/*` (every `secrets.*` / `vars.*` reference is a value the wizard must produce).
-- For a migration or transition: the current state, the target state, and the irreversible actions between them.
+- 如果是环境配置:看 `.env`、`.env.example`、`.env.*`、`README`、`docker-compose*`、框架配置、以及 `.github/workflows/*`(里面每一处 `secrets.*`/`vars.*` 引用,都是这个向导必须产出的一个值)。
+- 如果是迁移或状态迁转:看当前状态、目标状态,以及两者之间那些不可逆的动作。
 
-Then show the user the ordered list of stages and the values each produces, and confirm: they may add, drop, or reorder.
+然后把这份按顺序排好的阶段清单、以及每个阶段会产出的值,拿给用户确认:他们可以增删或调整顺序。
 
-**Done when:** every stage is named in order, and for each captured value you know (a) where the human gets it, (b) where it's written (`.env`, a GitHub secret, both, or nowhere; some stages are pure actions), and (c) whether it's secret (hidden entry) or public.
+**完成判据:** 每个阶段都按顺序命名好了;对每一个要采集的值,你都清楚 (a) 人从哪里拿到它,(b) 它会被写到哪里(`.env`、一个 GitHub secret、两者都写,或者哪都不写——有些阶段纯粹是执行一个动作),以及 (c) 它是不是密钥(要不要隐藏输入)。
 
-### 2. Map each stage's journey
+### 2. 画出每个阶段的路径
 
-For each stage, write the precise path a human follows: which URL to open, what to do there, where a value is shown, which variable it fills: e.g. "Dashboard → Developers → API keys → Reveal test key → copy". Where you don't actually know the current UI or the exact command, say so and ask the user or check the docs: never invent steps that may not exist.
+给每个阶段写清楚人要走的精确路径:该打开哪个网址、在那里要做什么、值会显示在哪里、它要填进哪个变量,例如:"后台 → Developers → API keys → Reveal test key → 复制"。如果你其实并不确定当前的界面长什么样、或者确切的命令是什么,就明说,再去问用户或查文档——绝不要凭空编造可能根本不存在的步骤。
 
-**Done when:** every stage traces to concrete instructions a stranger could follow.
+**完成判据:** 每个阶段都能落到一份陌生人也能照着做的具体指引上。
 
-### 3. Author the wizard
+### 3. 写这个向导
 
-Copy `template.sh` to the target path. Replace the example stage with one `stage` per step, in dependency order. Use the library helpers: `stage`, `say`/`step`, `open_url`, `ask`/`ask_secret`, `write_env`, `set_secret`/`set_var`, `pause`/`confirm`. Set `TOTAL_STAGES` to the number of stages you wrote.
+把 `template.sh` 复制到目标路径。把示例阶段替换成每一步各自对应的一个 `stage`,按依赖顺序排列。用库里现成的这些辅助函数:`stage`、`say`/`step`、`open_url`、`ask`/`ask_secret`、`write_env`、`set_secret`/`set_var`、`pause`/`confirm`。把 `TOTAL_STAGES` 设成你写的阶段总数。
 
-Hold the bar the template sets: open the URL before asking for its value, use `ask_secret` for anything secret, `write_env` every persisted value, `set_secret` only the values CI actually needs, and `confirm` before any irreversible action. Each `stage` clears the screen so only the current step is visible: keep a stage to one focused task so nothing the human needs scrolls away. Don't touch the library above the marker.
+守住模板定下的这条标准:先打开网址、再问对应的值;凡是密钥都用 `ask_secret`;每一个要持久化的值都要 `write_env`;只对 CI 真正需要的值用 `set_secret`;任何不可逆的动作之前都要 `confirm`。每个 `stage` 都会清屏,让屏幕上只留当前这一步:让一个阶段只聚焦一件事,别让人需要的东西滚出屏幕。标记线以上的库代码不要碰。
 
-### 4. Verify and hand off
+### 4. 验证并交付
 
-- `bash -n <script>`; run `shellcheck` if available.
-- `chmod +x <script>`.
-- Don't run it end-to-end yourself: it opens browsers and blocks on human input. Trace it statically instead: every value from step 1 is captured and lands where step 1 said, and every `set_secret` name exactly matches a `secrets.*` reference in CI.
-- Tell the user how to run it. If it's a repeatable setup path, commit it and link it from the README so the next person runs the script instead of asking an AI.
+- 跑 `bash -n <script>`;如果有 `shellcheck` 就跑一下。
+- `chmod +x <script>`。
+- 不要自己端到端跑一遍——它会打开浏览器、卡在等人输入的地方。改用静态走查:确认第 1 步列出的每个值都被采集了、都落到了第 1 步说的位置,并且每一个 `set_secret` 的名字都和 CI 里的某个 `secrets.*` 引用精确对上。
+- 告诉用户怎么运行它。如果这是一条要反复用的配置路径,就把它提交进仓库,并从 README 链接过去,好让下一个人直接跑这个脚本,而不是再来问一遍 AI。
