@@ -1,9 +1,9 @@
 # 开发全流程 Skill / MCP 选型账本（通用）
 
-> 版本：v1.6　制定：2026-08-31　最近更新：2026-09-04
+> 版本：v1.7　制定：2026-08-31　最近更新：2026-09-15
 > 定位：**「软件开发各阶段，GitHub / 其他平台有哪些好用的 Claude Code Skill / MCP / SDD 框架，怎么选」的通用选型账本。**
 > 面向：任意项目 / 任意设备 / 任意 AI agent（不绑本项目）。
-> 性质：**reference / 调研**。★star 为 `gh api` 实测快照 **2026-08-31**，会变，落地前请复核。
+> 性质：**reference / 调研**。★star 为 `gh api` 实测快照，**2026-08-31**（多数条目）/ **2026-09-15**（mattpocock/skills，见 §2），会变，落地前请复核。
 > 关联：[`需求澄清工具选型.md`](需求澄清工具选型.md)（需求澄清专项）、[`工具链-MCP与Skill地图.md`](工具链-MCP与Skill地图.md)（本项目实际用过什么）。
 
 ---
@@ -113,6 +113,9 @@
 | **BMAD-METHOD** | 框架（多 agent 敏捷团队） | [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | **52.5k** | 2026-08 活跃 | 社区头部 | 重 | 想要**像产品团队反复逼问你**（分析师/PM/架构/QA agent），愿吃学习成本 |
 | **ruflo**（原 claude-flow，**已改名**） | 框架（多 agent meta-harness） | [ruvnet/ruflo](https://github.com/ruvnet/ruflo) | **69.9k** | 2026-08 活跃 | 社区头部 | 重 | 想要**大规模多 agent 编排 / 蜂群**；概念多、偏重 |
 | **Agent OS** | 框架（标准注入 + 写 spec） | [buildermethods/agent-os](https://github.com/buildermethods/agent-os) | **5.4k** | 2026-08 活跃 | 社区（Builder Methods） | 中 | 想给 agent 注入**团队编码标准 + 结构化 spec**，比 BMAD 轻 |
+| **mattpocock/skills** | 框架（skill 合集，非单一强制流程） | [mattpocock/skills](https://github.com/mattpocock/skills) | **262.4k**（fork 22.1k） | 2026-09-04 推送（2026-09-15 `gh api` 实测快照，晚于本节其余条目） | 社区头部；作者 Matt Pocock（知名 TS/AI 教育者） | 轻（可单个挑装） | 想要**可拆开单独装的一批工程纪律**（TDD 按改动量分档、疑难 bug 诊断循环、需求追问、merge 冲突处理等），而不是一整套必须遵守的强制流程 |
+
+**和 Superpowers / Spec-Kit / BMAD 的关键差异**：后三者是**强制流程**（本节已有判据：三选一，同时装会互相打架）；mattpocock/skills 明确**反对**这种"重流程接管你的过程"的设计，自述定位就是这类框架的对照组——**小、可拆、可改、模型无关**，可以只装其中一两个（比如只要 `tdd` 或只要 `diagnosing-bugs`），不需要囫囵吞下整套。所以它**不适用**上面"强制流程三选一"的判据，是独立于三者之外的第四种选择方式。本项目已按需引入其中 11 个，具体清单和触发方式见姊妹篇 [`工具链-MCP与Skill地图.md`](工具链-MCP与Skill地图.md)（此处只记事实存在，不复制清单）。
 
 **范围校准（别被名字骗了）**：Superpowers 自称「complete software development methodology」，但对照 §0.4 八阶段，**它实际只覆盖设计 / 开发 / 测试 / 评审四站**——需求发现的前半段、上线、运维、退役都不含。它的 `finishing-a-development-branch` 停在「合并 / PR / 丢弃」，**不含部署**，所以 §7 没有它。**「complete」一词大于实际范围。**
 
@@ -252,6 +255,8 @@
 | **`harvest-prompts` / `skill-creator` / `devmd-migrate`** | Skill（本机） | 三者分别做：提炼可复用提问 / 造与优化 skill / 把本机能力泛化发布 | 社区（本机已审） | 把**一次性对话沉淀成可复用资产**。AI 时代真正在累积的是这类杠杆，不是代码行数 |
 
 > **和 §2 Superpowers 的重叠提醒**：Superpowers 自带 `requesting-code-review` / `receiving-code-review` / `systematic-debugging` / `verification-before-completion`。**若装了它，本节的第一方 `code-review` / `simplify` 与之功能重叠——二选一，别叠着跑**，两套都会主动触发，结果是互相打断。
+>
+> **三方重叠提醒（补 mattpocock/skills）**：mattpocock/skills 里的 `tdd`（本项目已改造成"小改动走最小测试先行、复杂改动走完整红绿循环"）、`diagnosing-bugs`、`code-review`，分别和**内置** `code-review` / `simplify`、以及 Superpowers 的 `systematic-debugging` / `requesting-code-review` 功能重叠。**三者选一即可，别叠着装**——同类能力叠两三份，agent 会在同一场景里被多个 skill 同时"抢着触发"，互相打断。
 
 **做法 > 工具（约定，不是工具）**：
 - **Keep a Changelog + SemVer + Conventional Commits**：「做了什么」进 CHANGELOG，「为什么」进设计文档与 ADR，两者别混写。
@@ -332,6 +337,7 @@
 
 ## 14 · 变更记录
 
+- 2026-09-15 · v1.7 · **补 mattpocock/skills 缺口**：§2 新增该框架条目（262.4k★/22.1k fork，2026-09-15 `gh api` 实测），并写明它与 Superpowers/Spec-Kit/BMAD 三选一强制流程的关键差异——可单个拆装、不强制；§9 追加它与内置 `code-review`/`simplify`、Superpowers 对应 skill 的三方重叠提醒。缘起：本项目这次会话刚引入该仓库 11 个 skill 并中文化，回查账本发现完全没收录这一类别里最新、最贴近本项目实际选择的一个框架。
 - 2026-09-04 · v1.6 · **前端补上「契约先定」**：§3 表后新增两条做法——**视觉契约先定（DESIGN.md，Google Labs / Stitch 开放格式，2026-04 开源）** 与 **效果图门禁（HTML 先行；只对新视觉语言 / 新组件类 / 新布局骨架触发；不替代走查）**，与 §4 后端的「接口契约先定」对称；§3 补 **Claude Design + `/design-sync`**（第一方 Anthropic Labs，research preview，**未实测**），给 `frontend-design` 补装法与「写进文档 ≠ 装了」提醒；§0.6 前端 × 设计格、§12 个人小项目行前端列同步。**帖子没说的一半也写了**：design.md 没有脚本查就会漂移。缘起：用户看到 X 帖「先 design.md → 出效果图 → 再写代码」，问能否治掉反复改前端；回查本仓 `css/styles.css` 全史 21 次提交 +1987/−888、08-26 单日连换四套视觉语言、准则建成后 CSS 仍近九成裸像素——机制对，但缺门禁。
 - 2026-09-04 · v1.5 · **§2 补入 Superpowers**：`obra/superpowers` **281.5k★ / 25.2k fork**（`gh api` 实测 2026-09-04 快照，星数会漂）、MIT、2026-09-03 仍在推送、`skills/` 实测 14 个、已进 Anthropic 官方 marketplace——**按 star 是 §2 表里最大的一条，此前漏收属覆盖度缺口**。同时补两条不能只抄 README 的判断：①**范围校准**——它自称 complete 但只覆盖八阶段里的设计/开发/测试/评审四站，不含上线与运维，故 §7 明确不收它；②**三者都是强制流程，同时开会互相覆盖，只能挑一个**。§9 补一条与它的功能重叠提醒（`code-review` / `simplify` 二选一）。缘起：用户指定该仓库要求详细介绍，调研后发现它是 §2 的直接同类却不在表内。
 - 2026-09-04 · v1.4 · **落地「两根轴」+ 修一个指错门的 Bug**：①**修 Bug**——§0.4 设计站原写「数据建模 · 接口契约 → §1+§6」是错的（§1 只讲选型方法论、不含这两样），改为逐个给真实门牌号，**数据建模与接口契约归 §4**；②**§3 §4 层阶段解耦**——改名为「前端（层，非阶段）」「后端与数据（层，非阶段）」，各加「阶段」列与一段「本层横跨哪些阶段」导航，§4 补入 `database-designer` 与「接口契约先定 / 数据模型比代码活得久」两条做法；③**新增 §0.6 层 × 阶段矩阵**，把上一版只写在读法里的「两根轴」真正画出来——**Bug 的根因正是缺这张表**；④§0.5 横切面由四条增至五条，补「**编码规范与一致性**」（AI 时代权重升高：规范不写下来，AI 每次按自己习惯写）。缘起：追问「后端里还有接口设计、数据库设计、开发代码规范」，据此发现上一版的指向错误。
