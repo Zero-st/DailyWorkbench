@@ -101,6 +101,7 @@ docs/
 | [功能图解复盘-指南.md](guides/功能图解复盘-指南.md) | guides | 每个功能模块「一图三看」怎么写：何时写 + 三图规格(mermaid 起手式) + 模板骨架 + 归位 `design/功能图解/` |
 | [模型管理模块操作指南.md](guides/模型管理模块操作指南.md) | guides | 模型管理模块操作手册 |
 | [Supabase上线操作指南.md](guides/Supabase上线操作指南.md) | guides | Supabase 接入 / 上线步骤 |
+| [judgment-practice操作指南.md](guides/judgment-practice操作指南.md) | guides | 判断力刻意练习 skill 操作手册：何时用预测卡/决策日志 + 四分支步骤 + 节奏建议；姊妹篇 [`AI时代程序员成长-心法`](principles/AI时代程序员成长-心法.md) |
 | [需求澄清工具选型.md](research/需求澄清工具选型.md) | research | 需求澄清工具对比账本 |
 | [工具链-MCP与Skill地图.md](research/工具链-MCP与Skill地图.md) | research | 本项目用过的 MCP / Skill × 开发阶段 |
 | [开发阶段-Skill选型账本.md](research/开发阶段-Skill选型账本.md) | research | 通用 Skill / MCP / SDD 选型账本 |
