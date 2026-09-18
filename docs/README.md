@@ -87,6 +87,7 @@ docs/
 | [复盘-MVP闭环首跑.md](planning/复盘-MVP闭环首跑.md) | planning | 蒸馏库 0→1 首张真实经验卡的里程碑复盘 |
 | [复盘-dogfood冲刺-W1.md](planning/复盘-dogfood冲刺-W1.md) | planning | 产品帽 dogfood 一周：每日日志 + 摩擦清单 + 三门筛选 → 决定下一个功能 |
 | [复盘-OpenCLI取数层接入.md](planning/复盘-OpenCLI取数层接入.md) | planning | 把 OpenCLI 作可劣化取数层接入的里程碑复盘：执行步骤 / 优雅劣化实测 / 踩坑 / 可迁移的「外部取数源接入」心智模型 |
+| [复盘-项目自评打分-2026-09.md](planning/复盘-项目自评打分-2026-09.md) | planning | 用指南打的第一张卡（v0.10.0，含 09-17 真机复验）：硬门·频率门**不过**（17 天仅 3 天有使用痕迹、近 6 天为 0）→ 总分 0、参考值 27；结果层对表 dogfood W1 预注册指标（区间真卡 0 · 收件箱 0 · 温故点开 0 · 复盘空白）+ 质量层四层真机重打（深色模式不可读 2.5）+ 缺陷清单 D1–D7 + 决策/结果分列 + 下期事前目标（10-17 对表） |
 | [运行时架构-数据流.md](design/运行时架构-数据流.md) | design | 一页架构总图（mermaid）：前端↔后端↔data.json 契约↔三大脑 + 数据流 |
 | [界面设计准则.md](design/界面设计准则.md) | design | **本仓的 DESIGN.md**：设计系统 v7 索引 + 令牌健康度基线（`check_design_tokens.py` 产出）+ 效果图门禁 + 图标红线 + 新视图检查清单 |
 | [温故复用-设计.md](design/温故复用-设计.md) | design | 「今日温故卡」复用抓手设计（Leitner-lite） |
@@ -102,6 +103,7 @@ docs/
 | [模型管理模块操作指南.md](guides/模型管理模块操作指南.md) | guides | 模型管理模块操作手册 |
 | [Supabase上线操作指南.md](guides/Supabase上线操作指南.md) | guides | Supabase 接入 / 上线步骤 |
 | [judgment-practice操作指南.md](guides/judgment-practice操作指南.md) | guides | 判断力刻意练习 skill 操作手册：何时用预测卡/决策日志 + 四分支步骤 + 节奏建议；姊妹篇 [`AI时代程序员成长-心法`](principles/AI时代程序员成长-心法.md) |
+| [项目自评打分-指南.md](guides/项目自评打分-指南.md) | guides | **资深式项目自评**：硬门→结果层→质量层→成本层，八列卡 + 1–5 锚点 + 证据等级/N/A 规则 + 几何加权总分与置信带 + 作弊清单；事前门链心法 §4，校准链 judgment-practice |
 | [需求澄清工具选型.md](research/需求澄清工具选型.md) | research | 需求澄清工具对比账本 |
 | [工具链-MCP与Skill地图.md](research/工具链-MCP与Skill地图.md) | research | 本项目用过的 MCP / Skill × 开发阶段 |
 | [开发阶段-Skill选型账本.md](research/开发阶段-Skill选型账本.md) | research | 通用 Skill / MCP / SDD 选型账本 |
