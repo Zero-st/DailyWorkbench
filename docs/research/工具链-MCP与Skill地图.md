@@ -12,7 +12,7 @@
 **换机复用的关键不是「搬配置文件」，而是「重开一轮对话 + 把 spec-kit 装回来 + 记住这几个触发词」。**
 
 ⚠️ 先记一条最重要的事实（**2026-09-04 校准，原表述已不准确**）：本仓库**没有** `.mcp.json`、**没有** `.claude/settings.json`；项目级 `CLAUDE.md` **2026-09-04 起有了，但只做指针**（文档归位 / 宪章 / 界面准则 = DESIGN.md / bump / 令牌门禁），**不声明任何 MCP 或 skill**；
-但**有一个入库的项目级 skill**：`.claude/skills/doc-filing/`。而 `.claude/skills/speckit-*/` 与 `.specify/` 被 `.gitignore` 排除、不入库。
+但**有一批入库的项目级 skill**（2026-09-18 实测 13 个已入库 + 4 个待入库，以 `doc-filing` 和 mattpocock/skills 中文化那批为主，明细见 §5）。而 `.claude/skills/speckit-*/` 与 `.specify/` 被 `.gitignore` 排除、不入库。
 所以准确说法是：**除 `doc-filing` 外，MCP 与 Skill 的使用都不是靠项目配置文件声明的**——它们散落在 `docs/`、`.claude/plan/`、commit message、
 以及 spec-kit 自己生成的 `.specify/` 元数据里。这份文档就是把这些「隐性使用」显式化、集中化，
 本身就是换机时缺的那块拼图。
@@ -155,9 +155,8 @@
 
 ## 4 · 重要提醒
 
-- **本仓库不含 MCP 配置，但含一个入库的项目 skill**（2026-09-04 订正）：无 `.mcp.json` / `settings.json` / 项目级 `CLAUDE.md`；
-  `.claude/skills/doc-filing/` **已入库**，`.claude/skills/speckit-*/` 与 `.specify/` 被 gitignore。
-  MCP、社区 skill 的启用属**机器级 / 账号级**，换机需在新环境各自启用——这就是本文件存在的理由。
+- **本仓库不含 MCP 配置，但含一批入库的项目 skill**（2026-09-18 再订正）：无 `.mcp.json`；有项目级 `CLAUDE.md`（只做指针，不声明 MCP / skill）；`.claude/skills/` 下 **13 个已入库**（`doc-filing` 自研 + 11 个来自 mattpocock/skills 中文化（含其 in-progress 区的 `retro`）+ `judgment-practice`）、**4 个待入库**（2026-09-18 新增 `find-skills` `improve-codebase-architecture` `codebase-design` `domain-modeling`），`speckit-*` ×10 与 `.specify/` 被 gitignore。明细见 §5。
+  MCP、社区 skill 的启用属**机器级 / 账号级**，换机需在新环境各自启用——这就是本文件存在的理由；入库的项目 skill 则随 `git clone` 自动到位。
 - **spec-kit 相关文件不入库**：`.specify/`、`.claude/skills/speckit-*/` 被 `.gitignore` 排除（见 `版本管理规范.md`）。
 - 表格里点名的每个能力都能在下面「证据出处」里回溯，未见证据的只标「推断/可选」，不臆造。
 
@@ -169,30 +168,35 @@
 - `database-designer`（推断）：`docs/reference/supabase_schema.sql`、`docs/design/知识库沉淀存储方案.md`。
 - 蒸馏三件套：`.claude/plan/phase1-蒸馏库.md`、`js/views/ov.js`。
 - 图表（可选）：`docs/design/产品-IA评审.md`（mermaid 代码块）。
-- **本机实测清单（§5）**：2026-09-04 直接枚举 `~/.claude/skills/`、`.claude/skills/`、`~/.claude/plugins/`、`~/.claude.json` 的 `mcpServers`，以及本会话可用 skill 列表。
+- **本机实测清单（§5）**：2026-09-18 重新枚举（首版 2026-09-04）——逐目录判 `SKILL.md` 存在性；`git check-ignore` / `git ls-files` 判入库状态；`~/.claude/plugins/installed_plugins.json`；`~/.claude.json` 的 `mcpServers`；以及本会话可用 skill 列表。
 - **蒸馏两件套已移除（§2.6）**：2026-09-04 `find /home/dev_st -maxdepth 6 -type d` 全盘搜索 `creator-video-decoder` / `video-cangjie-distill` 均零命中。
 - **上线/运维/迭代实况（§6）**：`.github/workflows/ci.yml`、`.github/workflows/deploy-pages.yml`、`backend/pipeline/sync_status.py`（`INTERVAL_HOURS=1` / `STALE_HOURS=2`）、`CHANGELOG.md`（11 个已发布版本）、`docs/adr/`（6 篇）。
 
 ---
 
-## 5 · 本机实测清单（2026-09-04）
+## 5 · 本机实测清单（2026-09-18；首版 2026-09-04）
 
-**这一节回答「我在用的是否都在册」。** 全部逐个目录数出来，不是回忆。合计 **47 个 skill + 2 个本地 MCP server**。
+**这一节回答「我在用的是否都在册」。** 全部逐个目录数出来，不是回忆。合计 **70 个 skill + 3 个本地 MCP server + 1 个已授权 connector**（09-04 为 47 + 2 + 0；增量主要来自项目级引入 mattpocock/skills 14 个、自研 `dailyworkbench` MCP、以及首次把 `anthropic-skills` 捆绑入册）。
 
 | 来源 | 数量 | 明细 |
 |---|---|---|
-| **全局** `~/.claude/skills/` | **18** | `archify` `baoyu-url-to-markdown` `brainstorming` `chrome-walkthrough-flow` `database-designer` `design-principles` `devmd-migrate` `diagram-render` `docx` `github-trending` `harvest-prompts` `llm-wiki` `llm-wiki-upgrade` `loop-engineering` `pptx` `prompt-refine` `skill-creator` `youtube-transcript` |
-| **项目** `.claude/skills/` | **11** | `doc-filing`（入库）+ `speckit-*` ×10：`analyze` `checklist` `clarify` `constitution` `converge` `implement` `plan` `specify` `tasks` `taskstoissues`（gitignore） |
-| **plugin** | **1** | `eli5@claude-community`，调用名 `eli5:eli5` |
-| **内置第一方** | **17** | `code-review` `simplify` `security-review` `run` `init` `loop` `schedule` `claude-api` `workflow-authoring` `design` `dataviz` `artifact-design` `artifact-diagramming` `artifact-capabilities` `update-config` `keybindings-help` `fewer-permission-prompts` |
-| **本地 MCP server** | **2** | `chrome-devtools`、`mermaid`（均 stdio 包装脚本，配置里**无任何凭据字段**） |
-| **claude.ai connector** | 10 | Asana / Atlassian / Box / Canva / Figma / HubSpot / Intercom / Linear / Notion / monday.com——**已知但未授权**，当前会话不可用，需在 claude.ai 连接器设置里 OAuth。**勿与上面 2 个本地 server 混为一栏** |
+| **全局** `~/.claude/skills/` | **18** | `archify` `baoyu-url-to-markdown` `brainstorming` `chrome-walkthrough-flow` `database-designer` `design-principles` `devmd-migrate` `diagram-render` `docx` `github-trending` `harvest-prompts` `llm-wiki` `llm-wiki-upgrade` `loop-engineering` `pptx` `prompt-refine` `skill-creator` `youtube-transcript`（与 09-04 完全一致） |
+| **项目** `.claude/skills/` · 已入库 | **13** | `doc-filing`（自研）· `judgment-practice`（预测卡/决策日志，`00b17bb`）· mattpocock/skills 中文化 ×11：`diagnosing-bugs` `git-guardrails-claude-code` `grilling` `grill-me` `handoff` `research` `resolving-merge-conflicts` `retro` `tdd` `wizard` `writing-for-agents` |
+| **项目** `.claude/skills/` · 待入库（untracked） | **4** | 2026-09-18 本会话新增：`find-skills`（vercel-labs/skills，技能发现/安装元技能）· `improve-codebase-architecture` + `codebase-design` + `domain-modeling`（mattpocock/skills，成组、已改造：报告落 `comtools/tmp/dailyworkbench/`、ADR 格式指向宪章）。`improve-codebase-architecture` / `retro` 带 `disable-model-invocation: true`，**只能手动 `/名字` 触发** |
+| **项目** `.claude/skills/` · gitignore | **10** | `speckit-*`：`analyze` `checklist` `clarify` `constitution` `converge` `implement` `plan` `specify` `tasks` `taskstoissues`（`.gitignore` 第 17 行） |
+| **plugin** | **1** | `eli5@claude-community` v1.0.0（2026-08-28 装，user scope），调用名 `eli5:eli5` |
+| **第一方捆绑** `anthropic-skills:*` | **8** | `docs` `docx` `import-memory` `morning` `pdf` `pptx` `skill-creator` `xlsx`——**09-04 表漏收**；与全局 `docx` `pptx` `skill-creator` 同名并存，调用时以前缀区分 |
+| **内置第一方** | **16** | `code-review` `simplify` `security-review` `run` `init` `loop` `schedule` `claude-api` `workflow-authoring` `dataviz` `artifact-design` `artifact-diagramming` `artifact-capabilities` `update-config` `keybindings-help` `fewer-permission-prompts`（09-04 表里的 `design` 本会话已不出现，剔除） |
+| **本地 MCP server** | **3** | `chrome-devtools`、`mermaid`（stdio 包装脚本）+ **`dailyworkbench`（自研，`backend/mcp/`，ADR 0008，09-04 后新增）**；均注册在用户级 `~/.claude.json`，项目级为空，配置里**无任何凭据字段** |
+| **claude.ai connector** · 已授权 | **1** | `Claude Docs`（`mcp__claude_ai_Claude_Docs__*`，可用） |
+| **claude.ai connector** · 未授权 | 10 | Asana / Atlassian / Box / Canva / Figma / HubSpot / Intercom / Linear / Notion / monday.com——**已知但未授权**，当前会话不可用，需在 claude.ai 连接器设置里 OAuth。**勿与上面 3 个本地 server 混为一栏** |
 
-**排除项**：`~/.claude/skills/prompt-refine-workspace/` **没有 SKILL.md**，Claude Code 不会加载，不计入。
+**排除项**：`~/.claude/skills/prompt-refine-workspace/` 与 `~/.claude/skills/synced/` **没有 SKILL.md**，Claude Code 不会加载，不计入。
 
-**两条对账结论**：
-1. **姊妹篇账本点名到的只有 6 个**（`design-principles` `database-designer` `brainstorming` `archify` `diagram-render` `claude-api`）外加 Spec-Kit 统称——**那是「通用选型」文档的职责边界，不是缺陷**；「我装了什么」由本节负责。
-2. **内置第一方那 17 个此前从未入册**，其中 `code-review` `simplify` `security-review` `loop` `schedule` `run` 恰好覆盖本项目最薄的上线 / 运维 / 迭代三站（见 §6），**零安装、零供应链风险**。
+**三条对账结论**：
+1. **姊妹篇账本点名到的是「框架/来源」级**（`design-principles` `database-designer` `brainstorming` `archify` `diagram-render` `claude-api`、Spec-Kit 统称、mattpocock/skills 14 个统称）——**那是「通用选型」文档的职责边界，不是缺陷**；「我装了什么、哪个入库」由本节负责，账本 §2 说「具体清单见姊妹篇」指的就是这张表。
+2. **内置第一方那 16 个此前从未入册**，其中 `code-review` `simplify` `security-review` `loop` `schedule` `run` 恰好覆盖本项目最薄的上线 / 运维 / 迭代三站（见 §6），**零安装、零供应链风险**。
+3. **同类能力叠装提醒**（账本 §9 已记）：mattpocock 的 `tdd` / `diagnosing-bugs` 与内置 `code-review` / `simplify` 功能有重叠，同一场景可能被多个 skill 抢触发；目前刻意**没装** mattpocock 的 `code-review`，就是为此。4 个待入库 skill 下次提交时随仓入库，换机即到位。
 
 ---
 
@@ -285,6 +289,7 @@
 
 ## 8 · 变更记录
 
+- 2026-09-18 · v1.5 · **§5 本机实测清单重新枚举**（47+2 → 70+3+1）：项目级 `.claude/skills/` 从 11 变 27，按 **已入库 13 / 待入库 4 / gitignore 10** 三行分列并逐个标来源（`git ls-files` + `git check-ignore` 实判，不凭记忆）；补收 09-04 漏掉的 `anthropic-skills:*` 捆绑 8 个与自研 `dailyworkbench` MCP（ADR 0008）；剔除本会话已不存在的内置 `design`；connector 拆成「已授权 1（Claude Docs）/ 未授权 10」两行。§4 同步订正「只含一个入库 skill」→「13 入库 + 4 待入库」，并补「有项目级 `CLAUDE.md`」。缘起：账本 v1.8 写「具体清单见姊妹篇」，回查发现本节还是 09-04 快照、连 09-15 引入的 11 个 mattpocock skill 都没列——指针指向了一张空表。
 - 2026-09-04 · v1.4 · **设计规范有了强制者**：§7「设计规范」行的「由谁强制」从「人工 + 走查」改为 **`check_design_tokens.py`（CI 硬门禁）+ 效果图人过目 + 走查**——脚本落地了才记；同时订正 §0「没有项目级 `CLAUDE.md`」——本轮新建了一份，只做指针、不声明任何 MCP / skill，§0 的结论不变。缘起：X 帖「design.md → 效果图 → 代码」；核对发现准则 v1.1 与 CSS 实际脱节（裸 px 四百余处 vs 令牌几十处、19 个化石令牌），文档写了没人查就是愿望。
 - 2026-09-04 · v1.3 · **编码规范实物入册**：新增 §7「横切面实物：本项目的编码规范靠什么」（原 §7 变更记录顺延为 §8），把此前散落各处、从没被归位成一个概念的规范实物列全——类型契约（`jsconfig.json` 只覆盖 `state.js`/`net.js`）、单一契约（`WBData` 在 `js/core/net.js:7`）、语法门禁（flake8 四码）、提交规范（Conventional Commits 6 种 type）、设计规范、文档规范、工程红线，每行标明「**由谁强制**」；并据实记下四个缺口（类型只覆盖 2 文件 / 风格检查不阻塞 / 无 formatter / commit 无 hook）。缘起：追问「后端里还有接口设计、数据库设计、开发代码规范」——前两者是**层×阶段**的交叉格（已在账本 §4 归位），而编码规范既不是阶段也不是层，是**第五个横切面**。
 - 2026-09-04 · v1.2 · **阶段轴对齐八站**：§1 阶段轴由七站改为八站（补「退役」），并明确「内容/数据管道」与「横切关注点」两类**不在轴上**的东西（横切面定义指向账本 §0.5，不复制）；§6 新增 6.4「退役 / 删除」——记下本仓唯一有实绩却从没被记成阶段的一站（`c7b14ad`：111 文件、11,402 行删除，含整个 `twa/` 与 APK 构建流水线），判据溯源到开发心法的「删除测试」，并标出「删除目前是事件驱动、缺周期性触发」这个缺口。缘起：追问阶段模型能否更原子化时发现，七站模型没有终点，于是删除永远排在「以后再说」。
