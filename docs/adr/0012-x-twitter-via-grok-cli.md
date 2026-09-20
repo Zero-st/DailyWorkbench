@@ -15,7 +15,7 @@
 - 理由：完全复用既有「取数层外部 CLI + 优雅劣化」（ADR 0007）与「MCP 隔离只读工具」（ADR 0009）两条缝，X 帖子自动流经 enrich 拿到统一摘要/标签/向量与语义检索（ADR 0011），零新增 App 运行时依赖（grok-cli 只在取数/按需被 subprocess 调用）。引擎抽象在 `grok.py` 一层，日后切直连 xAI x_search 只改该文件，上游与契约不动（守 ADR 0010「可撤回」）。
 
 - 代价 / 护栏 / 何时重估：
-  - **依赖红线**：新增 Bun 运行时 + grok-cli（撞「依赖极简」）。护栏：隔离在取数/集成层，未配置（`grokCmd`/`grokApiKey` 缺失）时 X 源**优雅停用**（该源不出现、其余管道与前端照常），App 仍零依赖离线可跑。
+  - **依赖红线**：新增 Bun 运行时 + grok-cli（撞「依赖极简」）。护栏：隔离在取数/集成层，未配置（`grokCmd`/`grokApiKey` 缺失）时 X 源**优雅停用**（该源不出现、其余管道与前端照常），App 核心仍不引新依赖、可离线跑。
   - **输出脆弱**：grok-cli 是 Agent，`--format json` 是事件流不是干净帖子数组；结构化靠 PROMPT 强约束 + 容错解析，**非契约级稳定**——真实事件 schema 需按落地时手跑一次校准 `grok.py` 的 `_extract_text`/`_parse_posts`。
   - **成本**：每个 query / 每次 `x_search` ＝ 一轮 Agent（多轮工具），消耗 xAI 付费额度；用 `--max-tool-rounds 3` + `x_queries` 精简 + `PER_QUERY` 上限压。ADR 0007 曾点名登录墙源（Twitter）需单独处理——本路经 xAI，**无需推特登录**，绕开该问题。
   - **密钥红线**：`GROK_API_KEY` 只写 `workbench.local.json`（gitignore），不入库、不进对话、不下放前端。

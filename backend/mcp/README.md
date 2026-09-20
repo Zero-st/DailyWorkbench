@@ -4,8 +4,8 @@
 「工具」直接读写工作台的 Obsidian 知识库与沉淀库——不用再「复制指令→人肉贴来贴去」。
 
 > **集成层，不进 App 运行时。** App 核心（`backend/server.py` + 前端 SPA）永不 import
-> 本模块；`mcp` 依赖只在运行本模块时才需要。所以 `git clone` + 双击 `index.html` /
-> `python -m backend.server` 照样**零依赖离线可跑**。心法同 [ADR 0007](../../docs/adr/0007-opencli-ingestion-source.md)，
+> 本模块；`mcp` 依赖只在运行本模块时才需要。所以 `git clone` + `python -m backend.server`
+> 起本地服务，核心照样**不引新依赖、可离线跑**。心法同 [ADR 0007](../../docs/adr/0007-opencli-ingestion-source.md)，
 > 决策见 [ADR 0008](../../docs/adr/0008-mcp-integration-layer.md)。
 
 ## 工具

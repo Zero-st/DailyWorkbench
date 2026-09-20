@@ -7,7 +7,7 @@
 北极星守护（同 ADR 0007「重工具关取数层」范式）：
     - `mcp` 是第三方依赖，**只在显式运行本模块时才需要**；
     - App 核心（`backend/server.py` 与前端 SPA）**永不 import 本模块**，故
-      `git clone` + 双击 `index.html` / `python -m backend.server` 仍零依赖离线可跑。
+      `git clone` + `python -m backend.server` 起本地服务，核心仍不引新依赖、可离线跑。
 
 运行（stdio，供 `claude mcp add` 拉起；用绝对路径最稳，绕开 cwd 问题）：
     <anaconda-python> /abs/path/DailyWorkbench/backend/mcp/server.py

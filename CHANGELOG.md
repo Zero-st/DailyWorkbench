@@ -22,6 +22,11 @@
   - 为什么不是「惰性代码」而必须删：8 个 getter 缺数据时静默返回空壳且**不回读上一版 `data.json`**（与 7 个资讯源的 keep-last-good 相反），而 `main()` 每次原子覆盖整个文件——等于在任何没有 WorkBuddy 的机器上跑一次 `export_data`，就把这 8 个键清空。
 
 ### Changed
+- **ADR 0010「北极星松绑」的口径补刷到长尾**（补记：`f9cd9bd`(09-10) 立 ADR 时只改了 4 个文件，两次都漏记 CHANGELOG）。把 backend docstring（`clients/agent.py`、`core/config.py`、`mcp/server.py`、`mcp/README.md`、`mcp/requirements.txt`）与 8 篇设计/指南/心法/路线图文档里残留的「零构建·零依赖·离线可跑 / 双击 `index.html`」统一改为「零构建 · 依赖极简且可撤回 · 本地起服务即可跑（离线优先）」。
+  - [`docs/adr/0001`](docs/adr/0001-zero-build-north-star.md) 顶部挂「已被 0010 修订」横幅——此前从 0001 读进来的人会被旧口径误导，原文保留不改。
+  - 两处不只是换词：`捕获收件箱-浏览器扩展-设计.md` 补齐「playwright 为何松绑后仍被禁」（属重依赖，不是 `vendor/` 钉版可撤回那一类）；`界面设计准则.md` §0 补「前端第三方库仅限 `vendor/` 下钉版随仓入库」。
+  - 顺手修 [`docs/adr/0012`](docs/adr/0012-x-twitter-via-grok-cli.md) §代价 同一句里的自相矛盾（前半截已写「撞『依赖极简』」、后半截还写「仍零依赖离线可跑」）。
+- 订正 `docs/README.md` §4 需求台账索引行：`R01–R26（✂5）` → `R01–R27（✂6）`（09-20 那次只更了 `adr/` 行）。
 - `js/core/feeds.js` 两处空状态文案不再让用户「让 WorkBuddy 手动跑 `fetch_ai_daily.py`」，改为真实可用的 `python -m backend.pipeline.fetch_ai_daily`。
 - `test_workbench.py` 的 `test_write_sync_status_preserves_fields` 改用契约内真实键 `generatedAt` 当「其余字段」样本（原用已删除的 `kpi`）。
 

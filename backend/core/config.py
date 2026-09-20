@@ -46,7 +46,7 @@ def opencli_cmd():
     故属「环境绑定」参数：优先级 env WB_OPENCLI_CMD > workbench.local.json opencliCmd >
     PATH 上的 opencli。值可为字符串（"opencli" 或 "node /path/to/dist/src/main.js"，按 shell
     词法切分）或数组（["node", "/path/to/main.js"]）。**返回 None 表示未配置**——抓取器据此
-    优雅跳过、保留旧数据，不影响其余管道（守北极星：App 仍零依赖离线可跑）。
+    优雅跳过、保留旧数据，不影响其余管道（守北极星：App 核心仍不引新依赖、可离线跑）。
     """
     raw = os.environ.get("WB_OPENCLI_CMD") or _LOCAL.get("opencliCmd")
     if isinstance(raw, list):
@@ -65,7 +65,7 @@ def grok_cmd():
     只在抓 X 数据 / 按需查询时被调用，**不进 App 核心运行时**，故属「环境绑定」参数：
     优先级 env WB_GROK_CMD > workbench.local.json grokCmd > PATH 上的 grok。值可为字符串
     （"grok" 或 "bun /abs/grok.js"，按 shell 词法切分）或数组。**返回 None 表示未配置**——
-    引擎据此抛异常、上游优雅跳过该源，App 仍零依赖离线可跑。见 ADR 0012。
+    引擎据此抛异常、上游优雅跳过该源，App 核心仍不引新依赖、可离线跑。见 ADR 0012。
     """
     raw = os.environ.get("WB_GROK_CMD") or _LOCAL.get("grokCmd")
     if isinstance(raw, list):
@@ -109,7 +109,7 @@ def claude_cmd():
     被 `backend/clients/agent.py` 调用，**不进 App 核心运行时**，故属「环境绑定」参数：
     优先级 env WB_CLAUDE_CMD > workbench.local.json claudeCmd > PATH 上的 claude。
     值可为字符串（"claude" 或 "/abs/claude"，按 shell 词法切分）或数组。**返回 None 表示
-    未配置**——agent 层据此产出 error 事件优雅劣化（页面显示「未配置」），App 仍零依赖离线可跑。
+    未配置**——agent 层据此产出 error 事件优雅劣化（页面显示「未配置」），App 核心仍不引新依赖、可离线跑。
     """
     raw = os.environ.get("WB_CLAUDE_CMD") or _LOCAL.get("claudeCmd")
     if isinstance(raw, list):

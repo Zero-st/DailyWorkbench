@@ -3,10 +3,10 @@
 
 设计要点（决策与理由的单一真源 = docs/adr/0009-*.md）：
 - **编排权在 harness**：claude 跑 agent loop / 调工具 / 抓取；本模块只负责「拉起 + 解析 + 转发」，
-  绝不在这里重造 agent loop（那会砸零依赖北极星 + 背维护债）。
+  绝不在这里重造 agent loop（那会砸「依赖极简且可撤回」北极星 + 背维护债）。
 - **一律只读**：页面触发的 agent 白名单 = kb 读工具 + WebFetch，**绝不含 kb_save/Bash/Edit/Write**。
   写库由用户在页面「起草→点保存」经现成 /api/kb/save 落地（人工闸）。改 READ_ONLY_TOOLS = 改安全边界。
-- **零依赖**：只 subprocess 调 claude 二进制（同 local_refresh / opencli 范式），不引 Agent SDK。
+- **不引新依赖**：只 subprocess 调 claude 二进制（同 local_refresh / opencli 范式），不引 Agent SDK。
 - **优雅劣化**：claude 未配置（claude_cmd()==None）→ 产出一条 error 事件（configured:false），不抛异常。
 - **MCP 隔离**：--strict-mcp-config + 内联 --mcp-config 只挂 dailyworkbench 一个 stdio server，
   与用户其余（可能未授权的）MCP 隔离，且不依赖 `claude mcp add` 的 user-scope 注册。
