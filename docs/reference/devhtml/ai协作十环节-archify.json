@@ -1,0 +1,279 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "AI 协作十环节 · DailyWorkbench 实践图解",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "docs/reference/devhtml/ai协作十环节-archify.html",
+    "views": [
+      {
+        "id": "think-first",
+        "label": "想清楚再动",
+        "focus": [
+          "init",
+          "research",
+          "ledger",
+          "analyze"
+        ],
+        "note": "开工前先建项目空间，再让调研、台账、图先行把「要做什么」收敛下来。"
+      },
+      {
+        "id": "evidence-gate",
+        "label": "留证与门禁",
+        "focus": [
+          "mockup",
+          "design",
+          "adr",
+          "code",
+          "gate"
+        ],
+        "note": "效果图先行、设计说明双读者、单向门写 ADR，最后由五项硬门禁把关。"
+      },
+      {
+        "id": "feedback-loop",
+        "label": "闭环反哺",
+        "focus": [
+          "gate",
+          "retro",
+          "ledger"
+        ],
+        "note": "门禁红打回改码；复盘结论回流需求台账，成为下一轮的输入。"
+      }
+    ],
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "security": {
+          "label": "红线与门禁"
+        },
+        "external": {
+          "label": "外部调研"
+        },
+        "database": {
+          "label": "台账·单一真源"
+        },
+        "backend": {
+          "label": "分析与成文"
+        },
+        "frontend": {
+          "label": "原型与实现"
+        },
+        "messagebus": {
+          "label": "复盘反哺"
+        }
+      }
+    }
+  },
+  "lanes": [
+    {
+      "id": "setup",
+      "label": "开工前置"
+    },
+    {
+      "id": "req",
+      "label": "需求与调研"
+    },
+    {
+      "id": "doc",
+      "label": "设计与留证"
+    },
+    {
+      "id": "build",
+      "label": "研发与门禁"
+    }
+  ],
+  "mainPath": [
+    "init",
+    "research",
+    "ledger",
+    "analyze",
+    "mockup",
+    "design",
+    "adr",
+    "code",
+    "gate",
+    "retro"
+  ],
+  "nodes": [
+    {
+      "id": "init",
+      "lane": "setup",
+      "col": 0,
+      "type": "security",
+      "label": "0 · 项目初始化",
+      "sublabel": "CLAUDE.md 七条指针",
+      "tag": "docs/README 单一真源",
+      "width": 120
+    },
+    {
+      "id": "research",
+      "lane": "req",
+      "col": 0,
+      "type": "external",
+      "label": "1 · 市场分析",
+      "sublabel": "docs/research/ 选型",
+      "tag": "多源交叉·回出处",
+      "width": 120
+    },
+    {
+      "id": "ledger",
+      "lane": "req",
+      "col": 1,
+      "type": "database",
+      "label": "2 · 需求调研",
+      "sublabel": "需求台账 R01–R26",
+      "tag": "现状单一真源",
+      "width": 120
+    },
+    {
+      "id": "analyze",
+      "lane": "req",
+      "col": 2,
+      "type": "backend",
+      "label": "3 · 需求分析",
+      "sublabel": "图先行：先画再写",
+      "tag": "四问 / YAGNI",
+      "width": 120
+    },
+    {
+      "id": "mockup",
+      "lane": "doc",
+      "col": 2,
+      "type": "frontend",
+      "label": "4 · 原型设计",
+      "sublabel": "界面设计准则 §6.0",
+      "tag": "效果图先过目",
+      "width": 120
+    },
+    {
+      "id": "design",
+      "lane": "doc",
+      "col": 3,
+      "type": "backend",
+      "label": "5 · 设计说明",
+      "sublabel": "docs/design/*-设计",
+      "tag": "Markdown 作事实源",
+      "width": 120
+    },
+    {
+      "id": "adr",
+      "lane": "doc",
+      "col": 4,
+      "type": "security",
+      "label": "6 · 评审留证",
+      "sublabel": "单向门写 ADR",
+      "tag": "同步需求演进史",
+      "width": 120
+    },
+    {
+      "id": "code",
+      "lane": "build",
+      "col": 4,
+      "type": "frontend",
+      "label": "7 · 研发",
+      "sublabel": "小步提交·ESM 边界",
+      "tag": "真源 state.js",
+      "width": 120
+    },
+    {
+      "id": "gate",
+      "lane": "build",
+      "col": 5,
+      "type": "security",
+      "label": "8 · 测试上线",
+      "sublabel": "五项硬门禁 + 走查",
+      "tag": "bump·令牌·pytest",
+      "width": 120
+    },
+    {
+      "id": "retro",
+      "lane": "doc",
+      "col": 5,
+      "type": "messagebus",
+      "label": "9 · 运营反馈",
+      "sublabel": "docs/planning/ 复盘",
+      "tag": "自评打分·图解复盘",
+      "width": 120
+    }
+  ],
+  "edges": [
+    {
+      "from": "init",
+      "to": "research",
+      "label": "先定盘再查"
+    },
+    {
+      "from": "research",
+      "to": "ledger",
+      "label": "结论落一行"
+    },
+    {
+      "from": "ledger",
+      "to": "analyze",
+      "label": "取本轮要做的"
+    },
+    {
+      "from": "analyze",
+      "to": "mockup",
+      "variant": "emphasis",
+      "route": "drop",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "mockup",
+      "to": "design",
+      "label": "过目后成文"
+    },
+    {
+      "from": "design",
+      "to": "adr",
+      "label": "不可逆才留证"
+    },
+    {
+      "from": "adr",
+      "to": "code",
+      "variant": "emphasis",
+      "route": "drop",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "code",
+      "to": "gate",
+      "label": "本地全绿再提交"
+    },
+    {
+      "from": "gate",
+      "to": "retro",
+      "label": "绿灯放行",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate",
+      "to": "code",
+      "label": "任一项红即打回",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "from": "retro",
+      "to": "ledger",
+      "label": "复盘反哺下一轮",
+      "variant": "dashed",
+      "role": "return"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "三条心法 · 本仓落点",
+      "items": [
+        "充分：CLAUDE.md 七条指针 + docs/README 单一真源，决策写回需求演进史",
+        "约束：引入 X 四问 / YAGNI，只有单向门才写 ADR，双向门直接试",
+        "慢下来：图先行（思维导图→流程图→写码），新视觉先出效果图过目"
+      ]
+    }
+  ]
+}
