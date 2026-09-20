@@ -84,14 +84,15 @@ docs/
 | [开发心法-多维思维总纲.md](principles/开发心法-多维思维总纲.md) | principles | 宪章之上的心法：四顶帽子（产品/设计/工程/决策）× 何时戴 + 产品帽判据 |
 | [AI时代程序员成长-心法.md](principles/AI时代程序员成长-心法.md) | principles | 姊妹篇：AI 替你写代码之后人该长哪些肌肉——定价表 / 四杠杆 / 五转变 / AI 放大的坑 / 练习节律 |
 | [产品思维-心法.md](principles/产品思维-心法.md) | principles | 第三姊妹：产品判断力怎么练——五根判断轴 + 平台采矿手册（GitHub/X/中文博主/小红书）+ 真实案例卡（均可核实） |
-| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 · 0008 MCP 集成层工具化（in-repo，不进运行时） · 0009 页面驱动 agent（subprocess `claude -p` + SSE 流式，只读白名单 + 人工写闸） · 0010 松绑「零依赖」为「依赖极简且可撤回」（修订 0001；构建步骤仍是单向门） · 0011 引入 Zilliz Cloud 向量库做资讯语义检索（REST/urlopen·BYO embedding·扩 data.json 契约=单向门） · 0012 接入 X/推特资讯源（经 grok-cli 取数引擎·定时源+按需 MCP 工具·扩 data.json 契约=单向门） · 0013 切除本机 WorkBuddy 遥测数据线（data.json 契约**收窄** 17 键→9 键=单向门；消费视图早已下架、数据线空转且会空值硬覆盖） · 0014 四个 agent skill 全量入仓（含 37M `node_modules`；开发期资产不碰产品零构建北极星，但「可撤回」对其失效=单向门） |
+| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 · 0008 MCP 集成层工具化（in-repo，不进运行时） · 0009 页面驱动 agent（subprocess `claude -p` + SSE 流式，只读白名单 + 人工写闸） · 0010 松绑「零依赖」为「依赖极简且可撤回」（修订 0001；构建步骤仍是单向门） · 0011 引入 Zilliz Cloud 向量库做资讯语义检索（REST/urlopen·BYO embedding·扩 data.json 契约=单向门） · 0012 接入 X/推特资讯源（经 grok-cli 取数引擎·定时源+按需 MCP 工具·扩 data.json 契约=单向门） · 0013 切除本机 WorkBuddy 遥测数据线（data.json 契约**收窄** 17 键→9 键=单向门；消费视图早已下架、数据线空转且会空值硬覆盖） · 0014 四个 agent skill 全量入仓（含 37M `node_modules`；开发期资产不碰产品零构建北极星，但「可撤回」对其失效=单向门） · 0015 使用量埋点走独立本地 jsonl（不进 data.json；无自由文本字段；消费者只有 CLI 报表不做视图；行格式=单向门） |
 | [requirements/README.md](requirements/README.md) | requirements | **需求总纲**：这个目录管什么/不管什么（与 CHANGELOG/ADR/plan 的分工）+ 怎么加一条 + 两条边界（08-26 之前不可追溯、不采用 Spec-Kit spec 流）|
-| [需求台账.md](requirements/需求台账.md) | requirements | **需求现状单一真源**：`R01`–`R27` 一行一需求（✅14 · 🔧3 · 🚧3 · ⏸1 · ✂6），含状态 / 落点 / 提出来源 |
+| [需求台账.md](requirements/需求台账.md) | requirements | **需求现状单一真源**：`R01`–`R28` 一行一需求（✅15 · 🔧3 · 🚧3 · ⏸1 · ✂6），含状态 / 落点 / 提出来源 |
 | [需求演进史.md](requirements/需求演进史.md) | requirements | **需求级变更时间线**（2026-08-26 → 09-20，26 条）：提出 / 改形态 / 砍 / 完成 / 推迟 / 约束，每条带 commit 或文档证据 |
 | [知识飞轮-路线图.md](planning/知识飞轮-路线图.md) | planning | 三层大脑模型 + 四阶段路线图（方向盘） |
 | [项目总览-需求与进度.md](planning/项目总览-需求与进度.md) | planning | 一页总账：需求 / 已完成 / 待优化 / 待完成 |
 | [复盘-MVP闭环首跑.md](planning/复盘-MVP闭环首跑.md) | planning | 蒸馏库 0→1 首张真实经验卡的里程碑复盘 |
 | [复盘-dogfood冲刺-W1.md](planning/复盘-dogfood冲刺-W1.md) | planning | 产品帽 dogfood 一周：每日日志 + 摩擦清单 + 三门筛选 → 决定下一个功能 |
+| [复盘-dogfood冲刺-W2-W4.md](planning/复盘-dogfood冲刺-W2-W4.md) | planning | **重开的那一份**（09-23 → 10-17）：先解剖 W1 为何 0/7 回填，再给每日 3 分钟契约 + 周五 15 分钟仪式 + 四周门；表由 `usage_report` 生成、人只写结论句；含功能级 5 条与**项目级**放弃线 |
 | [复盘-OpenCLI取数层接入.md](planning/复盘-OpenCLI取数层接入.md) | planning | 把 OpenCLI 作可劣化取数层接入的里程碑复盘：执行步骤 / 优雅劣化实测 / 踩坑 / 可迁移的「外部取数源接入」心智模型 |
 | [复盘-项目自评打分-2026-09.md](planning/复盘-项目自评打分-2026-09.md) | planning | 用指南打的第一张卡（v0.10.0，含 09-17 真机复验）：硬门·频率门**不过**（17 天仅 3 天有使用痕迹、近 6 天为 0）→ 总分 0、参考值 27；结果层对表 dogfood W1 预注册指标（区间真卡 0 · 收件箱 0 · 温故点开 0 · 复盘空白）+ 质量层四层真机重打（深色模式不可读 2.5）+ 缺陷清单 D1–D7 + 决策/结果分列 + 下期事前目标（10-17 对表） |
 | [运行时架构-数据流.md](design/运行时架构-数据流.md) | design | 一页架构总图（mermaid）：前端↔后端↔data.json 契约↔三大脑 + 数据流 |

@@ -13,6 +13,22 @@
 
 ## [Unreleased] · 下个版本目标
 
+> **2026-09-20 对表冲刺 W0**（缘起：用户问「规划接下来安排」；结论是待办表不是最强信号，9-17 自评卡总分 0 才是。计划见 `.claude/plan/对表冲刺-2026-09.md`，**这 4 周新增产品功能 = 0 个**）：
+
+### Added
+- **使用量埋点 + CLI 报表**（[ADR 0015](docs/adr/0015-usage-metering-local-jsonl.md)）：`POST /api/usage` → `usage.local.jsonl`（append-only、已 gitignore），`python -m backend.pipeline.usage_report` 四源交叉出表。行里只有 at/day/ev/cid/k，无任何自由文本；不进 `data.json`；不做统计视图。需求侧记为 `R28`。
+- **`scripts/workbench.service`**：systemd --user 单元随仓走。此前后端**根本没常驻**，而 `recall.js` 在 `/api/kb/deposits` 失败时静默清空温故卡——今日页是空壳且不报错。
+- **`backend/pipeline/vault_backup.py`** + 本机 crontab 两行（每小时 `local_refresh`、每天 22:30 备份）。缺省只提交不 push（vault 的 origin 是公开仓，推送不可逆）。
+
+### Fixed
+- **D1 幽灵卡**：`list_deposits()` 从不校验 `relPath` 指向的文件还在不在。账本 append-only 而删卡发生在 Obsidian 里 → 已删的卡照样进蒸馏库与温故卡，且因从未复看被判 `overdue=99999` **永远排第一**，点开 404。改读侧不改写侧，MCP 的 `kb_deposits` 一并修好。
+- **温故空态不再整块消失**、**D4 两处空态**（复盘卡复读待办文案 / 代办空态重复两行）。
+- **D3 主按钮豆腐块**：➕💾📥🔍🕐 与番茄钟 ▶⏸ 迁内联 SVG，`util.js` 补 4 个 Feather path。
+- **D8（新发现）**：`.sync-status` 是 nowrap 药丸而侧栏槽位仅 ~180px，warn 态文案溢出、压在主区页脚上；移动端早有截断兜底、桌面端漏了。正文缩短、完整原因进 `title`。
+- **页脚不再断言「本机数据每小时自动同步」**——本机既无 cron 也无 runner，那是没有数据支撑的静态断言。新鲜度唯一真源是 `#syncStatus`。
+- **时区**：本机系统是 America/Los_Angeles、使用者 shell/浏览器是 Asia/Shanghai，差 15 小时。systemd 单元加 `Environment=TZ`、crontab 加 `CRON_TZ` + 命令前缀 `TZ`。不修则 cron 写的 `sync.lastRun` 会让前端**永远显示「同步已停」**，22:30 的备份也会在 CST 次日 13:30 触发。
+
+
 > **2026-09-20 契约收窄批次**（缘起：用户已不再使用 WorkBuddy，问「项目中还存在有关 workbuddy 相关数据获取？」）：
 
 ### Removed
