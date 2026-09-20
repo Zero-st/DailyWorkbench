@@ -11,16 +11,15 @@
     不影响 export_data 与其余资讯源。
   - grok-cli 是 Agent，输出结构化帖子靠 grok.py 的 PROMPT 强约束 + 容错解析，非契约级稳定。
 """
-import os
-import json
 from datetime import datetime
 
 from backend.core import config as wb_config
 from backend.core.paths import X_JSON
 from backend.clients import grok
+from backend.pipeline.feeds import FEEDS, run_fetcher
 
+SPEC = FEEDS["x"]  # 键名/文案/空壳/预览等随源而变的事实，见 feeds.py
 OUT = X_JSON
-CANONICAL = "https://x.com/"
 PER_QUERY = 12  # 每个 query 取多少条，乘以 query 数即上限；控成本
 
 
@@ -55,8 +54,8 @@ def build():
     return {
         "date": datetime.now().strftime("%Y-%m-%d"),
         "fetchedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "source": "X (via grok-cli)",
-        "canonical": CANONICAL,
+        "source": SPEC.source,
+        "canonical": SPEC.canonical,
         "count": len(items),
         "items": items,
         "warnings": warnings,
@@ -64,19 +63,7 @@ def build():
 
 
 def main():
-    try:
-        data = build()
-    except Exception as e:
-        print("[WARN] X/推特抓取失败，保留上一次结果：%s" % e)
-        if os.path.isfile(OUT):
-            print("       已有 %s，未覆盖" % OUT)
-        return 1
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print("[OK] X/推特 %s · %d 条 -> %s" % (data["date"], data["count"], OUT))
-    for i, it in enumerate(data["items"][:5], 1):
-        print("   %d. %s" % (i, it["title"][:50]))
-    return 0
+    return run_fetcher(SPEC, build, OUT)
 
 
 if __name__ == "__main__":

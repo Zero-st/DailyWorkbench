@@ -9,15 +9,14 @@
   - 解析用 wb_common.parse_feed（命名空间无关，RSS/Atom 通吃），与少数派源共用。
   - 统一 item：{title, summary, url, source}，与其余资讯源同构。
 """
-import os
-import json
 from datetime import datetime
 
 from backend.utils import common as wb_common
 from backend.core.paths import PRODUCTHUNT_JSON
+from backend.pipeline.feeds import FEEDS, run_fetcher
 
+SPEC = FEEDS["productHunt"]  # 键名/文案/空壳/预览等随源而变的事实，见 feeds.py
 FEED = "https://www.producthunt.com/feed"
-CANONICAL = "https://www.producthunt.com"
 OUT = PRODUCTHUNT_JSON  # 钉在仓库根
 LIMIT = 20
 
@@ -42,8 +41,8 @@ def build():
     return {
         "date": datetime.now().strftime("%Y-%m-%d"),
         "fetchedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "source": "Product Hunt (Atom feed)",
-        "canonical": CANONICAL,
+        "source": SPEC.source,
+        "canonical": SPEC.canonical,
         "count": len(items),
         "items": items,
         "warnings": [],
@@ -51,20 +50,7 @@ def build():
 
 
 def main():
-    try:
-        data = build()
-    except Exception as e:
-        print("[WARN] Product Hunt 抓取失败，保留上一次结果：%s" % e)
-        if os.path.isfile(OUT):
-            print("       已有 %s，未覆盖" % OUT)
-        return 1
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print("[OK] Product Hunt %s · %d 条 -> %s"
-          % (data["date"], data["count"], OUT))
-    for i, it in enumerate(data["items"][:5], 1):
-        print("   %d. %s" % (i, it["title"][:50]))
-    return 0
+    return run_fetcher(SPEC, build, OUT)
 
 
 if __name__ == "__main__":

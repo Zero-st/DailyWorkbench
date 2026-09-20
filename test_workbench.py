@@ -424,30 +424,72 @@ def test_hn_build_raises_when_no_valid_items(monkeypatch):
         fetch_hacker_news.build()
 
 
-def test_get_hacker_news_accumulates_history(tmp_path, monkeypatch):
-    hn = tmp_path / "hacker_news.json"
-    data = tmp_path / "data.json"
-    data.write_text(json.dumps({"hackerNews": {"history": [
-        {"date": "2026-09-06", "count": 1, "items": [{"title": "old"}]},
+# ---- 资讯源（Feed）表驱动回归：一份参数化覆盖全部 7 源 ----
+# 此前是逐源手写 8 个近同构测试、只覆盖 5 源（aiDaily/dailyNews 零覆盖）。
+# 现在遍历 feeds.FEEDS，加新源即自动纳入；骨架逻辑见 backend/pipeline/feeds.py。
+from backend.pipeline.feeds import FEEDS, HISTORY_DAYS  # noqa: E402
+
+# key -> export_data 里的 getter 名（productHunt 的函数名没有下划线，故显式写表）
+FEED_GETTERS = {
+    "aiDaily": "get_ai_daily", "dailyNews": "get_daily_news",
+    "hackerNews": "get_hacker_news", "githubTrending": "get_github_trending",
+    "productHunt": "get_producthunt", "sspai": "get_sspai", "x": "get_x",
+}
+
+
+def _feed_payload(spec, date_s, title):
+    d = {"date": date_s, "fetchedAt": date_s + " 10:00", "count": 1,
+         spec.kind: [{"title": title}], "canonical": spec.canonical}
+    if spec.source:
+        d["source"] = spec.source
+    return d
+
+
+def test_feed_table_matches_getters():
+    # 加了新资讯源却忘了配 getter（或反之）→ 这里红，不会等到线上才发现
+    assert set(FEED_GETTERS) == set(FEEDS)
+
+
+@pytest.mark.parametrize("key", list(FEEDS))
+def test_feed_accumulates_history(key, tmp_path, monkeypatch):
+    spec = FEEDS[key]
+    src, data = tmp_path / "src.json", tmp_path / "data.json"
+    data.write_text(json.dumps({key: {"history": [
+        {"date": "2026-09-06", "count": 1, spec.kind: [{"title": "old"}]},
     ]}}), encoding="utf-8")
-    hn.write_text(json.dumps({
-        "date": "2026-09-07", "fetchedAt": "2026-09-07 10:00", "count": 1,
-        "items": [{"title": "new", "url": "u", "source": "Hacker News"}],
-        "source": "Hacker News (via OpenCLI)", "canonical": "https://news.ycombinator.com/",
-    }), encoding="utf-8")
-    monkeypatch.setattr(export_data, "HACKER_NEWS_JSON", str(hn))
+    src.write_text(json.dumps(_feed_payload(spec, "2026-09-07", "new")), encoding="utf-8")
+    monkeypatch.setattr(export_data, spec.path_attr, str(src))
     monkeypatch.setattr(export_data, "DATA_JSON", str(data))
-    out = export_data.get_hacker_news()
-    assert [h["date"] for h in out["history"]] == ["2026-09-07", "2026-09-06"]  # 新的在前
-    assert out["count"] == 1 and out["items"][0]["title"] == "new"
+    out = getattr(export_data, FEED_GETTERS[key])()
+    assert [h["date"] for h in out["history"]] == ["2026-09-07", "2026-09-06"]  # 新日份在前
+    assert out["count"] == 1 and out[spec.kind][0]["title"] == "new"
 
 
-def test_get_hacker_news_missing_file_is_safe(tmp_path, monkeypatch):
-    # OpenCLI 缺失 / 从未抓过：hacker_news.json 不存在 -> 空壳、不抛（优雅劣化）
-    monkeypatch.setattr(export_data, "HACKER_NEWS_JSON", str(tmp_path / "nope.json"))
+@pytest.mark.parametrize("key", list(FEEDS))
+def test_feed_missing_file_is_safe(key, tmp_path, monkeypatch):
+    # 抓取器没跑过 / 依赖缺失（OpenCLI、grok-cli…）→ 空壳、不抛，不影响其余源（优雅劣化）
+    spec = FEEDS[key]
+    monkeypatch.setattr(export_data, spec.path_attr, str(tmp_path / "nope.json"))
     monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
-    out = export_data.get_hacker_news()
-    assert out["count"] == 0 and out["items"] == [] and out["history"] == []
+    out = getattr(export_data, FEED_GETTERS[key])()
+    assert out["count"] == 0 and out[spec.kind] == [] and out["history"] == []
+    assert out["canonical"] == spec.canonical
+
+
+def test_feed_history_upserts_same_day_and_caps(tmp_path, monkeypatch):
+    # 同一天重复抓 → 覆盖不追加；历史只留最近 HISTORY_DAYS 个日份
+    spec = FEEDS["hackerNews"]
+    src, data = tmp_path / "src.json", tmp_path / "data.json"
+    old_hist = [{"date": "2026-08-%02d" % (d + 1), "count": 1, "items": []} for d in range(20)]
+    old_hist.append({"date": "2026-09-07", "count": 99, "items": [{"title": "旧的同一天"}]})
+    data.write_text(json.dumps({"hackerNews": {"history": old_hist}}), encoding="utf-8")
+    src.write_text(json.dumps(_feed_payload(spec, "2026-09-07", "新的同一天")), encoding="utf-8")
+    monkeypatch.setattr(export_data, spec.path_attr, str(src))
+    monkeypatch.setattr(export_data, "DATA_JSON", str(data))
+    hist = getattr(export_data, FEED_GETTERS["hackerNews"])()["history"]
+    assert len(hist) == HISTORY_DAYS == 14  # 「留最近 14 天」是产品决定，连常量值一起钉住
+    assert [h["date"] for h in hist].count("2026-09-07") == 1  # upsert，不是追加
+    assert hist[0]["items"][0]["title"] == "新的同一天"  # 留下的是新抓的那份
 
 
 def test_opencli_cmd_none_when_unconfigured(monkeypatch):
@@ -499,32 +541,6 @@ def test_gt_build_raises_when_no_valid_items(monkeypatch):
         fetch_github_trending.build()
 
 
-def test_get_github_trending_accumulates_history(tmp_path, monkeypatch):
-    gt = tmp_path / "github_trending.json"
-    data = tmp_path / "data.json"
-    data.write_text(json.dumps({"githubTrending": {"history": [
-        {"date": "2026-09-06", "count": 1, "items": [{"title": "old/repo"}]},
-    ]}}), encoding="utf-8")
-    gt.write_text(json.dumps({
-        "date": "2026-09-07", "fetchedAt": "2026-09-07 10:00", "count": 1,
-        "items": [{"title": "new/repo", "url": "u", "source": "GitHub Trending"}],
-        "source": "GitHub Trending (via OpenCLI)", "canonical": "https://github.com/trending",
-    }), encoding="utf-8")
-    monkeypatch.setattr(export_data, "GITHUB_TRENDING_JSON", str(gt))
-    monkeypatch.setattr(export_data, "DATA_JSON", str(data))
-    out = export_data.get_github_trending()
-    assert [h["date"] for h in out["history"]] == ["2026-09-07", "2026-09-06"]  # 新的在前
-    assert out["count"] == 1 and out["items"][0]["title"] == "new/repo"
-
-
-def test_get_github_trending_missing_file_is_safe(tmp_path, monkeypatch):
-    monkeypatch.setattr(export_data, "GITHUB_TRENDING_JSON", str(tmp_path / "nope.json"))
-    monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
-    out = export_data.get_github_trending()
-    assert out["count"] == 0 and out["items"] == [] and out["history"] == []
-
-
-# ---------- RSS/Atom 资讯源（路 A · stdlib，Product Hunt + 少数派）----------
 from backend.pipeline import fetch_producthunt  # noqa: E402
 from backend.pipeline import fetch_sspai  # noqa: E402
 
@@ -600,38 +616,6 @@ def test_sspai_build_maps_to_unified_items(monkeypatch):
     assert out["items"][0]["url"] == "https://sspai.com/post/1"
 
 
-def test_get_producthunt_accumulates_history(tmp_path, monkeypatch):
-    ph = tmp_path / "producthunt.json"
-    data = tmp_path / "data.json"
-    data.write_text(json.dumps({"productHunt": {"history": [
-        {"date": "2026-09-09", "count": 1, "items": [{"title": "old"}]},
-    ]}}), encoding="utf-8")
-    ph.write_text(json.dumps({
-        "date": "2026-09-10", "fetchedAt": "2026-09-10 10:00", "count": 1,
-        "items": [{"title": "new", "url": "u", "source": "Product Hunt"}],
-        "source": "Product Hunt (Atom feed)", "canonical": "https://www.producthunt.com",
-    }), encoding="utf-8")
-    monkeypatch.setattr(export_data, "PRODUCTHUNT_JSON", str(ph))
-    monkeypatch.setattr(export_data, "DATA_JSON", str(data))
-    out = export_data.get_producthunt()
-    assert [h["date"] for h in out["history"]] == ["2026-09-10", "2026-09-09"]
-    assert out["count"] == 1 and out["items"][0]["title"] == "new"
-
-
-def test_get_producthunt_missing_file_is_safe(tmp_path, monkeypatch):
-    monkeypatch.setattr(export_data, "PRODUCTHUNT_JSON", str(tmp_path / "nope.json"))
-    monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
-    out = export_data.get_producthunt()
-    assert out["count"] == 0 and out["items"] == [] and out["history"] == []
-
-
-def test_get_sspai_missing_file_is_safe(tmp_path, monkeypatch):
-    monkeypatch.setattr(export_data, "SSPAI_JSON", str(tmp_path / "nope.json"))
-    monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
-    out = export_data.get_sspai()
-    assert out["count"] == 0 and out["items"] == [] and out["history"] == []
-
-
 def test_kb_module_whitelist_includes_teardown():
     # 产品拆解沉淀线：module 与 source 均已进白名单（否则 kb.save 报错）
     assert "产品拆解" in kb_service.MODULES
@@ -692,8 +676,3 @@ def test_grok_configured_gating(monkeypatch):
     assert grok_client.configured() is True
 
 
-def test_get_x_missing_file_is_safe(tmp_path, monkeypatch):
-    monkeypatch.setattr(export_data, "X_JSON", str(tmp_path / "nope.json"))
-    monkeypatch.setattr(export_data, "DATA_JSON", str(tmp_path / "nodata.json"))
-    out = export_data.get_x()
-    assert out["count"] == 0 and out["items"] == [] and out["history"] == []

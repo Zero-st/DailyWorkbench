@@ -9,15 +9,14 @@
   - 解析用 wb_common.parse_feed（命名空间无关，RSS/Atom 通吃），与 Product Hunt 源共用。
   - 选它做「练产品感」的中文源：少数派是中文圈最好的效率工具/产品品味社区。
 """
-import os
-import json
 from datetime import datetime
 
 from backend.utils import common as wb_common
 from backend.core.paths import SSPAI_JSON
+from backend.pipeline.feeds import FEEDS, run_fetcher
 
+SPEC = FEEDS["sspai"]  # 键名/文案/空壳/预览等随源而变的事实，见 feeds.py
 FEED = "https://sspai.com/feed"
-CANONICAL = "https://sspai.com"
 OUT = SSPAI_JSON  # 钉在仓库根
 LIMIT = 20
 
@@ -42,8 +41,8 @@ def build():
     return {
         "date": datetime.now().strftime("%Y-%m-%d"),
         "fetchedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "source": "少数派 (sspai.com RSS)",
-        "canonical": CANONICAL,
+        "source": SPEC.source,
+        "canonical": SPEC.canonical,
         "count": len(items),
         "items": items,
         "warnings": [],
@@ -51,20 +50,7 @@ def build():
 
 
 def main():
-    try:
-        data = build()
-    except Exception as e:
-        print("[WARN] 少数派抓取失败，保留上一次结果：%s" % e)
-        if os.path.isfile(OUT):
-            print("       已有 %s，未覆盖" % OUT)
-        return 1
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print("[OK] 少数派 %s · %d 条 -> %s"
-          % (data["date"], data["count"], OUT))
-    for i, it in enumerate(data["items"][:5], 1):
-        print("   %d. %s" % (i, it["title"][:40]))
-    return 0
+    return run_fetcher(SPEC, build, OUT)
 
 
 if __name__ == "__main__":

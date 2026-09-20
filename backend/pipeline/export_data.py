@@ -26,6 +26,7 @@ from backend.core.paths import (
     DATA_JSON, AI_DAILY_JSON, DAILY_NEWS_JSON, HACKER_NEWS_JSON, GITHUB_TRENDING_JSON,
     PRODUCTHUNT_JSON, SSPAI_JSON, X_JSON,
 )
+from backend.pipeline.feeds import FEEDS, merge_history
 
 WB = os.path.expanduser(r"~\.workbuddy")
 WS = wb_config.workspace()
@@ -411,218 +412,38 @@ def get_mcp():
 
 
 def get_ai_daily():
-    """读取 fetch_ai_daily.py 抓好的 ai_daily.json；并把历史日报累积进 history。
-
-    历史随 data.json 一起经 sync.py 用 GitHub API 推送，天然持久化（无需额外文件/本地 git）。
-    每次 export 时从「上一次生成的 data.json」恢复 history，upsert 当天，保留最近 14 天。
-    """
-    p = AI_DAILY_JSON
-    try:
-        d = json.load(open(p, encoding="utf-8"))
-    except Exception:
-        d = {"date": "", "fetchedAt": "", "count": 0, "sections": [],
-             "canonical": "https://aihot.virxact.com/daily"}
-    hist = []
-    old = DATA_JSON
-    if os.path.isfile(old):
-        try:
-            hist = (json.load(open(old, encoding="utf-8")).get("aiDaily") or {}).get("history", [])
-        except Exception:
-            hist = []
-    if d.get("date"):
-        hist = [h for h in hist if h.get("date") != d["date"]]
-        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
-                     "count": d.get("count"), "sections": d.get("sections"),
-                     "canonical": d.get("canonical", "")})
-        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
-        hist = hist[:14]
-    d["history"] = hist
-    return d
+    """AI 日报：读 ai_daily.json + 累积历史日份（骨架见 feeds.merge_history）。"""
+    return merge_history(AI_DAILY_JSON, DATA_JSON, FEEDS["aiDaily"])
 
 
 def get_daily_news():
-    """读取 fetch_daily_news.py 抓好的 daily_news.json；并把历史累积进 history。
-
-    与 get_ai_daily 同机制：每次 export 时从「上一次生成的 data.json」恢复 history，
-    upsert 当天，保留最近 14 天，随 data.json 经 sync.py 推送天然持久化。
-    """
-    p = DAILY_NEWS_JSON
-    try:
-        d = json.load(open(p, encoding="utf-8"))
-    except Exception:
-        d = {"date": "", "fetchedAt": "", "count": 0, "items": [],
-             "source": "每日60秒 (vikiboss/60s)", "canonical": "https://github.com/vikiboss/60s",
-             "tip": "", "cover": ""}
-    hist = []
-    old = DATA_JSON
-    if os.path.isfile(old):
-        try:
-            hist = (json.load(open(old, encoding="utf-8")).get("dailyNews") or {}).get("history", [])
-        except Exception:
-            hist = []
-    if d.get("date"):
-        hist = [h for h in hist if h.get("date") != d["date"]]
-        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
-                     "count": d.get("count"), "items": d.get("items"),
-                     "tip": d.get("tip", ""), "source": d.get("source", ""),
-                     "canonical": d.get("canonical", "")})
-        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
-        hist = hist[:14]
-    d["history"] = hist
-    return d
+    """每日新闻（每日60秒）：同上，额外透传 tip。"""
+    return merge_history(DAILY_NEWS_JSON, DATA_JSON, FEEDS["dailyNews"])
 
 
 def get_hacker_news():
-    """读取 fetch_hacker_news.py 抓好的 hacker_news.json；把历史累积进 history。
-
-    与 get_daily_news 同机制：从上一次 data.json 恢复 history，upsert 当天，留最近 14 天，
-    随 data.json 经 sync.py 推送天然持久化。**OpenCLI 缺失时 hacker_news.json 保持旧值/缺失**，
-    该源静默沿用上一次（或空壳），不抛异常、不影响其余聚合。
-    """
-    p = HACKER_NEWS_JSON
-    try:
-        d = json.load(open(p, encoding="utf-8"))
-    except Exception:
-        d = {"date": "", "fetchedAt": "", "count": 0, "items": [],
-             "source": "Hacker News (via OpenCLI)", "canonical": "https://news.ycombinator.com/"}
-    hist = []
-    old = DATA_JSON
-    if os.path.isfile(old):
-        try:
-            hist = (json.load(open(old, encoding="utf-8")).get("hackerNews") or {}).get("history", [])
-        except Exception:
-            hist = []
-    if d.get("date"):
-        hist = [h for h in hist if h.get("date") != d["date"]]
-        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
-                     "count": d.get("count"), "items": d.get("items"),
-                     "source": d.get("source", ""), "canonical": d.get("canonical", "")})
-        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
-        hist = hist[:14]
-    d["history"] = hist
-    return d
+    """Hacker News：同上。OpenCLI 缺失时源文件保持旧值/缺失，该源静默沿用上一次（或空壳）。"""
+    return merge_history(HACKER_NEWS_JSON, DATA_JSON, FEEDS["hackerNews"])
 
 
 def get_github_trending():
-    """读取 fetch_github_trending.py 抓好的 github_trending.json；把历史累积进 history。
-
-    与 get_hacker_news 同机制：从上一次 data.json 恢复 history，upsert 当天，留最近 14 天，
-    随 data.json 经 sync.py 推送天然持久化。**OpenCLI 缺失时 github_trending.json 保持旧值/缺失**，
-    该源静默沿用上一次（或空壳），不抛异常、不影响其余聚合。
-    """
-    p = GITHUB_TRENDING_JSON
-    try:
-        d = json.load(open(p, encoding="utf-8"))
-    except Exception:
-        d = {"date": "", "fetchedAt": "", "count": 0, "items": [],
-             "source": "GitHub Trending (via OpenCLI)", "canonical": "https://github.com/trending"}
-    hist = []
-    old = DATA_JSON
-    if os.path.isfile(old):
-        try:
-            hist = (json.load(open(old, encoding="utf-8")).get("githubTrending") or {}).get("history", [])
-        except Exception:
-            hist = []
-    if d.get("date"):
-        hist = [h for h in hist if h.get("date") != d["date"]]
-        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
-                     "count": d.get("count"), "items": d.get("items"),
-                     "source": d.get("source", ""), "canonical": d.get("canonical", "")})
-        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
-        hist = hist[:14]
-    d["history"] = hist
-    return d
+    """GitHub Trending：同上，优雅劣化同 get_hacker_news。"""
+    return merge_history(GITHUB_TRENDING_JSON, DATA_JSON, FEEDS["githubTrending"])
 
 
 def get_producthunt():
-    """读取 fetch_producthunt.py 抓好的 producthunt.json；把历史累积进 history。
-
-    与 get_github_trending 同机制：从上一次 data.json 恢复 history，upsert 当天，留最近 14 天，
-    随 data.json 经 sync.py 推送天然持久化。**抓取失败时 producthunt.json 保持旧值/缺失**，
-    该源静默沿用上一次（或空壳），不抛异常、不影响其余聚合（路 A · stdlib RSS，无 Node 依赖）。
-    """
-    p = PRODUCTHUNT_JSON
-    try:
-        d = json.load(open(p, encoding="utf-8"))
-    except Exception:
-        d = {"date": "", "fetchedAt": "", "count": 0, "items": [],
-             "source": "Product Hunt (Atom feed)", "canonical": "https://www.producthunt.com"}
-    hist = []
-    old = DATA_JSON
-    if os.path.isfile(old):
-        try:
-            hist = (json.load(open(old, encoding="utf-8")).get("productHunt") or {}).get("history", [])
-        except Exception:
-            hist = []
-    if d.get("date"):
-        hist = [h for h in hist if h.get("date") != d["date"]]
-        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
-                     "count": d.get("count"), "items": d.get("items"),
-                     "source": d.get("source", ""), "canonical": d.get("canonical", "")})
-        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
-        hist = hist[:14]
-    d["history"] = hist
-    return d
+    """Product Hunt：同上（路 A · stdlib Atom，无 Node 依赖）。"""
+    return merge_history(PRODUCTHUNT_JSON, DATA_JSON, FEEDS["productHunt"])
 
 
 def get_sspai():
-    """读取 fetch_sspai.py 抓好的 sspai.json；把历史累积进 history。
-
-    与 get_producthunt 同机制（路 A · stdlib RSS，无 Node 依赖），优雅劣化同上。
-    """
-    p = SSPAI_JSON
-    try:
-        d = json.load(open(p, encoding="utf-8"))
-    except Exception:
-        d = {"date": "", "fetchedAt": "", "count": 0, "items": [],
-             "source": "少数派 (sspai.com RSS)", "canonical": "https://sspai.com"}
-    hist = []
-    old = DATA_JSON
-    if os.path.isfile(old):
-        try:
-            hist = (json.load(open(old, encoding="utf-8")).get("sspai") or {}).get("history", [])
-        except Exception:
-            hist = []
-    if d.get("date"):
-        hist = [h for h in hist if h.get("date") != d["date"]]
-        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
-                     "count": d.get("count"), "items": d.get("items"),
-                     "source": d.get("source", ""), "canonical": d.get("canonical", "")})
-        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
-        hist = hist[:14]
-    d["history"] = hist
-    return d
+    """少数派：同上（路 A · stdlib RSS，无 Node 依赖）。"""
+    return merge_history(SSPAI_JSON, DATA_JSON, FEEDS["sspai"])
 
 
 def get_x():
-    """读取 fetch_x.py 抓好的 x.json；把历史累积进 history。
-
-    与 get_sspai 同机制：从上一次 data.json 恢复 history，upsert 当天，留最近 14 天，
-    随 data.json 经 sync.py 推送天然持久化。**grok-cli/xAI key 缺失时 x.json 保持旧值/缺失**，
-    该源静默沿用上一次（或空壳），不抛异常、不影响其余聚合（见 ADR 0012）。
-    """
-    p = X_JSON
-    try:
-        d = json.load(open(p, encoding="utf-8"))
-    except Exception:
-        d = {"date": "", "fetchedAt": "", "count": 0, "items": [],
-             "source": "X (via grok-cli)", "canonical": "https://x.com/"}
-    hist = []
-    old = DATA_JSON
-    if os.path.isfile(old):
-        try:
-            hist = (json.load(open(old, encoding="utf-8")).get("x") or {}).get("history", [])
-        except Exception:
-            hist = []
-    if d.get("date"):
-        hist = [h for h in hist if h.get("date") != d["date"]]
-        hist.append({"date": d.get("date"), "fetchedAt": d.get("fetchedAt"),
-                     "count": d.get("count"), "items": d.get("items"),
-                     "source": d.get("source", ""), "canonical": d.get("canonical", "")})
-        hist.sort(key=lambda x: x.get("date", ""), reverse=True)
-        hist = hist[:14]
-    d["history"] = hist
-    return d
+    """X/推特：同上。grok-cli / xAI key 缺失时该源静默沿用上一次（或空壳），见 ADR 0012。"""
+    return merge_history(X_JSON, DATA_JSON, FEEDS["x"])
 
 
 def main():

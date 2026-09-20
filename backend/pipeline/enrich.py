@@ -18,10 +18,9 @@ import json
 import os
 import sys
 
-from backend.core.paths import (
-    ROOT, DATA_JSON, AI_DAILY_JSON, DAILY_NEWS_JSON, HACKER_NEWS_JSON,
-    GITHUB_TRENDING_JSON, PRODUCTHUNT_JSON, SSPAI_JSON, X_JSON,
-)
+from backend.core import paths
+from backend.core.paths import ROOT, DATA_JSON
+from backend.pipeline.feeds import FEEDS
 from backend.core import config as wb_config
 from backend.clients import llm
 from backend.clients import zilliz
@@ -29,16 +28,9 @@ from backend.utils import common as wb_common
 
 CACHE = os.path.join(ROOT, "enrich_cache.json")
 
-# (路径, 结构种类)：sections=AI 日报(分节), items=扁平 items
-SOURCES = [
-    (AI_DAILY_JSON, "sections"),
-    (DAILY_NEWS_JSON, "items"),
-    (HACKER_NEWS_JSON, "items"),
-    (GITHUB_TRENDING_JSON, "items"),
-    (PRODUCTHUNT_JSON, "items"),
-    (SSPAI_JSON, "items"),
-    (X_JSON, "items"),
-]
+# (路径, 结构种类)：从 FEEDS 表派生——「有哪些资讯源、各是什么结构」是同一条知识，
+# 只在 backend/pipeline/feeds.py 维护一份，加新源时这里不必再改。
+SOURCES = [(getattr(paths, s.path_attr), s.kind) for s in FEEDS.values()]
 
 SYS_PROMPT = (
     "你是中文科技资讯编辑。给定若干条资讯（每条含 title、source，可能含 raw 原始摘要，"

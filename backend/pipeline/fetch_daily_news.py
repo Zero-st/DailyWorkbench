@@ -11,12 +11,13 @@
   - 抓取失败时**不覆盖**已有 daily_news.json，保留上一次成功的结果。
   - 主域名失败时自动回退备用域名。
 """
-import os
-import json
 from datetime import datetime
 
 from backend.utils import common as wb_common
 from backend.core.paths import DAILY_NEWS_JSON
+from backend.pipeline.feeds import FEEDS, run_fetcher
+
+SPEC = FEEDS["dailyNews"]  # 键名/文案/空壳/预览等随源而变的事实，见 feeds.py
 
 PRIMARY = "https://60s-api.viki.moe/v2/60s"
 BACKUP = "https://60s.viki.moe/v2/60s"
@@ -52,8 +53,8 @@ def build():
     return {
         "date": data.get("date") or datetime.now().strftime("%Y-%m-%d"),
         "fetchedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "source": "每日60秒 (vikiboss/60s)",
-        "canonical": "https://github.com/vikiboss/60s",
+        "source": SPEC.source,
+        "canonical": SPEC.canonical,
         "count": len(items),
         "items": items,
         "tip": (data.get("tip") or "").strip(),
@@ -63,22 +64,7 @@ def build():
 
 
 def main():
-    try:
-        data = build()
-    except Exception as e:
-        print("[WARN] 每日新闻抓取失败，保留上一次结果：%s" % e)
-        if os.path.isfile(OUT):
-            print("       已有 %s，未覆盖" % OUT)
-        return 1
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print("[OK] 每日新闻 %s · %d 条 -> %s"
-          % (data["date"], data["count"], OUT))
-    for i, it in enumerate(data["items"][:5], 1):
-        print("   %d. %s" % (i, it["title"][:40]))
-    if data["tip"]:
-        print("   一言：%s" % data["tip"][:40])
-    return 0
+    return run_fetcher(SPEC, build, OUT)
 
 
 if __name__ == "__main__":

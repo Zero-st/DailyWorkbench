@@ -10,12 +10,13 @@
   - 抓取失败时**不覆盖**已有 ai_daily.json，保留上一次成功的结果。
   - 按 title 去重，日报优先，精选补位；单节最多 8 条，总量最多 20 条。
 """
-import os
-import json
 from datetime import datetime, timedelta, timezone
 
 from backend.utils import common as wb_common
 from backend.core.paths import AI_DAILY_JSON
+from backend.pipeline.feeds import FEEDS, run_fetcher
+
+SPEC = FEEDS["aiDaily"]  # 键名/文案/空壳/预览等随源而变的事实，见 feeds.py
 
 BASE = "https://aihot.virxact.com"
 OUT = AI_DAILY_JSON  # 钉在仓库根（前端/推送都在根取）
@@ -116,7 +117,7 @@ def build():
         "date": date_s or datetime.now().strftime("%Y-%m-%d"),
         "fetchedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "source": "AI HOT",
-        "canonical": canonical or (BASE + "/daily"),
+        "canonical": canonical or SPEC.canonical,
         "count": sum(len(v) for v in groups.values()),
         "sections": [{"label": lb, "items": groups[lb]} for lb in order],
         "warnings": err,
@@ -124,20 +125,7 @@ def build():
 
 
 def main():
-    try:
-        data = build()
-    except Exception as e:
-        print("[WARN] AI 日报抓取失败，保留上一次结果：%s" % e)
-        if os.path.isfile(OUT):
-            print("       已有 %s，未覆盖" % OUT)
-        return 1
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print("[OK] AI 日报 %s · %d 条 · %d 节 -> %s"
-          % (data["date"], data["count"], len(data["sections"]), OUT))
-    for s in data["sections"]:
-        print("   - %s (%d)" % (s["label"], len(s["items"])))
-    return 0
+    return run_fetcher(SPEC, build, OUT)
 
 
 if __name__ == "__main__":
