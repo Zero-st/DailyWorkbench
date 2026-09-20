@@ -6,6 +6,7 @@
 import { esc, ic } from "../core/util.js";
 import { getData } from "../core/state.js";
 import { fetchT } from "../core/net.js";
+import { track } from "../core/usage.js";
 // 带工具的 agent 对话：流式驱动后端无头 claude（Phase 2，见 ADR 0009）
 import { agentStream } from "../core/agent-stream.js";
 
@@ -303,7 +304,8 @@ function kbSaveReview() {
   if (!txt) { WB.dialog.alert("复盘内容为空，先写点什么再存。"); return; }
   if (typeof kbSave !== "function") { WB.dialog.alert("知识库模块未加载。"); return; }
   kbSave({ module: "今日", source: "review", title: "今日复盘", body: "# 今日复盘\n\n" + txt }).then(function (r) {
-    if (r && r.ok) WB.dialog.alert("已存进知识库：\n" + r.path); else WB.dialog.alert("保存失败：" + ((r && r.error) || "未知错误"));
+    if (r && r.ok) { track("review_kbsave"); WB.dialog.alert("已存进知识库：\n" + r.path); }
+    else WB.dialog.alert("保存失败：" + ((r && r.error) || "未知错误"));
   });
 }
 window.kbSaveChat = kbSaveChat;

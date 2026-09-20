@@ -209,6 +209,20 @@ def inbox_path():
     )
 
 
+def usage_path():
+    """使用量埋点数据文件路径（默认仓库根 usage.local.jsonl，已 gitignore）。
+
+    与 data.json 彻底分开：data.json 是前端契约、属单向门（ADR 0013 刚把它从
+    17 键收到 9 键），使用量不该挤进去。见 ADR 0015。
+    """
+    cfg = _LOCAL.get("usage") or {}
+    return _first(
+        os.environ.get("WB_USAGE_PATH"),
+        cfg.get("path"),
+        os.path.join(ROOT, "usage.local.jsonl"),
+    )
+
+
 def chat_allow_hosts():
     """AI 聊天代理目标主机白名单；空列表 = 不限制（保持旧行为）。"""
     cp = _LOCAL.get("chatProxy") or {}

@@ -3,6 +3,7 @@
 // 复用：/api/kb/deposits（列卡）、/api/kb/note（读）、window.kbSave（存）、window.cmdtext（交接指令）。
 import { esc, jsStr } from "../core/util.js";
 import { icon } from "../core/icons.js";
+import { track } from "../core/usage.js";
 // 平台枚举与收件箱 inbox 共享，避免两处漂移（含 B站/小红书/微博/即刻/文章）
 import { PLATFORMS, platform as _plat, platformBadge as _badge } from "../core/platforms.js";
 // 蒸馏指令 + 六维 + tier：单一权威源（六维不再在此硬编码，见 core/distill-template.js）
@@ -211,6 +212,7 @@ function distillSave() {
   }).then(function (r) {
     if (r && r.ok) {
       // 若来源是收件箱「→蒸馏」，回标该条为已蒸馏（薄耦合，inbox.js 注册）
+      track("distill_save", r.path || "");
       if (typeof window.inboxOnDistilled === "function") window.inboxOnDistilled();
       _formExtra = null;
       window.WB.dialog.alert("已存入蒸馏库：\n" + (r.path || r.fileName || ""));

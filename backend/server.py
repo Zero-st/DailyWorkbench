@@ -33,6 +33,7 @@ from backend.clients import supabase as sb
 from backend.clients import kb
 from backend.clients import inbox
 from backend.clients import agent
+from backend.clients import usage
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
@@ -119,6 +120,7 @@ class Handler(SimpleHTTPRequestHandler):
         "/api/inbox/update": "_post_inbox_update",
         "/api/inbox/delete": "_post_inbox_delete",
         "/api/info/search": "_post_info_search",
+        "/api/usage": "_post_usage",
     }
 
     def __init__(self, *a, **kw):
@@ -298,6 +300,18 @@ class Handler(SimpleHTTPRequestHandler):
             self._json(200 if res.get("ok") else 400, res)
         except Exception as e:
             sys.stderr.write("[inbox-add] %s\n" % e)
+            self._json(500, {"ok": False, "error": "internal error"})
+
+    def _post_usage(self):
+        # 使用量埋点（ADR 0015）。必须过 _guard_origin：否则任意网页都能往日志灌数，
+        # 那样这份数据就不能用来回答「我到底有没有在用」了。
+        if self._guard_origin():
+            return
+        try:
+            res = usage.track(self._body())
+            self._json(200 if res.get("ok") else 400, res)
+        except Exception as e:
+            sys.stderr.write("[usage] %s\n" % e)
             self._json(500, {"ok": False, "error": "internal error"})
 
     def _post_inbox_update(self):

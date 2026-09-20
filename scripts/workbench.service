@@ -17,6 +17,10 @@ After=network.target
 
 [Service]
 Type=simple
+# 本机系统时区是 America/Los_Angeles，而使用者的 shell/浏览器是 Asia/Shanghai。
+# 不钉死的话后端盖的时间戳会差 15 小时：sync.lastRun 永远显示"已停止"，
+# 使用量的按天统计也会整体错位。
+Environment=TZ=Asia/Shanghai
 WorkingDirectory=/home/dev_st/mtools/DailyWorkbench
 ExecStart=/home/dev_st/iriswork/tools/anaconda/bin/python -m backend.server 8899
 Restart=on-failure

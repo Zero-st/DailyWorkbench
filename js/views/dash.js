@@ -3,6 +3,7 @@
 // 「今日建议」按钮去重（保留于「能力速达」）。cmdtext 经 window 桥接（内联 onclick）。
 import { esc, jsStr, ic } from "../core/util.js";
 import { todosLoad } from "../features/todos.js";
+import { track } from "../core/usage.js";
 
 // AI 指令台（今日视图卡片）：精选「需要外部 agent(Claude Code) 才能跑」的 prompt，
 // 点击复制、粘进 Claude Code 执行。故意不用 data.json 的 quickActions——那里混着一堆
@@ -30,7 +31,11 @@ function saveReview() {
   var t = document.getElementById("reviewInput");
   var h = document.getElementById("reviewHint");
   if (!t) return;
-  try { localStorage.setItem(REVIEW_KEY, t.value); if (h) h.textContent = "✓ 已保存（" + REVIEW_KEY.slice(10) + "）"; }
+  try {
+    localStorage.setItem(REVIEW_KEY, t.value);
+    if (h) h.textContent = "✓ 已保存（" + REVIEW_KEY.slice(10) + "）";
+    track("review_save");
+  }
   catch (e) { if (h) h.textContent = "保存失败"; }
 }
 export function renderTodayReview(d) {

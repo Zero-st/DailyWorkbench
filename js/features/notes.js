@@ -2,6 +2,7 @@
 // notesLoad/notesSave/renderNotes 供 app.js（boot/backup）与 dash 视图 import；
 // addNote/delNote/editNote 挂 window 供内联 onclick。
 import { esc, undoSnack, dialog } from "../core/util.js";
+import { track } from "../core/usage.js";
 
 export function notesLoad() {
   try { return JSON.parse(localStorage.getItem("wb_notes") || "[]"); } catch (e) { return []; }
@@ -27,6 +28,7 @@ function addNote() {
   var list = notesLoad();
   list.unshift({ text: t, at: Date.now() });
   notesSave(list); ta.value = ""; if (h) h.textContent = "✓ 已添加";
+  track("note_add");
   renderNotes();
 }
 function delNote(i) {

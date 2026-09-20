@@ -2,6 +2,7 @@
 // todosLoad/todosSave/renderTodos 供 app.js（boot/backup）与 dash 视图 import；
 // addTodo/toggleTodo/delTodo/clearDone 挂 window 供内联 onclick。
 import { esc, undoSnack } from "../core/util.js";
+import { track } from "../core/usage.js";
 
 var TODO_KEY = "wb_todos";
 export function todosLoad() {
@@ -41,6 +42,7 @@ function addTodo() {
   var list = todosLoad();
   list.unshift({ text: t, done: false, at: Date.now() });
   todosSave(list); ta.value = ""; if (h) h.textContent = "✓ 已添加";
+  track("todo_add");
   renderTodos();
 }
 function toggleTodo(i) {

@@ -7,6 +7,7 @@
 """
 import json
 import os
+from datetime import datetime
 import re
 
 import pytest
@@ -718,3 +719,107 @@ def test_vault_backup_refuses_non_git_dir(tmp_path, monkeypatch):
     assert vault_backup.backup(str(plain)) == 2
     assert not (plain / ".git").exists()
     assert vault_backup.backup(str(tmp_path / "不存在")) == 2
+
+# ---------- usage 埋点（ADR 0015：尺子本身也要经得起追问） ----------
+from backend.clients import usage as usage_service  # noqa: E402
+
+
+def _usage_sandbox(tmp_path, monkeypatch):
+    fp = tmp_path / "usage.local.jsonl"
+    monkeypatch.setattr(usage_service.wb_config, "usage_path", lambda: str(fp))
+    return fp
+
+
+def _rows(fp):
+    return [json.loads(x) for x in fp.read_text(encoding="utf-8").splitlines() if x.strip()]
+
+
+def test_usage_rejects_unknown_event_with_no_side_effect(tmp_path, monkeypatch):
+    fp = _usage_sandbox(tmp_path, monkeypatch)
+    assert usage_service.track({"ev": "页面加载", "cid": "a1"})["ok"] is False
+    assert usage_service.track({})["ok"] is False
+    assert not fp.exists()          # 拒了就该一个字节都不落盘
+
+
+def test_usage_drops_free_text_fields(tmp_path, monkeypatch):
+    """隐私红线的回归钉：复盘正文/URL 这类自由文本一律不得进日志。"""
+    fp = _usage_sandbox(tmp_path, monkeypatch)
+    usage_service.track({"ev": "review_save", "cid": "a1",
+                         "text": "今天心情很差，和某某吵架了", "url": "https://x.com/secret",
+                         "k": "不该被记的键"})
+    r = _rows(fp)[0]
+    assert set(r) == {"at", "day", "ev", "cid"}     # k 只对 recall_/kb_/distill_ 生效
+    assert "吵架" not in json.dumps(r, ensure_ascii=False)
+
+
+def test_usage_app_use_deduped_per_day_but_others_not(tmp_path, monkeypatch):
+    fp = _usage_sandbox(tmp_path, monkeypatch)
+    for _ in range(3):
+        usage_service.track({"ev": "app_use", "cid": "a1"})
+    usage_service.track({"ev": "app_use", "cid": "b2"})      # 另一台设备照记
+    for _ in range(2):
+        usage_service.track({"ev": "todo_add", "cid": "a1"})  # 真手势不去重
+    evs = [r["ev"] + ":" + r["cid"] for r in _rows(fp)]
+    assert evs == ["app_use:a1", "app_use:b2", "todo_add:a1", "todo_add:a1"]
+
+
+def test_usage_server_stamps_day_and_keeps_recall_key(tmp_path, monkeypatch):
+    """day 由服务端盖戳（前端时区不可信）；recall_* 才保留卡路径。"""
+    fp = _usage_sandbox(tmp_path, monkeypatch)
+    usage_service.track({"ev": "recall_open", "cid": "a1", "k": "蒸馏库/2026-09-01/x.md",
+                         "day": "1999-01-01"})
+    r = _rows(fp)[0]
+    assert r["day"] == datetime.now().strftime("%Y-%m-%d")
+    assert r["k"] == "蒸馏库/2026-09-01/x.md"
+
+
+def test_usage_read_events_filters_since_and_skips_bad_lines(tmp_path, monkeypatch):
+    fp = _usage_sandbox(tmp_path, monkeypatch)
+    fp.write_text('{"day":"2026-09-01","ev":"app_use"}\n坏行\n{"day":"2026-09-20","ev":"app_use"}\n',
+                  encoding="utf-8")
+    assert len(usage_service.read_events()) == 2
+    assert [e["day"] for e in usage_service.read_events("2026-09-10")] == ["2026-09-20"]
+
+
+def test_usage_report_excludes_selftest_and_ghost_cards(tmp_path, monkeypatch):
+    """真卡流量不能被自测卡和幽灵卡刷高——否则这把尺子自己就在作弊。"""
+    from backend.pipeline import usage_report
+    _usage_sandbox(tmp_path, monkeypatch)
+    deposit = tmp_path / "vault" / "沉淀"
+    (deposit / "蒸馏库").mkdir(parents=True)
+    (deposit / "蒸馏库" / "真.md").write_text("x", encoding="utf-8")
+    M = "蒸馏库"
+    rows = [{"savedAt": "2026-09-20T10:00:00", "module": M, "title": "真卡", "relPath": "蒸馏库/真.md"},
+            {"savedAt": "2026-09-20T10:00:00", "module": M, "title": "【MCP测试】自测", "relPath": "蒸馏库/真.md"},
+            {"savedAt": "2026-09-20T10:00:00", "module": M, "title": "幽灵", "relPath": "蒸馏库/没了.md"},
+            {"savedAt": "2026-09-20T10:00:00", "module": "产品拆解", "title": "拆解", "relPath": "蒸馏库/真.md"}]
+    (deposit / "_index.jsonl").write_text(
+        "\n".join(json.dumps(r, ensure_ascii=False) for r in rows), encoding="utf-8")
+    monkeypatch.setattr(usage_report.wb_config, "kb", lambda: (str(tmp_path / "vault"), str(deposit)))
+    assert usage_report._real_cards("2026-09-01") == (1, 1)     # 蒸馏库：1 张真卡 + 1 条幽灵
+    assert usage_report._real_cards("2026-09-01", module=None)[0] == 2   # 含产品拆解
+    assert usage_report._real_cards("2026-09-25") == (0, 1)     # 区间外不计入流量
+
+
+def test_usage_report_max_window_counts_days_not_events():
+    from backend.pipeline import usage_report
+    assert usage_report._max_window([]) == 0
+    assert usage_report._max_window(["2026-09-01", "2026-09-02", "2026-09-09"]) == 2
+    assert usage_report._max_window(["2026-09-0%d" % i for i in range(1, 6)]) == 5
+
+def test_usage_report_sync_health_parses_real_log_marker(tmp_path, monkeypatch):
+    """日志收尾行的措辞若和报表里的匹配串对不上，这个数会永远是 0 而没人发现。"""
+    from backend.pipeline import usage_report
+    monkeypatch.setattr(usage_report, "ROOT", str(tmp_path))
+    (tmp_path / "data.json").write_text(
+        json.dumps({"sync": {"lastRun": "2026-09-20T15:03:44", "status": "ok"}}), encoding="utf-8")
+    log = tmp_path / "backend" / "pipeline"
+    log.mkdir(parents=True)
+    (log / "local_refresh.log").write_text(
+        "[2026-09-19 10:00:00] ===== local refresh end (ok=True) =====\n"
+        "[2026-09-20 15:03:44] ===== local refresh end (ok=True) =====\n"
+        "[2026-09-20 16:00:00] ===== local refresh end (ok=False) =====\n"   # 失败的不算
+        "[2026-08-01 10:00:00] ===== local refresh end (ok=True) =====\n",   # 区间外不算
+        encoding="utf-8")
+    last, hours, runs = usage_report._sync_health("2026-09-01")
+    assert last == "2026-09-20T15:03:44" and runs == 2 and hours is not None

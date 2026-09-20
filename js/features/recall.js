@@ -3,6 +3,7 @@
 // 设计见 docs/design/温故复用-设计.md。零后端改动、零依赖。
 import { esc, jsStr } from "../core/util.js";
 import { icon } from "../core/icons.js";
+import { track } from "../core/usage.js";
 
 var LS_KEY = "wb_recall";          // { [vaultPath]: {box, lastReviewed:"YYYY-MM-DD", archived} }
 var INTERVAL = [0, 2, 7, 16, 35];  // box→到期间隔(天)
@@ -113,6 +114,7 @@ function recallOpen(vp) {
   var m = _state();
   m[vp] = { box: (m[vp] && m[vp].box) | 0, lastReviewed: _todayStr(), archived: !!(m[vp] && m[vp].archived) };
   _save(m);
+  track("recall_open", vp);
   if (typeof window.switchView === "function") window.switchView("distill");
   if (typeof window.distillOpen === "function") window.distillOpen(vp);
 }
@@ -121,6 +123,7 @@ function recallUseful(vp) {
   var m = _state(); var rec = m[vp] || {};
   m[vp] = { box: Math.min((rec.box | 0) + 1, INTERVAL.length - 1), lastReviewed: _todayStr(), archived: false };
   _save(m);
+  track("recall_useful", vp);
   renderRecall();
 }
 function recallArchive(vp) {
@@ -128,6 +131,7 @@ function recallArchive(vp) {
   var m = _state(); var rec = m[vp] || {};
   m[vp] = { box: rec.box | 0, lastReviewed: rec.lastReviewed || _todayStr(), archived: true };
   _save(m);
+  track("recall_archive", vp);
   renderRecall();
 }
 
