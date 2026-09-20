@@ -116,5 +116,6 @@ docs/
 | [Skill选型账本.md](research/Skill选型账本.md) | research | 通用 Skill / MCP / SDD 选型账本 |
 | [蒸馏方法论-开源参考地图.md](research/蒸馏方法论-开源参考地图.md) | research | 蒸馏「知识工艺层」调研：三空白诊断 + fabric pattern 结构 + 打分 rubric + 提示词骨架 + 方法论框架 + 最小落地路径 |
 | [接入deepseekHarness-选型.md](research/接入deepseekHarness-选型.md) | research | 工作台作为工具接入 DeepSeek harness 的可行性评估：谁调谁的心法 + 三条路径对比(bash·tool 插件·MCP server) + 坑位；**路径③已落地为 Claude Code 变体**（ADR 0008，in-repo `backend/mcp/`） |
+| [AI协作思维模型24条-参考地图.md](research/AI协作思维模型24条-参考地图.md) | research | 外部资料(WayToAGI 转载 Simonlin 文, B 级来源)提炼：思维模型「不是给 AI 用、是给用 AI 的人用」；24 条四组清单 + 与本仓原则对照 + **采纳 4 条/不采纳 11 条及理由**(已并入 prompt-refine skill) |
 | [reference/supabase_schema.sql](reference/supabase_schema.sql) | reference | Supabase 表结构 |
 | [reference/devhtml/](reference/devhtml/) | reference | 生成的 html 产物（架构评审 `architecture-review/` 按日期留档、产品评分卡、运行时架构-交互版[archify]、餐厅里的软件工程[零基础讲解]、grok-cli-key边界-图解[mermaid]、grok-cli-key边界-archify[交互版]、AI协作十环节-DailyWorkbench实践[archify]、其 `.json` 为可重渲的图源 等） |
