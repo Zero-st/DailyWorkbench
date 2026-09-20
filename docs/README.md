@@ -24,6 +24,7 @@ docs/
 ├─ 开发测试规范.md        治理·留根：最小测试先行、全绿再跑全量
 ├─ principles/          心法 & 方法论：跨产品/设计/工程的「何时戴哪顶帽子」总纲（宪章之上）
 ├─ adr/                 决策记录（Architecture Decision Records，单向门才写）
+├─ requirements/        需求：用户要什么、需求怎么变的（台账=现状真源，演进史=时间线）
 ├─ guides/              操作指南（how-to）：一步步「怎么做」的手册
 ├─ design/             设计 & 评审（explanation）：为什么这么做、代价取舍、方案/评审
 ├─ planning/            方向 & 进度 & 复盘：路线图、总览、里程碑复盘
@@ -46,6 +47,7 @@ docs/
 | 后缀 | 含义 | 归属目录 |
 |---|---|---|
 | `-路线图` `-总览` `-复盘` | 方向 / 进度 / 里程碑复盘 | `planning/` |
+| `-台账` `-演进史` | 需求现状 / 需求级变更时间线 | `requirements/` |
 | `-设计` `-评审` `-方案` | 设计说明 / 评审 / 存储方案 | `design/` |
 | `图解-<模块>` | 单功能图解复盘（架构/实现原理/业务流程三图） | `design/功能图解/` |
 | `-选型` `-地图` `-账本` | 调研对比 / 工具链 / 选型账本 | `research/` |
@@ -62,10 +64,11 @@ docs/
 ## 3 · 「新文档去哪」决策表
 
 1. 是**单向门决策**（不可逆、要留证）？→ `adr/NNNN-<kebab>.md`。
-2. 是**实施计划 / 待办规划**（"接下来怎么改代码"）？→ **不进 docs/**，放 `.claude/plan/<task>.md`（见用户全局约定）。
-3. 是**版本变更记录**？→ 仓库根 `CHANGELOG.md`，不新开文件。
-4. 否则按**后缀词表**（§2）落对应子目录：讲「怎么做」→`guides/`；讲「为什么/怎么设计」→`design/`；「选型/调研」→`research/`；「方向/进度/复盘」→`planning/`；「schema/产物」→`reference/`；**跨产品/设计/工程的方法论·心法（何时戴哪顶帽子）**→`principles/`。
-5. 拿不准 → 先看现有同类落在哪个目录，就近归位；仍不确定就默认 `design/`（解释类），事后可迁（双向门）。
+2. 是**「用户要什么 / 这需求怎么变的」**？→ `requirements/`（现状改 `需求台账.md` 一行，过程追加 `需求演进史.md` 一条）。
+3. 是**实施计划 / 待办规划**（"接下来怎么改代码"）？→ **不进 docs/**，放 `.claude/plan/<task>.md`（见用户全局约定）。
+4. 是**版本变更记录**？→ 仓库根 `CHANGELOG.md`，不新开文件。
+5. 否则按**后缀词表**（§2）落对应子目录：讲「怎么做」→`guides/`；讲「为什么/怎么设计」→`design/`；「选型/调研」→`research/`；「方向/进度/复盘」→`planning/`；「schema/产物」→`reference/`；**跨产品/设计/工程的方法论·心法（何时戴哪顶帽子）**→`principles/`。
+6. 拿不准 → 先看现有同类落在哪个目录，就近归位；仍不确定就默认 `design/`（解释类），事后可迁（双向门）。
 
 **分工边界**：`docs/` = 沉淀下来的**项目知识**；`.claude/plan/` = 过程性的**实施计划**；仓根 `README.md`/`CHANGELOG.md` = 社区标准位置。三者不混。
 
@@ -81,7 +84,10 @@ docs/
 | [开发心法-多维思维总纲.md](principles/开发心法-多维思维总纲.md) | principles | 宪章之上的心法：四顶帽子（产品/设计/工程/决策）× 何时戴 + 产品帽判据 |
 | [AI时代程序员成长-心法.md](principles/AI时代程序员成长-心法.md) | principles | 姊妹篇：AI 替你写代码之后人该长哪些肌肉——定价表 / 四杠杆 / 五转变 / AI 放大的坑 / 练习节律 |
 | [产品思维-心法.md](principles/产品思维-心法.md) | principles | 第三姊妹：产品判断力怎么练——五根判断轴 + 平台采矿手册（GitHub/X/中文博主/小红书）+ 真实案例卡（均可核实） |
-| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 · 0008 MCP 集成层工具化（in-repo，不进运行时） · 0009 页面驱动 agent（subprocess `claude -p` + SSE 流式，只读白名单 + 人工写闸） · 0010 松绑「零依赖」为「依赖极简且可撤回」（修订 0001；构建步骤仍是单向门） · 0011 引入 Zilliz Cloud 向量库做资讯语义检索（REST/urlopen·BYO embedding·扩 data.json 契约=单向门） · 0012 接入 X/推特资讯源（经 grok-cli 取数引擎·定时源+按需 MCP 工具·扩 data.json 契约=单向门） |
+| [adr/](adr/) | adr | 0001 零构建北极星 · 0002 ES 模块无框架 · 0003 JSDoc 而非 TS · 0004 经典脚本保留 window 桥 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 · 0008 MCP 集成层工具化（in-repo，不进运行时） · 0009 页面驱动 agent（subprocess `claude -p` + SSE 流式，只读白名单 + 人工写闸） · 0010 松绑「零依赖」为「依赖极简且可撤回」（修订 0001；构建步骤仍是单向门） · 0011 引入 Zilliz Cloud 向量库做资讯语义检索（REST/urlopen·BYO embedding·扩 data.json 契约=单向门） · 0012 接入 X/推特资讯源（经 grok-cli 取数引擎·定时源+按需 MCP 工具·扩 data.json 契约=单向门） · 0013 切除本机 WorkBuddy 遥测数据线（data.json 契约**收窄** 17 键→9 键=单向门；消费视图早已下架、数据线空转且会空值硬覆盖） |
+| [requirements/README.md](requirements/README.md) | requirements | **需求总纲**：这个目录管什么/不管什么（与 CHANGELOG/ADR/plan 的分工）+ 怎么加一条 + 两条边界（08-26 之前不可追溯、不采用 Spec-Kit spec 流）|
+| [需求台账.md](requirements/需求台账.md) | requirements | **需求现状单一真源**：`R01`–`R26` 一行一需求（✅14 · 🔧3 · 🚧3 · ⏸1 · ✂5），含状态 / 落点 / 提出来源 |
+| [需求演进史.md](requirements/需求演进史.md) | requirements | **需求级变更时间线**（2026-08-26 → 09-20，26 条）：提出 / 改形态 / 砍 / 完成 / 推迟 / 约束，每条带 commit 或文档证据 |
 | [知识飞轮-路线图.md](planning/知识飞轮-路线图.md) | planning | 三层大脑模型 + 四阶段路线图（方向盘） |
 | [项目总览-需求与进度.md](planning/项目总览-需求与进度.md) | planning | 一页总账：需求 / 已完成 / 待优化 / 待完成 |
 | [复盘-MVP闭环首跑.md](planning/复盘-MVP闭环首跑.md) | planning | 蒸馏库 0→1 首张真实经验卡的里程碑复盘 |
@@ -106,7 +112,7 @@ docs/
 | [项目自评打分-指南.md](guides/项目自评打分-指南.md) | guides | **资深式项目自评**：硬门→结果层→质量层→成本层，八列卡 + 1–5 锚点 + 证据等级/N/A 规则 + 几何加权总分与置信带 + 作弊清单；事前门链心法 §4，校准链 judgment-practice |
 | [需求澄清工具选型.md](research/需求澄清工具选型.md) | research | 需求澄清工具对比账本 |
 | [工具链-MCP与Skill地图.md](research/工具链-MCP与Skill地图.md) | research | 本项目用过的 MCP / Skill × 开发阶段 |
-| [开发阶段-Skill选型账本.md](research/开发阶段-Skill选型账本.md) | research | 通用 Skill / MCP / SDD 选型账本 |
+| [Skill选型账本.md](research/Skill选型账本.md) | research | 通用 Skill / MCP / SDD 选型账本 |
 | [蒸馏方法论-开源参考地图.md](research/蒸馏方法论-开源参考地图.md) | research | 蒸馏「知识工艺层」调研：三空白诊断 + fabric pattern 结构 + 打分 rubric + 提示词骨架 + 方法论框架 + 最小落地路径 |
 | [接入deepseekHarness-选型.md](research/接入deepseekHarness-选型.md) | research | 工作台作为工具接入 DeepSeek harness 的可行性评估：谁调谁的心法 + 三条路径对比(bash·tool 插件·MCP server) + 坑位；**路径③已落地为 Claude Code 变体**（ADR 0008，in-repo `backend/mcp/`） |
 | [reference/supabase_schema.sql](reference/supabase_schema.sql) | reference | Supabase 表结构 |
