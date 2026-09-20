@@ -110,4 +110,4 @@ docs/
 | [蒸馏方法论-开源参考地图.md](research/蒸馏方法论-开源参考地图.md) | research | 蒸馏「知识工艺层」调研：三空白诊断 + fabric pattern 结构 + 打分 rubric + 提示词骨架 + 方法论框架 + 最小落地路径 |
 | [接入deepseekHarness-选型.md](research/接入deepseekHarness-选型.md) | research | 工作台作为工具接入 DeepSeek harness 的可行性评估：谁调谁的心法 + 三条路径对比(bash·tool 插件·MCP server) + 坑位；**路径③已落地为 Claude Code 变体**（ADR 0008，in-repo `backend/mcp/`） |
 | [reference/supabase_schema.sql](reference/supabase_schema.sql) | reference | Supabase 表结构 |
-| [reference/devhtml/](reference/devhtml/) | reference | 生成的 html 产物（产品评分卡、运行时架构-交互版[archify]、餐厅里的软件工程[零基础讲解]、grok-cli-key边界-图解[mermaid]、grok-cli-key边界-archify[交互版] 等） |
+| [reference/devhtml/](reference/devhtml/) | reference | 生成的 html 产物（架构评审 `architecture-review/` 按日期留档、产品评分卡、运行时架构-交互版[archify]、餐厅里的软件工程[零基础讲解]、grok-cli-key边界-图解[mermaid]、grok-cli-key边界-archify[交互版] 等） |

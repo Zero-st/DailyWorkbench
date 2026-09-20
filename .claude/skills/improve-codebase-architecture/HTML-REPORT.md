@@ -1,6 +1,6 @@
 # HTML 报告格式
 
-架构评审渲染成**一个自包含的 HTML 文件**，落在 `/home/dev_st/桌面/comtools/tmp/dailyworkbench/`（见 SKILL.md 第 2 步）。Tailwind 和 Mermaid 都走 CDN。Mermaid 负责图状结构、渲染可靠；手搭的 div 和内联 SVG 负责更有编辑感的视觉（体量图、剖面图）。两者混用：别什么都靠 Mermaid，那样会越来越像模板。
+架构评审渲染成**一个自包含的 HTML 文件**，落在 `docs/reference/devhtml/architecture-review/架构评审-<YYYY-MM-DD>.html`（见 SKILL.md 第 2 步）。Tailwind 和 Mermaid 都走 CDN。Mermaid 负责图状结构、渲染可靠；手搭的 div 和内联 SVG 负责更有编辑感的视觉（体量图、剖面图）。两者混用：别什么都靠 Mermaid，那样会越来越像模板。
 
 ## 骨架
 

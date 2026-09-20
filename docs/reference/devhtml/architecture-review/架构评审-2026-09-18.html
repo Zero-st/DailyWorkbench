@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>架构评审 · DailyWorkbench · 2026-09-18</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "loose" });
+</script>
+<style>
+  .seam { stroke-dasharray: 4 4; }
+  .leak { stroke: #dc2626; }
+  .deep { background: linear-gradient(135deg, #0f172a, #1e293b); color: #f8fafc; }
+  .mod { border: 2px solid #334155; border-radius: .375rem; padding: .25rem .5rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; background: #fff; }
+  .mod.thin { border-style: dashed; color: #64748b; }
+  .band { height: 2.25rem; border-left: 4px solid #94a3b8; padding-left: .75rem; display: flex; align-items: center; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; background: #f8fafc; margin-bottom: .25rem; }
+  .band.thick { height: 5rem; border-left-color: #0f172a; background: #e2e8f0; font-weight: 600; }
+  .band.leak { border-left-color: #dc2626; }
+  .mass { display: flex; flex-direction: column; gap: 2px; width: 7rem; }
+  .mass .iface { background: #fca5a5; }
+  .mass .impl { background: #cbd5e1; }
+  .mass div { font-size: .6rem; text-transform: uppercase; letter-spacing: .05em; display: flex; align-items: center; justify-content: center; }
+  .lbl { font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: #64748b; margin-bottom: .5rem; }
+  .diagram { min-height: 320px; }
+</style>
+</head>
+<body class="bg-stone-50 text-slate-900 font-sans">
+<main class="max-w-5xl mx-auto px-6 py-12 space-y-12">
+
+<header class="space-y-3">
+  <h1 class="font-serif text-3xl">DailyWorkbench · 架构评审</h1>
+  <p class="text-sm text-slate-600">2026-09-18 · 范围按近 150 次提交热点 + 三路 sub-agent 走查（前端 / 后端 / 跨层接缝），断言逐条抽查核对</p>
+  <div class="flex flex-wrap gap-4 text-xs text-slate-600">
+    <span><span class="inline-block w-3 h-3 border-2 border-slate-700 align-middle mr-1"></span>实线框 = 模块</span>
+    <span><span class="inline-block w-6 border-t-2 border-dashed border-slate-500 align-middle mr-1"></span>虚线 = 接缝</span>
+    <span><span class="inline-block w-6 border-t-2 border-red-600 align-middle mr-1"></span>红线 = 泄漏 / 重复</span>
+    <span><span class="inline-block w-3 h-3 deep align-middle mr-1"></span>深色粗框 = 深模块</span>
+    <span class="ml-auto">徽章：<b class="text-emerald-700">Strong</b> · <b class="text-amber-700">Worth exploring</b> · <b class="text-slate-500">Speculative</b></span>
+  </div>
+</header>
+
+<section id="candidates" class="space-y-10">
+
+<!-- ===== 卡 1 ===== -->
+<article id="c1" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5">
+  <div class="flex items-start justify-between gap-4">
+    <h2 class="text-xl font-serif">1 · 把「资讯源」收成一个模块（两层各一张表）</h2>
+    <div class="flex gap-2 shrink-0"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-xs font-semibold">Strong</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">in-process</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">ports &amp; adapters (OpenCLI/grok)</span></div>
+  </div>
+  <div class="font-mono text-sm text-slate-600 leading-6">
+    backend/pipeline/export_data.py:413-625 · backend/pipeline/fetch_{ai_daily,daily_news,hacker_news,github_trending,producthunt,sspai,x}.py · backend/pipeline/enrich.py:34-39,237 · js/views/info.js:107-519,557,592-598 · js/features/infosearch.js:28-29 · js/app.js · js/core/net.js
+  </div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div><div class="lbl">Before · 接一个新源要碰的地方</div>
+      <div class="rounded-lg border border-slate-200 bg-white p-3 diagram"><pre class="mermaid">
+flowchart LR
+  S([新资讯源]):::src
+  S --> F[fetch_&lt;源&gt;.py<br/>main() 第 7 份]
+  S --> G[export_data.py<br/>get_&lt;源&gt;() 第 7 份]
+  S --> P[paths.py]
+  S --> L[local_refresh.py]
+  S --> Y[sync.yml]
+  S --> T[net.js typedef]
+  S --> A[app.js 接线]
+  S --> R[info.js<br/>render&lt;源&gt; + 缓存 + DateChanged<br/>+ 日期回落 第 7 份]
+  S --> I[infosearch.js 源名表]
+  F -. 裸 json.dump .-> J[(源 *.json)]
+  E[enrich.py<br/>write_json_atomic] -. 原子回写 .-> J
+  classDef src fill:#fef3c7,stroke:#d97706
+  classDef leak stroke:#dc2626,stroke-width:2px
+  class F,G,R,I leak
+  linkStyle 9,10 stroke:#dc2626,stroke-width:2px
+      </pre></div></div>
+    <div><div class="lbl">After · 两张表 + 一个 build()</div>
+      <div class="rounded-lg border border-slate-200 bg-white p-3 diagram"><pre class="mermaid">
+flowchart LR
+  S([新资讯源]):::src
+  S --> B[fetch_&lt;源&gt;.build()<br/>纯映射，已可测]
+  S --> ROW1[FEEDS 表 +1 行<br/>backend]
+  S --> ROW2[FEEDS 表 +1 行<br/>info.js]
+  ROW1 --> D1[run_fetcher · merge_history<br/>· opencli_rows]:::deep
+  ROW2 --> D2[renderFeed(d, spec)<br/>digest 直接算]:::deep
+  D1 -- 原子写 · 唯一通道 --> J[(源 *.json)]
+  E[enrich.py] -- 原子回写 --> J
+  classDef src fill:#fef3c7,stroke:#d97706
+  classDef deep fill:#0f172a,color:#f8fafc,stroke:#0f172a,stroke-width:3px
+      </pre></div></div>
+  </div>
+  <p><b>问题</b>：概念散在两层九处。<code>145d281</code>/<code>f08b2a5</code>/<code>063e7e0</code> 三次接源提交每次改 8–9 个文件；<code>export_data.py</code> 7 个 getter 除 3 个常量外逐行相同（213 行里 ~190 行是同一条「history upsert 留 14 天」知识的第 7 次抄写）；7 个 fetcher 的 <code>main()</code> 同构、且全用裸 <code>json.dump</code>，而 <code>enrich.py:237</code> 用 <code>write_json_atomic</code> 回写同一批文件——同一文件两条写通道；<code>info.js</code> 7 组 render/缓存/DateChanged/日期回落，<code>feedAsk</code> 的 digest 变量只在渲染途中被赋值（165/231），HN/GT/PH/少数派/X 五源根本没有 digest。</p>
+  <p><b>方案</b>：后端 <code>merge_history(src, key, fallback)</code> + <code>run_fetcher(name, build, out)</code>（内置原子写）+ <code>opencli_rows(site, cmd, …)</code>，各 fetcher 只剩 <code>build()</code>；前端 <code>FEEDS</code> 描述表 + <code>renderFeed(d, spec)</code>，digest 从 <code>d</code> 直接算。<b>data.json 键一个不改。</b></p>
+  <ul class="grid sm:grid-cols-2 gap-x-6 text-sm list-disc pl-5">
+    <li>局部性：接新源 = 1 个 build() + 2 行表</li>
+    <li>杠杆：1 份 history 逻辑供 7 源</li>
+    <li>双写通道合一，非原子写消失</li>
+    <li>getter 零覆盖的 2 源（aiDaily/dailyNews）被 1 个测试兜住</li>
+    <li>feedAsk 不构 DOM 即可验证</li>
+    <li>infosearch 源名表与 FEEDS 同源</li>
+  </ul>
+  <div class="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">ADR 0007 / 0012「重工具关在取数层」不翻案，只换封装位置；不改契约键，不是单向门。</div>
+</article>
+
+<!-- ===== 卡 2 ===== -->
+<article id="c2" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5">
+  <div class="flex items-start justify-between gap-4">
+    <h2 class="text-xl font-serif">2 · data.json 契约收成一个模块</h2>
+    <div class="flex gap-2 shrink-0"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-xs font-semibold">Strong</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">in-process</span></div>
+  </div>
+  <div class="font-mono text-sm text-slate-600 leading-6">backend/pipeline/export_data.py:628-759（main，711-731 真写入）· js/core/net.js:7-29（typedef）· js/app.js:159-196（normalizeData）· backend/pipeline/sync_status.py:28</div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div><div class="lbl">Before · 一份契约，三处解释</div><div class="diagram pt-6">
+      <div class="band leak">export_data.py main() · 字典即契约 · 零测试</div>
+      <div class="band leak">net.js @typedef WBData · 声明</div>
+      <div class="band leak">app.js normalizeData · 运行时兜底再解释</div>
+      <div class="band">sync_status.py · 另注入 sync 字段</div>
+      <div class="band thin text-red-700">死字段：status.automations/models/ollama/mcp/runtime（0 引用）· kpi（0 消费）</div>
+    </div></div>
+    <div><div class="lbl">After · 两端各一处</div><div class="diagram pt-6">
+      <div class="band thick">build_data(sources) → dict · 纯函数 · 不落盘 · 契约快照测</div>
+      <div class="band">main() = 读源 → build_data → 原子写</div>
+      <div class="band thick">net.js · typedef + normalize 同处 · 唯一前端解释</div>
+      <div class="band thin">app.js 只 import</div>
+    </div></div>
+  </div>
+  <p><b>问题</b>：契约在后端字典、前端 typedef、<code>normalizeData</code> 三处各自解释；<code>status.*</code> 五个字段只写不读、<code>kpi</code> 只活在 typedef；ADR 0011 的 <code>aiSummary/aiTags</code> 只在注释里定义；装配整份 data.json 的 <code>main()</code> 一个测试都没有。</p>
+  <p><b>方案</b>：后端抽 <code>build_data(sources) → dict</code> 纯函数，<code>main()</code> 退成「读源 → build → 原子写」；前端 <code>normalizeData</code> 迁进 <code>net.js</code> 与 typedef 同处。</p>
+  <ul class="grid sm:grid-cols-2 gap-x-6 text-sm list-disc pl-5">
+    <li>契约有了快照测试</li><li>死字段有了回归测试</li><li>加字段只碰 net.js 一处</li><li>现有 get_* 测试可升级为整份形状断言</li>
+  </ul>
+  <div class="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900"><b>单向门提醒</b>：删 <code>status.*</code>/<code>kpi</code> 死字段 = 改 data.json 契约，须另写 ADR；只收代码、键不动，不需要。</div>
+</article>
+
+<!-- ===== 卡 3 ===== -->
+<article id="c3" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5">
+  <div class="flex items-start justify-between gap-4">
+    <h2 class="text-xl font-serif">3 · 知识库读接口：信封下沉 + 前端 kb 端口</h2>
+    <div class="flex gap-2 shrink-0"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-xs font-semibold">Worth exploring</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">local-substitutable (fs)</span></div>
+  </div>
+  <div class="font-mono text-sm text-slate-600 leading-6">backend/clients/kb.py:18,104-125,278-312 · backend/server.py:177-215 · backend/mcp/server.py:44-95 · js/kb.js:83-92,167 · js/views/distill.js:38,92,98,208 · js/features/recall.js:12-16,64 · js/features/inbox.js:311 · js/views/ai.js:296,305</div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div><div class="lbl">Before · 接口几乎和实现一样宽</div><div class="diagram flex items-end gap-6 pt-4">
+      <div class="mass"><div class="iface" style="height:5.5rem">kb.py 接口<br/>(files,sig) 元组 · fm 字典 · rel 路径 · VAULT 常量</div><div class="impl" style="height:6rem">实现</div></div>
+      <div class="mass"><div class="iface" style="height:3rem">HTTP 信封</div><div class="impl" style="height:1rem"></div><div class="text-red-700 mt-1">逐字重复</div></div>
+      <div class="mass"><div class="iface" style="height:3rem">MCP 信封</div><div class="impl" style="height:1rem"></div><div class="text-red-700 mt-1">已漂移</div></div>
+      <div class="mass"><div class="iface" style="height:3rem">3× kbSave 调用方<br/>2× deposits fetch</div><div class="impl" style="height:1rem"></div></div>
+    </div></div>
+    <div><div class="lbl">After · 小接口，两个真适配器</div><div class="diagram flex items-end gap-6 pt-4">
+      <div class="mass"><div class="iface" style="height:1.5rem">tree/search/note/deposits</div><div class="impl deep" style="height:10rem">configured 判定<br/>语义 note<br/>双根路径映射</div></div>
+      <div class="mass"><div class="iface" style="height:1rem">HTTP</div><div class="impl" style="height:.75rem"></div><div class="mt-1">只管状态码</div></div>
+      <div class="mass"><div class="iface" style="height:1rem">MCP</div><div class="impl" style="height:.75rem"></div><div class="mt-1">只管 schema</div></div>
+      <div class="mass"><div class="iface" style="height:1rem">core/kb-port.js</div><div class="impl" style="height:.75rem"></div><div class="mt-1">内部仍调 window.kbSave</div></div>
+    </div></div>
+  </div>
+  <p><b>问题</b>：<code>{configured, …}</code> 信封在 HTTP 与 MCP 两侧逐字重复且已漂移（空 q / 缺 path 的响应形状不同）；frontmatter 字典直通浏览器（<code>kb.js:83-89</code> 读 <code>fm.title/date/module/tags</code>）；<code>kbSave</code> 三个调用方各拼 body 各写文案；<code>/api/kb/deposits</code> 两处各 fetch；<code>distill.js:98</code> 裸调 <code>marked</code>、缺 <code>kb.js</code> 的 <code>[[双链]]</code>/callout 处理——蒸馏卡里双链是死的；<code>recall.js</code> 自带一张 3 项平台表与 <code>core/platforms.js</code> 平行。</p>
+  <p><b>方案</b>：<code>kb.py</code> 自带 configured 判定、返回语义化 note，两宿主退成薄适配器；前端加 <code>core/kb-port.js</code>（save/deposits/note）——内部仍调 <code>window.kbSave</code>，<code>kb.js</code> 一行不动。</p>
+  <ul class="grid sm:grid-cols-2 gap-x-6 text-sm list-disc pl-5">
+    <li>两个适配器撑起真接缝（HTTP + MCP）</li><li>未配置态一处定义</li><li>测试不再 monkeypatch 模块常量</li><li>双链渲染一处处理</li>
+  </ul>
+  <div class="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">ADR 0004（kb.js 不转 ESM）与 ADR 0008（MCP 复用 kb.py）均不翻案。注意 <code>kb.py:18</code> 的 <code>VAULT/DEPOSIT</code> import 期常量是现有 5 个测试的接缝，下沉时要么保留、要么同步改测试。</div>
+</article>
+
+<!-- ===== 卡 4 ===== -->
+<article id="c4" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5">
+  <div class="flex items-start justify-between gap-4">
+    <h2 class="text-xl font-serif">4 · app.js 拆出 data-source 模块，只留一条刷新路径</h2>
+    <div class="flex gap-2 shrink-0"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-xs font-semibold">Worth exploring</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">local-substitutable (fetch 可注入)</span></div>
+  </div>
+  <div class="font-mono text-sm text-slate-600 leading-6">js/app.js:159-196（normalizeData）· 198-205（render）· 295-318（loadData/maybeReload）· 324-426（pollUntilSynced/tightReload 死代码）</div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div><div class="lbl">Before · 两条路径，行为不一致</div><div class="diagram relative pt-4 space-y-3">
+      <div class="flex items-center gap-2"><span class="mod">首屏 render()</span><span class="text-slate-400">→</span><span class="mod">normalize</span><span class="text-slate-400">→</span><span class="mod">setData</span><span class="text-slate-400">→</span><span class="mod">HeaderStrip · ActiveTab · <b>TodayReview · Recall</b></span></div>
+      <div class="flex items-center gap-2"><span class="mod">轮询 maybeReload()</span><span class="text-slate-400">→</span><span class="mod">normalize</span><span class="text-slate-400">→</span><span class="mod">setData</span><span class="text-slate-400">→</span><span class="mod border-red-600 text-red-700">HeaderStrip · ActiveTab（漏两项）</span></div>
+      <div class="flex items-center gap-2 opacity-60"><span class="mod thin">pollUntilSynced</span><span class="text-slate-400">⇄</span><span class="mod thin">tightReload</span><span class="text-xs text-slate-500">只互相调用，无入口（~56 行）</span></div>
+      <div class="flex flex-wrap gap-2 pt-2"><span class="mod thin">主题</span><span class="mod thin">番茄钟</span><span class="mod thin">时钟</span><span class="mod thin">导出/备份</span><span class="mod thin">常用入口</span><span class="text-xs text-slate-500 self-center">同住 764 行</span></div>
+    </div></div>
+    <div><div class="lbl">After · 一个数据源，一条渲染路径</div><div class="diagram pt-4 space-y-3">
+      <div class="inline-block deep rounded p-3 text-xs uppercase tracking-wider">core/data-source.js<br/><span class="normal-case text-slate-300">start() · refreshNow() · current() · onChange(fn)</span><br/><span class="normal-case text-slate-300">内含 load / normalize / __lastGen · __lastMod 轮询</span></div>
+      <div class="flex items-center gap-2"><span class="mod">onChange</span><span class="text-slate-400">→</span><span class="mod">renderAll(d)</span><span class="text-xs text-slate-500">首屏与轮询同一条</span></div>
+      <div class="flex items-center gap-2"><span class="mod thin">app.js</span><span class="text-xs text-slate-500">只做装配；死代码删除</span></div>
+    </div></div>
+  </div>
+  <p><b>问题</b>：<code>render()</code> 与 <code>maybeReload()</code> 各抄一遍 normalize → setData → render*，后者不跑 <code>renderTodayReview/renderRecall</code>——后台轮询刷新与首屏行为不一致；<code>pollUntilSynced/tightReload</code> 只互相调用、无入口（注释自认「保留供路线 B」）；主题/番茄钟/时钟/导出与数据骨架同住一个胖模块。</p>
+  <p><b>方案</b>：抽 <code>core/data-source.js</code> 独占 load/normalize/轮询与缓存戳判断，暴露 <code>start/refreshNow/current/onChange</code>；一条渲染路径；<code>app.js</code> 只装配；删死代码。</p>
+  <ul class="grid sm:grid-cols-2 gap-x-6 text-sm list-disc pl-5">
+    <li>刷新行为只有一种</li><li>局部性：轮询/缓存戳逻辑一处</li><li>fetch 可注入，数据源可单测</li><li>与卡 2 共享 normalize 归位，建议同做</li>
+  </ul>
+</article>
+
+<!-- ===== 卡 5 ===== -->
+<article id="c5" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5">
+  <div class="flex items-start justify-between gap-4">
+    <h2 class="text-xl font-serif">5 · server.py：把 handler 体内的纯逻辑外提</h2>
+    <div class="flex gap-2 shrink-0"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-xs font-semibold">Worth exploring</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">mock (Zilliz / embedding)</span></div>
+  </div>
+  <div class="font-mono text-sm text-slate-600 leading-6">backend/server.py:340-373（_post_info_search）· 68-98（_do_chat_proxy）· 218-229（try/except→500 ×8）· test_workbench.py（0 处 import backend.server）</div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div><div class="lbl">Before · 逻辑只能经 socket 触达</div><div class="diagram pt-6">
+      <div class="band">路由表 GET_ROUTES / POST_ROUTES（健康）</div>
+      <div class="band thick leak">_post_info_search · 读配置 · topk 钳制 · embed · zilliz · 4 种错误分支 · 24 行</div>
+      <div class="band leak">try/except → _json(500) · 8 个端点各抄一遍</div>
+      <div class="band thin">测试：0</div>
+    </div></div>
+    <div><div class="lbl">After · handler 只剩状态码</div><div class="diagram pt-6">
+      <div class="band">路由表（不动）</div>
+      <div class="band">_post_info_search · 3 行 · 经 _json_endpoint 包装</div>
+      <div class="band thick">clients/search.py · info_search(q, topk, embed, zilliz) → dict</div>
+      <div class="band thin">测试：topk 钳制 · 4 错误分支 · 用 mock 适配器</div>
+    </div></div>
+  </div>
+  <p><b>问题</b>：<code>_post_info_search</code> 的配置读取、topk 解析与钳制、embed/zilliz 调用、四种错误分支全写在 handler 方法体里，只能经 socket 触达；8 个 POST 端点重复同一段 <code>try/except → 500</code>；整个 <code>server.py</code> 零测试，注释里那个 code-review F5 的 topk 修复没有回归测试。</p>
+  <p><b>方案</b>：<code>clients/search.py: info_search(q, topk, embed, zilliz) → dict</code>（依赖从参数进），handler 退成 3 行；一个 <code>_json_endpoint</code> 包装收掉 8 处 try/except。</p>
+  <ul class="grid sm:grid-cols-2 gap-x-6 text-sm list-disc pl-5">
+    <li>topk 钳制有回归测试</li><li>4 种错误分支可测</li><li>接受依赖，不自己创建</li><li>路由分派机制不动</li>
+  </ul>
+</article>
+
+<!-- ===== 卡 6 ===== -->
+<article id="c6" class="rounded-xl border border-slate-200 bg-white p-6 space-y-5">
+  <div class="flex items-start justify-between gap-4">
+    <h2 class="text-xl font-serif">6 · agent 事件契约：一份黄金样例驱动两端</h2>
+    <div class="flex gap-2 shrink-0"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-xs font-semibold">Speculative</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">subprocess + 长连接</span></div>
+  </div>
+  <div class="font-mono text-sm text-slate-600 leading-6">backend/clients/agent.py:85-119（_map_event 真源）· backend/server.py:397-405（手拼 SSE 帧）· js/core/agent-stream.js:9-14（注释副本，已漂移）,65-82 · js/views/ai.js:454,471</div>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div><div class="lbl">Before · 事件形状在三处各写一遍</div>
+      <div class="rounded-lg border border-slate-200 bg-white p-3 diagram"><pre class="mermaid">
+sequenceDiagram
+  participant M as agent.py _map_event（真源）
+  participant H as server.py handler（手拼 data: …）
+  participant C as agent-stream.js 注释（副本）
+  participant A as ai.js
+  M->>H: {type, session_id, phase…}
+  H->>C: SSE 帧
+  Note over C: 注释缺 session_id / phase=resume_failed
+  C->>A: ev
+  Note over A: 却依赖 ev.session_id 做续接
+      </pre></div></div>
+    <div><div class="lbl">After · 真源 + 黄金样例</div>
+      <div class="rounded-lg border border-slate-200 bg-white p-3 diagram"><pre class="mermaid">
+sequenceDiagram
+  participant M as agent.py _map_event + sse_frame()
+  participant G as 黄金样例 fixtures
+  participant H as server.py（只做管道）
+  participant J as agent-stream.js（引用，不复制）
+  M->>G: stream-json 行 → SSE 帧
+  G->>M: pytest 断言
+  G->>J: 同一份样例对照解析
+  M->>H: 已编帧
+  H->>J: 透传
+      </pre></div></div>
+  </div>
+  <p><b>问题</b>：事件 schema 的真源在 <code>_map_event</code>，SSE 编帧散在 handler 里手拼，前端头注释是副本且已漂移（缺 <code>session_id</code>、<code>meta.phase=resume_failed</code>），而 <code>ai.js:454/471</code> 恰恰依赖这两项做 <code>--resume</code> 续接。</p>
+  <p><b>方案</b>：<code>agent.py</code> 暴露 <code>sse_frame(ev)</code>；一份「stream-json 行 → SSE 帧」黄金样例同时驱动 Python 测试与前端解析器对照；注释改为引用。</p>
+  <p class="text-sm text-slate-600"><b>为何只是 Speculative</b>：<code>agent.py</code> 的 <code>stream()</code> 本身已是深模块（一个生成器藏了 argv 组装、6 层安全边界、看门狗、resume 降级），<code>agent-stream.js</code> 两个消费者接口一致——这里没有结构问题，收益是可测性与防漂移。</p>
+</article>
+
+</section>
+
+<section id="top-recommendation" class="rounded-xl deep p-8 space-y-3">
+  <div class="lbl text-slate-300">首选推荐</div>
+  <h2 class="text-2xl font-serif"><a href="#c1" class="underline decoration-slate-500 hover:decoration-white">1 · 把「资讯源」收成一个模块</a></h2>
+  <p class="text-slate-200 text-sm leading-6">最近三个功能提交每次都在这里付 8–9 个文件的税，是第一热点；全部进程内、<code>build()</code> 已有测试可直接复用；不改 data.json 键、不碰任何 ADR；顺手消掉一个真实 bug 面（fetcher 非原子写 vs enrich 原子回写同一文件）。卡 2 与它共享同一批文件，可作同一条线的第二步。</p>
+</section>
+
+</main>
+</body>
+</html>
