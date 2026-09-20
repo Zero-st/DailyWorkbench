@@ -1,123 +1,121 @@
 {
-  "date": "2026-09-10",
-  "fetchedAt": "2026-09-10 16:38",
+  "date": "2026-09-20",
+  "fetchedAt": "2026-09-20 15:02",
   "source": "少数派 (sspai.com RSS)",
   "canonical": "https://sspai.com",
   "count": 10,
   "items": [
     {
-      "title": "App+1｜下一节：教学工作紧张忙碌，下一节课从从容容",
-      "summary": "祝每一位老师教师节快乐！",
-      "url": "https://sspai.com/post/114384",
+      "title": "给电话加上「辅助驾驶」？我们想听听你的意见",
+      "summary": "会议开到一半，手机亮了：一个陌生号码。你盯着屏幕犹豫了几秒，不知道这会是推销、客户，还是外卖员。直接挂掉，又得惦记着会不会耽误正事；接起来，不方便说，聊完还得整理待办。轮到你主动打电话，也不轻松。邀约 ...",
+      "url": "https://sspai.com/post/114717",
       "source": "少数派",
-      "aiSummary": "少数派介绍备课应用“下一节”，帮助教师从容安排课程。",
+      "aiSummary": "少数派探讨为来电去电加入 AI「辅助驾驶」功能并征集读者意见",
       "aiTags": [
-        "工具",
-        "效率",
-        "产品"
-      ]
-    },
-    {
-      "title": "派早报：Apple 发布 iPhone Duo 折叠屏等",
-      "summary": "奥之心发布 OM SYSTEM PEN 相机、Sonos 更新音频系统等。",
-      "url": "https://sspai.com/post/114394",
-      "source": "少数派",
-      "aiSummary": "Apple 发布 iPhone Duo 折叠屏，奥之心推出 PEN 相机，Sonos 更新音频系统",
-      "aiTags": [
-        "硬件",
         "产品",
-        "行业"
+        "模型",
+        "效率"
       ]
     },
     {
-      "title": "一图流 | 一张图带你看完 2026 Apple 秋季发布会",
-      "summary": "9 月 10 日凌晨，Apple 召开新品发布会。推出了新一代的 iPhone 18 Pro 系列、Apple Watch Series 12、Apple Watch Ultra 4 以及 AirPods 5 系列。",
-      "url": "https://sspai.com/post/114393",
+      "title": "你的脸红是什么红：了解玫瑰痤疮",
+      "summary": "脸红发烫却没有小鹿乱撞：警惕玫瑰痤疮。",
+      "url": "https://sspai.com/post/114641",
       "source": "少数派",
-      "aiSummary": "Apple 秋季发布会推出 iPhone 18 Pro、Apple Watch Series 12 与 AirPods 5 等新品",
+      "aiSummary": "科普玫瑰痤疮：反复脸红发烫可能是皮肤疾病信号。",
       "aiTags": [
-        "硬件",
-        "产品"
+        "科普",
+        "健康"
       ]
     },
     {
-      "title": "可以「折」的 iPhone 正式亮相：Apple 发布会看点回顾",
-      "summary": "9 月 10 日凌晨，Apple 召开新品发布会。推出了新一代的 iPhone 18 Pro 系列、Apple Watch Series 12、Apple Watch Ultra 4 以及 AirPods 5 系列。",
-      "url": "https://sspai.com/post/114392",
+      "title": "本周看什么 | 最近值得一看的 9 部作品",
+      "summary": "📅本周新预告《哆啦A梦大雄的蒸汽时间车》首支特报9月15日，动画电影《哆啦A梦大雄的蒸汽时间车》发布了特报影像，定档2027年3月5日在日本上映。本作为《哆啦A梦》电影系列第46部作品，森山瑠潮执导， ...",
+      "url": "https://sspai.com/post/114716",
       "source": "少数派",
-      "aiSummary": "Apple 发布会回顾：折叠屏 iPhone 正式亮相，还有 iPhone 18 Pro 等多款新品",
+      "aiSummary": "本周推荐 9 部值得一看的影视作品，含《哆啦A梦》新电影特报。",
       "aiTags": [
-        "硬件",
-        "产品"
+        "影视",
+        "推荐"
       ]
     },
     {
-      "title": "我一定会回来……吗？小手用户与 iPhone 17 Pro Max 的一年",
-      "summary": "为啥那么多人喜欢大手机呢？既然上了 70 mm 我都握不住，要不买个 Pro Max 试试？",
-      "url": "https://sspai.com/post/114366",
+      "title": "8月音乐精选：有限的生命里，要听得再任性一点！",
+      "summary": "编者注：2026年我们将重启少数派音乐推荐栏目FM3.14，特邀资深音乐从业者及爱好者为大家推荐优质的华语独立、流行音乐，今年我们也很荣幸邀请到老朋友飞傲，为本栏目冠名。飞傲目前拥有品牌以音乐发烧友为 ...",
+      "url": "https://sspai.com/post/114555",
       "source": "少数派",
-      "aiSummary": "小手用户分享使用 iPhone 17 Pro Max 一年的真实体验与是否回归的思考",
+      "aiSummary": "少数派 8 月音乐精选，推荐多首值得任性聆听的华语音乐。",
+      "aiTags": [
+        "音乐",
+        "推荐"
+      ]
+    },
+    {
+      "title": "具透 | 细数 watchOS 27 中你值得了解的新变化：动态应用网格、智能叠放……",
+      "summary": "让我们一起细数 watchOS 27 中的新功能。",
+      "url": "https://sspai.com/post/114670",
+      "source": "少数派",
+      "aiSummary": "watchOS 27 带来动态应用网格、智能叠放等多项新功能。",
       "aiTags": [
         "产品",
         "硬件"
       ]
     },
     {
-      "title": "华人世界被忽视的游戏主机：扩写中国家用游戏主机的时间线",
-      "summary": "Matrix首页推荐Matrix是少数派的写作社区，我们主张分享真实的产品体验，有实用价值的经验与思考。我们会不定期挑选Matrix最优质的文章，展示来自用户的最真实的体验和观点。文章代表作者个人观点 ...",
-      "url": "https://sspai.com/post/113842",
+      "title": "让 Agent 读懂你的身体：数据获取篇",
+      "summary": "某一天，我站在健身房里，发现自己似乎已经有一阵子没什么进步了，隐约生出一种「怎么练来练去还是这样」的顿感。我知道，这多半是平台期。理论上，我要做的无非是调整训练量、换动作、看恢复、查饮食，必要时调整周 ... 本文为会员文章，出自 《单篇文章》 ，订阅后可阅读全文。",
+      "url": "https://sspai.com/prime/story/how-to-obtain-data-for-agent-analysis",
       "source": "少数派",
-      "aiSummary": "梳理华人世界被忽视的中国家用游戏主机发展时间线",
+      "aiSummary": "介绍让 AI Agent 获取并读懂身体数据的方法与思路。",
+      "aiTags": [
+        "效率",
+        "工具",
+        "健康"
+      ]
+    },
+    {
+      "title": "派早报：欧盟拟禁止 13 岁以下儿童使用社交媒体等",
+      "summary": "少数派的近期动态口袋先知新版本1.3.3上线，你可以自定义任何你想展示的屏幕效果。了解更多能让AI助手通过自然语言指令直接与您的Quote/0摘录墨水屏交互的DotSkill已上线。点击了解八月买了什 ...",
+      "url": "https://sspai.com/post/114699",
+      "source": "少数派",
+      "aiSummary": "欧盟拟立法禁止 13 岁以下儿童使用社交媒体。",
       "aiTags": [
         "行业",
-        "硬件",
-        "游戏"
+        "政策"
       ]
     },
     {
-      "title": "Velastar：喜欢仰望星空的你，有了一个探索异星的新选择",
-      "summary": "Matrix首页推荐Matrix是少数派的写作社区，我们主张分享真实的产品体验，有实用价值的经验与思考。我们会不定期挑选Matrix最优质的文章，展示来自用户的最真实的体验和观点。文章代表作者个人观点 ...",
-      "url": "https://sspai.com/post/113668",
+      "title": "城市漫步指南｜威海初秋，看海玩沙",
+      "summary": "9 月刚开渔，避开暑假，正是玩沙吃海鲜的好时节。而威海，胶东半岛尖端上的海滨小城，有历史厚重的一面，也有现代休闲的一面。多留几天给它，会有很丰富的度假体验。",
+      "url": "https://sspai.com/post/114557",
       "source": "少数派",
-      "aiSummary": "Velastar 为喜欢仰望星空的用户提供探索异星的新选择",
+      "aiSummary": "威海初秋开渔季避开暑期人流，是看海玩沙吃海鲜的度假好去处",
+      "aiTags": [
+        "旅行",
+        "生活"
+      ]
+    },
+    {
+      "title": "具透 | macOS 27 正式版来了，这些是你值得了解新细节",
+      "summary": "除了只支持 Apple Silicon，macOS 27 Golden Gate 还有这些变化。",
+      "url": "https://sspai.com/post/114643",
+      "source": "少数派",
+      "aiSummary": "macOS 27 Golden Gate 正式版发布，仅支持 Apple Silicon 并带来多项细节更新",
       "aiTags": [
         "产品",
-        "游戏"
+        "系统"
       ]
     },
     {
-      "title": "派早报：LG 电视被曝存在后门、《塞尔达传说：时之笛》重制版公布等",
-      "summary": "Arm 发布 C2 CPU 与新 Mali GPU，索尼推出全画幅鱼眼变焦镜头等。",
-      "url": "https://sspai.com/post/114352",
+      "title": "一个小创意的诞生：BeatBox 雪漫天外壳定制指南",
+      "summary": "今年早些时候，在少数派 × 飞傲联名 CD 机盖板设计大赛中，不少朋友都参与设计了自己的 CD 机盖板，但如何才能把它们制作出来呢？",
+      "url": "https://sspai.com/post/114451",
       "source": "少数派",
-      "aiSummary": "LG 电视被曝存在后门，《时之笛》重制版公布，Arm 发布 C2 CPU 等",
+      "aiSummary": "分享将 CD 机盖板设计大赛创意落地为雪漫天实体外壳的定制过程",
       "aiTags": [
-        "安全",
+        "教程",
         "硬件",
-        "行业"
-      ]
-    },
-    {
-      "title": "Apple「随航」的无感体验里，藏着多少流畅的秘密？",
-      "summary": "相较于 Jobs 时代令人惊叹的「iPhone 时刻」，过去十五年的 Apple 或许少了一些足以重新定义一个品类的震撼——但围绕「体验」本身展开的技术革新却从未停止。 本文为会员文章，出自 《单篇文章》 ，订阅后可阅读全文。",
-      "url": "https://sspai.com/prime/story/sidecar-optimizations",
-      "source": "少数派",
-      "aiSummary": "解析 Apple 随航功能实现无感流畅体验背后的技术细节",
-      "aiTags": [
-        "产品",
-        "研究"
-      ]
-    },
-    {
-      "title": "社区速递 157 | NuPhy 全铝磁轴键盘与派友拒绝算法的「反投喂」信息源",
-      "summary": "除了首页时间流和侧栏的精选展位，少数派Matrix社区还有很多优秀内容因条件所限无法得到有效曝光，因此我们决定重启Matrix周报，并在此基础上添加更多社区内容、作者投稿新玩意呈现给大家。上周社区速递 ...",
-      "url": "https://sspai.com/post/114327",
-      "source": "少数派",
-      "aiSummary": "社区速递介绍 NuPhy 全铝磁轴键盘与拒绝算法推荐的「反投喂」信息源",
-      "aiTags": [
-        "硬件",
-        "工具",
-        "效率"
+        "创意"
       ]
     }
   ],

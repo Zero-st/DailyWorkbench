@@ -34,7 +34,7 @@ export const FEEDS = [
     ask: "用大白话展开讲讲这条 AI 新闻的背景和影响，并说说对我有什么用：",
     summary: true, numbered: false,
     empty: {
-      text: "这一天还没有抓到日报数据。可以点「立即刷新」让本机重新抓一次；也可以让 WorkBuddy 手动跑 <code>fetch_ai_daily.py</code>。",
+      text: "这一天还没有抓到日报数据。可以点「立即刷新」让本机重新抓一次；也可以手动跑 <code>python -m backend.pipeline.fetch_ai_daily</code>。",
       cmd: "跑一下 personal-workbench 的 fetch_ai_daily.py 抓今天的 AI 日报，然后 export + push",
     },
     actions: {
@@ -52,7 +52,7 @@ export const FEEDS = [
     ask: "用大白话展开讲讲这条新闻的背景，并说说对我有什么影响：",
     summary: false, numbered: true, cover: true, tip: true,
     empty: {
-      text: "这一天还没有抓到新闻数据。可以点「立即刷新」让本机重新抓一次；也可以让 WorkBuddy 手动跑 <code>fetch_daily_news.py</code>。",
+      text: "这一天还没有抓到新闻数据。可以点「立即刷新」让本机重新抓一次；也可以手动跑 <code>python -m backend.pipeline.fetch_daily_news</code>。",
       cmd: "跑一下 personal-workbench 的 fetch_daily_news.py 抓今天的国内新闻，然后 export + push",
     },
     actions: {

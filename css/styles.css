@@ -52,7 +52,6 @@
   --candy-green-soft: rgba(43,191,106,0.12);
   --candy-green-line: rgba(43,191,106,0.50);
   --candy-cyan:    #16c2c2;
-  --candy-cyan-soft: rgba(22,194,194,0.12);
   --candy-cyan-line: rgba(22,194,194,0.45);
   --candy-amber:   #f59e0b;
 
@@ -898,13 +897,6 @@ body.light .side-card{box-shadow:var(--shadow-sm)}
   border-radius:999px;
   transition:width .4s ease;
 }
-.rev-h{font-size:13px;color:var(--ink-strong);margin:14px 0 8px;font-weight:700;letter-spacing:.005em;display:flex;align-items:center;gap:6px}
-.rev-h::before{content:"";display:inline-block;width:3px;height:14px;background:var(--candy-cyan);border-radius:999px}
-.rev-list{margin:0;padding-left:0;color:var(--ink);font-size:14px;line-height:1.7;list-style:none}
-.rev-list li{position:relative;padding-left:18px;margin:3px 0}
-.rev-list li::before{content:"";position:absolute;left:0;top:10px;width:7px;height:7px;background:var(--candy-cyan);border-radius:50%;box-shadow:0 0 0 3px var(--candy-cyan-soft)}
-.rev-list a{color:var(--accent)}
-.rev-list .empty{list-style:none;margin-left:-18px;color:var(--sub);font-size:13px}
 .rev-rule{border:none;border-top:1px dashed var(--line-mid);margin:14px 0;}
 .review-actions{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:12px}
 .review-actions .button{flex-shrink:0;min-height:36px;padding:0 18px}

@@ -136,11 +136,10 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   // renderQuick(快捷启动) / renderTodayReview(今日复盘) 见 js/views/dash.js
   // AI 助手全套 已剥到 js/views/ai.js
 
-  // 头部条（KPI/同步/快捷启动）+ tab 内容拆分渲染：省 CPU、按需
+  // 头部条（快照戳/同步状态/AI 指令台）+ tab 内容拆分渲染：省 CPU、按需
   function renderHeaderStrip(d) {
     document.getElementById("snap").textContent = "快照 · " + (d.generatedAt || "-");
     renderSync(d);
-    renderFreshness(d);
     renderQuick(d); // 快捷启动台（已并入「今日」视图）
   }
   function renderActiveTab(d) {
@@ -158,13 +157,6 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   // ---------- 数据规范化（兜底缺字段，避免 data.json 部分缺失/损坏导致白屏） ----------
   function normalizeData(d) {
     d = d || {};
-    d.kpi = d.kpi || {};
-    d.status = d.status || {};
-    d.status.disk = d.status.disk || {};
-    d.skills = Array.isArray(d.skills) ? d.skills : [];
-    d.sessions = d.sessions || {};
-    d.sessions.recent = Array.isArray(d.sessions.recent) ? d.sessions.recent : [];
-    d.sessions.heatmap = Array.isArray(d.sessions.heatmap) ? d.sessions.heatmap : [];
     d.aiDaily = d.aiDaily || {};
     d.aiDaily.sections = Array.isArray(d.aiDaily.sections) ? d.aiDaily.sections : [];
     d.aiDaily.history = Array.isArray(d.aiDaily.history) ? d.aiDaily.history : [];
@@ -186,12 +178,6 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     d.x = d.x || {};
     d.x.items = Array.isArray(d.x.items) ? d.x.items : [];
     d.x.history = Array.isArray(d.x.history) ? d.x.history : [];
-    d.weekly = Array.isArray(d.weekly) ? d.weekly : [];
-    d.guide = Array.isArray(d.guide) ? d.guide : [];
-    d.quickActions = Array.isArray(d.quickActions) ? d.quickActions : [];
-    d.knowledge = d.knowledge || {};
-    d.knowledge.types = d.knowledge.types || {};
-    d.knowledge.files = Array.isArray(d.knowledge.files) ? d.knowledge.files : [];
     return d;
   }
   // 今日复盘（renderTodayReview/saveReview/reviewLoad）已剥到 js/views/dash.js
@@ -242,24 +228,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   }
   window.switchView = switchView;
 
-  // ---------- 同步健康度（数据新鲜度 + 失败/陈旧告警） ----------
-  function renderFreshness(d) {
-    var el = document.getElementById("freshness");
-    if (!el) return;
-    var st = (d && d.status) || {};
-    var parts = [];
-    var since = function (ds) {
-      if (!ds) return "未知";
-      var t = new Date(String(ds).slice(0, 10) + "T00:00:00").getTime();
-      var days = Math.max(0, Math.round((Date.now() - t) / 86400000));
-      if (days === 0) return "今天";
-      if (days === 1) return "昨天";
-      return days + " 天前";
-    };
-    if (st.skillsLastUpdate) parts.push("skills 数据 " + since(st.skillsLastUpdate));
-    if (st.memoryLastUpdate) parts.push("记忆库 " + since(st.memoryLastUpdate));
-    el.textContent = parts.length ? parts.join(" · ") + " · " : "";
-  }
+  // ---------- 同步健康度（失败/陈旧告警） ----------
   function renderSync(d) {
     var el = document.getElementById("syncStatus");
     if (!el) return;

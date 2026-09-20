@@ -1,16 +1,145 @@
 {
-  "date": "2026-09-10",
-  "fetchedAt": "2026-09-10 16:38",
+  "date": "2026-09-20",
+  "fetchedAt": "2026-09-20 15:02",
   "source": "Product Hunt (Atom feed)",
   "canonical": "https://www.producthunt.com",
   "count": 20,
   "items": [
     {
-      "title": "Thousand",
-      "summary": "Git-backed docs for humans and agents",
-      "url": "https://www.producthunt.com/products/thousand",
+      "title": "Termphin",
+      "summary": "SSH client with sessions that never drop.",
+      "url": "https://www.producthunt.com/products/termphin",
       "source": "Product Hunt",
-      "aiSummary": "Thousand 推出基于 Git 的文档工具，同时服务人类与 AI 代理",
+      "aiSummary": "Termphin 是一款会话永不掉线的 SSH 客户端",
+      "aiTags": [
+        "工具",
+        "产品",
+        "效率"
+      ]
+    },
+    {
+      "title": "Answers by Context.dev",
+      "summary": "Give it a research task + the JSON shape you want back.",
+      "url": "https://www.producthunt.com/products/context-dev",
+      "source": "Product Hunt",
+      "aiSummary": "Answers 接收研究任务并按指定 JSON 结构返回结果",
+      "aiTags": [
+        "工具",
+        "模型",
+        "效率"
+      ]
+    },
+    {
+      "title": "Harbor",
+      "summary": "The Evernote alternative that puts its price in writing",
+      "url": "https://www.producthunt.com/products/harbor-2",
+      "source": "Product Hunt",
+      "aiSummary": "Harbor 是一款公开标价的 Evernote 替代笔记应用",
+      "aiTags": [
+        "产品",
+        "工具",
+        "效率"
+      ]
+    },
+    {
+      "title": "Launchie 1.6.1",
+      "summary": "Launchpad Replacement for MacOS 27 Golden Gate",
+      "url": "https://www.producthunt.com/products/launchie",
+      "source": "Product Hunt",
+      "aiSummary": "Launchie 1.6.1 发布，替代 macOS 27 的启动台功能",
+      "aiTags": [
+        "工具",
+        "产品"
+      ]
+    },
+    {
+      "title": "Minicart",
+      "summary": "Launch your store. Let AI run the busywork.",
+      "url": "https://www.producthunt.com/products/minicart",
+      "source": "Product Hunt",
+      "aiSummary": "Minicart 助用户快速开店，由 AI 处理日常杂务",
+      "aiTags": [
+        "产品",
+        "模型",
+        "效率"
+      ]
+    },
+    {
+      "title": "Morsa Signals",
+      "summary": "GTM and AI visibility workflows for developer tools",
+      "url": "https://www.producthunt.com/products/morsa-signals",
+      "source": "Product Hunt",
+      "aiSummary": "Morsa Signals 为开发者工具提供 GTM 与 AI 可见性工作流",
+      "aiTags": [
+        "工具",
+        "行业",
+        "效率"
+      ]
+    },
+    {
+      "title": "Epismo OS",
+      "summary": "Keep your work when you switch AI tools",
+      "url": "https://www.producthunt.com/products/epismo",
+      "source": "Product Hunt",
+      "aiSummary": "Epismo OS 让用户切换 AI 工具时保留工作成果",
+      "aiTags": [
+        "工具",
+        "产品",
+        "模型"
+      ]
+    },
+    {
+      "title": "The 101 Plays Itself",
+      "summary": "Five lanes of LA highway turned into an instrument",
+      "url": "https://www.producthunt.com/products/the-101-plays-itself",
+      "source": "Product Hunt",
+      "aiSummary": "将洛杉矶 101 高速公路五条车道变成可演奏乐器",
+      "aiTags": [
+        "产品",
+        "创意"
+      ]
+    },
+    {
+      "title": "Scrapboard Cloud 4",
+      "summary": "Digital family refrigerator door, now pocket-sized n synced",
+      "url": "https://www.producthunt.com/products/scrapboard-cloud-4",
+      "source": "Product Hunt",
+      "aiSummary": "Scrapboard Cloud 4 家庭数字留言板支持移动端同步",
+      "aiTags": [
+        "产品",
+        "工具",
+        "效率"
+      ]
+    },
+    {
+      "title": "SmartPause",
+      "summary": "The play/pause key, finally aimed at what's playing",
+      "url": "https://www.producthunt.com/products/smartpause-2",
+      "source": "Product Hunt",
+      "aiSummary": "SmartPause 让播放暂停键精准作用于当前播放内容",
+      "aiTags": [
+        "工具",
+        "产品",
+        "效率"
+      ]
+    },
+    {
+      "title": "YABAI",
+      "summary": "Real Japanese slang, one giant word at a time",
+      "url": "https://www.producthunt.com/products/yabai",
+      "source": "Product Hunt",
+      "aiSummary": "YABAI 以超长单词拼合的形式帮助用户学习真实日语俚语",
+      "aiTags": [
+        "产品",
+        "工具"
+      ]
+    },
+    {
+      "title": "Mycel",
+      "summary": "Bring one past deliverable. Mycel drafts every future one.",
+      "url": "https://www.producthunt.com/products/mycel",
+      "source": "Product Hunt",
+      "aiSummary": "Mycel 可基于一份过往交付物自动起草后续所有交付内容",
       "aiTags": [
         "工具",
         "效率",
@@ -18,218 +147,94 @@
       ]
     },
     {
-      "title": "AirPods 5",
-      "summary": "1.5x Active Noise Cancellation, AI Siri, Live Translation",
-      "url": "https://www.producthunt.com/products/apple",
+      "title": "ManyPI",
+      "summary": "10x your revenue by finding your ideal customers",
+      "url": "https://www.producthunt.com/products/manypi",
       "source": "Product Hunt",
-      "aiSummary": "AirPods 5 发布：降噪提升 1.5 倍，支持 AI Siri 与实时翻译",
+      "aiSummary": "ManyPI 旨在帮助企业定位理想客户群体以提升收入",
       "aiTags": [
-        "硬件",
-        "产品"
+        "工具",
+        "产品",
+        "效率"
       ]
     },
     {
-      "title": "Typewise Nova",
-      "summary": "AI customer experience that builds and improves itself",
-      "url": "https://www.producthunt.com/products/typewise",
+      "title": "Embedful",
+      "summary": "Launch customer dashboards in minutes",
+      "url": "https://www.producthunt.com/products/embedful",
       "source": "Product Hunt",
-      "aiSummary": "Typewise Nova 推出可自我构建与持续优化的 AI 客户体验产品",
+      "aiSummary": "Embedful 支持在几分钟内快速搭建并上线客户数据仪表盘",
+      "aiTags": [
+        "工具",
+        "产品",
+        "效率"
+      ]
+    },
+    {
+      "title": "Lull",
+      "summary": "Tell it what is on your mind. It writes the meditation.",
+      "url": "https://www.producthunt.com/products/lull-3",
+      "source": "Product Hunt",
+      "aiSummary": "Lull 根据用户当下的心事自动生成个性化冥想内容。",
       "aiTags": [
         "产品",
         "效率"
       ]
     },
     {
-      "title": "FreeScan.app",
-      "summary": "Fix what’s hurting your visibility, trust, and conversions",
-      "url": "https://www.producthunt.com/products/freescan-app",
+      "title": "Steam Frame",
+      "summary": "Your Steam library, now on a wearable PC",
+      "url": "https://www.producthunt.com/products/steam-machine",
       "source": "Product Hunt",
-      "aiSummary": "FreeScan.app 上线，帮助诊断并修复影响网站信任度与转化率的问题",
-      "aiTags": [
-        "工具",
-        "产品"
-      ]
-    },
-    {
-      "title": "Mock Magic Presets",
-      "summary": "Use saved presets to quickly get a branded device video",
-      "url": "https://www.producthunt.com/products/mockmagic",
-      "source": "Product Hunt",
-      "aiSummary": "通过保存的预设快速生成品牌化设备展示视频",
-      "aiTags": [
-        "工具",
-        "效率"
-      ]
-    },
-    {
-      "title": "iPhone Duo",
-      "summary": "The largest iPhone display ever. In a thin, foldable design.",
-      "url": "https://www.producthunt.com/products/apple",
-      "source": "Product Hunt",
-      "aiSummary": "AirPods 5 发布：降噪提升 1.5 倍，支持 AI Siri 与实时翻译",
+      "aiSummary": "Steam Frame 将 Steam 游戏库带到可穿戴 PC 设备上。",
       "aiTags": [
         "硬件",
         "产品"
       ]
     },
     {
-      "title": "Desert Ant Labs",
-      "summary": "Small specialized AI models for speech, text, vision",
-      "url": "https://www.producthunt.com/products/desert-ant-labs",
+      "title": "Mantra Timer",
+      "summary": "A minimalist mantra meditation timer for iOS.",
+      "url": "https://www.producthunt.com/products/transcendence",
       "source": "Product Hunt",
-      "aiSummary": "推出面向语音、文本和视觉的小型专用AI模型",
+      "aiSummary": "Mantra Timer：iOS 极简曼陀罗冥想计时器",
       "aiTags": [
-        "模型",
-        "产品"
+        "产品",
+        "效率"
       ]
     },
     {
-      "title": "Whip",
-      "summary": "Youtube for interactive web experiences",
-      "url": "https://www.producthunt.com/products/whip",
+      "title": "Doneit 3.2",
+      "summary": "Reimagined Doneit Assist, support for Siri AI, and more",
+      "url": "https://www.producthunt.com/products/doneit",
       "source": "Product Hunt",
-      "aiSummary": "打造交互式网页体验的YouTube式分享平台",
+      "aiSummary": "Doneit 3.2 发布，重构 Assist 助手并支持 Siri AI",
       "aiTags": [
         "产品",
+        "效率"
+      ]
+    },
+    {
+      "title": "VoiceCap",
+      "summary": "The AI notetaker for meetings in your language",
+      "url": "https://www.producthunt.com/products/voicecap",
+      "source": "Product Hunt",
+      "aiSummary": "VoiceCap：支持多语言的 AI 会议记录工具",
+      "aiTags": [
+        "产品",
+        "效率",
         "工具"
       ]
     },
     {
-      "title": "Athenic AI",
-      "summary": "Beat the market with 90+ datasets and AI made for analysis",
-      "url": "https://www.producthunt.com/products/athenic-ai",
+      "title": "Ruby UTCP",
+      "summary": "The scalable, secure alternative to MCP for tool calling",
+      "url": "https://www.producthunt.com/products/utcp",
       "source": "Product Hunt",
-      "aiSummary": "基于90多个数据集的AI市场分析工具",
-      "aiTags": [
-        "工具",
-        "行业"
-      ]
-    },
-    {
-      "title": "Live Captions by Subanana",
-      "summary": "Your whole audience follows, in their own language",
-      "url": "https://www.producthunt.com/products/subanana",
-      "source": "Product Hunt",
-      "aiSummary": "为直播观众提供各自语言的实时字幕服务",
-      "aiTags": [
-        "产品",
-        "效率"
-      ]
-    },
-    {
-      "title": "hob",
-      "summary": "The professional workspace for your whole agent stack",
-      "url": "https://www.producthunt.com/products/hob-2",
-      "source": "Product Hunt",
-      "aiSummary": "管理整套AI智能体堆栈的专业工作区",
-      "aiTags": [
-        "工具",
-        "效率"
-      ]
-    },
-    {
-      "title": "Gojo",
-      "summary": "Local dictation and everyday Mac tools in your notch",
-      "url": "https://www.producthunt.com/products/gojo",
-      "source": "Product Hunt",
-      "aiSummary": "在Mac刘海栏中集成本地听写与日常工具",
-      "aiTags": [
-        "工具",
-        "效率"
-      ]
-    },
-    {
-      "title": "Wealthfolio",
-      "summary": "Local-first personal finance with optional broker sync",
-      "url": "https://www.producthunt.com/products/wealthfolio",
-      "source": "Product Hunt",
-      "aiSummary": "本地优先的个人理财应用，支持可选券商同步",
-      "aiTags": [
-        "工具",
-        "安全",
-        "产品"
-      ]
-    },
-    {
-      "title": "AI Observability by OpenObserve",
-      "summary": "OpenTelemetry-native observability for agents and LLMs",
-      "url": "https://www.producthunt.com/products/openobserve",
-      "source": "Product Hunt",
-      "aiSummary": "面向智能体与大语言模型的OpenTelemetry原生可观测方案",
-      "aiTags": [
-        "工具",
-        "开源",
-        "模型"
-      ]
-    },
-    {
-      "title": "Drive",
-      "summary": "Vehicle telemetry for your next weekend drive with LPR alert",
-      "url": "https://www.producthunt.com/products/drive-gforce-telemetry",
-      "source": "Product Hunt",
-      "aiSummary": "周末驾驶车辆遥测工具，含车牌识别警报功能",
-      "aiTags": [
-        "工具",
-        "硬件",
-        "产品"
-      ]
-    },
-    {
-      "title": "Modeinspect - 99 Days Free AI",
-      "summary": "Design product UI in your codebase",
-      "url": "https://www.producthunt.com/products/modeinspect-1-0",
-      "source": "Product Hunt",
-      "aiSummary": "Modeinspect 可在代码库中直接设计产品 UI，并提供 99 天免费 AI 服务。",
-      "aiTags": [
-        "工具",
-        "产品",
-        "效率"
-      ]
-    },
-    {
-      "title": "Viso Now",
-      "summary": "Build computer vision applications with AI",
-      "url": "https://www.producthunt.com/products/viso-now",
-      "source": "Product Hunt",
-      "aiSummary": "Viso Now 是一个借助 AI 构建计算机视觉应用的平台。",
+      "aiSummary": "Ruby UTCP 提供可扩展、更安全的工具调用协议，定位为 MCP 的替代方案。",
       "aiTags": [
         "工具",
         "模型",
-        "产品"
-      ]
-    },
-    {
-      "title": "Vibe Eyes",
-      "summary": "Put your pets in your macOS menu bar",
-      "url": "https://www.producthunt.com/products/vibe-eyes",
-      "source": "Product Hunt",
-      "aiSummary": "Vibe Eyes 可将宠物形象显示在 macOS 菜单栏。",
-      "aiTags": [
-        "产品",
-        "工具"
-      ]
-    },
-    {
-      "title": "Suno v6",
-      "summary": "The first Suno model built with the music industry",
-      "url": "https://www.producthunt.com/products/suno",
-      "source": "Product Hunt",
-      "aiSummary": "Suno 发布 v6 音乐生成模型，首次与音乐行业合作打造。",
-      "aiTags": [
-        "模型",
-        "产品",
-        "行业"
-      ]
-    },
-    {
-      "title": "Speechmark",
-      "summary": "Private, on-device meeting notes for Mac",
-      "url": "https://www.producthunt.com/products/speechmark",
-      "source": "Product Hunt",
-      "aiSummary": "Speechmark 是 Mac 上的本地运行会议记录工具，保障隐私。",
-      "aiTags": [
-        "工具",
-        "安全",
         "效率"
       ]
     }

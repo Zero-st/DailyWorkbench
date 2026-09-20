@@ -14,7 +14,7 @@
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="css/styles.css?v=477b631a">
+<link rel="stylesheet" href="css/styles.css?v=c21c649e">
 </head>
 <body>
 <div class="app">
@@ -102,9 +102,6 @@
             <h2><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span> 今日复盘</h2>
             <div class="sub" id="reviewDone">代办完成度加载中…</div>
             <hr class="rev-rule">
-            <h3 class="rev-h">📌 今日完成</h3>
-            <ul class="rev-list" id="revSessions"></ul>
-            <hr class="rev-rule">
             <textarea id="reviewInput" rows="6" placeholder="写下今天的复盘（仅存本机，按日期保存）…"></textarea>
             <div class="review-actions">
               <span id="reviewHint" class="empty"></span>
@@ -166,7 +163,7 @@
         <div class="wrap"><div class="col" id="col-inbox"></div></div>
       </section>
 
-      <div class="foot">本机数据每小时自动同步 · AI 日报与每日新闻自动抓取 · 全部用真实数据动态生成 · <span id="freshness"></span><button class="btn-sm" id="selfCheckBtn" onclick="selfCheck()" title="跑一遍功能自检，列出各模块是否正常">🔍 功能自检</button><button class="btn-sm" onclick="exportAll()" title="把速记/待办/收藏/入口导出为 Markdown">导出数据</button><button class="btn-sm" onclick="backupExport()" title="导出 JSON 备份（可完整恢复）">备份</button><button class="btn-sm" onclick="backupImport()" title="从 JSON 备份恢复数据">恢复</button></div>
+      <div class="foot">本机数据每小时自动同步 · AI 日报与每日新闻自动抓取 · 全部用真实数据动态生成 · <button class="btn-sm" id="selfCheckBtn" onclick="selfCheck()" title="跑一遍功能自检，列出各模块是否正常">🔍 功能自检</button><button class="btn-sm" onclick="exportAll()" title="把速记/待办/收藏/入口导出为 Markdown">导出数据</button><button class="btn-sm" onclick="backupExport()" title="导出 JSON 备份（可完整恢复）">备份</button><button class="btn-sm" onclick="backupImport()" title="从 JSON 备份恢复数据">恢复</button></div>
       <div class="foot" style="margin-top:8px">设计风格参考 <a href="https://github.com/uncle11/xfc-obsidian-workbench-builder-community" target="_blank" rel="noopener">xfc-obsidian-workbench-builder-community</a> · 配色与组件体系沿用其社区版布局，已重皮为活力糖果圆润科技风</div>
 
       <div class="model-modal" id="model-modal" onclick="if(event.target===this)closeModelModal()">
@@ -189,6 +186,6 @@
 <script src="js/model-manager.js?v=63ef892f"></script>
 <script src="vendor/marked.min.js?v=b7319d77"></script>
 <script src="js/kb.js?v=ee0706b0"></script>
-<script type="module" src="js/app.js?v=203f4ffa"></script>
+<script type="module" src="js/app.js?v=74d05a4c"></script>
 </body>
 </html>

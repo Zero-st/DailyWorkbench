@@ -13,6 +13,19 @@
 
 ## [Unreleased] · 下个版本目标
 
+> **2026-09-20 契约收窄批次**（缘起：用户已不再使用 WorkBuddy，问「项目中还存在有关 workbuddy 相关数据获取？」）：
+
+### Removed
+- **本机 WorkBuddy 遥测数据线整条切除**，`data.json` 契约 **17 个顶层键 → 9 个**（删 `kpi` `skills` `sessions` `knowledge` `weekly` `status` `guide` `quickActions`）。这是本仓第一次**收窄**契约，属单向门，见 [`docs/adr/0013-drop-workbuddy-telemetry.md`](docs/adr/0013-drop-workbuddy-telemetry.md)。
+  - 后端：`export_data.py` **584 → 97 行**（删 13 个采集函数与全部 WorkBuddy 路径常量，职责收窄为「聚合 7 个资讯源」）；`config.py` 删随之成孤儿的 `workspace()`/`ollama_exe()`/`disks()` 与 `IS_WIN`；`workbench.local.json.example` 删对应三键。
+  - 前端：`normalizeData` 删 8 组兜底；**删 `renderFreshness` 与页脚 `#freshness`**——它显示的「skills 数据 今天 · 记忆库 今天」是假的，因为 `export_data` 把这两个时间戳**无条件**写成 `now`，与是否抓到数据无关；删「📌 今日完成」整块（`#revSessions`，恒空）；`net.js` 的 `WBData` typedef 收窄到 9 条；删 `.rev-h`/`.rev-list` 共 7 条失效 CSS 与只被它引用的 `--candy-cyan-soft` 令牌（不删令牌会让化石数 18→19 撞穿棘轮门禁）。
+  - 为什么不是「惰性代码」而必须删：8 个 getter 缺数据时静默返回空壳且**不回读上一版 `data.json`**（与 7 个资讯源的 keep-last-good 相反），而 `main()` 每次原子覆盖整个文件——等于在任何没有 WorkBuddy 的机器上跑一次 `export_data`，就把这 8 个键清空。
+
+### Changed
+- `js/core/feeds.js` 两处空状态文案不再让用户「让 WorkBuddy 手动跑 `fetch_ai_daily.py`」，改为真实可用的 `python -m backend.pipeline.fetch_ai_daily`。
+- `test_workbench.py` 的 `test_write_sync_status_preserves_fields` 改用契约内真实键 `generatedAt` 当「其余字段」样本（原用已删除的 `kpi`）。
+
+
 > 详见 [`docs/planning/知识飞轮-路线图.md`](docs/planning/知识飞轮-路线图.md)。当前方向：**先把"蒸馏闭环"彻底跑顺**，再拓宽飞轮。
 
 - **补完蒸馏闭环剩余摩擦**（候选）：捕获侧"从链接到卡尽量一步"（后端直跑蒸馏）；复用端"相关时浮现"（按 topic/tag 匹配，非仅时间驱动）。
@@ -150,7 +163,7 @@
 - `docs/design/产品-IA评审.md`：13 模块过度碎片化诊断（仅 5 个日用）+ 收敛到 ~7 的重构提案（Nielsen/Krug/design-principles）。
 - `docs/research/需求澄清工具选型.md`：需求澄清工具选型对比（spec-kit/BMAD/brainstorming，真实热度 + 安全评级）。
 - [`docs/research/工具链-MCP与Skill地图.md`](docs/research/工具链-MCP与Skill地图.md)：本项目用到的 MCP/Skill × 开发阶段复盘 + 换机复用手册（chrome-devtools MCP、/brainstorming、Spec-Kit、design-principles 等，含证据出处与安装/触发速查）。
-- [`docs/research/开发阶段-Skill选型账本.md`](docs/research/开发阶段-Skill选型账本.md)：通用选型账本——软件开发各阶段（选型/全流程/前端/后端/测试）GitHub 优质 Skill/MCP/SDD 框架对比（gh api 实测 star 快照 + Snyk 安全红线 + 决策指引），面向任意项目/设备复用。
+- [`docs/research/Skill选型账本.md`](docs/research/Skill选型账本.md)：通用选型账本——软件开发各阶段（选型/全流程/前端/后端/测试）GitHub 优质 Skill/MCP/SDD 框架对比（gh api 实测 star 快照 + Snyk 安全红线 + 决策指引），面向任意项目/设备复用。
 - `CHANGELOG.md` + `docs/版本管理规范.md`：建立版本管理体系。
 
 ### Fixed

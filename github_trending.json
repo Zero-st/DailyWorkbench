@@ -1,16 +1,40 @@
 {
-  "date": "2026-09-10",
-  "fetchedAt": "2026-09-10 16:38",
+  "date": "2026-09-20",
+  "fetchedAt": "2026-09-20 15:02",
   "source": "GitHub Trending (via OpenCLI)",
   "canonical": "https://github.com/trending",
-  "count": 13,
+  "count": 15,
   "items": [
     {
-      "title": "ayghri/i-have-adhd",
-      "summary": "★35,951 · +4650 today · Python · A skill to stop your coding agent from burying the answer. ADHD-friendly output.",
-      "url": "https://github.com/ayghri/i-have-adhd",
+      "title": "cloudflare/security-audit-skill",
+      "summary": "★16,931 · +3155 today · JavaScript · A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+      "url": "https://github.com/cloudflare/security-audit-skill",
       "source": "GitHub Trending",
-      "aiSummary": "开源技能让编程智能体输出更简洁，避免答案被冗长内容淹没",
+      "aiSummary": "Cloudflare开源面向编码代理的多阶段安全审计技能，产出可独立验证的机器可读审计结果",
+      "aiTags": [
+        "安全",
+        "开源",
+        "工具"
+      ]
+    },
+    {
+      "title": "trycua/cua",
+      "summary": "★24,692 · +859 today · HTML · Scale computer-use 2.0 with open-source drivers, cross-OS fleets, and benchmarks for training, evaluation, and data generation.",
+      "url": "https://github.com/trycua/cua",
+      "source": "GitHub Trending",
+      "aiSummary": "cua开源计算机操作驱动、跨系统集群与基准，用于智能体训练、评估与数据生成",
+      "aiTags": [
+        "开源",
+        "模型",
+        "工具"
+      ]
+    },
+    {
+      "title": "addyosmani/agent-skills",
+      "summary": "★97,242 · +556 today · JavaScript · Production-grade engineering skills for AI coding agents.",
+      "url": "https://github.com/addyosmani/agent-skills",
+      "source": "GitHub Trending",
+      "aiSummary": "addyosmani开源面向AI编码代理的生产级工程技能合集，GitHub获超9.7万星",
       "aiTags": [
         "开源",
         "工具",
@@ -18,11 +42,59 @@
       ]
     },
     {
-      "title": "Tencent/teamai-cli",
-      "summary": "★3,365 · +556 today · TypeScript · Make Every Team AI Native",
-      "url": "https://github.com/Tencent/teamai-cli",
+      "title": "coder/coder",
+      "summary": "★15,719 · +402 today · Go · Secure environments for developers and their agents",
+      "url": "https://github.com/coder/coder",
       "source": "GitHub Trending",
-      "aiSummary": "腾讯开源 teamai-cli，帮助团队实现 AI 原生化协作",
+      "aiSummary": "Coder开源平台为开发者及其AI代理提供安全的远程开发环境",
+      "aiTags": [
+        "开源",
+        "安全",
+        "工具"
+      ]
+    },
+    {
+      "title": "anthropics/claude-code",
+      "summary": "★146,823 · +483 today · TypeScript · Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.",
+      "url": "https://github.com/anthropics/claude-code",
+      "source": "GitHub Trending",
+      "aiSummary": "Anthropic推出终端智能编码工具Claude Code，可理解代码库并执行常规任务",
+      "aiTags": [
+        "模型",
+        "产品",
+        "效率"
+      ]
+    },
+    {
+      "title": "Open-Dev-Society/OpenStock",
+      "summary": "★16,291 · +472 today · TypeScript · OpenStock is an open-source alternative to expensive market platforms. Track real-time prices, set personalized alerts, and explore detailed company insights — built openly, for everyone, forever free.",
+      "url": "https://github.com/Open-Dev-Society/OpenStock",
+      "source": "GitHub Trending",
+      "aiSummary": "OpenStock开源替代高价行情平台，支持实时股价追踪、个性化提醒与公司洞察",
+      "aiTags": [
+        "开源",
+        "产品",
+        "工具"
+      ]
+    },
+    {
+      "title": "higgsfield-ai/higgsfield",
+      "summary": "★5,058 · +196 today · Jupyter Notebook · Fault-tolerant, highly scalable GPU orchestration, and a machine learning framework designed for training models with billions to trillions of parameters",
+      "url": "https://github.com/higgsfield-ai/higgsfield",
+      "source": "GitHub Trending",
+      "aiSummary": "Higgsfield开源容错可扩展的GPU编排与机器学习框架，支持训练数十亿至万亿参数模型",
+      "aiTags": [
+        "开源",
+        "硬件",
+        "模型"
+      ]
+    },
+    {
+      "title": "docling-project/docling",
+      "summary": "★67,242 · +129 today · Python · Get your documents ready for gen AI",
+      "url": "https://github.com/docling-project/docling",
+      "source": "GitHub Trending",
+      "aiSummary": "Docling开源文档解析工具，将各类文档转换为生成式AI可用的格式",
       "aiTags": [
         "开源",
         "工具",
@@ -30,23 +102,23 @@
       ]
     },
     {
-      "title": "obra/superpowers",
-      "summary": "★284,284 · +688 today · Shell · An agentic skills framework & software development methodology that works.",
-      "url": "https://github.com/obra/superpowers",
+      "title": "cloudflare/quiche",
+      "summary": "★12,092 · +31 today · Rust · 🥧 Savoury implementation of the QUIC transport protocol and HTTP/3",
+      "url": "https://github.com/cloudflare/quiche",
       "source": "GitHub Trending",
-      "aiSummary": "开源项目 superpowers 提供智能体技能框架与软件开发方法论",
+      "aiSummary": "Cloudflare用Rust实现的QUIC传输协议与HTTP/3开源库quiche",
       "aiTags": [
         "开源",
         "工具",
-        "效率"
+        "网络"
       ]
     },
     {
-      "title": "pascalorg/editor",
-      "summary": "★23,163 · +107 today · TypeScript · Open-source 3D architectural editor with a local CLI, MCP tools, and practical workflows for humans and AI agents.",
-      "url": "https://github.com/pascalorg/editor",
+      "title": "asciimoo/hister",
+      "summary": "★5,326 · +420 today · Go · Your own search engine",
+      "url": "https://github.com/asciimoo/hister",
       "source": "GitHub Trending",
-      "aiSummary": "开源 3D 建筑编辑器，支持本地 CLI、MCP 工具与实用工作流",
+      "aiSummary": "hister开源个人搜索引擎项目，可自建属于自己的搜索服务",
       "aiTags": [
         "开源",
         "工具",
@@ -54,11 +126,11 @@
       ]
     },
     {
-      "title": "earthtojake/text-to-cad",
-      "summary": "★15,233 · +124 today · Python · A library of agent skills for CAD, CAE and CAM",
-      "url": "https://github.com/earthtojake/text-to-cad",
+      "title": "ruanyf/weekly",
+      "summary": "★103,428 · +98 today · 科技爱好者周刊，每周五发布",
+      "url": "https://github.com/ruanyf/weekly",
       "source": "GitHub Trending",
-      "aiSummary": "开源面向 CAD、CAE 与 CAM 的智能体技能库",
+      "aiSummary": "科技爱好者周刊持续更新，GitHub 星标突破 10 万",
       "aiTags": [
         "开源",
         "工具",
@@ -66,11 +138,11 @@
       ]
     },
     {
-      "title": "cathrynlavery/diagram-design",
-      "summary": "★37,062 · +2249 today · HTML · 38 editorial diagram types for Claude Code, Codex, and Pi. Self-contained HTML + SVG. No shadows. No Mermaid slop.",
-      "url": "https://github.com/cathrynlavery/diagram-design",
+      "title": "ZuodaoTech/everyone-can-use-english",
+      "summary": "★37,989 · +48 today · TypeScript · 人人都能用英语",
+      "url": "https://github.com/ZuodaoTech/everyone-can-use-english",
       "source": "GitHub Trending",
-      "aiSummary": "开源图表库提供 38 种编辑级图表，适配 Claude Code 等智能体",
+      "aiSummary": "开源英语学习项目「人人都能用英语」星标近 3.8 万",
       "aiTags": [
         "开源",
         "工具",
@@ -78,87 +150,39 @@
       ]
     },
     {
-      "title": "TauricResearch/TradingAgents",
-      "summary": "★104,292 · +367 today · Python · TradingAgents: Multi-Agents LLM Financial Trading Framework",
-      "url": "https://github.com/TauricResearch/TradingAgents",
+      "title": "anthropics/knowledge-work-plugins",
+      "summary": "★25,199 · +281 today · Python · Open source repository of plugins primarily intended for knowledge workers to use in Claude Cowork",
+      "url": "https://github.com/anthropics/knowledge-work-plugins",
       "source": "GitHub Trending",
-      "aiSummary": "多智能体LLM金融交易框架TradingAgents开源，GitHub星标超10万",
+      "aiSummary": "Anthropic 开源面向知识工作者的 Claude Cowork 插件库",
+      "aiTags": [
+        "开源",
+        "模型",
+        "工具"
+      ]
+    },
+    {
+      "title": "cactus-compute/needle",
+      "summary": "★11,718 · +234 today · Python · Automation foundation model for tiny devices: 2-bit, 8-29 MB, tool calls, structured extraction and embeddings on phones, wearables, smart homes, robots, cars and microcontrollers.",
+      "url": "https://github.com/cactus-compute/needle",
+      "source": "GitHub Trending",
+      "aiSummary": "Needle：面向手机、可穿戴等微型设备的 2-bit 自动化基础模型，仅 8-29MB",
       "aiTags": [
         "模型",
         "开源",
-        "金融"
+        "硬件"
       ]
     },
     {
-      "title": "liquidslr/system-design-notes",
-      "summary": "★18,318 · +1397 today · Notes of the book System Desgin Interview - An Insider's Guide",
-      "url": "https://github.com/liquidslr/system-design-notes",
+      "title": "yynxxxxx/Codex-X",
+      "summary": "★3,483 · +32 today · Rust · OpenAI Codex 桌面端/CLI 的可视化管理工具，具有Provider/API 切换、会话同步、提示词注入、Skills/MCP 管理、TOML 配置可视化的跨平台工具。",
+      "url": "https://github.com/yynxxxxx/Codex-X",
       "source": "GitHub Trending",
-      "aiSummary": "《系统设计面试》书籍笔记开源项目，GitHub星标超1.8万",
-      "aiTags": [
-        "开源",
-        "工具",
-        "效率"
-      ]
-    },
-    {
-      "title": "openai/plugins",
-      "summary": "★6,317 · +498 today · JavaScript · OpenAI Plugins",
-      "url": "https://github.com/openai/plugins",
-      "source": "GitHub Trending",
-      "aiSummary": "OpenAI插件官方仓库登上GitHub趋势榜，单日新增近500星",
-      "aiTags": [
-        "开源",
-        "产品",
-        "模型"
-      ]
-    },
-    {
-      "title": "freestylefly/awesome-gpt-image-2",
-      "summary": "★30,456 · +705 today · JavaScript · Prompt as Code | GPT Image 2 / 2.5 提示词与案例库，530+ 个案例、20+ 套工业级模板与可复用 Skills，新增 2.5 同提示词对比专区，附完整提示词与生成记录，持续更新。",
-      "url": "https://github.com/freestylefly/awesome-gpt-image-2",
-      "source": "GitHub Trending",
-      "aiSummary": "GPT-Image2工业级提示词引擎与模板库，含530+案例与20+套模板",
+      "aiSummary": "Codex-X：OpenAI Codex 桌面端与 CLI 的跨平台可视化管理工具",
       "aiTags": [
         "工具",
         "开源",
         "效率"
-      ]
-    },
-    {
-      "title": "rohitg00/ai-engineering-from-scratch",
-      "summary": "★53,963 · +343 today · Python · Learn it. Build it. Ship it for others.",
-      "url": "https://github.com/rohitg00/ai-engineering-from-scratch",
-      "source": "GitHub Trending",
-      "aiSummary": "AI工程从零学起开源教程项目，GitHub星标超5.3万",
-      "aiTags": [
-        "开源",
-        "研究",
-        "效率"
-      ]
-    },
-    {
-      "title": "vastsa/PI-Desktop",
-      "summary": "★1,952 · +417 today · TypeScript · Local-first AI coding agent desktop: Electron + Rust host core + pi Agent Harness + user-installable plugins",
-      "url": "https://github.com/vastsa/PI-Desktop",
-      "source": "GitHub Trending",
-      "aiSummary": "本地优先AI编程代理桌面应用PI-Desktop，支持用户自装插件",
-      "aiTags": [
-        "工具",
-        "产品",
-        "开源"
-      ]
-    },
-    {
-      "title": "affaan-m/ECC",
-      "summary": "★255,432 · +1133 today · JavaScript · The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
-      "url": "https://github.com/affaan-m/ECC",
-      "source": "GitHub Trending",
-      "aiSummary": "编程代理性能优化系统ECC支持Claude Code等工具，星标超25万",
-      "aiTags": [
-        "工具",
-        "效率",
-        "开源"
       ]
     }
   ],

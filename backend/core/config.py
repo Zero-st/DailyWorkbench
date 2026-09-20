@@ -11,7 +11,6 @@
 """
 import json
 import os
-import platform
 import shlex
 import shutil
 import sys
@@ -19,7 +18,6 @@ import tempfile
 
 from backend.core.paths import ROOT  # *.local.json 配置钉在仓库根
 
-IS_WIN = platform.system() == "Windows"
 
 
 def _load_json(path):
@@ -38,26 +36,6 @@ def _first(*vals):
     for v in vals:
         if v:
             return v
-    return None
-
-
-def workspace():
-    """WorkBuddy 工作区根目录（原硬编码 E:\\AITools\\workbuddy\\workspace）。"""
-    default = os.path.join(os.path.expanduser("~"), ".workbuddy", "workspace")
-    return _first(os.environ.get("WB_WORKSPACE"), _LOCAL.get("workspace"), default)
-
-
-def ollama_exe():
-    """Ollama 可执行文件路径：优先 PATH(shutil.which)，再配置，最后 None。
-
-    配置值为 "auto"（或缺失）表示只靠 PATH 查找。
-    """
-    cfg = _LOCAL.get("ollamaExe")
-    found = shutil.which("ollama")
-    if found:
-        return found
-    if cfg and cfg != "auto":
-        return cfg  # 交给调用方 os.path.isfile 判断是否真实存在
     return None
 
 
@@ -187,14 +165,6 @@ def diag_log():
         _LOCAL.get("diagLog"),
         os.path.join(tempfile.gettempdir(), "wb_sync_diag.log"),
     )
-
-
-def disks():
-    """要探测占用的磁盘根路径列表（原硬编码 ("C:\\","D:\\")，仅 Windows）。"""
-    cfg = _LOCAL.get("disks")
-    if cfg:
-        return list(cfg)
-    return ["C:\\", "D:\\"] if IS_WIN else ["/"]
 
 
 def supabase():

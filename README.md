@@ -102,7 +102,7 @@ python -m backend.server 8080     # 端口可省，默认 8080；只绑 127.0.0.
 
   | 接口 | 干什么 | 没配置时 |
   |---|---|---|
-  | `POST /api/refresh` | 一键重抓本机 WorkBuddy 真实数据、重建 `data.json` | 总能用 |
+  | `POST /api/refresh` | 一键重抓 7 个资讯源、重建 `data.json` | 总能用 |
   | `POST /api/chat` | 当 AI 接口的"中转站"（绕开浏览器跨域限制） | 需在配置里填上游主机白名单 + key |
   | `GET/POST /api/models` | 模型配置读写（存到 Supabase 云端，多端共享） | 没配 Supabase → 自动退回浏览器本地存储 |
   | `GET /api/kb/*`、`POST /api/kb/save` | 读写 Obsidian 知识库（列目录 / 读笔记 / 搜索 / 沉淀） | 没配 vault → 返回"未配置"，前端隐藏相关功能 |
@@ -121,9 +121,9 @@ python -m backend.server 8080     # 端口可省，默认 8080；只绑 127.0.0.
 - **怎么做到"自动更新"**（核心，现行机制）：不是靠 Windows 计划任务，而是 **GitHub Actions + 你自己机器当"自助 runner"**：
   1. 在你常开机的 Windows 机器上跑一次 `scripts/setup_runner.ps1`，把它注册成 `Zero-st/DailyWorkbench` 的 **self-hosted runner**（自助跑手）。
   2. 之后两个定时工作流自动在这台机器上跑：
-     - `sync.yml`——**每小时**重抓本机真实数据（日报 + 新闻 + 汇总），重建 `data.json` 并自动 push。装了新 skill / 加了新自动化，最多 **1 小时**后线上就更新。
+     - `sync.yml`——**每小时**重抓 7 个资讯源（日报 + 新闻 + HN/GT/PH/少数派/X），重建 `data.json` 并自动 push。最多 **1 小时**后线上就更新。
      - `daily-ai.yml`——**每天约北京 08:30** 抓当日 AI 资讯。
-- **为什么非得用"自己的机器"当 runner**？因为要读的是你**本机** WorkBuddy 的真实数据（skills 目录、数据库、模型配置），GitHub 云端的机器读不到。所以把"跑手"放回你自己家。
+- **为什么用"自己的机器"当 runner**？取数要用本机装的外部引擎（OpenCLI 需 Node、grok-cli 需 Bun + xAI key）与本地配置（`workbench.local.json` 里的 key，不入库），GitHub 云端的机器没有这些。所以把"跑手"放回你自己家。
 - **原理点睛**：`data.json` 在 Service Worker 里被设成"**永远走网络、不吃缓存**"（见 `sw.js`），所以后台一 push，你刷新页面立刻看到新数据；其余静态资源才走缓存。
 - **比喻**：把笔记本搬上云端谁都能翻，同时**雇了个人每小时帮你把最新内容续写进去**。
 
@@ -171,13 +171,13 @@ python -m backend.server 8899
 
 面板默认读同目录下的 `data.json`——**它就是这个项目的"数据库"**，只不过是拿一个 JSON 文件当账本用（单人、无并发，够用且零依赖）。
 
-`data.json` 由 `backend/pipeline/export_data.py` 自动从本机 WorkBuddy 抓取生成，覆盖示例数据：
+`data.json` 由 `backend/pipeline/export_data.py` 生成，**共 9 个顶层键**：
 
-- **Skills**：扫描 WorkBuddy 的 `skills/` 目录，读每个 `SKILL.md` 的 frontmatter（名称 / 描述）。
-- **自动化**：读 WorkBuddy 数据库，只取未删除的活跃任务，算下次运行时间。
-- **模型**：读模型配置，按 `localhost` 自动标「本机 / 云端」。
-- **记忆**：统计 memory 目录的文件数。
-- **今日引导**：根据真实自动化动态生成。
+- **7 个资讯源**：`aiDaily`（AI 日报）、`dailyNews`（每日60秒）、`hackerNews`、`githubTrending`、`productHunt`、`sspai`（少数派）、`x`（X/推特）。每个源由各自的 `fetch_<源>.py` 抓取，`export_data` 只负责把当次结果并进最近 14 个日份的 history 并原子写出。**某个源抓失败时静默沿用上一次结果**，不影响其余源。
+- **`generatedAt`**：快照生成时间（前端「立即刷新」靠它判断新数据是否已到）。
+- **`sync`**：同步健康度，由 `backend/pipeline/sync_status.py` 在 `export_data` 之后补写。
+
+> 2026-09-20 之前还有 8 个键来自本机 WorkBuddy 的遥测采集（skills / 自动化 / 模型 / 记忆 / 会话 / 知识库 / MCP）。它们的消费视图早已下架，数据线随后空转，已连同契约一并切除——见 [`docs/adr/0013-drop-workbuddy-telemetry.md`](docs/adr/0013-drop-workbuddy-telemetry.md)。
 
 **手动重建一次**（二选一）：
 
@@ -202,9 +202,6 @@ cp workbench.local.json.example workbench.local.json
 
 | 配置键 | 作用 | 不填会怎样 |
 |---|---|---|
-| `workspace` | WorkBuddy 工作区根目录 | 用平台默认 `~/.workbuddy/workspace` |
-| `ollamaExe` | Ollama 可执行文件路径（`"auto"`=从 PATH 找） | 自动探测 |
-| `disks` | 要统计的磁盘，如 `["C:\\","D:\\"]` | 平台默认 |
 | `supabase` | `{url, serviceKey}`，开启 `/api/models` 云端模型配置 | 退回浏览器本地存储 |
 | `kb` | `{vault, depositRoot}`，Obsidian 库路径，开启 `/api/kb/*` | KB 功能返回"未配置" |
 | `inbox` | `{path}`，捕获收件箱数据文件位置（浏览器扩展写入的落点） | 用仓库根 `inbox.local.json` |

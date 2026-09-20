@@ -1,8 +1,6 @@
 {
   "_说明": "复制本文件为 workbench.local.json（已 gitignore）并按本机情况填写。只填「换机会变」的环境参数；每个键都可被同名环境变量覆盖。缺失/留空即回退平台默认。",
 
-  "workspace": "E:/AITools/workbuddy/workspace",
-  "ollamaExe": "auto",
   "_opencliCmd说明": "取数层调用 OpenCLI（Node>=20）的命令；留空/缺失=该源(Hacker News)自动跳过，不影响其余管道。装了就填 \"opencli\"（在 PATH 时可留空自动探测），或 \"node D:/path/OpenCLI/dist/src/main.js\"",
   "opencliCmd": "",
   "_grok说明": "X/推特取数引擎（grok-cli，见 ADR 0012）。grokCmd=grok-cli 调用命令，装了就填 \"grok\"（在 PATH 时可留空自动探测）或 \"bun /abs/grok.js\"；grokApiKey=xAI 付费 GROK_API_KEY（search_x 底层调 xAI，无免费档）。二者任一缺失=X 源自动跳过、其余管道不受影响。key 只在本地、勿入库。",
@@ -11,7 +9,6 @@
   "_x说明": "定时 X 源要跟踪的查询词；每个 query 各调一次 grok-cli（=成本乘数），保持精简。留空回退默认示例词。",
   "x": { "queries": ["AI agent", "LLM 新模型"] },
   "diagLog": "",
-  "disks": ["C:\\", "D:\\"],
 
   "supabase": { "url": "", "serviceKey": "" },
   "kb": { "vault": "", "depositRoot": "" },

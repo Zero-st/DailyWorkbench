@@ -50,13 +50,6 @@ export function renderTodayReview(d) {
         '<span style="font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums">' + pct + '%</span>';
     }
   }
-  var sess = document.getElementById("revSessions");
-  if (sess) {
-    var rec = (d.sessions && d.sessions.recent) || [];
-    sess.innerHTML = rec.length ? rec.slice(0, 3).map(function (s) {
-      return "<li>" + esc(s.title || s.custom_title || "未命名会话") + "</li>";
-    }).join("") : '<li class="empty">今天还没有会话记录</li>';
-  }
   var txt = document.getElementById("reviewInput");
   if (txt) { var saved = reviewLoad(); if (saved) txt.value = saved; }
 }
