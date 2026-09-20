@@ -190,7 +190,7 @@ body.light .header{background:linear-gradient(135deg,#ffffff 0%,#f4f8fd 100%);bo
 .header .sub{color:var(--sub);font-size:13px;margin-top:5px;letter-spacing:.02em}
 .brand{flex:0 0 auto;border:1px solid var(--line);border-radius:var(--radius-sm);padding:5px 10px;color:var(--sub);background:transparent;font-size:11px;white-space:nowrap;font-weight:600}
 .header .snap{font-size:12px;color:var(--sub);background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:5px 10px;white-space:nowrap}
-.sync-status{font-size:12px;border-radius:999px;padding:6px 12px;white-space:nowrap;border:1px solid var(--line);background:var(--panel-2);color:var(--sub);font-weight:500}
+.sync-status{font-size:12px;border-radius:var(--radius-pill);padding:6px 12px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;border:1px solid var(--line);background:var(--panel-2);color:var(--sub);font-weight:500}
 .sync-status.ok{color:var(--green);border-color:var(--green-line);background:var(--candy-green-soft)}
 .sync-status.warn{color:var(--amber);border-color:var(--amber-line);background:rgba(245,158,11,0.10);font-weight:600;animation:pulseWarn 1.8s ease-in-out infinite}
 @keyframes pulseWarn{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0.30)}50%{box-shadow:0 0 0 6px rgba(245,158,11,0.10)}}

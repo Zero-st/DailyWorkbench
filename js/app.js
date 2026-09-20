@@ -86,7 +86,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     var bar = document.getElementById("pomoBar");
     if (bar) bar.style.width = Math.round(100 * pomoRemain / pomoTotal) + "%";
     var b = document.getElementById("pomoBtn");
-    if (b) b.textContent = pomoRunning ? "⏸ 暂停" : "▶ 开始专注";
+    if (b) b.innerHTML = pomoRunning ? ic("pause") + " 暂停" : ic("play") + " 开始专注";
   }
   function pomoToggle() {
     if (pomoRunning) {
@@ -235,7 +235,8 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     var s = d.sync;
     if (!s || !s.lastRun) {
       el.className = "sync-status warn";
-      el.innerHTML = ic("alertTriangle") + " 暂无同步记录，定时任务可能未运行";
+      el.innerHTML = ic("alertTriangle") + " 暂无同步记录";
+      el.title = "从未成功同步过；定时任务可能未运行";
       return;
     }
     var last = new Date(s.lastRun.replace(" ", "T"));
@@ -248,12 +249,15 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     if (s.status === "fail" || diffH > stale) {
       el.className = "sync-status warn";
       var overdue = diffH > 0 ? "，已超时约 " + (diffH >= 1 ? diffH.toFixed(1) + " 小时" : Math.round(diffMs / 60000) + " 分钟") : "";
-      el.innerHTML = ic("alertTriangle") + " 同步可能已停止（上次 " + esc(hhmm) + esc(overdue) + "）· 定时任务或网络异常";
+      // 侧边栏槽位仅 ~180px：正文只留结论，完整原因进 title——不靠 ellipsis 吞掉信息
+      el.innerHTML = ic("alertTriangle") + " 同步已停 · " + esc(hhmm);
+      el.title = "上次同步 " + hhmm + overdue + "；定时任务或网络异常";
     } else {
       el.className = "sync-status ok";
       var next = s.nextRun ? new Date(s.nextRun.replace(" ", "T")) : null;
       var nextStr = next ? (" · 下次约 " + ("0" + next.getHours()).slice(-2) + ":" + ("0" + next.getMinutes()).slice(-2)) : "";
-      el.innerHTML = ic("check") + " 同步正常（上次 " + esc(hhmm) + esc(nextStr) + "）";
+      el.innerHTML = ic("check") + " 同步正常 · " + esc(hhmm);
+      el.title = "上次同步 " + hhmm + nextStr;
     }
   }
 

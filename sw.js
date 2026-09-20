@@ -1,12 +1,12 @@
 ﻿// 个人工作台 Service Worker - 离线可开、可安装到主屏幕
-const CACHE = "workbench-1dd93197";
+const CACHE = "workbench-56952f06";
 const FILES = [
   "./index.html",
-  "./css/styles.css?v=c21c649e",
+  "./css/styles.css?v=429806a0",
   "./js/model-manager.js?v=63ef892f",
   "./vendor/marked.min.js?v=b7319d77",
   "./js/kb.js?v=ee0706b0",
-  "./js/app.js?v=74d05a4c",
+  "./js/app.js?v=18856c21",
   "./js/core/util.js",
   "./js/core/icons.js",
   "./js/core/platforms.js",
