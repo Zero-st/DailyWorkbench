@@ -687,4 +687,34 @@ def test_grok_configured_gating(monkeypatch):
     monkeypatch.setattr(grok_client.wb_config, "grok_api_key", lambda: "k")
     assert grok_client.configured() is True
 
+# ---------- vault_backup（Obsidian 库自动备份） ----------
+from backend.pipeline import vault_backup  # noqa: E402
 
+
+def _git_sandbox(tmp_path):
+    """造一个最小 git 仓当假 vault（绝不碰真实 Obsidian 库）。"""
+    import subprocess
+    v = tmp_path / "vault"
+    v.mkdir()
+    for args in (["init", "-q"], ["config", "user.email", "t@t"], ["config", "user.name", "t"]):
+        subprocess.run(["git", "-C", str(v)] + args, check=True,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return v
+
+
+def test_vault_backup_commits_then_is_idempotent(tmp_path, monkeypatch):
+    v = _git_sandbox(tmp_path)
+    monkeypatch.setattr(vault_backup, "LOG", str(tmp_path / "bk.log"))
+    (v / "笔记.md").write_text("hello", encoding="utf-8")
+    assert vault_backup.backup(str(v)) == 0          # 有变更 → 提交
+    assert vault_backup.backup(str(v)) == 1          # 再跑一次 → 无变更，不空转提交
+
+
+def test_vault_backup_refuses_non_git_dir(tmp_path, monkeypatch):
+    """在可能含凭据的目录里自动 git init 是危险动作，必须拒绝而不是好心帮忙。"""
+    monkeypatch.setattr(vault_backup, "LOG", str(tmp_path / "bk.log"))
+    plain = tmp_path / "plain"
+    plain.mkdir()
+    assert vault_backup.backup(str(plain)) == 2
+    assert not (plain / ".git").exists()
+    assert vault_backup.backup(str(tmp_path / "不存在")) == 2

@@ -10,7 +10,9 @@ from datetime import datetime, timedelta
 
 from backend.utils import common as wb_common
 
-# 自动同步节奏：WorkbenchAutoSync 每小时一次
+# 自动同步节奏：本机 crontab「13 * * * *」每小时一次（旧注释写的 WorkbenchAutoSync
+# 是那台已不用的 Windows 机上的工具，参见 ADR 0013 切除 WorkBuddy 数据线）。
+# 改调度频率时这里要一起改，否则前端的 nextRun 会说谎。
 INTERVAL_HOURS = 1
 # 超过这个时间没成功同步就判为「陈旧」，前端标红告警
 STALE_HOURS = 2
