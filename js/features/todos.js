@@ -16,7 +16,7 @@ export function renderTodos() {
   var prog = document.getElementById("todoProg");
   if (prog) {
     if (!list.length) {
-      prog.innerHTML = '<span class="empty">还没有待办，写一条吧～</span>';
+      prog.innerHTML = "";   // 空态只留列表位那一处（紧挨输入框，引导在对的位置）
     } else {
       var pct = Math.round(done / list.length * 100);
       prog.innerHTML =

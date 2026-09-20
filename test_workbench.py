@@ -117,6 +117,18 @@ def test_kb_save_same_title_same_day_gets_numeric_suffix(tmp_path, monkeypatch):
     assert [c["fileName"] for c in kb_service.list_deposits("蒸馏库")] == ["重复-2.md", "重复.md"]  # 新→旧
 
 
+def test_kb_list_deposits_skips_ghost_rows(tmp_path, monkeypatch):
+    """账本 append-only，而删卡发生在 Obsidian 里 → 两边天然不同步。读侧必须校验
+    文件还在，否则幽灵卡照样进蒸馏库与今日温故卡，点开 404（复盘卡 D1）。"""
+    _, deposit = _kb_sandbox(tmp_path, monkeypatch)
+    r1 = kb_service.save("蒸馏库", "distill", "被删掉的卡", "v1", {"platform": "x"})
+    kb_service.save("蒸馏库", "distill", "还在的卡", "v2", {"platform": "x"})
+    os.remove(str(deposit / r1["path"]))
+    # 账本一行不删（历史留痕），但列表里不该再出现它
+    assert len((deposit / "_index.jsonl").read_text(encoding="utf-8").splitlines()) == 2
+    assert [c["fileName"] for c in kb_service.list_deposits("蒸馏库")] == ["还在的卡.md"]
+
+
 def test_kb_save_rejects_bad_module_and_neutralizes_traversal(tmp_path, monkeypatch):
     _, deposit = _kb_sandbox(tmp_path, monkeypatch)
     bad = kb_service.save("不存在的模块", "note", "t", "b")

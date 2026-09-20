@@ -72,7 +72,17 @@ export function renderRecall() {
 }
 
 function _draw(box, items) {
-  if (!items.length) { box.innerHTML = ""; return; }  // 无到期卡：不占地方
+  if (!items.length) {
+    // 空态不再整块消失：今日页若连"今天该干嘛"的钩子都没有，打开即等于没打开。
+    box.innerHTML =
+      '<section class="card recall-card-wrap">' +
+        '<h2><span class="ic">' + icon("history") + "</span> 该复用了</h2>" +
+        '<div class="empty">今天没有到期的卡 · ' +
+          '<a href="javascript:void(0)" onclick="switchView(\'distill\')">去蒸馏一张 →</a>' +
+        "</div>" +
+      "</section>";
+    return;
+  }
   var rows = items.map(function (it) {
     var c = it.c;
     var meta = [];

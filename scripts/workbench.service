@@ -1,0 +1,26 @@
+# systemd --user 服务：让 DailyWorkbench 本地后端常驻（登录后自动起）
+#
+# 为什么需要它：前端在 /api/kb/deposits 失败时会静默隐藏「今日温故卡」，
+# 后端不在 = 今日页是个空壳且不报错，等于主动教育使用者「这页没用」。
+# 见 docs/planning/复盘-项目自评打分-2026-09.md（频率门 0 分）。
+#
+# 启用：
+#   ln -sf "$PWD/scripts/workbench.service" ~/.config/systemd/user/workbench.service
+#   systemctl --user daemon-reload && systemctl --user enable --now workbench.service
+#   loginctl enable-linger $USER        # 登出后仍保活（可选，需权限）
+# 查看：systemctl --user status workbench.service / journalctl --user -u workbench -f
+# 撤回：systemctl --user disable --now workbench.service && rm ~/.config/systemd/user/workbench.service
+
+[Unit]
+Description=DailyWorkbench local backend (127.0.0.1:8899)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dev_st/mtools/DailyWorkbench
+ExecStart=/home/dev_st/iriswork/tools/anaconda/bin/python -m backend.server 8899
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

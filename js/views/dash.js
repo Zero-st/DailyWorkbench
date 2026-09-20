@@ -40,7 +40,8 @@ export function renderTodayReview(d) {
     var dn = list.filter(function (t) { return t.done; }).length;
     var total = list.length;
     if (!total) {
-      done.innerHTML = '<span class="empty">今日还没有待办，写一条吧～</span>';
+      // 这里是「今日复盘」卡的代办完成度位，此前复读了待办卡的文案（走查 X5）。
+      done.innerHTML = '<span class="empty">今天还没有代办可统计 · 直接写复盘也行</span>';
     } else {
       var pct = Math.round(dn / total * 100);
       done.innerHTML =

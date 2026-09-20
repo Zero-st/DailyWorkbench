@@ -284,6 +284,7 @@ def list_deposits(module=None, limit=500):
     p = os.path.join(DEPOSIT, "_index.jsonl")
     if not os.path.isfile(p):
         return out
+    ghosts = 0
     try:
         with open(p, "r", encoding="utf-8") as _f:
             for line in _f:
@@ -299,7 +300,13 @@ def list_deposits(module=None, limit=500):
                 # relPath 是相对 depositRoot 的；/api/kb/note 读取相对 vault，
                 # 故补一个相对 vault 的 vaultPath 供前端开卡（depositRoot 通常是 vault 子目录）。
                 rp = rec.get("relPath")
-                if rp and VAULT and DEPOSIT:
+                # 账本是 append-only，而删卡发生在 Obsidian 里 → 两边天然不同步。
+                # 文件没了就别再列出来：否则幽灵卡照样进蒸馏库与今日温故卡，且因从未
+                # 复看而被 recall 判为 overdue 极大、永远排第一，点开只得到 404。
+                if not rp or not os.path.isfile(os.path.join(DEPOSIT, rp.replace("/", os.sep))):
+                    ghosts += 1
+                    continue
+                if VAULT and DEPOSIT:
                     try:
                         rec["vaultPath"] = os.path.relpath(
                             os.path.join(DEPOSIT, rp.replace("/", os.sep)), VAULT).replace("\\", "/")
@@ -308,5 +315,7 @@ def list_deposits(module=None, limit=500):
                 out.append(rec)
     except Exception:
         return out
+    if ghosts:
+        sys.stderr.write("[kb] list_deposits: 跳过 %d 条幽灵记录（文件已不存在）\n" % ghosts)
     out.reverse()  # 新→旧
     return out[:limit]
