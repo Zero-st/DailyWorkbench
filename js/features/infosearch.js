@@ -7,6 +7,7 @@
 // 语义未配置（后端回 configured:false）→ 隐藏语义输入，只留客户端筛选，优雅降级。
 import { esc, escAttr, jsStr, ic } from "../core/util.js";
 import { fetchT } from "../core/net.js";
+import { FEEDS } from "../core/feeds.js";
 
 var _flat = [];            // 当日全部条目（扁平）
 var _renderCard = null;    // info.js 注入的卡片渲染器
@@ -18,16 +19,19 @@ var _sem = null;           // 语义结果（null=未处于语义模式）
 var _semOn = false;        // 后端语义能力是否可用（探测后置真/假）
 var _semProbed = false;
 
-// 从当日 data（非 history）扁平化所有条目，附带兜底来源名
+// 从当日 data（非 history）扁平化所有条目，附带兜底来源名。
+// 源清单与来源名走 core/feeds.js 的 FEEDS 表，不在这里再维护一份。
 function collect(d) {
   var out = [];
-  var ai = d.aiDaily || {};
-  (ai.sections || []).forEach(function (sec) {
-    (sec.items || []).forEach(function (it) { out.push(withSrc(it, "AI 日报")); });
-  });
-  [["dailyNews", "每日60秒"], ["hackerNews", "Hacker News"], ["githubTrending", "GitHub Trending"],
-   ["productHunt", "Product Hunt"], ["sspai", "少数派"], ["x", "X"]].forEach(function (pair) {
-    ((d[pair[0]] || {}).items || []).forEach(function (it) { out.push(withSrc(it, pair[1])); });
+  FEEDS.forEach(function (spec) {
+    var a = d[spec.key] || {};
+    if (spec.kind === "sections") {
+      (a.sections || []).forEach(function (sec) {
+        (sec.items || []).forEach(function (it) { out.push(withSrc(it, spec.searchLabel)); });
+      });
+    } else {
+      (a.items || []).forEach(function (it) { out.push(withSrc(it, spec.searchLabel)); });
+    }
   });
   return out;
 }
