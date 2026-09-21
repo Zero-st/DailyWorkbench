@@ -1051,3 +1051,75 @@ def test_progress_deadline_marks_fallback_when_board_silent(tmp_path, monkeypatc
     assert snap["deadline"]["date"] == "2026-12-31"
     snap2 = progress_svc.snapshot()
     assert snap2["deadline"]["source"] == "none" and snap2["deadline"]["daysLeft"] is None
+
+
+# ---------- 进度视图写侧（只开 §⑤ 偏离 / §④ 风险，见 ADR 0016） ----------
+def _board_sandbox(tmp_path, monkeypatch):
+    """拿真实作战板的副本当沙箱——真板子绝不参与测试。"""
+    from backend.core import config as wb_config
+    src = wb_config.board_path()
+    if not src:
+        pytest.skip("当期没有作战板")
+    dst = tmp_path / "作战板-2026-09.md"
+    dst.write_text(open(src, encoding="utf-8").read(), encoding="utf-8")
+    monkeypatch.setattr(wb_config, "board_path", lambda: str(dst))
+    return str(dst)
+
+
+def test_progress_deviation_escapes_pipes_and_round_trips(tmp_path, monkeypatch):
+    """写进去的 `|` 必须能原样读回来。
+
+    首版把 `|` 转义成 `\\|` 却没让解析器认这个转义，单元格被截断成「试写一条 \\」
+    ——写得对、读不回，整张表还多一列。这条是那个 bug 的回归锁。
+    """
+    fp = _board_sandbox(tmp_path, monkeypatch)
+    text = "摩擦 | 带竖线\n还带换行"
+    r = progress_svc.add_deviation(text, "为什么 | 也带", expect_hash=progress_svc.board_hash())
+    assert r["ok"] is True and r["changed"] is True
+    b = progress_svc.parse_board(fp)
+    assert b["deviationRows"][-1][1] == "摩擦 | 带竖线 还带换行"
+    # 表没被撑坏：其它段照常解析
+    assert b["phases"] and b["weeks"] and b["gate"]["total"] > 0 and len(b["risks"]) > 0
+
+
+def test_progress_write_rejects_stale_hash(tmp_path, monkeypatch):
+    """页面加载后文件被改过（多半是你在编辑器里动了）→ 宁可拒绝也不覆盖。"""
+    _board_sandbox(tmp_path, monkeypatch)
+    h0 = progress_svc.board_hash()
+    assert progress_svc.add_deviation("第一条", expect_hash=h0)["ok"] is True
+    r = progress_svc.add_deviation("拿旧 hash 再写", expect_hash=h0)
+    assert r["ok"] is False and r["error"] == "stale"
+    assert r["hash"] != h0          # 回传当前 hash，页面可据此刷新后重试
+
+
+def test_progress_deviation_rejects_empty(tmp_path, monkeypatch):
+    _board_sandbox(tmp_path, monkeypatch)
+    assert progress_svc.add_deviation("", expect_hash=progress_svc.board_hash())["ok"] is False
+    assert progress_svc.add_deviation("   \n ", expect_hash=progress_svc.board_hash())["ok"] is False
+
+
+def test_progress_risk_status_whitelist_and_update(tmp_path, monkeypatch):
+    fp = _board_sandbox(tmp_path, monkeypatch)
+    assert progress_svc.set_risk_status("6", "💀", expect_hash=progress_svc.board_hash())["ok"] is False
+    assert progress_svc.set_risk_status("999", "🟢", expect_hash=progress_svc.board_hash())["ok"] is False
+    assert progress_svc.set_risk_status("6", "🟢", expect_hash=progress_svc.board_hash())["ok"] is True
+    b = progress_svc.parse_board(fp)
+    assert [r["状态"] for r in b["risks"] if r["#"] == "6"] == ["🟢"]
+    assert len(b["risks"]) == 9 and b["gate"]["total"] == 6     # 别的行没被动
+
+
+def test_progress_writes_never_touch_checkboxes(tmp_path, monkeypatch):
+    """§②③ 勾选**刻意不开**——一键勾会架空 DoD 四款（指南 §3）。
+
+    锁的是不变量而非命名：跑完所有被允许的写之后，勾选框逐字不变。
+    将来若真要开勾选，得先改 ADR 0016 并想清楚怎么强制「一句可验证的验收事实」。
+    """
+    fp = _board_sandbox(tmp_path, monkeypatch)
+    before = [ln for ln in open(fp, encoding="utf-8").read().splitlines()
+              if re.match(r"^\s*-\s*\[[ x~-]\]", ln)]
+    progress_svc.add_deviation("写一条偏离", "理由", expect_hash=progress_svc.board_hash())
+    progress_svc.set_risk_status("6", "🟢", expect_hash=progress_svc.board_hash())
+    after = [ln for ln in open(fp, encoding="utf-8").read().splitlines()
+             if re.match(r"^\s*-\s*\[[ x~-]\]", ln)]
+    assert before == after, "写操作动到了勾选框——§②③ 必须只能在编辑器里改"
+    assert len(before) == 11          # §② 6 条 + §③ 5 条

@@ -77,6 +77,15 @@
 .pg-peek a{margin-left:auto;color:var(--accent);text-decoration:none;font-weight:600;font-size:var(--text-xs)}
 .pg-peek a:hover{text-decoration:underline}
 
+/* —— 写侧（只开 §⑤ 偏离 / §④ 风险） —— */
+.pg-form{display:flex;gap:var(--space-2xs);flex-wrap:wrap;align-items:center;margin-top:var(--space-2xs)}
+.pg-form .sf{flex:1;min-width:140px}
+.pg-riskbtn{cursor:pointer;user-select:none}
+.pg-riskbtn:hover{border-color:var(--accent-line);transform:translateY(-1px)}
+.pg-locked{display:flex;align-items:center;gap:var(--space-2xs);margin-top:var(--space-2xs);
+  padding:var(--space-2xs) var(--space-xs);border:1px dashed var(--line-mid);
+  border-radius:var(--radius-sm);font-size:var(--text-xs);color:var(--sub-2);line-height:1.6}
+
 /* —— 效果图脚手架，不进 styles.css —— */
 .demo-bar{position:sticky;top:0;z-index:9;display:flex;gap:var(--space-xs);align-items:center;
   padding:var(--space-xs) var(--space-md);background:var(--panel);border-bottom:1px solid var(--line);margin-bottom:var(--space-md)}
@@ -98,7 +107,7 @@
   <b>这不是最终页面，是过目稿。</b>真实数据取自 2026-09-21 实况（当期 2/6、需求 16/23、距对表 26 天、元工作 69%）。
   新组件类只有 <code>.pg-*</code> 一组，其余全部复用现成的 <code>.card</code> / <code>.kpis</code> / <code>.kpi</code> /
   <code>.review-progress</code> / <code>.chip</code> / <code>.btn-sm</code>。
-  <b>页面上零手打数字</b>——全部由 <code>GET /api/progress</code> 从作战板勾选框、需求台账 §4、周表、git log 派生。本图的数已与该端点 2026-09-21 的真实返回逐个对齐（端点已实现并通过 88 条测试）。
+  <b>页面上零手打数字</b>——全部由 <code>GET /api/progress</code> 从作战板勾选框、需求台账 §4、周表、git log 派生。本图的数已与该端点 2026-09-21 的真实返回逐个对齐（端点已实现，97 条测试全绿）。<br><b>页面只开两处写</b>：§⑤ 追加偏离、§④ 改风险状态——两者无 DoD 约束，纯粹是「摩擦高就不会被记」。§②③ 勾选与 §⓪① 基线<b>不给入口</b>。
 </div>
 
 <div class="demo-page">
@@ -200,6 +209,10 @@
           </tbody>
         </table>
         </div>
+        <div class="pg-locked">
+          <b>这里刻意不可点。</b>勾 <code>[x]</code> 前要过 DoD 四款（已 commit · 跑过门禁 · 写一句可验证的验收事实 · 台账已回写）。
+          一键勾选会把这四款架空，而「计划宣称完成、无人逐条对过」正是这套机制要治的病 —— 勾选只在编辑器里改。
+        </div>
       </div>
 
     </div>
@@ -222,6 +235,27 @@
           </tbody>
         </table>
         </div>
+      </div>
+
+      <!-- ④ 风险登记册（状态可点改） -->
+      <div class="card">
+        <h2><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> 风险登记册 · 9 条<span class="pg-st doing" style="margin-left:auto">状态可点改</span></h2>
+        <div class="pg-wrapx">
+        <table class="pg-table">
+          <thead><tr><th>#</th><th>风险 / 假设</th><th>状态</th></tr></thead>
+          <tbody>
+            <tr><td class="pg-c1">6</td><td>温故池只有 1 张真卡 → 点过一次就消失两天</td>
+                <td><span class="pg-st bad pg-riskbtn" title="点击循环 🔴→🟡→🟢→⚪">🔴 未缓解</span></td></tr>
+            <tr><td class="pg-c1">8</td><td>「每天 3 分钟契约」仍可能落空</td>
+                <td><span class="pg-st bad pg-riskbtn" title="点击循环">🔴 最大不确定性</span></td></tr>
+            <tr><td class="pg-c1">5</td><td>每小时 cron 触发 enrich 付费调用放大成本</td>
+                <td><span class="pg-st warn pg-riskbtn" title="点击循环">🟡 待观察</span></td></tr>
+            <tr><td class="pg-c1">2</td><td><span class="pg-dim">usage.local.jsonl 被误提交 → 随 Pages 公开</span></td>
+                <td><span class="pg-st ok pg-riskbtn" title="点击循环">🟢 已钉死</span></td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="pg-locked">状态白名单 🔴 🟡 🟢 ⚪ 🆕；点一下就地写回作战板 §④，只改那一格。</div>
       </div>
 
       <!-- ④ 本周任务 -->
@@ -263,11 +297,24 @@
 
       <!-- 偏离记录 -->
       <div class="card">
-        <h2><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> 偏离记录 · 2 条</h2>
-        <p class="pg-dim" style="margin:0 0 8px">
-          09-21 发现 W0 未全绿（宣称完成，实测 2/6）<br>
-          09-21 计划外插入「补执行层」一批，0 个产品功能
-        </p>
+        <h2><span class="ic"><svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> 偏离记录 · 2 条<span class="pg-st doing" style="margin-left:auto">可在此追加</span></h2>
+        <div class="pg-wrapx">
+        <table class="pg-table">
+          <thead><tr><th>时间</th><th>做了什么</th></tr></thead>
+          <tbody>
+            <tr><td class="pg-num pg-dim">09-21</td><td>发现 W0 未全绿（宣称完成，实测 2/6）</td></tr>
+            <tr><td class="pg-num pg-dim">09-21</td><td>计划外插入「补执行层」一批，0 个产品功能</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="pg-form">
+          <input class="sf" placeholder="做了什么计划外的事？" aria-label="偏离内容">
+          <input class="sf" placeholder="为什么" aria-label="偏离原因">
+          <button class="button sm">记一条</button>
+        </div>
+        <div class="pg-locked">
+          日期由服务端盖戳。<b>开编辑器记一行偏离的摩擦，正是它不会被记的原因</b>——所以这一处开放写入。
+        </div>
       </div>
 
     </div>

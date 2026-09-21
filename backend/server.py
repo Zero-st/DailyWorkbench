@@ -123,6 +123,8 @@ class Handler(SimpleHTTPRequestHandler):
         "/api/inbox/delete": "_post_inbox_delete",
         "/api/info/search": "_post_info_search",
         "/api/usage": "_post_usage",
+        "/api/progress/deviation": "_post_progress_deviation",
+        "/api/progress/risk": "_post_progress_risk",
     }
 
     def __init__(self, *a, **kw):
@@ -294,6 +296,34 @@ class Handler(SimpleHTTPRequestHandler):
         # 扩展弹窗用它显示「已连上工作台 · N 条」
         self._json(200, {"ok": True, "count": inbox.count()})
 
+    def _post_progress_deviation(self):
+        """§⑤ 偏离记录追加一行。**页面唯一被允许的两种写之一**（另一个是风险状态）。
+
+        刻意**不开** §②③ 的勾选：指南 §3 要求勾 `[x]` 前过 DoD 四款，一键勾选会
+        把它架空，而"计划宣称完成、无人逐条对过"正是这套机制要治的病（ADR 0016）。
+        """
+        if self._guard_origin():
+            return
+        try:
+            b = self._body() or {}
+            res = progress.add_deviation(b.get("what"), b.get("why"), b.get("hash"))
+            self._json(200 if res.get("ok") else (409 if res.get("error") == "stale" else 400), res)
+        except Exception as e:
+            sys.stderr.write("[progress-deviation] %s\n" % e)
+            self._json(500, {"ok": False, "error": "internal error"})
+
+    def _post_progress_risk(self):
+        """§④ 风险登记册改一格状态（白名单内）。"""
+        if self._guard_origin():
+            return
+        try:
+            b = self._body() or {}
+            res = progress.set_risk_status(b.get("id"), b.get("status"), b.get("hash"))
+            self._json(200 if res.get("ok") else (409 if res.get("error") == "stale" else 400), res)
+        except Exception as e:
+            sys.stderr.write("[progress-risk] %s\n" % e)
+            self._json(500, {"ok": False, "error": "internal error"})
+
     def _get_progress(self):
         """项目进度：计划两层 + 完成度三层 + 放弃线现状。**只读，零写入。**
 
@@ -311,6 +341,7 @@ class Handler(SimpleHTTPRequestHandler):
             from backend.pipeline import usage_report
             since = (_dt.now() - _td(days=max(days, 1))).strftime("%Y-%m-%d")
             snap = progress.snapshot()
+            snap["hash"] = progress.board_hash()
             try:
                 snap["usage"] = usage_report.metrics(since)
                 subs = usage_report._git_subjects(since)

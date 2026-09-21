@@ -14,12 +14,21 @@
   （使用量指标不在这里算——那在 backend/pipeline/usage_report.metrics()，
     CLI 报表与本视图吃同一份，两处各算一遍就会分叉。）
 
+写侧（2026-09-21 起）**只开两处**：§⑤ 偏离记录追加、§④ 风险状态改一格。
+这两处没有 DoD 约束，纯粹是"摩擦高就不会被记"；而 §②③ 的勾选**刻意不开**——
+指南 §3 规定勾 `[x]` 前要过 DoD 四款，一键勾选会把它架空，而"计划宣称完成、
+无人逐条对过"正是这套机制要治的病。§⓪①（基线）期中不该改，更不给入口。
+写法一律**外科手术式改行**：只动目标行，绝不重新生成文件（重生成会毁掉
+人写的注释与散文）。并发靠内容哈希前置条件挡（你在编辑器里同时改过就拒绝）。
+
 **表头是契约**：下面这些 H_* / 列名常量若与 markdown 对不上，对应段返回 None
 并附 note，**绝不猜、绝不静默填 0**——静默填 0 会让页面说谎，而页面说谎正是
 本仓砍掉上一批遥测视图的原因（ADR 0013）。
 """
+import hashlib
 import os
 import re
+import threading
 from datetime import date, datetime
 
 from backend.core import config as wb_config
@@ -39,6 +48,9 @@ RE_DEADLINE = re.compile(r"对表日[：:]\s*\**(\d{4}-\d{2}-\d{2})")
 RE_WEEKLY = re.compile(r"周表[：:]\s*\[[^\]]*\]\(([^)]+)\)")
 
 _CHECK = re.compile(r"^\s*-\s*\[([ x~\-])\]\s*(.*)$")
+# 只在**未转义**的竖线处切分。写侧把用户文本里的 `|` 转成 `\|`（否则整张表多出
+# 一列、后续解析全错），读侧必须认这个转义，否则往返不闭环——首版就栽在这。
+_CELLS = re.compile(r"(?<!\\)\|")
 _STATUS_WORD = {"✅": "ok", "🔧": "doing", "🚧": "todo", "⏸": "wait", "✂": "cut",
                 "⏳": "wait", "🔴": "bad", "🟡": "warn", "🟢": "ok", "⚪": "wait", "🆕": "new"}
 
@@ -80,7 +92,7 @@ def _tables(block):
                 out.append((head, rows))
                 head, rows = None, []
             continue
-        cells = [c.strip() for c in line.strip("|").split("|")]
+        cells = [c.strip().replace("\\|", "|") for c in _CELLS.split(line.strip().strip("|"))]
         if set("".join(cells)) <= set("-: "):
             continue           # 分隔行
         if head is None:
@@ -271,3 +283,123 @@ def snapshot(fallback_deadline=None):
         "weekly": parse_weekly(board.get("weeklyPath") if board.get("ok") else None),
         "deadline": {"date": dl, "daysLeft": deadline_days(dl) if dl else None, "source": src},
     }
+
+
+# ======================== 写侧（只开 §⑤ 偏离 / §④ 风险） ========================
+
+_WLOCK = threading.RLock()
+RISK_STATUS = ["🔴", "🟡", "🟢", "⚪", "🆕"]   # 状态白名单，不在表内一律拒
+_CELL_MAX = 200
+
+
+def board_hash(path=None):
+    """当期作战板内容哈希。页面读取时拿走，写回时带上——**中途被编辑器改过就拒绝**。"""
+    md = _read(path or wb_config.board_path())
+    if md is None:
+        return None
+    return hashlib.sha256(md.encode("utf-8")).hexdigest()[:16]
+
+
+def _cell(text):
+    """把用户文本压成能安全放进 markdown 表格单元的一行。
+
+    `|` 不转义会直接撑坏整张表（多出一列，后续解析全错）；换行同理。
+    """
+    t = re.sub(r"\s+", " ", str(text or "")).strip()
+    return t.replace("|", "\\|")[:_CELL_MAX]
+
+
+def _atomic_write(fp, text):
+    """tmp + os.replace 原子写，照 clients/inbox.py:44 的范式（含 pid/线程名防撞）。"""
+    tmp = "%s.tmp.%d.%d" % (fp, os.getpid(), threading.get_ident())
+    try:
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(text)
+        os.replace(tmp, fp)
+    except Exception:
+        try:
+            os.remove(tmp)
+        except Exception:
+            pass
+        raise
+
+
+def _guarded_rewrite(expect_hash, mutate):
+    """读 → 校验哈希 → mutate(md) → 原子写。mutate 返回 None 表示"没改动"。"""
+    fp = wb_config.board_path()
+    if not fp:
+        return {"ok": False, "error": "no board"}
+    with _WLOCK:
+        md = _read(fp)
+        if md is None:
+            return {"ok": False, "error": "board unreadable"}
+        cur = hashlib.sha256(md.encode("utf-8")).hexdigest()[:16]
+        if expect_hash and expect_hash != cur:
+            # 页面加载后文件被改过（多半是你在编辑器里动了）——宁可拒绝也不覆盖
+            return {"ok": False, "error": "stale", "hash": cur}
+        new = mutate(md)
+        if new is None:
+            return {"ok": False, "error": "target not found"}
+        if new == md:
+            return {"ok": True, "changed": False, "hash": cur}
+        _atomic_write(fp, new)
+        return {"ok": True, "changed": True,
+                "hash": hashlib.sha256(new.encode("utf-8")).hexdigest()[:16]}
+
+
+def add_deviation(what, why="", expect_hash=None, today=None):
+    """§⑤ 偏离记录追加一行。日期由**服务端**盖戳（不信前端时区，同 usage.py）。"""
+    what = _cell(what)
+    if not what:
+        return {"ok": False, "error": "empty"}
+    day = (today or date.today()).strftime("%Y-%m-%d")
+    row = "| %s | %s | %s |" % (day, what, _cell(why) or "—")
+
+    def mutate(md):
+        if H_DEVIATION not in md:
+            return None
+        head, sep, tail = md.partition(H_DEVIATION)
+        lines = tail.split("\n")
+        last = None
+        for i, ln in enumerate(lines):
+            if ln.strip().startswith("|"):
+                last = i
+            elif last is not None and ln.strip() == "" and i > last:
+                break
+            elif ln.startswith("## "):
+                break
+        if last is None:
+            return None
+        lines.insert(last + 1, row)
+        return head + sep + "\n".join(lines)
+
+    return _guarded_rewrite(expect_hash, mutate)
+
+
+def set_risk_status(risk_id, status, expect_hash=None):
+    """§④ 风险登记册：把第 risk_id 行的「状态」格改成 status（白名单内）。"""
+    status = (status or "").strip()
+    if status not in RISK_STATUS:
+        return {"ok": False, "error": "bad status"}
+    rid = str(risk_id).strip()
+
+    def mutate(md):
+        if H_RISK not in md:
+            return None
+        head, sep, tail = md.partition(H_RISK)
+        lines, hit = tail.split("\n"), False
+        for i, ln in enumerate(lines):
+            if ln.startswith("## "):
+                break
+            if not ln.strip().startswith("|"):
+                continue
+            cells = _CELLS.split(ln.strip().strip("|"))
+            if len(cells) < 5 or cells[0].strip() != rid:
+                continue
+            cells[-1] = " %s " % status
+            lines[i] = "|" + "|".join(cells) + "|"
+            hit = True
+            break
+        return head + sep + "\n".join(lines) if hit else None
+
+    return _guarded_rewrite(expect_hash, mutate)
