@@ -161,11 +161,51 @@ def format_mix(counts, since):
     return lines
 
 
-def report(since, mix=True):
+def metrics(since):
+    """把自评卡 §5 那几条算成**数据**（不是字符串）。
+
+    CLI 报表与工作台进度视图必须吃同一份数字——两处各算一遍就会分叉，
+    而"页面数字与真源不一致"正是进度视图预注册的放弃线之一（ADR 0016）。
+    """
     evs = usage.read_events(since)
     per = defaultdict(lambda: defaultdict(int))
     for e in evs:
         per[e.get("day")][e.get("ev")] += 1
+
+    # 有交互 = 当天有任何真实手势；report_run 是我自己跑报表，不算"在用工具"
+    used_days = [d for d in per if any(k != "report_run" and v for k, v in per[d].items())]
+    review_days = [d for d in per if per[d].get("review_save")]
+    cards, ghosts = _real_cards(since)
+    others, _ = _real_cards(since, module=None)
+    inbox_items = _load_json(wb_config.inbox_path(), [])
+    inbox_items = inbox_items if isinstance(inbox_items, list) else []
+    last, hours, runs = _sync_health(since)
+    try:
+        span = (datetime.now() - datetime.strptime(since, "%Y-%m-%d")).days + 1
+    except Exception:
+        span = 0
+    return {
+        "since": since,
+        "spanDays": span,
+        "perDay": {d: dict(v) for d, v in per.items()},
+        "usedDays": len(used_days),
+        "cards": cards,
+        "otherDeposits": max(others - cards, 0),
+        "ghosts": ghosts,
+        "inbox": len(inbox_items),
+        "distilled": sum(1 for i in inbox_items if i.get("status") == "已蒸馏"),
+        "syncLast": last,
+        "syncHours": hours,
+        "syncRuns": runs,
+        "reviewWindow": _max_window(review_days),
+        "usefulCards": len({e.get("k") for e in evs if e.get("ev") == "recall_useful" and e.get("k")}),
+        "reportRuns": sum(v.get("report_run", 0) for v in per.values()),
+    }
+
+
+def report(since, mix=True):
+    m = metrics(since)
+    per = m["perDay"]
 
     lines = ["", "## 使用量 · %s 起" % since, "",
              "| 日期 | " + " | ".join(c[1] for c in COLS) + " |",
@@ -176,26 +216,17 @@ def report(since, mix=True):
     if not per:
         lines.append("| （区间内没有任何手势） |" + " |" * len(COLS))
 
-    # 有交互 = 当天有任何真实手势；report_run 是我自己跑报表，不算"在用工具"
-    used_days = [d for d in per if any(k != "report_run" and v for k, v in per[d].items())]
-    review_days = [d for d in per if per[d].get("review_save")]
-    cards, ghosts = _real_cards(since)
-    others, _ = _real_cards(since, module=None)
-    inbox_items = _load_json(wb_config.inbox_path(), [])
-    inbox_items = inbox_items if isinstance(inbox_items, list) else []
-    distilled = sum(1 for i in inbox_items if i.get("status") == "已蒸馏")
-    last, hours, runs = _sync_health(since)
-    useful_cards = len({e.get("k") for e in evs if e.get("ev") == "recall_useful" and e.get("k")})
-
     lines += ["", "### 对着自评卡 §5 的八条", "",
-              "- 有交互天数：**%d** 天（区间 %d 天）" % (len(used_days), (datetime.now() - datetime.strptime(since, "%Y-%m-%d")).days + 1),
+              "- 有交互天数：**%d** 天（区间 %d 天）" % (m["usedDays"], m["spanDays"]),
               "- #1 真卡流量（区间内新增蒸馏卡）：**%d** 张 · 其它沉淀 %d 篇%s" % (
-                  cards, max(others - cards, 0), ("（另有 %d 条幽灵账本行）" % ghosts) if ghosts else ""),
-              "- #2 收件箱：**%d** 条，其中已蒸馏 **%d** 条" % (len(inbox_items), distilled),
+                  m["cards"], m["otherDeposits"],
+                  ("（另有 %d 条幽灵账本行）" % m["ghosts"]) if m["ghosts"] else ""),
+              "- #2 收件箱：**%d** 条，其中已蒸馏 **%d** 条" % (m["inbox"], m["distilled"]),
               "- #3 同步：上次 %s%s · 区间内成功 **%d** 次" % (
-                  last or "（无记录）", ("，距今 %.1f 小时" % hours) if hours is not None else "", runs),
-              "- #4 复盘：任一 7 天窗口最多 **%d** 天有复盘（目标 ≥5）" % _max_window(review_days),
-              "- #5 温故：标过「有用」的不同卡 **%d** 张（目标 ≥3）" % useful_cards,
+                  m["syncLast"] or "（无记录）",
+                  ("，距今 %.1f 小时" % m["syncHours"]) if m["syncHours"] is not None else "", m["syncRuns"]),
+              "- #4 复盘：任一 7 天窗口最多 **%d** 天有复盘（目标 ≥5）" % m["reviewWindow"],
+              "- #5 温故：标过「有用」的不同卡 **%d** 张（目标 ≥3）" % m["usefulCards"],
               ""]
 
     if mix:

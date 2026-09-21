@@ -864,3 +864,190 @@ def test_work_mix_survives_missing_git(monkeypatch):
     from backend.pipeline import usage_report
     monkeypatch.setattr(usage_report, "ROOT", "/nonexistent-path-for-test")
     assert usage_report._git_subjects("2026-09-01") is None
+
+
+# ---------- 项目进度解析（ADR 0016：页面上零手打数字，解析错了必须看得出来） ----------
+from backend.clients import progress as progress_svc  # noqa: E402
+
+_BOARD_MD = """# 作战板 · 测试期
+
+## ⓪ 计划总表
+
+### 层一 · 项目阶段（方向）
+
+| 阶段 | 内容 | 门性 | 状态 | 完成日 / 依赖 |
+|---|---|---|---|---|
+| Phase 1 | 甲 | 双向门 | ✅ | 2026-08-31 |
+| Phase 2 | 乙 | 双向门 | 🔧 | 半拉子 |
+
+### 层二 · 当期四周（执行）
+
+| 周 | 区间 | 计划内容 | 周门 | 状态 |
+|---|---|---|---|---|
+| W0 | 09-20 → 09-22 | 清障碍 | 6 条全绿 | 🔧 2/6 |
+| W1 | 09-23 → 09-29 | 契约 | ≥4 天 | ⏳ |
+
+## ① 本期承诺
+
+随便写点什么，不该被解析成表。
+
+## ② 出口门禁
+
+- [x] **1 · 甲** — 验收：已办
+- [~] **2 · 乙** — 验收：半拉
+- [ ] **3 · 丙** — 验收：没动
+- [-] **4 · 丁** — 放弃：不做了
+
+## ③ 本周任务
+
+- [x] T1 干完了
+- [ ] T2 没干
+
+## ④ 风险与假设登记册
+
+| # | 风险 / 假设 | 触发信号 | 应对 | 状态 |
+|---|---|---|---|---|
+| 1 | 会翻车 | 翻了 | 扶起来 | 🔴 |
+
+## ⑤ 偏离记录
+
+| 时间 | 做了什么 / 发生了什么 | 为什么 |
+|---|---|---|
+| 09-21 | 插了一件计划外的 | 用户要 |
+"""
+
+
+def _write(tmp_path, name, text):
+    f = tmp_path / name
+    f.write_text(text, encoding="utf-8")
+    return str(f)
+
+
+def test_progress_board_counts_four_checkbox_states_and_reads_both_tables(tmp_path):
+    p = _write(tmp_path, "作战板-测试.md", _BOARD_MD)
+    b = progress_svc.parse_board(p)
+    assert b["ok"] is True
+    assert b["gate"] == dict(b["gate"], done=1, doing=1, open=1, dropped=1, total=4, pct=25)
+    assert b["task"]["done"] == 1 and b["task"]["total"] == 2
+    assert [r["阶段"] for r in b["phases"]] == ["Phase 1", "Phase 2"]
+    assert [r["周"] for r in b["weeks"]] == ["W0", "W1"]
+    assert len(b["risks"]) == 1 and b["deviations"] == 1
+
+
+def test_progress_status_taken_by_column_name_not_position(tmp_path):
+    """阶段表的「状态」不是最后一列——首版按 r[-1] 取，四行状态全 None。"""
+    p = _write(tmp_path, "作战板-测试.md", _BOARD_MD)
+    b = progress_svc.parse_board(p)
+    assert [r["_status"] for r in b["phases"]] == ["ok", "doing"]
+    assert [r["_status"] for r in b["weeks"]] == ["doing", "wait"]
+
+
+def test_progress_picks_right_table_when_section_has_several(tmp_path):
+    """一个小节里有多张表时不能按位置取第一张——周五仪式那节就是四问表在前。"""
+    md = ("## 2 · 周五 15 分钟仪式 · 四问\n\n"
+          "| # | 问 | 怎么答 |\n|---|---|---|\n| 1 | 这周使用量 | 粘表 |\n\n"
+          "| 周 | 区间 | 门 | 结果 |\n|---|---|---|---|\n"
+          "| W1 | 09-23 → 09-29 | ≥4 天 | 过 |\n| W2 | 09-30 → 10-06 | ≥4 天 | |\n")
+    w = progress_svc.parse_weekly(_write(tmp_path, "周表.md", md))
+    assert w["ok"] is True
+    assert [x["week"] for x in w["weeks"]] == ["W1", "W2"]
+    assert w["judged"] == 1 and w["passed"] == 1
+
+
+def test_progress_refuses_to_guess_when_header_changed(tmp_path):
+    """表头被改 → 返回 None + note。**绝不静默填 0**——页面说谎正是砍掉上批遥测视图的原因。"""
+    md = _BOARD_MD.replace("| 阶段 | 内容 | 门性 | 状态 | 完成日 / 依赖 |",
+                           "| 阶段 | 内容 | 状态 |")
+    b = progress_svc.parse_board(_write(tmp_path, "作战板-测试.md", md))
+    assert b["phases"] is None
+    assert "表头" in b["phasesNote"] or "未找到" in b["phasesNote"]
+    assert b["weeks"] is not None          # 另一张表不受影响
+
+
+def test_progress_missing_files_degrade_not_raise(tmp_path):
+    assert progress_svc.parse_board(str(tmp_path / "没有.md"))["ok"] is False
+    assert progress_svc.parse_ledger(str(tmp_path / "没有.md"))["ok"] is False
+    assert progress_svc.parse_weekly(str(tmp_path / "没有.md"))["ok"] is False
+
+
+def test_progress_ledger_completion_excludes_cut_items(tmp_path):
+    md = ("## 4 · 一眼看盘\n\n| 状态 | 条数 | 编号 |\n|---|---|---|\n"
+          "| ✅ 完成可用 | 16 | … |\n| 🔧 部分可用 | 3 | … |\n| 🚧 未开始 | 3 | … |\n"
+          "| ⏸ 推迟 | 1 | … |\n| ✂ 已砍 | 6 | … |\n| **合计** | **29** | |\n")
+    d = progress_svc.parse_ledger(_write(tmp_path, "台账.md", md))
+    assert (d["done"], d["cut"], d["total"], d["denom"], d["pct"]) == (16, 6, 29, 23, 70)
+
+
+def test_progress_deadline_days_crosses_month():
+    from datetime import date
+    assert progress_svc.deadline_days("2026-10-17", date(2026, 9, 21)) == 26
+    assert progress_svc.deadline_days("2026-10-17", date(2026, 10, 18)) == -1
+    assert progress_svc.deadline_days("不是日期") is None
+
+
+# ---------- 防烂保险（ADR 0016）：表头是契约，改坏了必须红 ----------
+def test_progress_parses_the_current_real_board():
+    """直接解析**真实的当期作战板**——改坏表头 pytest 就红。
+
+    这是「表头是契约」的 CI 硬门禁，不靠人记得。只断言表头与三段非空，
+    **不断言具体数值**：内容随便改，改表头才红（否则改文档要改测试，摩擦太大）。
+    10-17 若整条线被放弃线删掉，本测试随之删。
+    """
+    from backend.core import config as wb_config
+    p = wb_config.board_path()
+    if not p:
+        pytest.skip("当期没有作战板（整条线可能已按放弃线删除）")
+    b = progress_svc.parse_board(p)
+    assert b["ok"] is True, b.get("note")
+    assert b["phases"] is not None, "§⓪ 层一表头被改坏：%s" % b.get("phasesNote")
+    assert b["weeks"] is not None, "§⓪ 层二表头被改坏：%s" % b.get("weeksNote")
+    assert b["gate"] and b["gate"]["total"] > 0, "§② 出口门禁读不到勾选框"
+    assert b["deadline"], "作战板头部缺「对表日：YYYY-MM-DD」——页面倒计时会退回兜底"
+    assert b["weeklyPath"], "作战板头部缺「周表：[..](..)」链接——周门段会读不到"
+
+
+def test_board_path_only_accepts_period_named_boards(tmp_path, monkeypatch):
+    """模板/归档不能被当成当期板。
+
+    中文「模板」的码位高于数字，早先用 sorted(glob("作战板-*.md"))[-1] 时
+    `作战板-模板.md` 会排在 `作战板-2026-09.md` 后面被选中。
+    """
+    from backend.core import config as wb_config
+    plan = tmp_path / ".claude" / "plan"
+    plan.mkdir(parents=True)
+    for name in ["作战板-2026-09.md", "作战板-2026-10.md", "作战板-模板.md", "作战板-草稿.md"]:
+        (plan / name).write_text("# x", encoding="utf-8")
+    monkeypatch.setattr(wb_config, "ROOT", str(tmp_path))
+    monkeypatch.delenv("WB_BOARD_PATH", raising=False)
+    monkeypatch.setattr(wb_config, "_LOCAL", {}, raising=False)
+    assert os.path.basename(wb_config.board_path()) == "作战板-2026-10.md"
+
+
+def test_progress_takes_deadline_and_weekly_from_board_not_from_code(tmp_path):
+    """对表日与周表路径都来自板子——代码里写死过一次，换期即烂。"""
+    board = tmp_path / "作战板-2026-11.md"
+    board.write_text(
+        "# 作战板 · 下一期\n\n"
+        "> 建板：2026-10-18　对表日：**2026-11-14**\n"
+        "> 周表：[周表.md](周表.md)\n\n"
+        "## ② 出口门禁\n\n- [ ] **1 · 甲** — 验收：x\n", encoding="utf-8")
+    (tmp_path / "周表.md").write_text(
+        "## 2 · 周五 15 分钟仪式\n\n| 周 | 区间 | 门 | 结果 |\n|---|---|---|---|\n"
+        "| W1 | 11-01 → 11-07 | ≥4 天 | |\n", encoding="utf-8")
+    b = progress_svc.parse_board(str(board))
+    assert b["deadline"] == "2026-11-14"
+    assert b["weeklyPath"] == str(tmp_path / "周表.md")
+    assert progress_svc.parse_weekly(b["weeklyPath"])["ok"] is True
+
+
+def test_progress_deadline_marks_fallback_when_board_silent(tmp_path, monkeypatch):
+    """板子没写对表日时，页面要能说「这是兜底值」，而不是假装准确。"""
+    from backend.core import config as wb_config
+    board = tmp_path / "作战板-2026-12.md"
+    board.write_text("# 板\n\n## ② 出口门禁\n\n- [x] **1 · 甲** — 验收：y\n", encoding="utf-8")
+    monkeypatch.setattr(wb_config, "board_path", lambda: str(board))
+    snap = progress_svc.snapshot(fallback_deadline="2026-12-31")
+    assert snap["deadline"]["source"] == "fallback"
+    assert snap["deadline"]["date"] == "2026-12-31"
+    snap2 = progress_svc.snapshot()
+    assert snap2["deadline"]["source"] == "none" and snap2["deadline"]["daysLeft"] is None

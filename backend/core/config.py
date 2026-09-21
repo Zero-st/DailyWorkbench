@@ -11,6 +11,7 @@
 """
 import json
 import os
+import re
 import shlex
 import shutil
 import sys
@@ -207,6 +208,27 @@ def inbox_path():
         cfg.get("path"),
         os.path.join(ROOT, "inbox.local.json"),
     )
+
+
+def board_path():
+    """当期作战板 markdown（默认 .claude/plan/ 下期号**最大**的 作战板-YYYY-MM.md）。
+
+    刻意不写死期号：一期一张板，换期只需新建文件，不必改配置或代码。
+    找不到就返回 None——调用方据此优雅劣化，不抛。
+    规则见 docs/guides/项目管理-操作指南.md §4「换期清单」。
+
+    **只认 `作战板-YYYY-MM.md`**，不用宽泛的 `作战板-*.md`：后者会把
+    `作战板-模板.md` 一起捞进来，而中文「模板」的码位高于数字，排序后
+    模板会被当成当期板。归档/草稿同理被排除。
+    """
+    import glob
+    p = _first(os.environ.get("WB_BOARD_PATH"), (_LOCAL.get("board") or {}).get("path"), "")
+    if p:
+        return p
+    pat = re.compile(r"作战板-\d{4}-\d{2}\.md$")
+    hits = sorted(h for h in glob.glob(os.path.join(ROOT, ".claude", "plan", "作战板-*.md"))
+                  if pat.search(os.path.basename(h)))
+    return hits[-1] if hits else None
 
 
 def usage_path():

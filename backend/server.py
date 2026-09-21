@@ -34,6 +34,7 @@ from backend.clients import kb
 from backend.clients import inbox
 from backend.clients import agent
 from backend.clients import usage
+from backend.clients import progress
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
@@ -109,6 +110,7 @@ class Handler(SimpleHTTPRequestHandler):
         "/api/kb/deposits": "_get_kb_deposits",
         "/api/inbox": "_get_inbox",
         "/api/inbox/ping": "_get_inbox_ping",
+        "/api/progress": "_get_progress",
     }
     POST_ROUTES = {
         "/api/chat": "_post_chat",
@@ -291,6 +293,40 @@ class Handler(SimpleHTTPRequestHandler):
     def _get_inbox_ping(self):
         # 扩展弹窗用它显示「已连上工作台 · N 条」
         self._json(200, {"ok": True, "count": inbox.count()})
+
+    def _get_progress(self):
+        """项目进度：计划两层 + 完成度三层 + 放弃线现状。**只读，零写入。**
+
+        使用量那几个数刻意复用 pipeline 的 usage_report.metrics()，不在这里重算——
+        页面与 CLI 报表两处各算一遍就会分叉，而"页面数字与真源不一致"正是本视图
+        预注册的放弃线之一（ADR 0016）。
+        """
+        try:
+            q = parse_qs(urlparse(self.path).query)
+            days = int((q.get("days") or ["30"])[0])
+        except Exception:
+            days = 30
+        try:
+            from datetime import datetime as _dt, timedelta as _td
+            from backend.pipeline import usage_report
+            since = (_dt.now() - _td(days=max(days, 1))).strftime("%Y-%m-%d")
+            snap = progress.snapshot()
+            try:
+                snap["usage"] = usage_report.metrics(since)
+                subs = usage_report._git_subjects(since)
+                if subs is not None:
+                    counts = usage_report.classify_commits(subs)
+                    total, meta, ratio = usage_report.meta_ratio(counts)
+                    snap["mix"] = {"counts": counts, "total": total, "meta": meta,
+                                   "ratio": ratio, "warn": bool(ratio and ratio > usage_report.META_WARN_RATIO)}
+            except Exception as e:
+                # 埋点/ git 拿不到不该拖垮整页——计划与门禁仍然可读
+                sys.stderr.write("[progress] usage part failed: %s\n" % e)
+                snap["usage"], snap["mix"] = None, None
+            self._json(200, {"ok": True, **snap})
+        except Exception as e:
+            sys.stderr.write("[progress] %s\n" % e)
+            self._json(500, {"ok": False, "error": "internal error"})
 
     def _post_inbox_add(self):
         if self._guard_origin():
