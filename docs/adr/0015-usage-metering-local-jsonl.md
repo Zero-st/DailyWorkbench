@@ -1,8 +1,10 @@
 # 0015 使用量埋点：独立本地 jsonl，不进 data.json
 
+> ⚠️ **「为什么不做『使用统计』视图」一条已被 [0016](0016-in-app-progress-view.md) 修订**：工作台已加「项目进度」视图（置顶放弃线倒计时，非成就展示），`EVENTS` 增 `progress_open`。下方原始论证保留不改——0016 逐条回应了它的三条理由。
+
 - 状态：已接受
 - 日期：2026-09-20
-- 关联：[ADR 0013](0013-drop-workbuddy-telemetry.md)（刚切除的遥测线，其「何时重估」正指向本篇）、[ADR 0006](0006-capture-layer-browser-extension.md)（inbox.local.json 的先例）、`docs/guides/项目自评打分-指南.md`、`docs/planning/复盘-项目自评打分-2026-09.md`
+- 关联：[ADR 0013](0013-drop-workbuddy-telemetry.md)（刚切除的遥测线，其「何时重估」正指向本篇）、[ADR 0006](0006-self-built-browser-extension-for-capture.md)（inbox.local.json 的先例）、`docs/guides/项目自评打分-指南.md`、`docs/planning/复盘-项目自评打分-2026-09.md`
 
 ## 背景
 

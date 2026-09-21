@@ -31,7 +31,7 @@ CSS = "css/styles.css"
 REF_GLOBS = ("css/*.css", "js/**/*.js", "index.html")
 
 # 化石棘轮基线：2026-09-04 实测 19；2026-09-09 Phase 2 引用了 --candy-green* 等，降到 18。只许下调，不许上调。
-FOSSIL_BASELINE = 18
+FOSSIL_BASELINE = 14
 
 _COMMENT = re.compile(r"/\*.*?\*/", re.S)
 # 定义：`--name:`，前面不是字母/`(`/`-`（排除 var(--x) 与 --a--b 这类）。按出现位置匹配，同一行多个令牌全抓。

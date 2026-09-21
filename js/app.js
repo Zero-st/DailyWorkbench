@@ -13,6 +13,7 @@ import { renderQuick, renderTodayReview } from "./views/dash.js";
 import { renderDistill } from "./views/distill.js";
 import { renderInbox } from "./features/inbox.js";
 import { renderRecall } from "./features/recall.js";
+import { renderProgress, renderProgressPeek, trackProgressOpen } from "./views/progress.js";
 import { initConvoDock } from "./features/convo-dock.js";
 
 // WB 命名空间（dialog/esc/ic/jsStr）由 util.js 挂载到 window.WB；本模块内沿用 WB.dialog.*
@@ -152,6 +153,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
     else if (id === "kb") { if (typeof renderKb === "function") renderKb(); }
     else if (id === "distill") renderDistill();
     else if (id === "inbox") renderInbox();
+    else if (id === "progress") renderProgress();
     // 其余（home）为静态骨架，由 renderHeaderStrip/renderTodayReview/renderRecall 填充
   }
   // ---------- 数据规范化（兜底缺字段，避免 data.json 部分缺失/损坏导致白屏） ----------
@@ -189,6 +191,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
       renderActiveTab(d);
       renderTodayReview(d);
       renderRecall();
+      renderProgressPeek();      // 今日页一行摘要：让进度来找你（治心法 §4 频率门）
       if (!__inited) { __inited = true; switchView("home"); }
     } catch (err) {
       console.error("render 出错", err);
@@ -203,8 +206,11 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
 
   // ---------- 侧边栏多视图切换（首页只留今日，其余模块侧边栏切换） ----------
   var __inited = false;
-  function switchView(v) {
+  function switchView(v, fromRestore) {
     setView(v);
+    // 明确的用户手势才算「打开」——恢复上次标签不算，否则埋点虚高
+    // （ADR 0015 明确不采集「开着标签页」这类被动信号）
+    if (v === "progress" && !fromRestore) trackProgressOpen();
     document.querySelectorAll(".side-item").forEach(function (b) {
       b.classList.toggle("active", b.getAttribute("data-view") === v);
     });
@@ -214,7 +220,8 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
       info: ["资讯", "AI 日报与每日新闻"],
       inbox: ["收件箱", "刷到好帖子/好想法秒存 → 之后一键蒸馏"],
       kb: ["知识库", "Obsidian vault 浏览 / 检索 / 双链 / 沉淀"],
-      distill: ["蒸馏库", "up 主经验卡 · 视频/图文蒸馏成可复用结构化卡片"]
+      distill: ["蒸馏库", "up 主经验卡 · 视频/图文蒸馏成可复用结构化卡片"],
+      progress: ["项目进度", "计划两层 · 完成度三层 · 放弃线倒计时（数字全部派生，无手打）"]
     };
     var t = titles[v] || ["", ""];
     var h = document.getElementById("viewTitle"); if (h) h.textContent = t[0];
@@ -671,7 +678,7 @@ function ghToken() { return localStorage.getItem(GH_TOKEN_KEY) || ""; }
   // 历史标签兼容：已删除的视图（dash/stats/week/schedule/cap/sess/ov）重定向到今日，避免旧 wb_tab 落空
   var __tabRemap = { dash: "home", stats: "home", week: "home", schedule: "home", cap: "home", sess: "home", ov: "home", ai: "home" };
   if (__tabRemap[lastTab]) lastTab = __tabRemap[lastTab];
-  if (lastTab && lastTab !== "home") switchView(lastTab);
+  if (lastTab && lastTab !== "home") switchView(lastTab, true);
 
   // 后台自动刷新：每 30s 检测数据是否更新，有变化就自动重渲染（覆盖每小时自动同步）
   // 页面不可见（切后台标签页）时暂停轮询省流量/电量，回到前台立即补查一次

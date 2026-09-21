@@ -37,6 +37,7 @@ EVENTS = [
     "note_add",
     "distill_save",     # 存了一张蒸馏卡
     "kb_open",          # 打开知识库里的一篇
+    "progress_open",    # 手动切到「项目进度」视图（恢复上次标签不算）——它自己的放弃线指标，ADR 0016
     "report_run",       # 报表自己跑了一次——量测有没有被用，本身也要可测
 ]
 _KEY_MAX = 300          # k 只用于 recall_*/kb_open 的 vaultPath

@@ -1143,3 +1143,79 @@ a.dc-chip:hover{background:var(--tint-2)}
 .ib-note .ic-svg{width:13px;height:13px;flex:none;margin-top:3px}
 .ib-src{font-size:11px;padding:1px 7px;border-radius:999px;background:var(--tint);color:var(--accent);border:1px solid var(--accent-line-2)}
 .ib-src.warn{background:var(--panel-2);color:var(--sub-2);border-color:var(--line)}
+
+/* ===== 项目进度视图（ADR 0016）=====
+   自 docs/reference/devhtml/效果图-项目进度视图-v1.html **原样搬入**（准则 §6.0 第 4 步）
+   前缀 pg- = progress view，沿 .kb-/.wk-/.rev- 既有前缀惯例。
+   只用令牌，不硬编码颜色。刻意启用几个化石令牌（--space-2xs/--text-xs/
+   --green-soft/--candy-cyan-line），化石数只许降不许升。
+   =================================================================== */
+
+/* —— 判决条：置顶，本视图的立身之本 —— */
+.pg-verdict{
+  display:flex;align-items:center;gap:var(--space-xs);flex-wrap:wrap;
+  background:linear-gradient(135deg,var(--amber-soft),transparent 70%);
+  border:1px solid var(--amber-line);border-radius:var(--radius-lg);
+  padding:var(--space-sm) var(--space-md);margin-bottom:var(--space-xs);
+}
+.pg-verdict.danger{background:linear-gradient(135deg,var(--red-soft),transparent 70%);border-color:var(--red-line)}
+.pg-countdown{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:var(--text-xl);
+  font-weight:800;color:var(--ink-strong);line-height:1;letter-spacing:-.02em}
+.pg-countdown small{display:block;font-size:var(--text-xs);font-weight:500;color:var(--sub);
+  font-family:inherit;letter-spacing:.01em;margin-top:var(--space-3xs)}
+.pg-verdict-txt{flex:1;min-width:200px;font-size:var(--text-sm);color:var(--sub);line-height:1.6}
+.pg-verdict-txt b{color:var(--ink-strong)}
+
+/* —— 计划表 —— 唯一真正的新组件（styles.css 里 table 零命中） */
+.pg-table{width:100%;border-collapse:separate;border-spacing:0;font-size:var(--text-sm);
+  border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.pg-table th{text-align:left;font-weight:600;font-size:var(--text-xs);color:var(--sub);
+  background:var(--panel-2);padding:var(--space-2xs) var(--space-xs);
+  border-bottom:1px solid var(--line);white-space:nowrap;letter-spacing:.02em}
+.pg-table td{padding:var(--space-2xs) var(--space-xs);border-bottom:1px solid var(--line-soft);
+  color:var(--ink);vertical-align:top;line-height:1.55}
+.pg-table tr:last-child td{border-bottom:none}
+.pg-table tbody tr:hover{background:var(--tint)}
+.pg-table .pg-c1{font-family:var(--mono);font-variant-numeric:tabular-nums;
+  color:var(--ink-strong);font-weight:700;white-space:nowrap}
+.pg-table .pg-dim{color:var(--sub-2);font-size:var(--text-xs)}
+.pg-table td.pg-num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(max-width:680px){
+  .pg-wrapx{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .pg-table{min-width:520px}
+}
+
+/* —— 状态徽标（复用 chip 的圆润语言，但更小更密） —— */
+.pg-st{display:inline-flex;align-items:center;gap:var(--space-3xs);
+  padding:2px var(--space-2xs);border-radius:var(--radius-pill);
+  font-size:var(--text-xs);font-weight:600;line-height:1.5;white-space:nowrap;
+  border:1px solid var(--line);background:var(--panel-2);color:var(--sub)}
+.pg-st.ok{background:var(--green-soft);border-color:var(--candy-green-line);color:var(--candy-green)}
+.pg-st.warn{background:var(--amber-soft);border-color:var(--amber-line);color:var(--candy-amber)}
+.pg-st.bad{background:var(--red-soft);border-color:var(--red-line);color:var(--red)}
+.pg-st.wait{background:var(--panel-3);border-color:var(--line-soft);color:var(--sub-2)}
+.pg-st.doing{background:var(--tint);border-color:var(--accent-line-2);color:var(--accent)}
+
+/* —— 完成度小行（卡内，复用 .review-progress 进度条） —— */
+.pg-meter{display:flex;align-items:center;gap:var(--space-xs);margin:var(--space-2xs) 0}
+.pg-meter .pg-ml{font-size:var(--text-xs);color:var(--sub);min-width:88px}
+.pg-meter .pg-mv{font-family:var(--mono);font-variant-numeric:tabular-nums;
+  font-size:var(--text-sm);font-weight:700;color:var(--ink-strong);min-width:64px;text-align:right}
+
+/* —— 今日页摘要行（治频率门：它来找你） —— */
+.pg-peek{display:flex;align-items:center;gap:var(--space-xs);flex-wrap:wrap;
+  padding:var(--space-2xs) var(--space-xs);border:1px dashed var(--line-mid);
+  border-radius:var(--radius-sm);background:var(--panel-2);font-size:var(--text-sm)}
+.pg-peek .pg-pk{font-family:var(--mono);font-variant-numeric:tabular-nums;
+  font-weight:700;color:var(--ink-strong)}
+.pg-peek a{margin-left:auto;color:var(--accent);text-decoration:none;font-weight:600;font-size:var(--text-xs)}
+.pg-peek a:hover{text-decoration:underline}
+
+/* —— 写侧（只开 §⑤ 偏离 / §④ 风险） —— */
+.pg-form{display:flex;gap:var(--space-2xs);flex-wrap:wrap;align-items:center;margin-top:var(--space-2xs)}
+.pg-form .sf{flex:1;min-width:140px}
+.pg-riskbtn{cursor:pointer;user-select:none}
+.pg-riskbtn:hover{border-color:var(--accent-line);transform:translateY(-1px)}
+.pg-locked{display:flex;align-items:center;gap:var(--space-2xs);margin-top:var(--space-2xs);
+  padding:var(--space-2xs) var(--space-xs);border:1px dashed var(--line-mid);
+  border-radius:var(--radius-sm);font-size:var(--text-xs);color:var(--sub-2);line-height:1.6}

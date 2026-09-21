@@ -31,7 +31,7 @@ from backend.core.paths import ROOT      # 仓库根的单一真源，别再自�
 from backend.clients import usage
 COLS = [("app_use", "打开"), ("recall_open", "温故开"), ("recall_useful", "温故有用"),
         ("review_save", "复盘"), ("note_add", "速记"), ("todo_add", "代办"),
-        ("distill_save", "蒸馏")]
+        ("distill_save", "蒸馏"), ("progress_open", "进度页")]
 
 # 元工作＝围着「项目本身」转的提交（文档/治理/搬运/换皮），对照 feat/fix 这类
 # 围着「产品」转的。心法 §5 那条「连续几周动作全在工程层要警惕」的量化版。
@@ -200,6 +200,7 @@ def metrics(since):
         "reviewWindow": _max_window(review_days),
         "usefulCards": len({e.get("k") for e in evs if e.get("ev") == "recall_useful" and e.get("k")}),
         "reportRuns": sum(v.get("report_run", 0) for v in per.values()),
+        "progressOpens": sum(v.get("progress_open", 0) for v in per.values()),
     }
 
 
