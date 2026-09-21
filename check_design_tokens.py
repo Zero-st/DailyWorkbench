@@ -43,6 +43,27 @@ _BARE_PX = re.compile(_SPACING_PROP + r"\s*:[^;{}]*?\b\d+(?:\.\d+)?px")
 _TOKENED = re.compile(_SPACING_PROP + r"\s*:[^;{}]*?var\(--(?:space|text)-")
 # 只认「值」位置上的 hex（前面是 : , 空格 或 (），避开 #id 选择器。
 _HEX = re.compile(r"(?<=[:,\s(])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})\b")
+
+# ---- emoji 硬门（准则 §4 的守卫）-------------------------------------------
+# 缘起：「emoji 渲染成豆腐块 ☒」这个坑 2026-08-31 立红线后**仍复发 3 次**
+# （09-02 v0.9.1 批量、09-20 D3 主按钮、09-21 进度视图状态列）。规则写在 5 个
+# 文档里都没拦住——按 docs/开发测试规范.md §3 的升级判据（复发 ≥2 次必须从
+# 「文档」升级到「门禁」），这里就是那道门。
+#
+# **刻意只扫 index.html，不扫 js/**：js 里的 emoji 多数是「解药」而非「病」——
+# js/views/progress.js 的 SYM 映射表拿 emoji 当 key，正是用来把它们转成文字；
+# icons.js / util.js 里的是注释。扫了会误报，误报会逼人加豁免，豁免最终让门禁
+# 失效。**宁可门小而真**（宪章维度三：禁「看着在测其实没测」）。
+# js/ 那半靠真机走查的一段可粘贴脚本兜（界面设计准则 §6.1）。
+_EMOJI = re.compile(
+    "[\U0001F000-\U0001FAFF"      # 麻将/牌/表情/象形/补充符号
+    "\U00002600-\U000027BF"       # 杂项符号 + dingbat（下方 KEEP 白名单再剔除）
+    "\U00002B00-\U00002BFF"       # 杂项符号与箭头（不含 →，它在 2190 段）
+    "\U000023E9-\U000023FA"       # 媒体控制 ⏩⏸⏺
+    "️]"                     # 变体选择符：带它的前一个字符会被渲染成彩色 emoji
+)
+# 准则 §4 明写保留：各系统基础字体（含无 emoji 字体的 Linux）均可渲染，非豆腐区。
+_DINGBAT_KEEP = set("✓✔✕✖★☆✎✏—·")
 _TOKEN_DECL = re.compile(r"--[A-Za-z0-9_-]+\s*:[^;]*;?")
 
 
@@ -92,6 +113,20 @@ def hardcoded_hex_lines(css_text):
     return n
 
 
+def emoji_in_index(base=HERE):
+    """index.html 里的 emoji（排除准则 §4 保留的 dingbat）→ [(行号, 字符), ...]。
+
+    必须为 0：入口页是静态标记，没有映射表/注释干扰，信号干净——这正是它适合
+    当硬门、而 js/ 不适合的原因。
+    """
+    out = []
+    for i, line in enumerate(_read(os.path.join(base, "index.html")).splitlines(), 1):
+        for ch in _EMOJI.findall(line):
+            if ch not in _DINGBAT_KEEP:
+                out.append((i, ch))
+    return out
+
+
 def report(base=HERE):
     css_text = _read(os.path.join(base, CSS))
     defs = definitions(css_text)
@@ -105,6 +140,7 @@ def report(base=HERE):
         "bare_px": bare,
         "tokened": tokened,
         "hex_lines": hardcoded_hex_lines(css_text),
+        "emoji": emoji_in_index(base),
     }
 
 
@@ -120,8 +156,15 @@ def main(argv):
     print("  信息·间距/字号声明: 裸 px %d vs 走令牌 %d（准则 §5 要求只用令牌；先立基线，暂不阻塞）"
           % (r["bare_px"], r["tokened"]))
     print("  信息·硬编码色: 令牌定义外含 #hex 的行 %d（准则 §2 禁止；暂不阻塞）" % r["hex_lines"])
+    print("  index.html emoji: %d（准则 §4 硬门，必须 0）" % len(r["emoji"]))
+    if r["emoji"]:
+        print("    " + " · ".join("%d:%s" % (ln, ch) for ln, ch in r["emoji"][:12]))
 
     bad = []
+    if r["emoji"]:
+        bad.append("index.html 有 %d 个 emoji：缺 emoji 字体的系统上会渲染成豆腐块 ☒。"
+                   "改内联 SVG（准则 §4 / js/core/util.js 的 ic()）。"
+                   "这个坑已复发 4 次，所以它现在是硬门" % len(r["emoji"]))
     if n_o:
         bad.append("孤儿 %d 个：引用了未定义的 CSS 变量，先在 css/styles.css 的 :root 补定义或改回已有令牌" % n_o)
     if n_f > FOSSIL_BASELINE:
