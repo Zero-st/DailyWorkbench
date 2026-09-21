@@ -823,3 +823,44 @@ def test_usage_report_sync_health_parses_real_log_marker(tmp_path, monkeypatch):
         encoding="utf-8")
     last, hours, runs = usage_report._sync_health("2026-09-01")
     assert last == "2026-09-20T15:03:44" and runs == 2 and hours is not None
+
+
+# ---------- 工作构成（注意力预算：一人项目的「成本管理」这一格） ----------
+def test_work_mix_classifies_conventional_commit_types():
+    """i18n 这类带数字的 type 曾被 isalpha() 扫进「其它」——这条是那次的回归锁。"""
+    from backend.pipeline import usage_report
+    got = usage_report.classify_commits([
+        "feat(usage): 埋点",
+        "feat: 无 scope 也认",
+        "chore(skills)!: 破坏性标记不该吃掉 type",
+        "docs: 文档",
+        "i18n(app): 带数字的 type 要保住",
+        "Initial snapshot from upstream main",   # 没冒号 → 不硬猜
+        "",                                      # 空行不计数
+    ])
+    assert got == {"feat": 2, "chore": 1, "docs": 1, "i18n": 1, "其它": 1}
+
+
+def test_work_mix_ratio_and_empty_window():
+    from backend.pipeline import usage_report
+    total, meta, ratio = usage_report.meta_ratio({"docs": 5, "chore": 1, "feat": 3, "fix": 1})
+    assert (total, meta) == (10, 6) and round(ratio, 2) == 0.6
+    assert usage_report.meta_ratio({}) == (0, 0, None)    # 0 条提交是「没得算」，不是 0%
+
+
+def test_work_mix_warns_only_over_half_and_never_fails():
+    """只提示不判红——判红会变成新的假绿动力（同宪章禁 `|| true`）。"""
+    from backend.pipeline import usage_report
+    over = "\n".join(usage_report.format_mix({"docs": 6, "feat": 4}, "2026-09-14"))
+    under = "\n".join(usage_report.format_mix({"docs": 4, "feat": 6}, "2026-09-14"))
+    empty = "\n".join(usage_report.format_mix({}, "2026-09-14"))
+    assert "60%" in over and "⚠" in over
+    assert "40%" in under and "✓" in under and "⚠" not in under
+    assert "没有提交" in empty
+
+
+def test_work_mix_survives_missing_git(monkeypatch):
+    """拿不到 git 历史时报表要照常出，不能整条挂掉。"""
+    from backend.pipeline import usage_report
+    monkeypatch.setattr(usage_report, "ROOT", "/nonexistent-path-for-test")
+    assert usage_report._git_subjects("2026-09-01") is None

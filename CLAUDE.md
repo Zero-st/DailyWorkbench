@@ -9,3 +9,4 @@
 5. **改了 `css/ js/ index.html` 任何资产** → 跑 `python bump_version.py`（CI `--check` 会红）。
 6. **令牌门禁**：`python check_design_tokens.py`——引用未定义变量直接红；化石令牌只许降不许升。
 7. **心法**：`docs/principles/开发心法-多维思维总纲.md`——每一步只戴一顶帽子，想法阶段别跳到写代码。
+8. **开工先开当期作战板**：`.claude/plan/作战板-<期>.md`——做完就勾（勾 `[x]` 前对 DoD 四款）、做了计划外的事就在 §⑤ 记一行。完成度 = §② 勾选数/总数。规则见 `docs/guides/项目管理-操作指南.md`；commit 可加尾行 `Refs: R28, W1-3` 回指需求/任务。

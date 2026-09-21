@@ -12,10 +12,16 @@
 **前端自报的数字可以靠「我点一下」刷出来，磁盘产物不能**——所以真卡/收件箱/
 同步一律读磁盘真源，只有「复盘天数」「温故点开」才用埋点。
 
-用法：python -m backend.pipeline.usage_report [--since YYYY-MM-DD] [--days 30]
+第五源 `git log` 回答的是另一个问题：**注意力花在哪了**。一人项目最稀缺的
+资源不是工时是注意力，所以「成本管理」这一格量元工作占比，不做人天估算。
+见 docs/guides/项目管理-操作指南.md。
+
+用法：python -m backend.pipeline.usage_report [--since YYYY-MM-DD] [--days 30] [--no-mix]
 """
 import json
 import os
+import re
+import subprocess
 import sys
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -26,6 +32,12 @@ from backend.clients import usage
 COLS = [("app_use", "打开"), ("recall_open", "温故开"), ("recall_useful", "温故有用"),
         ("review_save", "复盘"), ("note_add", "速记"), ("todo_add", "代办"),
         ("distill_save", "蒸馏")]
+
+# 元工作＝围着「项目本身」转的提交（文档/治理/搬运/换皮），对照 feat/fix 这类
+# 围着「产品」转的。心法 §5 那条「连续几周动作全在工程层要警惕」的量化版。
+META_TYPES = ("docs", "chore", "refactor", "style", "ci", "build", "test")
+META_WARN_RATIO = 0.5
+TYPE_RE = re.compile(r"^[a-z][a-z0-9-]{0,14}$")
 
 
 def _load_json(p, default):
@@ -96,7 +108,60 @@ def _max_window(days_with, span=7):
     return best
 
 
-def report(since):
+def classify_commits(subjects):
+    """把 Conventional Commits 的标题行归到 type 上。识别不出的一律记「其它」。
+
+    认得 `feat: x` / `feat(scope): x` / `chore(skills)!: x` 三种写法；没有冒号的
+    （如最早那条 upstream 快照）不硬猜。
+
+    type 允许字母开头 + 数字/连字符——`i18n` 这类真实用过的 type 不能因为带
+    数字就被扫进「其它」（本仓 09-14 那两条就是这么丢的）。"""
+    counts = defaultdict(int)
+    for s in subjects:
+        s = (s or "").strip()
+        if not s:
+            continue
+        head = s.split(":", 1)[0] if ":" in s else ""
+        t = re.split(r"[(!]", head, maxsplit=1)[0].strip().lower()
+        counts[t if TYPE_RE.match(t) else "其它"] += 1
+    return dict(counts)
+
+
+def meta_ratio(counts):
+    """元工作占比。区间内 0 条提交时返回 (0, 0, None)——不是 0%，是「没得算」。"""
+    total = sum(counts.values())
+    meta = sum(n for t, n in counts.items() if t in META_TYPES)
+    return total, meta, (meta / total if total else None)
+
+
+def _git_subjects(since):
+    """区间内的提交标题。拿不到 git（非仓库/无 git/超时）就返回 None，不让报表挂掉。"""
+    try:
+        out = subprocess.run(["git", "-C", ROOT, "log", "--since=" + since, "--no-merges", "--pretty=%s"],
+                             capture_output=True, text=True, timeout=10)
+    except Exception:
+        return None
+    if out.returncode != 0:
+        return None
+    return out.stdout.splitlines()
+
+
+def format_mix(counts, since):
+    """只打印、只提示，**不判红**——判红会变成新的假绿动力（同宪章禁 `|| true`）。"""
+    total, meta, ratio = meta_ratio(counts)
+    lines = ["", "### 工作构成 · %s 起（注意力花在哪）" % since, ""]
+    if not total:
+        return lines + ["- 区间内没有提交。", ""]
+    order = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))
+    lines.append("- 共 **%d** 条提交：" % total + " · ".join("%s %d" % (t, n) for t, n in order))
+    lines.append("- 元工作（%s）占比 **%d%%** %s" % (
+        "/".join(META_TYPES[:4]), round(ratio * 100),
+        "⚠ 过半——周五第 4 问要写一句为什么" if ratio > META_WARN_RATIO else "✓ 未过半"))
+    lines.append("")
+    return lines
+
+
+def report(since, mix=True):
     evs = usage.read_events(since)
     per = defaultdict(lambda: defaultdict(int))
     for e in evs:
@@ -131,8 +196,17 @@ def report(since):
                   last or "（无记录）", ("，距今 %.1f 小时" % hours) if hours is not None else "", runs),
               "- #4 复盘：任一 7 天窗口最多 **%d** 天有复盘（目标 ≥5）" % _max_window(review_days),
               "- #5 温故：标过「有用」的不同卡 **%d** 张（目标 ≥3）" % useful_cards,
-              "",
-              "> 结论句要人自己写：下一个功能是 X，因为摩擦 Y 出现 N 次且过了心法 §4 三门。", ""]
+              ""]
+
+    if mix:
+        subjects = _git_subjects(since)
+        if subjects is None:
+            lines += ["", "### 工作构成 · %s 起（注意力花在哪）" % since, "",
+                      "- 读不到 git 历史，本段跳过。", ""]
+        else:
+            lines += format_mix(classify_commits(subjects), since)
+
+    lines += ["> 结论句要人自己写：下一个功能是 X，因为摩擦 Y 出现 N 次且过了心法 §4 三门。", ""]
     return "\n".join(lines)
 
 
@@ -143,7 +217,7 @@ def main():
         since = argv[argv.index("--since") + 1]
     days = int(argv[argv.index("--days") + 1]) if "--days" in argv else 30
     since = since or (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
-    print(report(since))
+    print(report(since, mix="--no-mix" not in argv))
     usage.track({"ev": "report_run", "cid": "cli"})   # 尺子自己也要被量
     return 0
 

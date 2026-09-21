@@ -72,6 +72,8 @@ docs/
 
 **分工边界**：`docs/` = 沉淀下来的**项目知识**；`.claude/plan/` = 过程性的**实施计划**；仓根 `README.md`/`CHANGELOG.md` = 社区标准位置。三者不混。
 
+> **当期作战板**（`.claude/plan/作战板-<期>.md`）按这条边界归 `.claude/plan/`——它是高频改动的过程件，不进 `docs/`。它的**规则**才是沉淀知识，在 [`guides/项目管理-操作指南.md`](guides/项目管理-操作指南.md)。与「自评指南 ↔ 自评卡」是同一种分工。
+
 ---
 
 ## 4 · 现有文档索引
@@ -111,6 +113,7 @@ docs/
 | [Supabase上线操作指南.md](guides/Supabase上线操作指南.md) | guides | Supabase 接入 / 上线步骤 |
 | [judgment-practice操作指南.md](guides/judgment-practice操作指南.md) | guides | 判断力刻意练习 skill 操作手册：何时用预测卡/决策日志 + 四分支步骤 + 节奏建议；姊妹篇 [`AI时代程序员成长-心法`](principles/AI时代程序员成长-心法.md) |
 | [项目自评打分-指南.md](guides/项目自评打分-指南.md) | guides | **资深式项目自评**：硬门→结果层→质量层→成本层，八列卡 + 1–5 锚点 + 证据等级/N/A 规则 + 几何加权总分与置信带 + 作弊清单；事前门链心法 §4，校准链 judgment-practice |
+| [项目管理-操作指南.md](guides/项目管理-操作指南.md) | guides | **执行层规则**：三层节拍(日=产品复盘框/周=周五四问/期=自评卡) + DoD 四款 + 完成度三定义(门禁计数，不做工时估算) + 作战板五段用法 + `Refs:` 回指 + 发版节奏 + **本机制自身的放弃线**；当期数据在 `.claude/plan/作战板-<期>.md` |
 | [需求澄清工具选型.md](research/需求澄清工具选型.md) | research | 需求澄清工具对比账本 |
 | [工具链-MCP与Skill地图.md](research/工具链-MCP与Skill地图.md) | research | 本项目用过的 MCP / Skill × 开发阶段 |
 | [Skill选型账本.md](research/Skill选型账本.md) | research | 通用 Skill / MCP / SDD 选型账本 |

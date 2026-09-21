@@ -13,12 +13,27 @@
 
 ## [Unreleased] · 下个版本目标
 
+> **2026-09-21 补执行层**（缘起：用户问「项目管理是不是没做好——具体安排、每天进度、完成度」；盘点判定**治理层过剩、执行层缺位**——24 篇计划里 22 篇零勾选框、112 条提交仅约 9 条可回指任务、`docs` 提交 29.5% 已超 `feat` 23.2%。需求侧记为 `R29`）：
+
+### Added
+- **[`docs/guides/项目管理-操作指南.md`](docs/guides/项目管理-操作指南.md)**：执行层规则真源——三层节拍（日＝产品自己的复盘框 / 周＝周五四问 / 期＝自评卡）、**DoD 四款**、**完成度三定义**（全部门禁计数，**不做工时估算**）、作战板五段用法、`Refs:` 回指、发版节奏、**本机制自身的放弃线**。
+- **`.claude/plan/作战板-2026-09.md`**：当期数据载体（承诺基线 / 出口门禁 / 本周 ≤5 条任务 / 风险登记册 / 偏离记录）。归 `.claude/plan/` 不进 `docs/`，依 `docs/README.md` §3 的分工边界。**建板首日即核验出 W0 出口门禁实际只有 2/6**（原以为已完成）。
+- **`usage_report` 工作构成段**（第五源 `git log`）：按 Conventional Commits type 分组，打出元工作（docs/chore/refactor/style/ci/build/test）占比，过半加 ⚠。**只提示不判红**——判红会变成新的假绿动力（同宪章禁 `|| true`）。`--no-mix` 可关。一人项目稀缺的是注意力不是工时，故「成本管理」这格量占比而非人天。新增 4 条测试，其中 `test_work_mix_classifies_conventional_commit_types` 是 `i18n` 这类带数字 type 被 `isalpha()` 扫进「其它」那个 bug 的回归锁。
+
+### Changed
+- `docs/版本管理规范.md`：新增 **§2.1 `Refs:` 回指**（commit body 尾行 `Refs: R28, W0-3`，可选不强制）与 **§4.1 发版节奏**（每个冲刺末发一版并打 tag，起点 `v0.11.0`，不追溯补旧 tag；触发信号＝`[Unreleased]` 堆 2 周以上或含 MINOR 级新增）。
+- `CLAUDE.md` 加第 8 条指针；`docs/README.md` §4 加索引行 + 作战板归位说明；`docs/planning/复盘-dogfood冲刺-W2-W4.md` 周五仪式扩为**四问**（新增「作战板勾了几条」与「计划外几件 · 元工作是否过半」）。
+- `docs/requirements/需求台账.md` v1.2：新增 `R29`，§4 补**需求完成度算式 16/23 = 70%**；`需求演进史.md` v1.3 追加对应条目。
+
+### Fixed
+- **订正 `[Unreleased]` 里「本机 crontab 两行」的不实陈述**（详见下方 W0 批次）——脚本已落地但调度从未接管。这正是本仓一直在治的「状态字段说谎」，只是这次说谎的是 CHANGELOG 自己。
+
 > **2026-09-20 对表冲刺 W0**（缘起：用户问「规划接下来安排」；结论是待办表不是最强信号，9-17 自评卡总分 0 才是。计划见 `.claude/plan/对表冲刺-2026-09.md`，**这 4 周新增产品功能 = 0 个**）：
 
 ### Added
 - **使用量埋点 + CLI 报表**（[ADR 0015](docs/adr/0015-usage-metering-local-jsonl.md)）：`POST /api/usage` → `usage.local.jsonl`（append-only、已 gitignore），`python -m backend.pipeline.usage_report` 四源交叉出表。行里只有 at/day/ev/cid/k，无任何自由文本；不进 `data.json`；不做统计视图。需求侧记为 `R28`。
 - **`scripts/workbench.service`**：systemd --user 单元随仓走。此前后端**根本没常驻**，而 `recall.js` 在 `/api/kb/deposits` 失败时静默清空温故卡——今日页是空壳且不报错。
-- **`backend/pipeline/vault_backup.py`** + 本机 crontab 两行（每小时 `local_refresh`、每天 22:30 备份）。缺省只提交不 push（vault 的 origin 是公开仓，推送不可逆）。
+- **`backend/pipeline/vault_backup.py`**（缺省只提交不 push——vault 的 origin 是公开仓，推送不可逆）。⚠️ **订正（2026-09-21）**：原文写「+ 本机 crontab 两行（每小时 `local_refresh`、每天 22:30 备份）」，实测**两条 cron 均未挂上**——`crontab -l` 无本项目条目、`systemctl --user list-timers` 为 0、`local_refresh.log` 停在 09-20 15:03、`vault_backup` 从未产出日志。脚本已落地，**调度尚未接管**，对表冲刺 W0 出口门禁第 3 条因此未达成（见 `.claude/plan/作战板-2026-09.md` §②）。
 
 ### Fixed
 - **D1 幽灵卡**：`list_deposits()` 从不校验 `relPath` 指向的文件还在不在。账本 append-only 而删卡发生在 Obsidian 里 → 已删的卡照样进蒸馏库与温故卡，且因从未复看被判 `overdue=99999` **永远排第一**，点开 404。改读侧不改写侧，MCP 的 `kb_deposits` 一并修好。
