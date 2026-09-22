@@ -16,3 +16,9 @@ kb-panel-preview.png
 .specify/
 .claude/skills/speckit-*/
 usage.local.jsonl
+# Claude Code 本机私有配置（放机器绝对路径如 WB_PYTHON；仓库共享的是 .claude/settings.json）
+# 不能只靠 ~/.config/git/ignore 的全局规则——别人 clone 后没那条，机器路径会被提交
+.claude/settings.local.json
+.claude/hooks/.probe_armed
+# 门禁命中记账（本机私有，给 开发测试规范 §3.0 反向判据当排序输入）
+gate-hits.local.jsonl

@@ -1,0 +1,9 @@
+#!/bin/sh
+# 提交前机器门禁 —— docs/开发测试规范.md §3.0 的 🤖 档实现。
+#
+# 为什么在这里而不是「记得跑一下」：靠人记 = 📄 文档档，本仓已实证会失效
+# （emoji 豆腐块立规后仍复发 3 次）。清单的唯一副本在 check_all.py，不在这里枚举。
+#
+# 逃生门：git commit --no-verify   （代价：CI 仍会红，只是把红推迟到 push 之后）
+# 解释器：默认 python3；本机 anaconda 等非默认解释器用 WB_PYTHON 覆盖，保持脚本可移植。
+exec "${WB_PYTHON:-python3}" check_all.py --check

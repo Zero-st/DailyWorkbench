@@ -36,9 +36,9 @@ disable-model-invocation: true
 
 ### 2. 用 HTML 报告呈现候选
 
-写一个自包含的 HTML 文件到 **`docs/reference/devhtml/architecture-review/`**（本项目生成 html 的统一落点，随仓入库；目录不存在先 `mkdir -p`），文件名 `架构评审-<YYYY-MM-DD>.html`（同日重跑加 `-2`、`-3` 后缀），每次运行都是新文件。用 `xdg-open "<path>"` 给用户打开，把仓内相对路径告诉他，并把新文件补进 `docs/README.md` §4 的 devhtml 索引行。
+写一个自包含的 HTML 文件到 **`docs/reference/devhtml/architecture-review/`**（本项目生成 html 的统一落点，随仓入库；目录不存在先 `mkdir -p`），文件名 `架构评审-<YYYY-MM-DD>.html`（同日重跑加 `-2`、`-3` 后缀），每次运行都是新文件。用 `xdg-open "<path>"` 给用户打开，把仓内相对路径告诉他，并把新文件补进 `docs/README.md` 的 `reference/devhtml/` 索引行（规则见 `docs/文档规范.md`）。
 
-> 之所以不用系统 `$TMPDIR`/`/tmp`：本项目约定生成的 html 统一进 `docs/reference/devhtml/`（`docs/README.md` §1），评审报告要按月复跑、留档对比，进仓库比丢临时目录更有用。
+> 之所以不用系统 `$TMPDIR`/`/tmp`：本项目约定生成的 html 统一进 `docs/reference/devhtml/`（`docs/文档规范.md` §1），评审报告要按月复跑、留档对比，进仓库比丢临时目录更有用。
 
 报告用 **Tailwind（CDN）** 做布局和样式、用 **Mermaid（CDN）** 画那些"图/流程/时序能可靠传达结构"的图。Mermaid 和手写 CSS/SVG 混用：关系是图状的（调用图、依赖、时序）就用 Mermaid；想要更有编辑感的东西（体量图、剖面图、折叠动画）就手搭 div/SVG。每个候选都要有**前后对比可视化**。要视觉化。
 

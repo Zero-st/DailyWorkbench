@@ -7,6 +7,7 @@
 """
 import json
 import os
+import sys
 from datetime import datetime
 import re
 
@@ -16,6 +17,8 @@ from backend.utils import common as wb_common
 from backend.clients import kb as kb_service
 from backend.pipeline import sync_status
 import bump_version
+import check_docs
+import check_all
 
 
 # ---------- wb_common.write_json_atomic ----------
@@ -1123,3 +1126,157 @@ def test_progress_writes_never_touch_checkboxes(tmp_path, monkeypatch):
              if re.match(r"^\s*-\s*\[[ x~-]\]", ln)]
     assert before == after, "写操作动到了勾选框——§②③ 必须只能在编辑器里改"
     assert len(before) == 11          # §② 6 条 + §③ 5 条
+
+
+# ---------- check_docs（文档门禁的解析器守卫） ----------
+# 只测 parse_vocab / match_vocab：C1/C3/C4 是「对真仓库跑正则」，CI 那行 --check 就是
+# 它们的测试。但 parse_vocab 有一个致命失败模式——静默失败 → 规则集为空 → 所有文件
+# 都不违规 → 永远绿。这个 bug 在真仓库上表现为「通过」，CI 永远发现不了，必须测。
+
+_VOCAB_MINI = """# mini
+<!-- check_docs:vocab:begin -->
+| 目录 | 位置 | 词 | 说明 |
+|---|---|---|---|
+| `.` | 尾 | `规范` | 治理 |
+| `.` | 整名 | `README` | 标准名 |
+| `adr/` | 正则 | `^\\d{4}-[a-z0-9]+(-[a-z0-9]+)*$` | 编号 |
+| `design/` | 尾 | `设计` `评审` `准则` | 设计说明 |
+| `planning/` | 首 | `复盘` `总览` | 复盘 |
+| `guides/` | 尾 | `指南` | how-to |
+| `reference/devhtml/` | 豁免 | `-` | 产物 |
+<!-- check_docs:vocab:end -->
+"""
+
+
+def _spec_sandbox(tmp_path, body):
+    (tmp_path / "docs").mkdir(exist_ok=True)
+    (tmp_path / "docs" / "文档规范.md").write_text(body, encoding="utf-8")
+    return str(tmp_path)
+
+
+def test_parse_vocab_reads_table_and_positions(tmp_path):
+    """五种位置都要解析出来，且「一格多词」要拆开。"""
+    rules, errors = check_docs.parse_vocab(_spec_sandbox(tmp_path, _VOCAB_MINI))
+    assert errors == []
+    assert ("尾", "规范") in rules["."] and ("整名", "README") in rules["."]
+    assert [p for p, _ in rules["adr/"]] == ["正则"]
+    assert {w for _, w in rules["design/"]} == {"设计", "评审", "准则"}   # 一格三词拆开
+    assert {p for p, _ in rules["planning/"]} == {"首"}
+    assert rules["reference/devhtml/"] == [("豁免", "")]
+
+
+def test_parse_vocab_fails_closed(tmp_path):
+    """最重要的一条：解析不出词表时必须红，绝不能「空规则集 → 全绿」。"""
+    # 哨兵缺失
+    _, e1 = check_docs.parse_vocab(_spec_sandbox(tmp_path, "# 没有哨兵\n| a | b |\n"))
+    assert e1 and "哨兵" in e1[0]
+    # 真源文件不存在
+    (tmp_path / "docs" / "文档规范.md").unlink()
+    _, e2 = check_docs.parse_vocab(str(tmp_path))
+    assert e2 and "不存在" in e2[0]
+    # 规则数低于下限 → 判定为格式坏了
+    thin = _VOCAB_MINI.split("| `.` | 尾")[0] + "| `.` | 尾 | `规范` | 治理 |\n" + \
+        check_docs.VOCAB_END + "\n"
+    rules, e3 = check_docs.parse_vocab(_spec_sandbox(tmp_path, thin))
+    assert len(rules.get(".", [])) < check_docs.MIN_VOCAB_ROWS
+    assert e3 and "fail closed" in e3[-1]
+    # 且 report() 在有 vocab_errors 时不得给出「C2 全过」的假象
+    r = check_docs.report(_spec_sandbox(tmp_path, thin))
+    assert r["vocab_errors"] and r["naming"] == [] and r["copies"] == []
+
+
+def test_parse_vocab_rejects_unknown_position(tmp_path):
+    """位置列 typo 会悄悄关掉一条规则，比报错危险——必须报错，不许静默跳过。"""
+    bad = _VOCAB_MINI.replace("| `guides/` | 尾 |", "| `guides/` | 末尾 |")
+    rules, errors = check_docs.parse_vocab(_spec_sandbox(tmp_path, bad))
+    assert any("末尾" in e for e in errors)
+    assert "guides/" not in rules
+
+
+def test_match_vocab_strips_serial_and_handles_prefix_form(tmp_path):
+    """追认现状的三种真实形态：版本尾巴、期次尾巴、前缀词。"""
+    rules, errors = check_docs.parse_vocab(_spec_sandbox(tmp_path, _VOCAB_MINI))
+    assert errors == []
+    m = lambda d, s: check_docs.match_vocab(d, s, rules)      # noqa: E731
+    assert m("design/", "工作台走查评审-v0.8.0")               # 剥 -v0.8.0 → 尾词 评审
+    assert m("planning/", "复盘-dogfood冲刺-W2-W4")            # 剥 -W2-W4 → 首词 复盘
+    assert m("planning/", "复盘-项目自评打分-2026-09")          # 剥 -2026-09 → 首词 复盘
+    assert m("planning/", "项目总览-需求与进度")                # 首段 项目总览 以 总览 结尾
+    assert m("design/", "界面设计准则") and m("adr/", "0016-in-app-progress-view")
+    assert m("reference/devhtml/", "ai-resume-diagrams.rendered")   # 豁免
+    assert m("design/", "随手记") is None                      # 野文件必须抓到
+    assert m("adr/", "0016-中文标题") is None                   # ADR 必须英文 kebab
+
+
+# ---------- check_all（门禁聚合器）----------
+# 注意：这些测试**绝不调用真门禁**——check_all 自己会跑 pytest，真调就递归了。
+# 所以要么只查结构，要么把 GATES 换成秒回的替身。
+
+def test_check_all_downstream_always_passes_check_flag():
+    """下游一律带 --check —— 这是实测踩过的两个语义陷阱，必须锁死。
+
+    · check_docs.py 无参是报告模式**恒退 0**：不带 --check 就是假绿；
+    · bump_version.py 无参会**写盘**：在 pre-commit hook 里误调会改工作区。
+    """
+    by_key = {g[0]: g[2] for g in check_all.GATES}
+    assert "--check" in by_key["docs"], "check_docs.py 不带 --check 会恒退 0（假绿）"
+    assert "--check" in by_key["bump"], "bump_version.py 不带 --check 会写盘"
+    assert "bump_version.py" in " ".join(by_key["bump"])
+
+
+def test_check_all_gate_keys_unique_and_nonempty():
+    keys = [g[0] for g in check_all.GATES]
+    assert len(keys) == len(set(keys)) and all(keys)
+
+
+def test_check_all_unknown_skip_fails_closed(capsys):
+    """--skip 误拼必须红，而不是「没匹配上就当没排除」然后照常放行。"""
+    assert check_all.main(["--check", "--skip=tscc"]) == 1
+    assert "不存在的门禁" in capsys.readouterr().out
+
+
+def _fake_gate(monkeypatch, cmd=None, probe=None):
+    monkeypatch.setattr(check_all, "GATES",
+                        [("fake", "替身门禁", cmd or [sys.executable, "-c", "pass"],
+                          probe, True)])
+
+
+def test_check_all_strict_treats_missing_tool_as_failure(monkeypatch, tmp_path):
+    """--strict 下工具缺失 = 失败。禁 `|| true` 假绿（宪章维度三）。"""
+    monkeypatch.setattr(check_all, "HERE", str(tmp_path))
+    _fake_gate(monkeypatch, probe=lambda: False)
+    assert check_all.main(["--check", "--strict"]) == 1     # 缺工具即红
+    assert check_all.main(["--check"]) == 0                 # 不加 --strict 则只跳过
+
+
+def test_check_all_failing_gate_sets_exit_and_records(monkeypatch, tmp_path):
+    monkeypatch.setattr(check_all, "HERE", str(tmp_path))
+    _fake_gate(monkeypatch, cmd=[sys.executable, "-c", "import sys;sys.exit(3)"])
+    assert check_all.main(["--check"]) == 1
+    # 报告模式恒退 0，但仍如实打印失败
+    assert check_all.main([]) == 0
+    rows = [json.loads(ln) for ln in
+            open(os.path.join(str(tmp_path), check_all.HITS), encoding="utf-8")
+            if ln.strip()]
+    assert len(rows) == 2
+    assert rows[0]["gate"] == "fake" and rows[0]["exit"] == 3 and rows[0]["ts"]
+
+
+def test_check_all_record_survives_unwritable_dir(monkeypatch, tmp_path):
+    """记账失败绝不能影响门禁结论——门禁是主业，记账是附带。"""
+    monkeypatch.setattr(check_all, "HERE", str(tmp_path / "不存在的目录"))
+    check_all.record("x", 1)        # 不抛异常即可
+
+
+def test_check_all_stats_reports_zero_hit_gates(monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr(check_all, "HERE", str(tmp_path))
+    with open(str(tmp_path / check_all.HITS), "w", encoding="utf-8") as f:
+        f.write(json.dumps({"ts": "2026-09-22T00:00:00", "gate": "docs", "exit": 1}) + "\n")
+        f.write("坏行，应被跳过而不是崩\n")
+    assert check_all.main(["--stats"]) == 0
+    out = capsys.readouterr().out
+    assert "docs" in out and "1 次" in out
+    # 零命中的门禁要被点名为「候选复核对象」，给 §3.0 反向判据当输入
+    assert "从未拦下任何事故" in out
+    # 但不能鼓励机械删除
+    assert "零命中 != 无用" in out

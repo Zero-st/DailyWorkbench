@@ -94,7 +94,7 @@
 
 - 报告：调用方给了任务目录时 `Write` 落到 该目录/`walkthrough-report.md`（**唯一允许 Write 的文件**），并在返回文本同时给正文；没给目录只返回文本。
 - 截图：存到 `docs/reference/devhtml/walkthrough/screenshots/`（在工作区内，符合 `take_screenshot` 的 `filePath` 限制）；文件名带 视图+主题，如 `info-dark.png`。
-- 走查产出的**分析类文档**若要长期留存，按 `docs/README.md` 的后缀词表落位并补它的 §4 索引；实施计划类走 `.claude/plan/`。
+- 走查产出的**分析类文档**若要长期留存，按 `docs/文档规范.md` §2 词表落位并补 `docs/README.md` 索引；实施计划类走 `.claude/plan/`。
 
 ## 预算
 

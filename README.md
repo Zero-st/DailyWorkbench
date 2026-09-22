@@ -277,8 +277,8 @@ DailyWorkbench/
 │  ── 浏览器扩展（捕获层，Chrome load unpacked，无需构建）──
 ├── extension/                   # manifest(MV3) · background(右键+fetch出口) · content(浮按钮+shadow面板) · popup · icons/
 │  ── 文档 · 其它交付形态 · 自动化 ──
-├── docs/                          # README(文档地图) · TECH_CHARTER · 版本管理规范 · adr/
-│   │                              #   guides/ design/ planning/ research/ reference/（按 Diátaxis 改编分类）
+├── docs/                          # 文档规范(规则真源) · README(索引) · TECH_CHARTER · 版本管理规范 · 开发测试规范
+│   │                              #   adr/ requirements/ principles/ guides/ design/ planning/ research/ reference/
 ├── scripts/                       # 本机启动/同步脚本（refresh·start_workbench·setup_runner·delete_workbench_tasks；解释器经 WB_PYTHON 环境变量指定，不含机器路径）
 └── .github/workflows/             # ci · deploy-pages · sync · daily-ai
 ```
@@ -289,11 +289,12 @@ DailyWorkbench/
 
 ## 十、文档索引
 
-> 📑 **完整分类与命名规范见 [`docs/README.md`](docs/README.md)（文档地图·单一真源）**——docs 已按 Diátaxis 改编 + ADR 分为 `adr/ guides/ design/ planning/ research/ reference/`。下面只列最常翻的几篇：
+> 📐 **「文档该放哪、怎么命名、怎么写」见 [`docs/文档规范.md`](docs/文档规范.md)（规则唯一真源）**；**现有文档全量索引见 [`docs/README.md`](docs/README.md)**。
+> 本节只列最常翻的几篇——**这里不复制规则、不枚举 ADR**（曾枚举过一次，结果停在 0010 漂了 6 篇；`python check_docs.py --check` 现在盯着这条）。
 
 - [`docs/TECH_CHARTER.md`](docs/TECH_CHARTER.md) —— 技术宪章：北极星原则 + 模块边界红线 + 工程护栏 + 协作流程（改架构先翻它）。
 - [`docs/planning/知识飞轮-路线图.md`](docs/planning/知识飞轮-路线图.md) —— 三层大脑模型 + 四阶段路线图（往哪走）。
-- [`docs/adr/`](docs/adr/) —— 架构决策记录（单向门才写）：0001 零构建北极星 · 0002 原生 ES Modules 不上框架 · 0003 JSDoc+checkJs 而非全量 TS · 0004 经典脚本保留 window 桥接 · 0005 PC-first 弃原生移动端 · 0006 捕获层自研浏览器扩展 · 0007 采纳 OpenCLI 作取数层源 · 0008 MCP 集成层工具化 · 0009 页面驱动 agent · 0010 松绑「零依赖」为「依赖极简且可撤回」（修订 0001）。
+- [`docs/adr/`](docs/adr/) —— 架构决策记录（单向门才写），每篇 3 行：决策 / 理由 / 代价。**摘要在各 ADR 自身，此处不枚举。**
 - [`docs/design/知识库沉淀存储方案.md`](docs/design/知识库沉淀存储方案.md) —— Obsidian 沉淀存储设计。
 - [`docs/design/捕获收件箱-浏览器扩展-设计.md`](docs/design/捕获收件箱-浏览器扩展-设计.md) —— 捕获环设计：摘录+感悟成对、扩展零站点解析、API 优先+离线队列。
 - [`docs/guides/Supabase上线操作指南.md`](docs/guides/Supabase上线操作指南.md) · [`docs/reference/supabase_schema.sql`](docs/reference/supabase_schema.sql) —— Supabase 配置上线步骤 + 建表 DDL（前端永不持有 Supabase 密钥，全走本机 `server.py` 的 service_role key）。

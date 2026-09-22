@@ -28,21 +28,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest flake8
 
-      - name: Check frontend cache version stamps
-        # 前端资产改了却漏 bump 版本戳 → 用户端白屏。CI 硬性校验，不同步即失败。
-        run: python bump_version.py --check
+      - name: All gates (cache stamps / design tokens / docs / flake8 / pytest)
+        # 清单的唯一副本在 check_all.py——CI、.githooks/pre-commit、.claude/hooks/gate.py
+        # 全部调它。这里刻意不逐项枚举：枚举一次就多一份会漂的副本，
+        # docs/开发测试规范.md §3.1b 记过这个坑（gate.py 自带清单建起来当天就少了两项）。
+        #
+        # --strict：外部工具缺失视为失败，绝不静默转绿（宪章维度三禁假绿）。
+        # --skip=tsc：本 job 没有 Node，类型契约归下面的 types job 跑；
+        #             用显式排除而非静默跳过，否则 --strict 形同虚设。
+        run: python check_all.py --check --strict --skip=tsc
 
-      - name: Check design tokens (orphans / fossil ratchet)
-        # 设计准则是契约不是愿望：引用未定义 CSS 变量直接红；化石令牌只许降不许升。
-        run: python check_design_tokens.py --check
-
-      - name: Lint (syntax/undefined-name only, non-blocking style)
-        run: |
-          flake8 . --select=E9,F63,F7,F82 --show-source
-          flake8 . --exit-zero --max-line-length=120 --statistics
-
-      - name: Run tests
-        run: python -m pytest -q
+      - name: Lint stats (non-blocking, informational)
+        run: flake8 . --exit-zero --max-line-length=120 --statistics
 
   types:
     name: "Frontend: Type check (JSDoc + checkJs)"

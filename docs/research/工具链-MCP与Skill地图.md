@@ -41,7 +41,7 @@
 | **`design-principles`** | 社区/内置 Skill（设计行动卡） | 设计/架构 · 代码评审 | 设计与 IA 评审时对经典原则（YAGNI 等）；产品-IA 评审引用 | 视来源（第一方免装 / 社区需装） |
 | **`database-designer`** | 社区 Skill | 设计/架构（数据建模） | Supabase 表设计 / schema（**推断，弱证据**） | 需装（若确用） |
 | **`chrome-devtools`** | **MCP server（本项目唯一确凿使用的 MCP）** | 验证/走查 | 每次前端改动后真机走查：明暗双主题×多视图，`list_console_messages` 查报错 | **要**（在目标环境启用该 MCP server） |
-| **`doc-filing`** | **项目内 Skill（本仓自建，已入库）** | 迭代 / 文档治理 | 新建或移动 `docs/` 下文档时决定放哪、怎么命名；`docs/README.md` 是其单一真源 | **否**（随仓库走，clone 即有） |
+| **`doc-filing`** | **项目内 Skill（本仓自建，已入库）** | 迭代 / 文档治理 | 新建或移动 `docs/` 下文档时决定放哪、怎么命名；`docs/文档规范.md` 是其规则唯一真源 | **否**（随仓库走，clone 即有） |
 | ~~**`creator-video-decoder` / `video-cangjie-distill`**~~ | 社区 Skill | 内容/数据管道（**业务运行时，非建设阶段**） | 蒸馏库让用户复制指令去拆解 B站/小红书视频 | **⚠️ 已移除**：2026-09-04 全盘核实**本机已无这两个 skill**（证据见 §2.6） |
 | **`baoyu-url-to-markdown`** | 社区 Skill | 内容/数据管道（**业务运行时**） | 蒸馏库：抓取图文/文章转 markdown | 需装（用到蒸馏功能时） |
 | **mermaid 图 / `diagram-render`** | MCP 或 Skill（**可选**） | 设计/架构（画图） | `产品-IA评审.md` 里有 mermaid 图（是否经 MCP 生成证据不足） | 可选 |
@@ -274,7 +274,7 @@
 | **代码风格** | `flake8 . --exit-zero --max-line-length=120 --statistics` | ⚠️ **不阻塞**，只出统计 |
 | **提交规范** | Conventional Commits **6 种 type**（`feat` `fix` `refactor` `docs` `style` `chore`/`build`/`ci`），见 [`../版本管理规范.md`](../版本管理规范.md) §2 | 人工（无 commit-msg hook） |
 | **设计规范** | [`../design/界面设计准则.md`](../design/界面设计准则.md)（= 本仓 DESIGN.md）§2.1 令牌健康度基线 + §4 图标红线 + §6.0 效果图门禁 + §6 加新视图检查清单 | **`check_design_tokens.py`（CI 硬门禁：孤儿令牌红 / 化石令牌棘轮）** + 效果图人过目 + chrome-devtools 走查 |
-| **文档规范** | `doc-filing` skill + `docs/README.md`（单一真源） | **skill 强制入口** |
+| **文档规范** | `doc-filing` skill + `docs/文档规范.md`（规则真源） | **skill 强制入口 + `check_docs.py`（CI）** |
 | **工程红线** | [`../TECH_CHARTER.md`](../TECH_CHARTER.md) 四个维度（含「render 不读 DOM 判路由」「禁 `\|\| true` 假绿」） | 部分 CI、部分人工 |
 
 **已知缺口（据实记）**：
@@ -283,7 +283,7 @@
 - ⚠️ **无 formatter**：仓内无 black / prettier 配置，格式一致性全靠人。
 - ⚠️ **提交规范无 hook**：`.git/hooks/` 只有 `.sample`，Conventional Commits 靠自觉。
 
-**一条 AI 时代的注记**：这些规范的真正读者已经不只是人，**还有 AI**。规范没有写成文件，AI 每次就按它自己的习惯写——`TECH_CHARTER.md` 与 `docs/README.md` 之所以有效，正是因为它们是**喂给 agent 的约束载体**，而不只是给人看的墙上标语。对应 [`../principles/AI时代程序员成长-心法.md`](../principles/AI时代程序员成长-心法.md) §3 的「约束 Constrain」杠杆。
+**一条 AI 时代的注记**：这些规范的真正读者已经不只是人，**还有 AI**。规范没有写成文件，AI 每次就按它自己的习惯写——`TECH_CHARTER.md` 与 `docs/文档规范.md` 之所以有效，正是因为它们是**喂给 agent 的约束载体**，而不只是给人看的墙上标语。对应 [`../principles/AI时代程序员成长-心法.md`](../principles/AI时代程序员成长-心法.md) §3 的「约束 Constrain」杠杆。
 
 ---
 
