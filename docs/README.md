@@ -74,6 +74,7 @@
 | [知识库沉淀存储方案.md](design/知识库沉淀存储方案.md) | Obsidian 沉淀写入侧存储规范 |
 | [资讯语义检索-设计.md](design/资讯语义检索-设计.md) | 资讯 enrich（摘要+标签+向量）→ Zilliz 语义检索：第一性原理 + 流程/时序图 + 契约 + 配置 + 回滚（ADR 0011） |
 | [grok-cli-key边界-原理.md](design/grok-cli-key边界-原理.md) | grok-cli 第一性原理（大脑+手+循环）+「xAI key 卡在哪」：本地手免费、服务端 search_x 必须付费（ADR 0012） |
+| [jev判断层-原理.md](design/jev判断层-原理.md) | 第三方 jev 全家桶（只会做选择题的判断层）：三种题型 + A真调/B模拟两路 + 「选中≠许可」等风险 + 原文未说明区 |
 | [功能图解/图解-页面驱动agent.md](design/功能图解/图解-页面驱动agent.md) | 单功能图解复盘**样板**：页面驱动 agent（ADR 0009）的架构切片 / 时序 / 业务流程三图 |
 
 ---
@@ -89,6 +90,7 @@
 | [judgment-practice操作指南.md](guides/judgment-practice操作指南.md) | 判断力刻意练习 skill 操作手册：何时用预测卡/决策日志 + 四分支步骤 + 节奏建议 |
 | [模型管理模块操作指南.md](guides/模型管理模块操作指南.md) | 模型管理模块操作手册 |
 | [Supabase上线操作指南.md](guides/Supabase上线操作指南.md) | Supabase 接入 / 上线步骤 |
+| [jev零成本上手-指南.md](guides/jev零成本上手-指南.md) | jev 零成本跑通第一次：真跑的命令与输出 + 三种报错样子 + B 模拟实测结果（官方 jev-decide 本机不可用的替代路径） |
 
 ---
 
@@ -112,4 +114,4 @@
 |---|---|
 | [知识飞轮路线-思维导图.md](reference/知识飞轮路线-思维导图.md) | 路线图的思维导图形态（配套同名 `.opml`，可导入脑图工具） |
 | [reference/supabase_schema.sql](reference/supabase_schema.sql) | Supabase 表结构 DDL |
-| [reference/devhtml/](reference/devhtml/) | 生成的 html 产物：架构评审（`architecture-review/` 按日期留档）、产品评分卡、运行时架构交互版、各 archify 图等；`.json` 为可重渲图源 |
+| [reference/devhtml/](reference/devhtml/) | 生成的 html 产物：架构评审（`architecture-review/` 按日期留档）、产品评分卡、jev 原理图解与两张 archify 交互图、运行时架构交互版、各 archify 图等；`.json` 为可重渲图源 |

@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "一个总纲，四种考法",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "four-modes",
+        "label": "四种考法",
+        "focus": [
+          "core",
+          "triage",
+          "documents",
+          "eval",
+          "act"
+        ],
+        "note": "装进来的是五个文件夹，但它们不是五个独立工具：一个总纲，加四种用法。"
+      },
+      {
+        "id": "shared",
+        "label": "它们共用什么",
+        "focus": [
+          "core",
+          "script",
+          "format"
+        ],
+        "note": "四种考法共用同一个捆绑脚本和同一套三格作业格式，学会一种就会了全部。"
+      },
+      {
+        "id": "paid-edge",
+        "label": "哪一步才花钱",
+        "focus": [
+          "script",
+          "service"
+        ],
+        "note": "只有真调 Jev 这一步花钱，并且会把材料发到外部服务。不走这步就是零成本。"
+      }
+    ],
+    "output": "jev五目录关系-archify.html",
+    "viewBox": [
+      1090,
+      612
+    ]
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      90,
+      100
+    ],
+    "cols": 4,
+    "cellW": 200,
+    "cellH": 78,
+    "gapX": 60,
+    "gapY": 104
+  },
+  "components": [
+    {
+      "id": "core",
+      "type": "backend",
+      "label": "jev/",
+      "sublabel": "总纲：怎么出题 · 怎么跑",
+      "tag": "先读它",
+      "row": 1,
+      "col": 0
+    },
+    {
+      "id": "service",
+      "type": "cloud",
+      "label": "Jev 服务",
+      "sublabel": "OpenRouter / TypeSafe",
+      "tag": "要 key · 花钱",
+      "row": 0,
+      "col": 3
+    },
+    {
+      "id": "triage",
+      "type": "backend",
+      "label": "jev-triage/",
+      "sublabel": "考法① 分类",
+      "row": 2,
+      "col": 0
+    },
+    {
+      "id": "documents",
+      "type": "backend",
+      "label": "jev-documents/",
+      "sublabel": "考法② 找证据",
+      "row": 2,
+      "col": 1
+    },
+    {
+      "id": "eval",
+      "type": "backend",
+      "label": "jev-eval/",
+      "sublabel": "考法③ 评判",
+      "row": 2,
+      "col": 2
+    },
+    {
+      "id": "act",
+      "type": "backend",
+      "label": "jev-act/",
+      "sublabel": "考法④ 从能点的里挑一个",
+      "row": 2,
+      "col": 3
+    },
+    {
+      "id": "script",
+      "type": "backend",
+      "label": "scripts/jev.py",
+      "sublabel": "捆绑脚本 · 只用标准库",
+      "tag": "jev-decide 没装也能跑",
+      "row": 0,
+      "col": 1
+    },
+    {
+      "id": "format",
+      "type": "database",
+      "label": "作业格式",
+      "sublabel": "model · state · questions",
+      "tag": "只有这三个格子",
+      "row": 0,
+      "col": 0
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "装进来的五个目录",
+      "wraps": [
+        "core",
+        "triage",
+        "documents",
+        "eval",
+        "act"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "四种考法共用",
+      "wraps": [
+        "script",
+        "format"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "core-format",
+      "from": "core",
+      "to": "format",
+      "label": "同一套作业格式",
+      "variant": "emphasis",
+      "labelDy": -12,
+      "labelDx": 62
+    },
+    {
+      "id": "format-script",
+      "from": "format",
+      "to": "script",
+      "label": "交给脚本跑",
+      "variant": "default"
+    },
+    {
+      "id": "paid-call",
+      "from": "script",
+      "to": "service",
+      "label": "A 路才走 · 花钱且材料外发",
+      "variant": "security"
+    },
+    {
+      "id": "core-triage",
+      "from": "core",
+      "to": "triage",
+      "label": "是模式，不是独立工具",
+      "variant": "emphasis",
+      "labelDy": 24
+    },
+    {
+      "id": "core-documents",
+      "from": "core",
+      "to": "documents"
+    },
+    {
+      "id": "core-eval",
+      "from": "core",
+      "to": "eval"
+    },
+    {
+      "id": "core-act",
+      "from": "core",
+      "to": "act"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "四种考法各干什么",
+      "items": [
+        "triage：一堆工单挨个判归属和优先级",
+        "documents：指出文档里哪一段才是答案",
+        "eval：看已经做好的东西合不合格"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "共用的两样",
+      "items": [
+        "同一个捆绑脚本，只用 Python 标准库",
+        "同一套三格作业格式，多写一个字段就报错",
+        "学会一种考法，其余四种只是换题目"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "只有一处花钱",
+      "items": [
+        "不走真调那一步，全程零成本",
+        "官方教的 jev-decide 本机没有，原文也未说明怎么装",
+        "捆绑脚本可替代，本机 python3 3.10.12 实测可跑"
+      ]
+    }
+  ]
+}

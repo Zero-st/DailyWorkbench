@@ -1,0 +1,207 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "一次判断怎么走",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "free-path",
+        "label": "零成本那条路",
+        "focus": [
+          "material",
+          "request",
+          "sim",
+          "answer"
+        ],
+        "note": "不花钱、不外发材料，让手边现成的 AI 按同一套规矩答题。第一次上手先走这条。"
+      },
+      {
+        "id": "not-permission",
+        "label": "答案不等于许可",
+        "focus": [
+          "answer",
+          "gate",
+          "execute"
+        ],
+        "note": "它涂了哪个点只是看法。去不去执行，由你自己的门槛和权限检查决定。"
+      }
+    ],
+    "output": "jev判断流程-archify.html"
+  },
+  "lanes": [
+    {
+      "id": "host",
+      "label": "你的程序（原文叫 host）"
+    },
+    {
+      "id": "free",
+      "label": "B · 模拟（零成本）"
+    },
+    {
+      "id": "paid",
+      "label": "A · 真调 Jev（花钱）",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "ask",
+      "label": "出题",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "judge",
+      "label": "让它判断",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "decide",
+      "label": "你来决定",
+      "fromCol": 4,
+      "toCol": 5
+    }
+  ],
+  "mainPath": [
+    "material",
+    "request",
+    "sim",
+    "answer",
+    "gate",
+    "execute"
+  ],
+  "nodes": [
+    {
+      "id": "material",
+      "lane": "host",
+      "col": 0,
+      "type": "external",
+      "label": "材料",
+      "sublabel": "一封信 / 一段代码",
+      "width": 150
+    },
+    {
+      "id": "request",
+      "lane": "host",
+      "col": 1,
+      "type": "backend",
+      "label": "一份作业",
+      "sublabel": "model · state · questions",
+      "tag": "只有这三个格子",
+      "width": 150
+    },
+    {
+      "id": "sim",
+      "lane": "free",
+      "col": 2,
+      "type": "messagebus",
+      "label": "B · 模拟",
+      "sublabel": "手边的 AI 来答",
+      "tag": "不给把握程度",
+      "width": 150
+    },
+    {
+      "id": "real",
+      "lane": "paid",
+      "col": 2,
+      "type": "cloud",
+      "label": "A · 真调 Jev",
+      "sublabel": "OpenRouter / TypeSafe",
+      "tag": "材料发到外部",
+      "width": 150
+    },
+    {
+      "id": "answer",
+      "lane": "host",
+      "col": 3,
+      "type": "backend",
+      "label": "答案",
+      "sublabel": "选了啥 + 要不要复核",
+      "width": 150
+    },
+    {
+      "id": "gate",
+      "lane": "host",
+      "col": 4,
+      "type": "security",
+      "label": "够不够格用",
+      "sublabel": "不够就转人工，别硬上",
+      "tag": "你的规矩，不是它的",
+      "width": 150
+    },
+    {
+      "id": "execute",
+      "lane": "host",
+      "col": 5,
+      "type": "backend",
+      "label": "你的程序执行",
+      "sublabel": "权限检查在这儿",
+      "width": 150
+    }
+  ],
+  "edges": [
+    {
+      "id": "collect",
+      "from": "material",
+      "to": "request",
+      "label": "自带全部材料",
+      "variant": "default"
+    },
+    {
+      "id": "to-sim",
+      "from": "request",
+      "to": "sim",
+      "label": "先走这条",
+      "variant": "emphasis"
+    },
+    {
+      "id": "to-real",
+      "from": "request",
+      "to": "real",
+      "label": "要 key · 花钱",
+      "variant": "security"
+    },
+    {
+      "id": "sim-answer",
+      "from": "sim",
+      "to": "answer",
+      "variant": "emphasis"
+    },
+    {
+      "id": "real-answer",
+      "from": "real",
+      "to": "answer",
+      "label": "带概率与 confidence",
+      "variant": "default"
+    },
+    {
+      "id": "answer-gate",
+      "from": "answer",
+      "to": "gate",
+      "label": "先过你自己的规矩",
+      "variant": "default"
+    },
+    {
+      "id": "gate-run",
+      "from": "gate",
+      "to": "execute",
+      "label": "够才执行",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "最关键的一条",
+      "items": [
+        "它选中了，不等于你被允许去做",
+        "权限检查与人工确认永远留在 Jev 之外",
+        "把握高不等于答对了"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>只会涂答题卡的 AI</title>
+<style>
+:root{
+  --paper:#EEF1EC; --paper-2:#E4E8E2; --card:#F7F9F6;
+  --ink:#1B2024; --ink-soft:#5A6470; --ink-faint:#5D6773;
+  --rule:#CBD2C9; --rule-soft:#DDE2DA;
+  --graphite:#39414A; --mark:#B03D28; --pend:#8A6100; --ok:#336447;
+  --mark-soft:#F3DED9; --pend-soft:#F6EBD2; --ok-soft:#DCEBE1;
+  --font-body:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Noto Sans Mono CJK SC",monospace;
+  --sp:1rem; --radius:10px;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --paper:#15181B; --paper-2:#1B2023; --card:#1E2428;
+  --ink:#E7EBE5; --ink-soft:#A3ADB6; --ink-faint:#929CA6;
+  --rule:#333B41; --rule-soft:#272E33;
+  --graphite:#B9C2CB; --mark:#E8705A; --pend:#E0AE43; --ok:#6DB185;
+  --mark-soft:#3A2420; --pend-soft:#332912; --ok-soft:#1D2E23;
+}}
+:root[data-theme="dark"]{
+  --paper:#15181B; --paper-2:#1B2023; --card:#1E2428;
+  --ink:#E7EBE5; --ink-soft:#A3ADB6; --ink-faint:#929CA6;
+  --rule:#333B41; --rule-soft:#272E33;
+  --graphite:#B9C2CB; --mark:#E8705A; --pend:#E0AE43; --ok:#6DB185;
+  --mark-soft:#3A2420; --pend-soft:#332912; --ok-soft:#1D2E23;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);
+  font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding-block:clamp(2rem,5vw,3.5rem);padding-left:20px;padding-right:20px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-size:clamp(1.9rem,5vw,2.7rem);line-height:1.2;letter-spacing:-.02em;font-weight:760}
+h2{font-size:1.32rem;letter-spacing:-.01em;font-weight:700;margin-top:3.2rem;margin-bottom:.4rem;
+  display:flex;align-items:center;gap:.6rem}
+h2 .num{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-faint);
+  border:1px solid var(--rule);border-radius:4px;padding:.1rem .38rem;font-weight:500;flex:none}
+h3{font-size:1rem;font-weight:680;margin-bottom:.3rem}
+p{margin:.55rem 0}
+.lede{font-size:1.08rem;color:var(--ink-soft);max-width:60ch}
+.eyebrow{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint);margin-bottom:.7rem}
+.sub{color:var(--ink-soft);font-size:.93rem;max-width:64ch}
+code{font-family:var(--font-mono);font-size:.87em;background:var(--paper-2);
+  border:1px solid var(--rule-soft);border-radius:4px;padding:.08em .34em}
+hr{border:0;border-top:1px solid var(--rule);margin:2.6rem 0}
+a{color:var(--ink);text-decoration-color:var(--rule);text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--graphite);outline-offset:3px}
+
+/* ---- 答题卡 ---- */
+.omr{background:var(--card);border:1px solid var(--rule);border-radius:var(--radius);
+  padding:1.3rem;margin-top:1.6rem}
+.omr-src{font-size:.93rem;border-left:3px solid var(--graphite);padding:.15rem 0 .15rem .8rem;
+  color:var(--ink-soft);margin-bottom:1.15rem}
+.omr-src b{color:var(--ink);font-weight:640}
+.q{display:grid;grid-template-columns:1fr;gap:.45rem;padding:.85rem 0;border-top:1px solid var(--rule-soft)}
+.q-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem}
+.q-name{font-weight:680}
+.q-type{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-faint);
+  border:1px solid var(--rule);border-radius:99px;padding:.05rem .5rem}
+.bubbles{display:flex;flex-wrap:wrap;gap:.4rem}
+.bub{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;
+  border:1px solid var(--rule);border-radius:99px;padding:.22rem .7rem;color:var(--ink-soft);
+  background:var(--paper)}
+.bub .dot{width:.62rem;height:.62rem;border-radius:50%;border:1.5px solid var(--ink-faint);flex:none}
+.bub.on{color:var(--ink);border-color:var(--graphite);font-weight:640}
+.bub.on .dot{background:var(--graphite);border-color:var(--graphite)}
+.why{font-size:.85rem;color:var(--ink-soft)}
+.flag{display:inline-flex;align-items:center;gap:.32rem;font-size:.76rem;font-weight:640;
+  border-radius:99px;padding:.12rem .55rem;white-space:nowrap}
+.flag.rev{background:var(--pend-soft);color:var(--pend)}
+.flag.ok{background:var(--ok-soft);color:var(--ok)}
+.omr-foot{margin-top:1rem;padding-top:.85rem;border-top:1px dashed var(--rule);
+  font-family:var(--font-mono);font-size:.78rem;color:var(--ink-faint);
+  display:flex;flex-wrap:wrap;gap:.35rem 1.1rem}
+
+/* ---- 图 ---- */
+.fig{margin:1.3rem 0 .5rem;overflow-x:auto}
+.fig svg{display:block;min-width:560px;width:100%;height:auto}
+.cap{font-size:.83rem;color:var(--ink-faint);margin-top:.3rem}
+
+/* ---- 五目录 ---- */
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:.7rem;margin-top:1.1rem}
+.mode{background:var(--card);border:1px solid var(--rule);border-radius:var(--radius);padding:.85rem .95rem}
+.mode.core{border-color:var(--graphite);border-width:1.5px;grid-column:1/-1;background:var(--paper-2)}
+.mode .path{font-family:var(--font-mono);font-size:.82rem;font-weight:640;color:var(--ink)}
+.mode .role{font-size:.74rem;color:var(--ink-faint);font-family:var(--font-mono);margin-left:.4rem}
+.mode p{margin:.3rem 0 0;font-size:.88rem;color:var(--ink-soft)}
+
+/* ---- 反直觉三条 ---- */
+.traps{display:grid;gap:.75rem;margin-top:1.1rem}
+.trap{display:grid;grid-template-columns:auto 1fr;gap:.85rem;align-items:start;
+  background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--mark);
+  border-radius:var(--radius);padding:.9rem 1rem}
+.trap svg{flex:none;margin-top:.15rem}
+.trap b{display:block;margin-bottom:.15rem}
+.trap p{margin:0;font-size:.89rem;color:var(--ink-soft)}
+.trap .src{font-family:var(--font-mono);font-size:.74rem;color:var(--ink-faint);margin-top:.35rem;display:block}
+
+/* ---- 路线对比 ---- */
+.routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem;margin-top:1.1rem}
+.route{border:1px solid var(--rule);border-radius:var(--radius);padding:1rem;background:var(--card)}
+.route.b{border-color:var(--ok);background:var(--ok-soft)}
+.route h3{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.route .tag{font-family:var(--font-mono);font-size:.72rem;font-weight:600;padding:.1rem .5rem;
+  border-radius:99px;border:1px solid currentColor}
+.route.a .tag{color:var(--mark)} .route.b .tag{color:var(--ok)}
+.route ul{margin:.5rem 0 0;padding-left:1.1rem;font-size:.88rem;color:var(--ink-soft)}
+.route li{margin:.22rem 0}
+
+/* ---- 页脚 ---- */
+footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1px solid var(--rule);
+  font-size:.84rem;color:var(--ink-faint)}
+footer a{color:var(--ink-soft)}
+.themebtn{position:fixed;top:14px;right:14px;z-index:9;background:var(--card);color:var(--ink-soft);
+  border:1px solid var(--rule);border-radius:99px;padding:.4rem .75rem;font:inherit;font-size:.8rem;
+  cursor:pointer;display:inline-flex;align-items:center;gap:.4rem}
+.themebtn:hover{color:var(--ink);border-color:var(--graphite)}
+@media (prefers-reduced-motion:no-preference){.themebtn{transition:color .15s,border-color .15s}}
+@media (max-width:520px){ .themebtn{position:static;margin-bottom:1rem} }
+</style>
+</head>
+<body>
+<button class="themebtn" id="themeToggle" type="button" aria-label="切换明暗主题">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="none"/>
+  </svg><span id="themeLabel">明暗</span>
+</button>
+
+<div class="wrap">
+
+<p class="eyebrow">.claude/skills/jev · 2026-09-22 装入</p>
+<h1>只会涂答题卡的 AI</h1>
+<p class="lede">普通的 AI 会写会说，你问一个是非题，它回你三百字。Jev 不会写字——它只会在你给的选项里涂一个点。这一页讲清它怎么运转、什么时候该用、以及三个最容易踩空的地方。</p>
+
+<div class="omr">
+  <p class="omr-src"><b>给它的材料</b>（原文叫 state）：上周订的打印机到现在还没发货，我明天开会要用。能不能今天给个说法？不行就退款。</p>
+
+  <div class="q">
+    <div class="q-head"><span class="q-name">归哪类</span><span class="q-type">choice · 选择题</span>
+      <span class="flag rev">需人工复核</span></div>
+    <div class="bubbles">
+      <span class="bub on"><span class="dot"></span>物流</span>
+      <span class="bub"><span class="dot"></span>退款</span>
+      <span class="bub"><span class="dot"></span>其他</span>
+    </div>
+    <p class="why">主诉是「还没发货」；但末句「不行就退款」也触及退款，存在次要诉求。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-name">要退款吗</span><span class="q-type">noul · 是非题</span>
+      <span class="flag rev">需人工复核</span></div>
+    <div class="bubbles">
+      <span class="bub on"><span class="dot"></span>true</span>
+      <span class="bub"><span class="dot"></span>false</span>
+    </div>
+    <p class="why">确实提了退款，但带前提条件（今天给不出说法才退），不是无条件的当下要求。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-name">有多急</span><span class="q-type">score · 打分题</span>
+      <span class="flag ok">可直接用</span></div>
+    <div class="bubbles">
+      <span class="bub"><span class="dot"></span>0 · 不耽误事</span>
+      <span class="bub on"><span class="dot"></span>1 · 有影响但能顶住</span>
+      <span class="bub"><span class="dot"></span>2 · 完全办不成</span>
+    </div>
+    <p class="why">「明天开会要用」有时间压力且已受影响，但尚可借用他处顶替，落在第二档。打分从 0 开始数。</p>
+  </div>
+
+  <div class="omr-foot">
+    <span>mode: agent_simulation</span><span>jev_called: false</span>
+    <span>probability: null</span><span>confidence: null</span>
+  </div>
+</div>
+<p class="cap">上面是 2026-09-22 用零成本的 B 模拟路线真实跑出来的结果。三道题里两道自己举手说「拿不准」——这不是失败，正是它该干的事。</p>
+
+<hr>
+
+<h2><span class="num">01</span>一次判断，东西怎么流动</h2>
+<p class="sub">只有三样东西：<b>材料</b>、<b>题目</b>、<b>答案</b>。最关键的一点是最右边那一格——<b>答案不等于许可</b>，去不去执行永远是你自己的代码说了算。</p>
+
+<div class="fig">
+<svg viewBox="0 0 880 300" role="img" aria-label="数据流图：你的程序收集材料并出题，经真调或模拟两条路得到答案，再由你的程序判断是执行还是转人工">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--ink-faint)"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui,sans-serif" font-size="13">
+    <rect x="8" y="112" width="132" height="76" rx="9" fill="var(--card)" stroke="var(--graphite)" stroke-width="1.5"/>
+    <text x="74" y="140" text-anchor="middle" fill="var(--ink)" font-weight="650">你的程序</text>
+    <text x="74" y="159" text-anchor="middle" fill="var(--ink-soft)" font-size="11.5">收集材料 · 出题</text>
+    <text x="74" y="175" text-anchor="middle" fill="var(--ink-faint)" font-size="11">原文叫 host</text>
+
+    <rect x="182" y="112" width="124" height="76" rx="9" fill="var(--paper-2)" stroke="var(--rule)"/>
+    <text x="244" y="141" text-anchor="middle" fill="var(--ink)" font-weight="650">一份作业</text>
+    <text x="244" y="160" text-anchor="middle" fill="var(--ink-soft)" font-size="11.5" font-family="ui-monospace,monospace">model</text>
+    <text x="244" y="176" text-anchor="middle" fill="var(--ink-soft)" font-size="11.5" font-family="ui-monospace,monospace">state · questions</text>
+
+    <rect x="352" y="36" width="168" height="72" rx="9" fill="var(--mark-soft)" stroke="var(--mark)"/>
+    <text x="436" y="62" text-anchor="middle" fill="var(--mark)" font-weight="650">A · 真调 Jev</text>
+    <text x="436" y="81" text-anchor="middle" fill="var(--ink-soft)" font-size="11.5">要 key · 花钱</text>
+    <text x="436" y="97" text-anchor="middle" fill="var(--ink-soft)" font-size="11.5">材料发到外部</text>
+
+    <rect x="352" y="192" width="168" height="72" rx="9" fill="var(--ok-soft)" stroke="var(--ok)"/>
+    <text x="436" y="218" text-anchor="middle" fill="var(--ok)" font-weight="650">B · 模拟</text>
+    <text x="436" y="237" text-anchor="middle" fill="var(--ink-soft)" font-size="11.5">手边的 AI 来答</text>
+    <text x="436" y="253" text-anchor="middle" fill="var(--ink-soft)" font-size="11.5">零成本 · 不外发</text>
+
+    <rect x="566" y="112" width="124" height="76" rx="9" fill="var(--card)" stroke="var(--rule)"/>
+    <text x="628" y="141" text-anchor="middle" fill="var(--ink)" font-weight="650">答案</text>
+    <text x="628" y="160" text-anchor="middle" fill="var(--ink-soft)" font-size="11.5">每题：选了啥</text>
+    <text x="628" y="176" text-anchor="middle" fill="var(--ink-soft)" font-size="11.5">+ 要不要复核</text>
+
+    <rect x="736" y="72" width="136" height="60" rx="9" fill="var(--card)" stroke="var(--graphite)" stroke-width="1.5"/>
+    <text x="804" y="97" text-anchor="middle" fill="var(--ink)" font-weight="650">你的程序执行</text>
+    <text x="804" y="115" text-anchor="middle" fill="var(--ink-faint)" font-size="11">权限检查在这儿</text>
+
+    <rect x="736" y="168" width="136" height="60" rx="9" fill="var(--pend-soft)" stroke="var(--pend)"/>
+    <text x="804" y="193" text-anchor="middle" fill="var(--pend)" font-weight="650">转人工</text>
+    <text x="804" y="211" text-anchor="middle" fill="var(--ink-soft)" font-size="11">拿不准就别硬上</text>
+
+    <g stroke="var(--ink-faint)" stroke-width="1.4" fill="none" marker-end="url(#ar)">
+      <path d="M140 150 H176"/>
+      <path d="M306 140 C330 140 330 72 346 72"/>
+      <path d="M306 160 C330 160 330 228 346 228"/>
+      <path d="M520 72 C545 72 545 140 560 140"/>
+      <path d="M520 228 C545 228 545 160 560 160"/>
+      <path d="M690 140 C712 140 712 102 730 102"/>
+      <path d="M690 160 C712 160 712 198 730 198"/>
+    </g>
+    <text x="712" y="130" text-anchor="middle" fill="var(--ink-faint)" font-size="11">把握够</text>
+    <text x="712" y="176" text-anchor="middle" fill="var(--ink-faint)" font-size="11">不够</text>
+  </g>
+</svg>
+</div>
+<p class="cap">它什么都不记得：看不见你的聊天记录、文件或上一次提问。每份作业必须自带全部材料（<code>context-and-throughput.md</code>）。它也只认文字，截图得先转成字（<code>api.md</code>）。</p>
+<p class="cap">想放大看、点节点追踪路径？→ <a href="jev判断流程-archify.html">交互版流程图</a></p>
+
+<h2><span class="num">02</span>五个目录 = 一个阅卷员 + 四种考法</h2>
+<p class="sub">装进来的是五个文件夹，但它们不是五个独立工具。原文的说法是：这些是<b>模式（modes）</b>，不是额外安装的东西。</p>
+<p class="cap">连它们共用什么一起看 → <a href="jev五目录关系-archify.html">交互版关系图</a></p>
+
+<div class="modes">
+  <div class="mode core">
+    <span class="path">jev/</span><span class="role">总纲</span>
+    <p>怎么出题、怎么配置、怎么跑。另外四个都从这里延伸，共用同一个脚本和同一套作业格式。</p>
+  </div>
+  <div class="mode"><span class="path">jev-triage/</span><span class="role">考法① 分类</span>
+    <p>一堆工单/邮件挨个判归属和优先级。批量前必须先跑小样对一致性。</p></div>
+  <div class="mode"><span class="path">jev-documents/</span><span class="role">考法② 找证据</span>
+    <p>在文档里指出「哪一段才是答案」，或判断某句话有没有出处支持。</p></div>
+  <div class="mode"><span class="path">jev-eval/</span><span class="role">考法③ 评判</span>
+    <p>看已经做好的东西合不合格，比如一次改动是不是靠削弱测试骗过 CI。</p></div>
+  <div class="mode"><span class="path">jev-act/</span><span class="role">考法④ 选下一步</span>
+    <p>在浏览器或游戏里，从「当前能点的东西」里挑一个。挑中不等于可以点。</p></div>
+</div>
+
+<h2><span class="num">03</span>两条路：先走不花钱的那条</h2>
+<p class="sub">原文要求这个选择由你明确做出——agent 不许替你选，<b>报错也不构成偷偷换路的理由</b>。</p>
+
+<div class="routes">
+  <div class="route b">
+    <h3>模拟<span class="tag">B · 先走这条</span></h3>
+    <ul>
+      <li>不花钱，不需要任何账号或密钥</li>
+      <li>材料不外发</li>
+      <li>让手边现成的 AI 按同一套规矩答题</li>
+      <li><b>不给把握程度</b>——必须留空，不许编</li>
+      <li>用来先把题目调顺：选项够不够、兜底留没留</li>
+    </ul>
+  </div>
+  <div class="route a">
+    <h3>真调 Jev<span class="tag">A · 调顺了再来</span></h3>
+    <ul>
+      <li>要 <code>OPENROUTER_API_KEY</code> 或 <code>TYPESAFE_API_KEY</code></li>
+      <li><b>真扣钱</b>，材料发到外部服务</li>
+      <li>输入 $0.042 / 百万 token，输出免费（2026-09-22 读到，原文注明会变）</li>
+      <li>一次材料上限 32,000 token</li>
+      <li>给概率和 confidence，可以据此设阈值</li>
+    </ul>
+  </div>
+</div>
+
+<h2><span class="num">04</span>三个最容易踩空的地方</h2>
+
+<div class="traps">
+  <div class="trap">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--mark)" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/>
+    </svg>
+    <div><b>「检查通过」不等于「拿到答案」</b>
+      <p>加了 <code>--dry-run</code> 跑完，它会把你的作业原样打印回来——里面一个答案都没有。那一步只是在看你作业的格式合不合规矩，根本没去判断。</p>
+      <span class="src">jev/scripts/jev.py · "Validate and print request; no API call"</span></div>
+  </div>
+  <div class="trap">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--mark)" stroke-width="2" aria-hidden="true">
+      <rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>
+    </svg>
+    <div><b>它选中了，不等于你被允许去做</b>
+      <p>Jev 说「该点这个删除按钮」，那只是它的看法。真去不去点，必须由你的代码、权限检查和人工确认决定。脚本输出里有个字段 <code>executes_actions</code>，值被硬编码成 false。</p>
+      <span class="src">jev/scripts/jev.py · build_report()：「NOT permission to perform an action」</span></div>
+  </div>
+  <div class="trap">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--mark)" stroke-width="2" aria-hidden="true">
+      <path d="M3 17l5-6 4 4 5-7 4 5"/><path d="M3 21h18"/>
+    </svg>
+    <div><b>把握高，不等于答对了</b>
+      <p>本仓原文自带的实测数字：160 道题里，把握 ≥ 0.9 的有 100 道，<b>这 100 道错了 8 道；</b>只看高把握的因果判断，20 道只对 14 道。另外「反复问都答得一样」只说明它稳定，不说明它对。</p>
+      <span class="src">jev/references/calibration.md · 「Repeated agreement is consistency, not calibration」</span></div>
+  </div>
+</div>
+
+<h2><span class="num">05</span>什么时候不该用它</h2>
+<p class="sub">写文章写代码 → 用普通大模型。算数、数数、比日期、对账 → 写代码，别让它判。当成事实来源 → 它只判断你给的材料，不会去查证。看图 → 它只认文字。<b>只有一两条要判断</b> → 出题加调试比手工还费事。<b>中文材料</b> → 原文写明英文支持最好，中文负载要你自己另测一轮。</p>
+<p class="sub">还有最根本的一条：它的价值完全来自<b>重复次数</b>。判 5 次，手工更快；判 5000 次，它才开始划算。</p>
+
+<footer>
+  <p>取材仅限本机 <code>.claude/skills/jev*/</code> 下的原文，每条结论在两篇配套文档里都标了出处；命令与输出均 2026-09-22 本机实跑。原文未说明 <code>jev-decide</code> 如何安装，故实操一律走捆绑脚本。</p>
+  <p>配套：<a href="../../design/jev判断层-原理.md">jev判断层-原理.md</a>（讲透）· <a href="../../guides/jev零成本上手-指南.md">jev零成本上手-指南.md</a>（照着敲）</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('themeToggle'),
+      label=document.getElementById('themeLabel'), KEY='jev-explainer-theme';
+  function current(){
+    var t=root.getAttribute('data-theme');
+    if(t) return t;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  }
+  try{ var saved=localStorage.getItem(KEY); if(saved==='dark'||saved==='light') root.setAttribute('data-theme',saved); }catch(e){}
+  function sync(){ label.textContent = current()==='dark' ? '浅色' : '深色'; }
+  sync();
+  btn.addEventListener('click',function(){
+    var next = current()==='dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme',next);
+    try{ localStorage.setItem(KEY,next); }catch(e){}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
