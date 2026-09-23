@@ -114,4 +114,4 @@
 |---|---|
 | [知识飞轮路线-思维导图.md](reference/知识飞轮路线-思维导图.md) | 路线图的思维导图形态（配套同名 `.opml`，可导入脑图工具） |
 | [reference/supabase_schema.sql](reference/supabase_schema.sql) | Supabase 表结构 DDL |
-| [reference/devhtml/](reference/devhtml/) | 生成的 html 产物：架构评审（`architecture-review/` 按日期留档）、产品评分卡、jev 原理图解与两张 archify 交互图、运行时架构交互版、各 archify 图等；`.json` 为可重渲图源 |
+| [reference/devhtml/](reference/devhtml/) | 生成的 html 产物：架构评审（`architecture-review/` 按日期留档）、产品评分卡、jev 原理图解与两张 archify 交互图、运行时架构交互版、各 archify 图等、hypit 小白图解（`hypit-explainer/` 含实操清单）；`.json` 为可重渲图源 |

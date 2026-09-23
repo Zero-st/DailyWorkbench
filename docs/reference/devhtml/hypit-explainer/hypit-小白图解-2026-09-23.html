@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hypit 小白图解</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap">
+<style>
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#1B2330; --muted:#5B6675; --line:#C9D0DA;
+  --accent:#0E7C6B; --accent-soft:#D8F0EA;
+  --warn:#B85C14; --warn-soft:#FBE7D6;
+  --bad:#B4353F; --bad-soft:#F9DEDF;
+  --code-bg:#E8ECF1; --shadow:0 1px 2px rgba(27,35,48,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121820; --surface:#1A222D; --ink:#E4E9F0; --muted:#98A4B3; --line:#34404E;
+    --accent:#3FBFA8; --accent-soft:#163B35;
+    --warn:#E89A5B; --warn-soft:#3D2A18;
+    --bad:#E4707A; --bad-soft:#3F1F23;
+    --code-bg:#0E1319; --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121820; --surface:#1A222D; --ink:#E4E9F0; --muted:#98A4B3; --line:#34404E;
+  --accent:#3FBFA8; --accent-soft:#163B35;
+  --warn:#E89A5B; --warn-soft:#3D2A18;
+  --bad:#E4707A; --bad-soft:#3F1F23;
+  --code-bg:#0E1319; --shadow:none; color-scheme:dark;
+}
+body{
+  background:var(--bg); color:var(--ink); margin:0;
+  font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  font-size:15px; line-height:1.7;
+}
+.wrap{max-width:780px; margin:0 auto; padding-inline:16px; padding-block:28px 64px; display:grid; gap:40px}
+h1,h2,h3{font-family:"ZCOOL XiaoWei","Noto Serif SC","Songti SC","SimSun",serif; font-weight:400; text-wrap:balance; line-height:1.25; margin:0}
+h1{font-size:2.1rem}
+h2{font-size:1.5rem}
+h3{font-size:1.1rem; margin-top:8px}
+p,ul,ol{margin:0}
+ul,ol{padding-left:1.3em}
+li{margin-block:3px}
+a{color:var(--accent)}
+header .lede{color:var(--muted); margin-top:8px; max-width:62ch}
+.meta{display:flex; flex-wrap:wrap; gap:6px 14px; color:var(--muted); font-size:.85rem; margin-top:12px}
+nav.toc{display:flex; flex-wrap:wrap; gap:8px}
+nav.toc a{display:inline-block; padding:4px 10px; border:1px solid var(--line); border-radius:999px; text-decoration:none; color:var(--ink); background:var(--surface); font-size:.85rem}
+nav.toc a:hover,nav.toc a:focus-visible{border-color:var(--accent); outline:none}
+.legend{display:flex; flex-wrap:wrap; gap:8px 16px; font-size:.85rem; color:var(--muted); align-items:center}
+section{display:grid; gap:14px}
+/* grid 子项默认 min-width:auto，SVG 的 min-width 会把列撑爆；归零后由 .scroll/.tbl 内部横滚 */
+.wrap > *, section > *, .two > *{min-width:0}
+.eyebrow{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:600}
+figure{margin:0; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px; box-shadow:var(--shadow)}
+figure .scroll{overflow-x:auto}
+figure svg{display:block; width:100%; max-width:100%; height:auto; min-width:560px; color:var(--ink)}
+figcaption{font-size:.85rem; color:var(--muted); margin-top:8px; line-height:1.55}
+.pill{display:inline-block; font-size:.75rem; line-height:1.3; padding:1px 7px; border-radius:999px; vertical-align:middle; white-space:nowrap}
+.claim{background:var(--warn-soft); color:var(--warn); border:1px solid var(--warn)}
+.unk{background:var(--bad-soft); color:var(--bad); border:1px solid var(--bad)}
+.ok{background:var(--accent-soft); color:var(--accent); border:1px solid var(--accent)}
+.mine{background:var(--code-bg); color:var(--muted); border:1px solid var(--line)}
+.src{font-size:.8rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:8px; line-height:1.6}
+.src b{color:var(--ink); font-weight:600}
+code,pre{font-family:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace; font-size:.88em}
+code{background:var(--code-bg); padding:1px 5px; border-radius:4px}
+pre{background:var(--code-bg); padding:10px 12px; border-radius:8px; overflow-x:auto; line-height:1.5}
+pre code{background:none; padding:0}
+.ask{border-left:3px solid var(--accent); background:var(--accent-soft); padding:10px 12px; border-radius:0 8px 8px 0}
+.ask .lbl{font-size:.78rem; color:var(--accent); font-weight:600; letter-spacing:.06em}
+table{border-collapse:collapse; width:100%; font-size:.9rem}
+.tbl{overflow-x:auto}
+th,td{text-align:left; vertical-align:top; padding:7px 9px; border-bottom:1px solid var(--line)}
+th{font-weight:600; color:var(--muted); font-size:.8rem; letter-spacing:.04em}
+td.num{font-variant-numeric:tabular-nums}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+@media (max-width:560px){.two{grid-template-columns:1fr}}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 14px}
+.card h3{margin-top:0}
+.foot{color:var(--muted); font-size:.85rem; border-top:1px solid var(--line); padding-top:16px}
+/* SVG 通用类：全部走 token，深浅色自适应 */
+.bx{fill:var(--surface); stroke:currentColor; stroke-width:1.2}
+.bxa{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.4}
+.bxw{fill:var(--warn-soft); stroke:var(--warn); stroke-width:1.4}
+.bxb{fill:var(--bad-soft); stroke:var(--bad); stroke-width:1.4}
+.bxm{fill:var(--code-bg); stroke:var(--line); stroke-width:1}
+.t{font-size:12px; fill:currentColor; font-family:inherit}
+.ts{font-size:10.5px; fill:var(--muted); font-family:inherit}
+.tb{font-size:12.5px; fill:currentColor; font-weight:600; font-family:inherit}
+.tbig{font-size:22px; fill:currentColor; font-weight:700; font-family:inherit; font-variant-numeric:tabular-nums}
+.ta{fill:var(--accent)} .tw{fill:var(--warn)} .tbd{fill:var(--bad)}
+.ln{stroke:currentColor; stroke-width:1.4; fill:none}
+.lna{stroke:var(--accent); stroke-width:1.6; fill:none}
+.lnw{stroke:var(--warn); stroke-width:1.6; fill:none}
+.lnb{stroke:var(--bad); stroke-width:1.6; fill:none}
+.dash{stroke-dasharray:4 3}
+.fa{fill:var(--accent)} .fw{fill:var(--warn)} .fb{fill:var(--bad)} .fc{fill:currentColor}
+@media (prefers-reduced-motion: no-preference){ nav.toc a{transition:border-color .15s} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">一个 GitHub 开源项目 · 讲给不懂技术的人</p>
+  <h1>Hypit 小白图解</h1>
+  <p class="lede">它说自己能「克隆一条爆款视频」。这一页用<b>厨房</b>这一个比喻讲完九个问题：菜 = 成片，菜谱 = 工作流，机器人厨师 = 编译器。图多字少，每条结论都标了出自哪个文件。</p>
+  <div class="meta">
+    <span>取材日期 2026-09-23</span>
+    <span>仓库 github.com/hypit-ai/hypit</span>
+    <span>版本 v0.2.12</span>
+    <span>配套：<code>hypit-实操清单-零成本路径-2026-09-23.md</code></span>
+  </div>
+</header>
+
+<nav class="toc" aria-label="九问目录">
+  <a href="#q1">1 受苦</a><a href="#q2">2 一句话</a><a href="#q3">3 第一性原理</a><a href="#q4">4 原理</a><a href="#q5">5 怎么用</a><a href="#q6">6 谁需要</a><a href="#q7">7 别用</a><a href="#q8">8 代价与风险</a><a href="#q9">9 优缺点 vs 剪映</a>
+</nav>
+
+<div class="legend">
+  <span>标记说明：</span>
+  <span><span class="pill claim">项目自称</span> README 是作者写的推销稿，无法独立核实</span>
+  <span><span class="pill unk">原文未说明</span> 文档里没写，我不猜</span>
+  <span><span class="pill mine">我的解读</span> 不是原文，是我的类比或推断</span>
+</div>
+
+<!-- ============ 1 ============ -->
+<section id="q1">
+  <p class="eyebrow">第 1 问</p>
+  <h2>没有它的时候，人是怎么受苦的</h2>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 720 240" role="img" aria-label="左：同一条爆款要出 10 个版本，每版都得手工重贴字幕和特效；右：台词一改，按秒摆好的字幕全部错位">
+      <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fc"/></marker></defs>
+      <text x="20" y="22" class="tb">场景 A · 一条爆款想出 10 个版本</text>
+      <text x="20" y="56" class="t">第 1 版</text><rect x="72" y="44" width="200" height="20" rx="4" class="bx"/><rect x="82" y="48" width="40" height="12" rx="2" class="bxa"/><rect x="142" y="48" width="40" height="12" rx="2" class="bxa"/><rect x="202" y="48" width="40" height="12" rx="2" class="bxa"/><text x="284" y="57" class="ts">逐条贴字幕、特效、配图</text>
+      <text x="20" y="91" class="t">第 2 版</text><rect x="72" y="79" width="200" height="20" rx="4" class="bx"/><rect x="82" y="83" width="40" height="12" rx="2" class="bxa"/><rect x="142" y="83" width="40" height="12" rx="2" class="bxa"/><rect x="202" y="83" width="40" height="12" rx="2" class="bxa"/><text x="284" y="92" class="ts">再来一遍</text>
+      <text x="160" y="118" class="t" text-anchor="middle">· · ·</text>
+      <text x="20" y="146" class="t">第 10 版</text><rect x="72" y="134" width="200" height="20" rx="4" class="bx"/><rect x="82" y="138" width="40" height="12" rx="2" class="bxa"/><rect x="142" y="138" width="40" height="12" rx="2" class="bxa"/><rect x="202" y="138" width="40" height="12" rx="2" class="bxa"/><text x="284" y="147" class="ts">第十遍</text>
+      <rect x="72" y="176" width="270" height="34" rx="6" class="bxw"/><text x="207" y="198" class="tb tw" text-anchor="middle">同样的手工活，重复 10 遍</text>
+
+      <line x1="380" y1="10" x2="380" y2="230" class="ln dash" style="opacity:.5"/>
+
+      <text x="400" y="22" class="tb">场景 B · 台词一改，按秒摆的全乱</text>
+      <text x="400" y="66" class="t">原来</text>
+      <rect x="450" y="36" width="40" height="14" rx="2" class="bxa"/><rect x="495" y="36" width="40" height="14" rx="2" class="bxa"/><rect x="540" y="36" width="40" height="14" rx="2" class="bxa"/>
+      <text x="470" y="47" class="ts" text-anchor="middle">字幕</text><text x="515" y="47" class="ts" text-anchor="middle">特效</text><text x="560" y="47" class="ts" text-anchor="middle">配图</text>
+      <rect x="450" y="58" width="40" height="18" rx="3" class="bx"/><rect x="495" y="58" width="40" height="18" rx="3" class="bx"/><rect x="540" y="58" width="40" height="18" rx="3" class="bx"/>
+      <text x="470" y="71" class="t" text-anchor="middle">今天</text><text x="515" y="71" class="t" text-anchor="middle">排名</text><text x="560" y="71" class="t" text-anchor="middle">第一</text>
+      <text x="600" y="71" class="ts">← 说到哪个词，贴在哪一秒</text>
+
+      <text x="400" y="146" class="t">改词后</text>
+      <rect x="450" y="116" width="40" height="14" rx="2" class="bxa"/><rect x="495" y="116" width="40" height="14" rx="2" class="bxa"/><rect x="540" y="116" width="40" height="14" rx="2" class="bxa"/>
+      <text x="470" y="127" class="ts" text-anchor="middle">字幕</text><text x="515" y="127" class="ts" text-anchor="middle">特效</text><text x="560" y="127" class="ts" text-anchor="middle">配图</text>
+      <rect x="450" y="138" width="66" height="18" rx="3" class="bxb"/><rect x="521" y="138" width="56" height="18" rx="3" class="bxb"/><rect x="582" y="138" width="40" height="18" rx="3" class="bxb"/>
+      <text x="483" y="151" class="t" text-anchor="middle">今天我们</text><text x="549" y="151" class="t" text-anchor="middle">来聊聊</text><text x="602" y="151" class="t" text-anchor="middle">排名</text>
+      <line x1="515" y1="130" x2="515" y2="138" class="lnb"/><line x1="560" y1="130" x2="560" y2="138" class="lnb"/>
+      <text x="450" y="182" class="tb tbd">字幕还停在旧秒数，词已经跑到别处 → 错位</text>
+      <text x="450" y="204" class="ts">后面每一条都得手动挪一遍</text>
+    </svg>
+    </div>
+    <figcaption>图 1 · 想从一条爆款做出十个版本，人得在剪辑软件里把字幕、特效、配图一条条重贴；台词一改，所有按「第几秒」摆好的东西全部错位。</figcaption>
+  </figure>
+  <ul>
+    <li>你刷到一条 20 秒的排行榜视频很火，想做一版换成自己的产品、再做一版换成英文、再做一版换个主播。每一版都要在剪辑软件里从头贴字幕、卡特效、对配图。</li>
+    <li>更糟的是：只要改了一句台词，后面所有按「第 3.2 秒」摆好的字幕和特效都不在原位了，得整条重新对。</li>
+    <li>这就是 Hypit 说自己要解决的事：README 把它描述为「一份 workflow，100 个变体：复用编排和已有素材，需要变化的部分再生成」。<span class="pill claim">项目自称</span></li>
+  </ul>
+  <p class="src"><b>出处</b>：README.zh-CN.md §为什么选择 Hypit（「一份 workflow，100 个变体」）· §Hypit 能构建什么（「改一句台词，时间轴自己重排」）。场景 A/B 的具体痛点是我按这两句反推的日常情境。<span class="pill mine">我的解读</span></p>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="q2">
+  <p class="eyebrow">第 2 问</p>
+  <h2>一句话说它是什么</h2>
+  <p><b>Hypit 是一套让 AI 助手「尝一口别人的菜、反推出菜谱、再照菜谱做出一堆新菜」的厨房系统。</b>菜是视频，菜谱是可以改、可以重做的工作流。</p>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 720 200" role="img" aria-label="厨房比喻：别人做好的菜（爆款视频）→ AI 助手加 Hypit 反推菜谱 → 菜谱即工作流文件 → 机器人厨师即编译器 → 做出很多盘新菜即成片">
+      <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fc"/></marker></defs>
+      <rect x="10" y="40" width="120" height="60" rx="8" class="bx"/><text x="70" y="65" class="tb" text-anchor="middle">别人做好的菜</text><text x="70" y="85" class="ts" text-anchor="middle">= 一条爆款视频</text>
+      <line x1="130" y1="70" x2="158" y2="70" class="ln" marker-end="url(#a2)"/>
+      <rect x="160" y="40" width="140" height="60" rx="8" class="bxa"/><text x="230" y="65" class="tb" text-anchor="middle">尝一口，反推菜谱</text><text x="230" y="85" class="ts" text-anchor="middle">= AI 助手 + Hypit</text>
+      <line x1="300" y1="70" x2="328" y2="70" class="ln" marker-end="url(#a2)"/>
+      <rect x="330" y="40" width="120" height="60" rx="8" class="bxa"/><text x="390" y="65" class="tb" text-anchor="middle">菜谱</text><text x="390" y="85" class="ts" text-anchor="middle">= 工作流（.svml 文件）</text>
+      <line x1="450" y1="70" x2="478" y2="70" class="ln" marker-end="url(#a2)"/>
+      <rect x="480" y="40" width="110" height="60" rx="8" class="bx"/><text x="535" y="65" class="tb" text-anchor="middle">机器人厨师</text><text x="535" y="85" class="ts" text-anchor="middle">= 编译器</text>
+      <line x1="590" y1="70" x2="618" y2="70" class="ln" marker-end="url(#a2)"/>
+      <rect x="620" y="40" width="90" height="60" rx="8" class="bx"/><text x="665" y="65" class="tb" text-anchor="middle">新菜 ×N</text><text x="665" y="85" class="ts" text-anchor="middle">= 成片 mp4</text>
+      <path d="M390 100 L390 128" class="lna dash" marker-end="url(#a2)"/>
+      <rect x="230" y="130" width="320" height="50" rx="8" class="bxm"/>
+      <text x="390" y="150" class="t" text-anchor="middle">菜谱能改：换食材 = 换主播 / 换产品 / 换语言</text>
+      <text x="390" y="168" class="ts" text-anchor="middle">改一行，机器人厨师重做一遍，就是一条新视频</text>
+    </svg>
+    </div>
+    <figcaption>图 2 · 「克隆」克隆的是菜谱（工作流），不是把那盘菜（视频文件）复印一份。拿到菜谱以后，换食材就能做新菜。</figcaption>
+  </figure>
+  <div class="ask">
+    <div class="lbl">你特别想搞清的 ①：「克隆一条爆款」到底克隆的是什么？</div>
+    <p><b>不是复制视频文件。</b>README 原话：「丢一条视频进来，拿到整份 workflow —— 画面、字幕、B-roll、特效。不是拆解脚本」；「拿到的都是可编辑、可重跑的工作流，而不是一次性的成片」。用厨房话说：<b>成片是端上桌的那盘菜，吃完就没了；工作流是菜谱加备料单，能反复做、能换料。</b>Hypit 给你的是后者。</p>
+    <p style="margin-top:6px"><b>B-roll</b>：口播画面之外插进来的配图、配镜头，比如说到「兰博基尼」时闪一张车的图。<b>workflow / 工作流</b>：一套写在文件里、能重跑的制作步骤。</p>
+  </div>
+  <ul>
+    <li>软件的「用户」是 AI 助手（README 点名 Claude Code、Codex），你只跟 AI 助手说话；Hypit 给助手一套「视频的语言和系统」。</li>
+    <li><b>Coding Agent / AI 编程助手</b>：能在你电脑上读写文件、执行命令的 AI 程序，比如 Claude Code、Codex。它不是 Hypit 的一部分，要单独装、单独付费（见第 8 问）。</li>
+  </ul>
+  <p class="src"><b>出处</b>：README.zh-CN.md §Hypit（第 51 行「为 AI Agent…提供了一套制作视频的语言和系统」）· §为什么选择 Hypit（「真的能 Clone」）· §Hypit 能构建什么（「可编辑、可重跑的工作流，而不是一次性的成片」）。厨房比喻是我的。<span class="pill mine">我的解读</span></p>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="q3">
+  <p class="eyebrow">第 3 问</p>
+  <h2>第一性原理：它到底改变了什么</h2>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 720 270" role="img" aria-label="三根柱子撑起一根横梁：生成模型会画会演会配音、WhisperX 能听出每个字说在哪一刻、AI 编程助手会写文件敲命令；横梁是视频变成一份能反复重跑的文件；顶上是改文件重跑就得到新视频">
+      <defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fc"/></marker></defs>
+      <rect x="190" y="18" width="340" height="44" rx="8" class="bxa"/>
+      <text x="360" y="37" class="tb" text-anchor="middle">改文件 → 重跑 → 新视频</text>
+      <text x="360" y="54" class="ts" text-anchor="middle">字幕、特效跟着「词」走，不用重新对时间</text>
+      <line x1="360" y1="100" x2="360" y2="66" class="lna" marker-end="url(#a3)"/>
+      <rect x="40" y="100" width="640" height="46" rx="8" class="bx"/>
+      <text x="360" y="120" class="tb" text-anchor="middle">底层改变：视频 = 一份能反复重跑的文件，不再是一次性的成片</text>
+      <text x="360" y="137" class="ts" text-anchor="middle">以前视频是「剪出来的结果」，现在是「写出来的配方」</text>
+      <line x1="135" y1="190" x2="135" y2="150" class="ln" marker-end="url(#a3)"/>
+      <line x1="360" y1="190" x2="360" y2="150" class="ln" marker-end="url(#a3)"/>
+      <line x1="585" y1="190" x2="585" y2="150" class="ln" marker-end="url(#a3)"/>
+      <rect x="40" y="190" width="190" height="66" rx="8" class="bx"/>
+      <text x="135" y="215" class="tb" text-anchor="middle">AI 会画、会演、会配音</text><text x="135" y="235" class="ts" text-anchor="middle">生成模型（图 / 视频 / 语音）</text>
+      <rect x="265" y="190" width="190" height="66" rx="8" class="bx"/>
+      <text x="360" y="215" class="tb" text-anchor="middle">能听出每个字说在哪一刻</text><text x="360" y="235" class="ts" text-anchor="middle">WhisperX 词级对齐</text>
+      <rect x="490" y="190" width="190" height="66" rx="8" class="bx"/>
+      <text x="585" y="215" class="tb" text-anchor="middle">AI 会写文件、会敲命令</text><text x="585" y="235" class="ts" text-anchor="middle">Coding Agent（Claude Code 等）</text>
+    </svg>
+    </div>
+    <figcaption>图 3 · 三个前置条件同时成熟，视频才能从「剪出来的结果」变成「写出来的配方」。缺任何一根柱子，横梁都立不住。</figcaption>
+  </figure>
+  <ul>
+    <li><b>为什么以前做不到</b>：以前视频里的画面得实拍、字幕得人听着对、改动得人手动挪。现在这三件事各有一个成熟的工具接手（见三根柱子），Hypit 做的是把它们串成一套「文件 → 成片」的流水线。<span class="pill mine">我的解读</span></li>
+    <li><b>WhisperX</b>：一个开源语音识别工具，能把一段话里<b>每个词</b>开始、结束的时刻标出来。README 每个示例都写「WhisperX 负责逐词对齐」。</li>
+    <li><b>生成模型</b>：能按文字描述生成图片、视频、声音的 AI。README 示例用到 Seedance（生视频）、GPT Image（生图）、Fish Audio（生声音）。这些都<b>不是</b> Hypit 自己的，是外部服务，要花钱（第 8 问）。</li>
+  </ul>
+  <div class="ask">
+    <div class="lbl">你特别想搞清的 ②：「锚定在词上，不是秒上」是什么意思？</div>
+    <p><b>厨房里的比喻</b>：菜谱写「<b>等水开了</b>再下面」，而不是「<b>第 3 分 12 秒</b>下面」。火大火小、锅大锅小，「水开了」这个时刻都对；写死「第 3 分 12 秒」，换个锅就煮糊了。</p>
+    <p style="margin-top:6px">Hypit 把字幕、特效、配图挂在「说到<b>哪个词</b>」上，而不是「<b>第几秒</b>」上。你改了一句台词、换了个说话快慢不同的主播，它重新听一遍词在哪一刻，所有东西自动跟着挪。README 原话：「改一句台词，时间轴自己重排」。<b>为什么重要</b>：这是「一份工作流出 100 个变体」能成立的前提——按秒挂的东西每改一次都得人工重对，按词挂的不用。</p>
+  </div>
+  <div class="ask">
+    <div class="lbl">最反直觉的一个设计决定</div>
+    <p><b>这套软件的头号用户是 AI，不是人。</b>README 第一句就是「为 AI Agent 提供一套制作视频的语言和系统」；它的技能说明书（SKILL.md）开头对 AI 说「你是被委托的导演和制片人」。它没有给人手工拖拽做视频的主界面——Studio 只用来看和微调，真正的生成和渲染都靠命令 <code>hypit build</code>。</p>
+    <p style="margin-top:6px"><b>为什么这样定</b>（我的推断）：写「视频配方文件」这件事又细又多，AI 写得比人快得多；人只负责三件事——给参考、说想改什么、看报价点头。文档里确实把「确认费用、开始制作」单独列为一步。<span class="pill mine">我的解读</span></p>
+  </div>
+  <p class="src"><b>出处</b>：README.zh-CN.md §Hypit（第 51 行：「全部锚定在词上，而不是秒上」）· §示例（三例均写「WhisperX 负责逐词对齐」）· §Hypit 能构建什么（「改一句台词，时间轴自己重排」）· docs/zh/quickstart.md §4「确认费用，开始制作」· docs/zh/quickstart/preview.md（「生成和编码渲染通过 hypit build 提交」）· skills/hypit/SKILL.md 开头段。</p>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="q4">
+  <p class="eyebrow">第 4 问</p>
+  <h2>原理：我给它什么、它做了什么、吐出什么、给谁用</h2>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 720 340" role="img" aria-label="四条泳道：你、AI 助手、Hypit 程序、外部服务。你给参考视频或描述；AI 助手看片听词写菜谱文件；Hypit 编译并算账报价；你确认预算；Hypit 执行 build，可选地调用外部付费模型生成素材，然后在你电脑上用 Chromium 和 ffmpeg 渲染；你拿到 mp4 和可编辑项目，在 Studio 里看">
+      <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fc"/></marker><marker id="a4w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fw"/></marker></defs>
+      <text x="8" y="47" class="tb">你</text>
+      <text x="8" y="117" class="tb">AI 助手</text>
+      <text x="8" y="187" class="tb">Hypit</text>
+      <text x="8" y="267" class="tb tw">外部服务</text>
+      <line x1="60" y1="80" x2="715" y2="80" class="ln dash" style="opacity:.35"/>
+      <line x1="60" y1="150" x2="715" y2="150" class="ln dash" style="opacity:.35"/>
+      <line x1="60" y1="230" x2="715" y2="230" class="ln dash" style="opacity:.35"/>
+
+      <rect x="70" y="25" width="140" height="40" rx="7" class="bx"/><text x="140" y="42" class="tb" text-anchor="middle">给参考视频 / 一句描述</text><text x="140" y="58" class="ts" text-anchor="middle">可附人物照片、产品图</text>
+      <line x1="140" y1="65" x2="140" y2="93" class="ln" marker-end="url(#a4)"/>
+      <rect x="70" y="95" width="200" height="44" rx="7" class="bxa"/><text x="170" y="113" class="tb" text-anchor="middle">看片、听每个字、写菜谱文件</text><text x="170" y="130" class="ts" text-anchor="middle">.svml（内容） .svs（配方） .svrun（这次做什么）</text>
+      <line x1="140" y1="139" x2="140" y2="243" class="ln dash" marker-end="url(#a4)"/>
+      <rect x="70" y="245" width="200" height="40" rx="7" class="bxm"/><text x="170" y="262" class="t" text-anchor="middle">听词：WhisperX</text><text x="170" y="278" class="ts" text-anchor="middle">本地跑免费 · 托管（HypiHub）收费</text>
+
+      <line x1="270" y1="117" x2="310" y2="117" class="ln"/><line x1="310" y1="117" x2="310" y2="165" class="ln"/><line x1="310" y1="165" x2="318" y2="165" class="ln" marker-end="url(#a4)"/>
+      <rect x="320" y="160" width="160" height="44" rx="7" class="bx"/><text x="400" y="178" class="tb" text-anchor="middle">编译菜谱 → 算账</text><text x="400" y="195" class="ts" text-anchor="middle">hypit plan / hypit pricing</text>
+      <line x1="400" y1="160" x2="400" y2="67" class="ln" marker-end="url(#a4)"/>
+      <rect x="330" y="25" width="140" height="40" rx="7" class="bx"/><text x="400" y="42" class="tb" text-anchor="middle">看报价，说「行」</text><text x="400" y="58" class="ts" text-anchor="middle">确认账户、范围、预算</text>
+      <line x1="470" y1="45" x2="520" y2="45" class="ln"/><line x1="520" y1="45" x2="520" y2="158" class="ln" marker-end="url(#a4)"/>
+      <rect x="500" y="160" width="200" height="60" rx="7" class="bxa"/><text x="600" y="178" class="tb" text-anchor="middle">build：生成素材 + 渲染</text><text x="600" y="195" class="ts" text-anchor="middle">渲染在你电脑上：Chromium + ffmpeg</text><text x="600" y="211" class="ts" text-anchor="middle">结果存进 .hypit/results</text>
+      <line x1="600" y1="220" x2="600" y2="243" class="lnw dash" marker-start="url(#a4w)" marker-end="url(#a4w)"/>
+      <rect x="500" y="245" width="200" height="44" rx="7" class="bxw"/><text x="600" y="263" class="tb tw" text-anchor="middle">生成模型（图 / 视频 / 语音）</text><text x="600" y="280" class="ts" text-anchor="middle">可选 · 按次收费 · 提示词与参考图会发过去</text>
+      <line x1="640" y1="160" x2="640" y2="67" class="lna" marker-end="url(#a4)"/>
+      <rect x="560" y="25" width="150" height="40" rx="7" class="bxa"/><text x="635" y="42" class="tb" text-anchor="middle">成片 mp4 + 可编辑项目</text><text x="635" y="58" class="ts" text-anchor="middle">在 Studio（浏览器）里看、微调</text>
+      <text x="360" y="322" class="ts" text-anchor="middle">虚线 = 可选路径；橙色 = 会花钱、数据会离开你的电脑</text>
+    </svg>
+    </div>
+    <figcaption>图 4 · 你只出现在三处：给参考、看报价点头、拿成片。中间写文件、算账、生成、渲染都是 AI 助手指挥 Hypit 做的。</figcaption>
+  </figure>
+  <div class="ask">
+    <div class="lbl">你特别想搞清的 ③：「视频还能写代码」是怎么回事？SVML 和「编译器」是什么？</div>
+    <p><b>SVML</b> 是 Hypit 自己定的一种「菜谱书写格式」：哪句台词、配什么画面、字幕长什么样、说到哪个词弹什么特效，全写在一个文本文件里（后缀 <code>.svml</code>）。<b>编译器</b>就是那个「读菜谱、自动下厨」的机器人厨师：把这份文本变成真正的 mp4。README 的说法是「不调用生成模型也能<b>编译</b>成一条成片」。</p>
+    <p style="margin-top:6px"><b>拿你熟悉的东西类比</b>：这和「文字版菜谱 → 照着做出菜」是一回事，只不过做菜的是程序。好处也一样：菜谱是文字，改一个字很容易；菜做坏了，不用重新买菜，改菜谱重做就行。</p>
+    <p style="margin-top:6px">真实的「视频代码」长这样（这是「本次做什么」的 <code>.svrun</code> 文件开头，照抄文档）：</p>
+<pre><code>&lt;?svml using="@hypit/run-markup@1"?&gt;
+
+&lt;svrun version="1"&gt;
+  &lt;author source="./main.svml"/&gt;</code></pre>
+    <p>意思是：「这次按 <code>main.svml</code> 这份菜谱来做。」你不需要会写它——AI 助手写；你只要知道它是一份能改、能重跑的文本文件。</p>
+  </div>
+  <ul>
+    <li><b>吐出什么</b>：一条 mp4 成片，加上一个普通文件夹里的项目（菜谱文件 + 生成过的素材 + 每次执行的记录 Build Result）。文档说「项目保存在普通文件里，可以继续编辑」。</li>
+    <li><b>结果给谁用</b>：给你。可以在浏览器里打开 <b>Studio</b>（Hypit 自带的看片页面）逐帧看、微调字幕位置；也能在 <b>Comments</b> 页按时间点留意见，AI 助手会读取 <code>FEEDBACK.json</code> 里的意见去改。</li>
+    <li><b>Build Result</b>：每跑一次 <code>build</code> 留下的「这次做了什么、产出了哪些文件」的记录；下次改菜谱重做，没变的素材直接复用，不重新生成（省钱）。</li>
+  </ul>
+  <p class="src"><b>出处</b>：docs/zh/guide/skill.md §保持项目可编辑（.svml/.svs/.svrun/Build Result 各自作用）· docs/zh/quickstart/run.md §Run Source 语法（代码片段原文）与「只有 build 会真正提交工作」· docs/zh/quickstart/preview.md（Studio、Comments、FEEDBACK.json）· docs/zh/guide/develop.md §前置条件（Chromium 本地渲染、ffmpeg）· docs/zh/guide/providers.md（Model / Provider / Endpoint）· README.zh-CN.md §Hypit（「编译成一条成片」）。</p>
+</section>
+
+<!-- ============ 5 ============ -->
+<section id="q5">
+  <p class="eyebrow">第 5 问</p>
+  <h2>怎么用：从零到第一次跑通（零模型费路径）</h2>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 720 262" role="img" aria-label="六步：装 Node.js 和 Coding Agent；一条命令装 Hypit 技能；在空文件夹里对助手说 /hypit 做一个 ranking 视频；助手补装 hypit 程序和 ffmpeg；看报价并声明不用付费模型；build 出 mp4。每步标注是否花钱">
+      <defs><marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fc"/></marker></defs>
+      <rect x="15" y="15" width="205" height="86" rx="8" class="bxw"/>
+      <text x="27" y="36" class="tb">① 装底子</text>
+      <text x="27" y="56" class="t">Node.js 22.15+</text>
+      <text x="27" y="73" class="t">Claude Code 或 Codex</text>
+      <text x="27" y="92" class="ts tw">助手要付费 · 价格原文未说明</text>
+      <line x1="220" y1="58" x2="248" y2="58" class="ln" marker-end="url(#a5)"/>
+      <rect x="250" y="15" width="220" height="86" rx="8" class="bxa"/>
+      <text x="262" y="36" class="tb">② 一条命令装技能</text>
+      <text x="262" y="60" class="t" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px">npx skills add hypit-ai/hypit -g</text>
+      <text x="262" y="92" class="ts ta">免费 · 只装一次</text>
+      <line x1="470" y1="58" x2="498" y2="58" class="ln" marker-end="url(#a5)"/>
+      <rect x="500" y="15" width="205" height="86" rx="8" class="bxa"/>
+      <text x="512" y="36" class="tb">③ 开口说</text>
+      <text x="512" y="56" class="t">新建空文件夹，启动助手</text>
+      <text x="512" y="73" class="t" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px">/hypit 做一个 ranking 视频…</text>
+      <text x="512" y="92" class="ts ta">免费</text>
+      <path d="M602 101 L602 122 L118 122 L118 143" class="ln" marker-end="url(#a5)"/>
+      <rect x="15" y="145" width="205" height="86" rx="8" class="bxa"/>
+      <text x="27" y="166" class="tb">④ 助手补工具</text>
+      <text x="27" y="186" class="t" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px">npm install --global @hypit/hypit</text>
+      <text x="27" y="203" class="t">+ ffmpeg，它会告诉你</text>
+      <text x="27" y="222" class="ts ta">免费</text>
+      <line x1="220" y1="188" x2="248" y2="188" class="ln" marker-end="url(#a5)"/>
+      <rect x="250" y="145" width="220" height="86" rx="8" class="bxa"/>
+      <text x="262" y="166" class="tb">⑤ 看报价，你拍板</text>
+      <text x="262" y="186" class="t" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px">hypit plan / hypit pricing</text>
+      <text x="262" y="203" class="t">说「不用付费模型」</text>
+      <text x="262" y="222" class="ts ta">→ 0 元</text>
+      <line x1="470" y1="188" x2="498" y2="188" class="ln" marker-end="url(#a5)"/>
+      <rect x="500" y="145" width="205" height="86" rx="8" class="bxa"/>
+      <text x="512" y="166" class="tb">⑥ 出片</text>
+      <text x="512" y="186" class="t" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px">hypit build … --follow</text>
+      <text x="512" y="203" class="t">→ output/final.mp4</text>
+      <text x="512" y="222" class="ts ta">本地渲染 · 免费</text>
+      <text x="360" y="252" class="ts" text-anchor="middle">橙色 = 可能花钱；绿色 = Hypit 本身免费。步骤 ④⑤⑥ 的命令由 AI 助手替你敲。</text>
+    </svg>
+    </div>
+    <figcaption>图 5 · 唯一一条自己敲的命令是第 ② 步。之后你都在跟 AI 助手对话，它替你敲 ④⑤⑥。逐行说明和「该看到什么 / 看到别的说明哪里错了」见配套实操清单。</figcaption>
+  </figure>
+  <ul>
+    <li><b>需要先有什么</b>（文档 §你需要准备）：一个支持 Skill 的 Coding Agent（Claude Code 或 Codex）；一条参考视频，或对目标视频的一句描述。加上 Node.js 22.15+（README 徽章和开发指南都标了）。<b>Node.js</b>：运行这类命令行程序的底层环境，官网下载安装包点下一步就行。</li>
+    <li><b>第一步敲什么</b>：<code>npx skills add hypit-ai/hypit -g</code>。逐段讲：<code>npx</code> = 临时下载并运行一个小工具；<code>skills add</code> = 用那个工具「添加一个技能」；<code>hypit-ai/hypit</code> = 技能来自 GitHub 上这个仓库；<code>-g</code> = 装成全局的，哪个文件夹都能用。</li>
+    <li><b>然后敲什么</b>：在 AI 助手里输入 README 原句 <code>/hypit 做一个 ranking 视频，把 Hypit 排到 S 级。</code>。文档说「Agent 会检查环境，索要这条视频需要的凭据，生成素材并构建成片」。</li>
+    <li><b>不花钱、不外发数据的关键一句</b>：README 明说「字幕、动效和代码渲染的画面，不调用生成模型也能编译成一条成片，因此可以不产生模型服务费用」。所以你要在 ③ 或 ⑤ 时告诉助手：<b>只用代码渲染的画面和字幕，不调用任何付费生成模型，要花钱的先停下来问我</b>（这句是我拟的话术，不是 README 原句）。<span class="pill mine">我的解读</span></li>
+    <li><b>会看到什么</b>：<code>hypit build … --follow</code> 会把进度流式打在终端；结束时文档说「Build 的最终输出会为每个文件 Target 打印精确的 <code>get --output …</code> 命令」，照着跑一遍，<code>output/final.mp4</code> 就出现了。</li>
+    <li><b>诚实提醒</b>：Coding Agent 本身通常要账号和费用（Hypit 文档只说「各有自己的账号与费用」，没给价格）。<span class="pill unk">原文未说明</span> 所以「零成本」严格说是「零模型费」：Hypit 免费 + 渲染在本机免费，AI 助手的费用另算。不用 AI 助手、直接手敲的新手路径，原文没有提供（示例项目要求克隆仓库和开发环境）。<span class="pill unk">原文未说明</span></li>
+  </ul>
+  <p class="src"><b>出处</b>：README.zh-CN.md §只安装一次（命令、「Agent 会检查 Hypit 可执行程序，并按需协助安装」、「Hypit 本身免费使用；Coding Agent 和模型服务各有自己的账号与费用」）· §使用 Hypit skill（两条 /hypit 原句）· §Hypit 第 53 行（不调用生成模型也能编译成片）· docs/zh/quickstart.md §你需要准备、§1、§4 · docs/zh/quickstart/run.md（plan / build --follow / get --output）· skills/hypit/references/environment/distribution.md §Install the executable package（<code>npm install --global @hypit/hypit</code>）· docs/zh/guide/develop.md §前置条件（Node.js 22.15+、ffmpeg、Chromium 由 hypit runtime up 下载）。</p>
+</section>
+
+<!-- ============ 6 ============ -->
+<section id="q6">
+  <p class="eyebrow">第 6 问</p>
+  <h2>谁真的需要它、为什么</h2>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 720 250" role="img" aria-label="四类人：投信息流广告的人要 50 个开头变体；带货的人每天换一个商品；做播客访谈切片的人要分屏和分说话人字幕；做出海内容的人要同一条视频十种语言">
+      <rect x="15" y="15" width="335" height="105" rx="8" class="bx"/>
+      <text x="30" y="40" class="tb">投信息流广告的人</text>
+      <text x="30" y="62" class="t">一条正在跑的广告 → 换上自己的产品</text>
+      <text x="30" y="80" class="t">当天发 50 个不同开头，两周后再换一批</text>
+      <text x="30" y="104" class="ts ta">为什么需要：开头要不停试，正文一个字不动</text>
+      <rect x="290" y="30" width="44" height="10" rx="2" class="bxa"/><rect x="290" y="44" width="44" height="10" rx="2" class="bxa"/><rect x="290" y="58" width="44" height="10" rx="2" class="bxa"/><text x="312" y="86" class="ts" text-anchor="middle">×50</text>
+
+      <rect x="370" y="15" width="335" height="105" rx="8" class="bx"/>
+      <text x="385" y="40" class="tb">直播带货 / 短视频带货的人</text>
+      <text x="385" y="62" class="t">一个跑通的格式，每天换一个商品</text>
+      <text x="385" y="80" class="t">换产品、换价格、换口号，结构不动</text>
+      <text x="385" y="104" class="ts ta">为什么需要：转化率是结构带来的，别碰它</text>
+      <rect x="645" y="30" width="44" height="40" rx="4" class="bxa"/><text x="667" y="55" class="t" text-anchor="middle">SKU</text><text x="667" y="86" class="ts" text-anchor="middle">每天一个</text>
+
+      <rect x="15" y="140" width="335" height="95" rx="8" class="bx"/>
+      <text x="30" y="165" class="tb">做播客 / 访谈切片的人</text>
+      <text x="30" y="187" class="t">分屏布局、区分说话人的字幕、反应特效</text>
+      <text x="30" y="219" class="ts ta">为什么需要：每期节目都要切很多条，样式一致</text>
+      <rect x="290" y="155" width="20" height="30" rx="2" class="bxa"/><rect x="314" y="155" width="20" height="30" rx="2" class="bxa"/>
+
+      <rect x="370" y="140" width="335" height="95" rx="8" class="bx"/>
+      <text x="385" y="165" class="tb">做出海 / 多语言内容的人</text>
+      <text x="385" y="187" class="t">同一条视频十种语言，改台词时间轴自己重排</text>
+      <text x="385" y="219" class="ts ta">为什么需要：翻译后每句长短都变，按秒对会全乱</text>
+      <text x="667" y="172" class="t" text-anchor="middle">中 EN ES</text><text x="667" y="190" class="t" text-anchor="middle">日 FR ···</text>
+    </svg>
+    </div>
+    <figcaption>图 6 · 共同点只有一个：同一个结构要出很多个版本。只做一条视频的人，感受不到它的好处。</figcaption>
+  </figure>
+  <ul>
+    <li>以上四类全部来自 README「Hypit 能构建什么」一节的清单：信息流广告、带货视频、播客与采访切片、多语言版本。README 还列了「复刻爆款」「AI UGC 与口播」「代码渲染的视频」。</li>
+    <li>README 三个示例（足球排行榜、播客、街头采访）各配了 3 个变体，作者自称每条成片总成本约 $1.07～$1.15。<span class="pill claim">项目自称</span></li>
+  </ul>
+  <p class="src"><b>出处</b>：README.zh-CN.md §Hypit 能构建什么（七条清单原文）· §示例（三例的「总成本」）。四类人的画像是我从清单反推的。<span class="pill mine">我的解读</span></p>
+</section>
+
+<!-- ============ 7 ============ -->
+<section id="q7">
+  <p class="eyebrow">第 7 问</p>
+  <h2>什么时候不该用</h2>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 720 232" role="img" aria-label="五种不该用的情形，每种给出替代方案：只剪一条自己的 vlog 用剪映；不想碰命令行就等图形界面产品；真人实拍要精修用传统剪辑软件；想做网站给很多人在线用被许可证禁止；预算为零却要 AI 真人口播做不到">
+      <g>
+        <circle cx="32" cy="34" r="11" class="bxb"/><line x1="26" y1="28" x2="38" y2="40" class="lnb"/><line x1="38" y1="28" x2="26" y2="40" class="lnb"/>
+        <text x="54" y="38" class="t">只是想剪一条自己的旅行 vlog</text>
+        <text x="430" y="38" class="t ta">→ 剪映就够，别折腾</text>
+      </g>
+      <g>
+        <circle cx="32" cy="74" r="11" class="bxb"/><line x1="26" y1="68" x2="38" y2="80" class="lnb"/><line x1="38" y1="68" x2="26" y2="80" class="lnb"/>
+        <text x="54" y="78" class="t">不想碰命令行、不想装 Node.js、不想开 AI 助手账号</text>
+        <text x="430" y="78" class="t ta">→ 等有图形界面的产品</text>
+      </g>
+      <g>
+        <circle cx="32" cy="114" r="11" class="bxb"/><line x1="26" y1="108" x2="38" y2="120" class="lnb"/><line x1="38" y1="108" x2="26" y2="120" class="lnb"/>
+        <text x="54" y="118" class="t">素材是自己真人实拍，要一帧一帧精修调色</text>
+        <text x="430" y="118" class="t ta">→ 传统剪辑软件</text>
+      </g>
+      <g>
+        <circle cx="32" cy="154" r="11" class="bxb"/><line x1="26" y1="148" x2="38" y2="160" class="lnb"/><line x1="38" y1="148" x2="26" y2="160" class="lnb"/>
+        <text x="54" y="158" class="t">想做个网站，让很多人在线用它做视频、收会员费</text>
+        <text x="430" y="158" class="t tbd">→ 许可证禁止，须买商业授权</text>
+      </g>
+      <g>
+        <circle cx="32" cy="194" r="11" class="bxb"/><line x1="26" y1="188" x2="38" y2="200" class="lnb"/><line x1="38" y1="188" x2="26" y2="200" class="lnb"/>
+        <text x="54" y="198" class="t">预算 0 元，却要 AI 真人口播画面和配音</text>
+        <text x="430" y="198" class="t tw">→ 口播要生成模型，得花钱</text>
+      </g>
+      <line x1="415" y1="15" x2="415" y2="215" class="ln dash" style="opacity:.35"/>
+    </svg>
+    </div>
+    <figcaption>图 7 · 左边五种情形，右边是更合适的做法。第 4 条是许可证写死的，不是建议。</figcaption>
+  </figure>
+  <ul>
+    <li><b>只做一条、不做变体</b>：它的全部价值在「一份工作流出很多版本」。只出一条，你付出装环境的成本，收不回来。<span class="pill mine">我的解读</span></li>
+    <li><b>完全不想碰命令行</b>：唯一的入口是 Coding Agent 加一条命令；文档没有提供纯图形界面的安装和使用路径。Studio 只能看和微调，不能从零做片。</li>
+    <li><b>想做成网站卖给别人用</b>：LICENSE 第 1(a) 条明写「不得…运营多租户环境，或以托管、受管或 SaaS 形式向第三方提供 Hypit 功能」，且「无论是否收费」；要这么做须向 Hypit.AI 取得书面商业授权。</li>
+    <li><b>预算为零却要 AI 演员</b>：README 明说「生成模型不是必需的」，但反过来，只要要 AI 生成的画面、声音，就得付外部模型的钱。</li>
+    <li><b>对「项目还很新」敏感</b>：仓库 2026-07-29 才建，版本还是 0.x，一周发 20 个版本（第 8 问）。要拿它做不能出错的商业交付，需要有承担返工的准备。<span class="pill mine">我的解读</span></li>
+  </ul>
+  <p class="src"><b>出处</b>：LICENSE 第 1(a)(b) 条 · README.zh-CN.md §Hypit 第 53 行（生成模型不是必需的）· docs/zh/quickstart.md §你需要准备 · docs/zh/quickstart/preview.md（Studio 只做查看与微调，渲染走 build）· GitHub API：created_at 2026-07-29、releases 列表。</p>
+</section>
+
+<!-- ============ 8 ============ -->
+<section id="q8">
+  <p class="eyebrow">第 8 问</p>
+  <h2>代价与风险：钱、数据、许可证、成熟度</h2>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 720 262" role="img" aria-label="六块仪表：版本 v0.2.12；仓库年龄 8 周；发布节奏 8 天 20 次；两名核心贡献者占 96% 提交；README 推广内容占 21.5%；许可证为 Apache-2.0 改版，自用和给客户做允许、做网站卖不允许">
+      <rect x="15" y="15" width="220" height="110" rx="8" class="bx"/>
+      <text x="30" y="38" class="ts">当前版本</text><text x="30" y="72" class="tbig">v0.2.12</text>
+      <text x="30" y="96" class="ts">2026-09-21 发布</text><text x="30" y="112" class="ts tw">0.x = 作者自己也认为还早期</text>
+      <rect x="250" y="15" width="220" height="110" rx="8" class="bx"/>
+      <text x="265" y="38" class="ts">仓库年龄</text><text x="265" y="72" class="tbig">约 8 周</text>
+      <text x="265" y="96" class="ts">2026-07-29 建仓</text><text x="265" y="112" class="ts">1397 次提交，每周 100～210 次</text>
+      <rect x="485" y="15" width="220" height="110" rx="8" class="bx"/>
+      <text x="500" y="38" class="ts">发布节奏</text><text x="500" y="72" class="tbig">8 天 20 版</text>
+      <text x="500" y="96" class="ts">v0.1.8（9-14）→ v0.2.12（9-21）</text><text x="500" y="112" class="ts tw">变得快 = 教程可能隔周就过期</text>
+      <rect x="15" y="140" width="220" height="110" rx="8" class="bx"/>
+      <text x="30" y="163" class="ts">代码主要谁在写</text><text x="30" y="197" class="tbig">2 人 ≈ 96%</text>
+      <text x="30" y="221" class="ts">836 + 510 / 1397 次提交</text><text x="30" y="237" class="ts tw">共 15 人参与 · 高度集中</text>
+      <rect x="250" y="140" width="220" height="110" rx="8" class="bx"/>
+      <text x="265" y="163" class="ts">README 里的合作伙伴推广</text><text x="265" y="197" class="tbig">21.5%</text>
+      <text x="265" y="221" class="ts">68 / 300 行 · 8 家伙伴</text><text x="265" y="237" class="ts tw">其中 6 家链接带推荐/追踪参数</text>
+      <rect x="485" y="140" width="220" height="110" rx="8" class="bx"/>
+      <text x="500" y="163" class="ts">许可证</text><text x="500" y="192" class="tb" style="font-size:15px">Apache-2.0 改版</text>
+      <text x="500" y="213" class="t ta">自己用 ✓　给客户做 ✓</text><text x="500" y="233" class="t tbd">做成网站卖 ✗（须商业授权）</text>
+    </svg>
+    </div>
+    <figcaption>图 8 · 成熟度六块表。数字全部来自 2026-09-23 抓取的 GitHub 接口与仓库文件，不是 README 的说法。</figcaption>
+  </figure>
+
+  <h3>钱：哪些环节要花、大概多少</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>环节</th><th>要不要花钱</th><th>大概多少</th><th>出处</th></tr></thead>
+    <tbody>
+      <tr><td>Hypit 软件本身</td><td><span class="pill ok">免费</span> 不按人头、不按渲染次数收费，不加水印</td><td>0</td><td>README §只安装一次、§为什么选择 Hypit</td></tr>
+      <tr><td>Coding Agent（Claude Code / Codex）</td><td><span class="pill claim">要</span> 「各有自己的账号与费用」</td><td><span class="pill unk">原文未说明</span> 以各家官网为准</td><td>README §只安装一次；quickstart §1</td></tr>
+      <tr><td>生成模型（AI 生图 / 生视频 / 生声音）</td><td><span class="pill claim">要</span> 按次向外部服务付费</td><td>示例一条 20 秒成片约 $1.07～1.15 <span class="pill claim">项目自称</span>；HypiHub 定价 <span class="pill unk">原文未说明</span>，可用 <code>hypit pricing</code> 查</td><td>README §示例；run.md §查询所选 Run 的费用信息</td></tr>
+      <tr><td>听词对齐 WhisperX</td><td>二选一：本机跑<span class="pill ok">免费</span>（要装 Python、下载模型）；托管 HypiHub 收费</td><td>本机 0 元；模型体积与耗时 <span class="pill unk">原文未说明</span></td><td>quickstart §3；services/whisperx/README.md</td></tr>
+      <tr><td>渲染成片（Chromium + ffmpeg）</td><td><span class="pill ok">免费</span> 在你电脑上跑</td><td>0（费电、占硬盘）</td><td>develop.md §前置条件；README 示例「64 个无头 Chromium 进程并发渲染」</td></tr>
+      <tr><td>完全不花钱的玩法</td><td colspan="2">存在但有前提：Hypit 免费 + 只做「字幕、动效、代码渲染画面」的视频（README 明说可不产生模型费）+ 本机渲染。<b>前提是你已有 Coding Agent 账号</b>；没有的话这一项就是钱。</td><td>README §Hypit 第 53 行、§Hypit 能构建什么「代码渲染的视频」</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>数据：我的东西会发到哪里</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>数据</th><th>去哪</th><th>出处</th></tr></thead>
+    <tbody>
+      <tr><td>参考视频、你的照片、产品图</td><td>留在你电脑上给 AI 助手看；<b>如果</b>选托管 WhisperX，音频会发到 HypiHub；<b>如果</b>用生成模型，参考图会作为「参考素材」上传给所选服务（Pollo 甚至要求参考素材是公网 URL）</td><td>quickstart §3；service-partners.md §Pollo；provider-hypihub/README.md</td></tr>
+      <tr><td>提示词（让 AI 画什么、演什么）</td><td>发给你选的模型服务</td><td>providers.md</td></tr>
+      <tr><td>成片、菜谱文件、Build Result</td><td>默认存在项目文件夹 <code>.hypit/results</code>，本机</td><td>run.md（目录约定、「零配置时仍位于 .hypit/results」）</td></tr>
+      <tr><td>API 密钥</td><td>文档要求不要写进任何源文件；<code>doctor</code> 只验存在不打印</td><td>run.md 第 233 行</td></tr>
+      <tr><td>使用统计 / 遥测上报</td><td>我读过的所有文档都没提；代码层面未核查 <span class="pill unk">不确定</span></td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="ask">
+    <div class="lbl">你特别想搞清的 ④-a：license 是不是标准开源协议？三种用法行不行？</div>
+    <p><b>不是标准协议。</b>LICENSE 文件第一句：「Hypit 采用<b>修改版</b> Apache License 2.0，附加以下条件」。GitHub 也把它识别为「Other」。Apache 2.0 是常见的宽松开源协议，但一加条件就不再是 OSI（开源促进会）认证的标准协议了。</p>
+    <div class="tbl"><table>
+      <thead><tr><th>你想怎么用</th><th>行不行</th><th>LICENSE 原文依据</th></tr></thead>
+      <tbody>
+        <tr><td>我自己用，做自己的视频（哪怕拿去赚钱）</td><td><span class="pill ok">行</span></td><td>第 1 条：「可用于贵组织自身目的的商业用途」；第 3 条：产出归你，「包括商业用途」</td></tr>
+        <tr><td>我开工作室，帮客户做视频收费</td><td><span class="pill ok">行</span></td><td>第 1(b) 条明列：「用于贵组织的工作，<b>包括商业工作和为客户执行的工作</b>」无需商业授权</td></tr>
+        <tr><td>把它做成网站 / App，很多人在线用，我收费</td><td><span class="pill unk" style="background:var(--bad-soft)">不行</span></td><td>第 1(a) 条：多租户 / SaaS 需书面授权，「两个以上组织外的第三方各有独立工作区」即算多租户，「无论是否收费」</td></tr>
+        <tr><td>把 Hypit 软件打包卖，或捆在我的产品里卖</td><td><span class="pill unk" style="background:var(--bad-soft)">不行</span></td><td>第 1(b) 条：商业再分发需授权；fork 并公开源码可以，但不得以此获利</td></tr>
+        <tr><td>把 Hypit 软件本身免费交给客户让他自己跑</td><td><span class="pill unk">不确定</span></td><td>1(b) 只禁「为商业利益供应」；免费交付且客户自用未细说</td></tr>
+        <tr><td>改掉界面里的 Hypit 名字 / LOGO</td><td><span class="pill unk" style="background:var(--bad-soft)">不行</span></td><td>第 1(c) 条：不得移除命令行、运行报告里的名称、LOGO、版权信息</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin-top:6px"><b>额外风险</b>：第 2(a) 条写「生产方可按需把协议调得更严或更松」——也就是规则以后可能变。</p>
+  </div>
+
+  <div class="ask">
+    <div class="lbl">你特别想搞清的 ④-b：README 里合作伙伴推广占了多大比例？</div>
+    <p>我用脚本量了 README.zh-CN.md：全文 300 行，「Launch 伙伴」一节 68 行、占 <b>21.5%</b> 字符（按中文字数算也是 21.1%）；8 家伙伴中 6 家的链接带 <code>utm_source=hypit</code>、<code>aff=hypit</code>、<code>fpr=</code>、<code>invite/</code> 这类推荐/追踪参数；最近的提交记录里有「把 BeatAPI 合作伙伴链接改为推荐注册链接」（2026-09-21）。是否有分成，<span class="pill unk">原文未说明</span>。另外还有：两处「请点 Star」、一个「免费领 100 个 AI 人物」的 Google Drive 链接、首推自家托管服务 HypiHub、GitHub Sponsors 赞助入口。<b>讲产品本身的正文约占中文字数的 63%。</b></p>
+    <p style="margin-top:6px">怎么看：推广多不等于产品差，但说明 README 是推销稿，「1 亿播放量」「一条命令 100 个变体」这类话属于<span class="pill claim">项目自称</span>；14,448 个 star 衡量的是<b>关注度</b>，不是质量或成熟度。</p>
+  </div>
+  <p class="src"><b>出处</b>：LICENSE（全文 26 行，条款号如上）· README.zh-CN.md §Launch 伙伴（第 213～279 行）、§关注我们、§使用 Hypit skill 末尾链接 · .github/FUNDING.yml · GitHub API：repos（stars 14,448 / forks 1,705 / created_at）、releases（20 个，2026-09-14～09-21）、contributors（rponeawa 836、overlordkim 510，共 15 人）、commits（Link 头 1397 页 × 1）、stats/commit_activity（周提交数）· package.json（version 0.2.12）。v0.1.8 之前的版本在 GitHub 上没有发布记录，是否只发在 npm，<span class="pill unk">原文未说明</span>。</p>
+</section>
+
+<!-- ============ 9 ============ -->
+<section id="q9">
+  <p class="eyebrow">第 9 问</p>
+  <h2>优缺点对照，以及它和剪映是什么关系</h2>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 720 220" role="img" aria-label="两个部分重叠的圆角框：剪映是手工精修一条视频、有画面界面、适合真人素材；Hypit 是 AI 助手批量重跑很多条、命令行、生成素材；重叠处是字幕和成片 mp4；Hypit 出的 mp4 可以拿进剪映再修">
+      <defs><marker id="a9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fc"/></marker></defs>
+      <rect x="40" y="30" width="360" height="120" rx="14" class="bx"/>
+      <rect x="320" y="30" width="360" height="120" rx="14" class="bxa" style="fill-opacity:.55"/>
+      <text x="170" y="60" class="tb" text-anchor="middle">剪映</text>
+      <text x="170" y="84" class="t" text-anchor="middle">手工精修「一条」视频</text>
+      <text x="170" y="104" class="t" text-anchor="middle">有画面界面，拖拖拽拽</text>
+      <text x="170" y="124" class="t" text-anchor="middle">真人实拍素材为主</text>
+      <text x="540" y="60" class="tb ta" text-anchor="middle">Hypit</text>
+      <text x="540" y="84" class="t" text-anchor="middle">AI 助手批量重跑「很多条」</text>
+      <text x="540" y="104" class="t" text-anchor="middle">命令行 + 对话，没有拖拽</text>
+      <text x="540" y="124" class="t" text-anchor="middle">AI 生成素材 + 代码画面为主</text>
+      <text x="360" y="80" class="ts" text-anchor="middle">都能出</text>
+      <text x="360" y="98" class="tb" text-anchor="middle">字幕</text>
+      <text x="360" y="116" class="tb" text-anchor="middle">成片 mp4</text>
+      <path d="M540 150 L540 178 L200 178 L200 152" class="ln dash" marker-end="url(#a9)"/>
+      <text x="370" y="196" class="ts" text-anchor="middle">Hypit 出的 mp4 可以再拿进剪映补刀（我的推断，原文未涉及剪映）</text>
+      <text x="360" y="214" class="ts" text-anchor="middle">关系：互补，不是替代。做「一条」用剪映；做「一百条同结构」用 Hypit。</text>
+    </svg>
+    </div>
+    <figcaption>图 9 · 两者重叠的只有「字幕」和「输出 mp4」。剪映擅长一条一条精修，Hypit 擅长一个结构重跑很多条。</figcaption>
+  </figure>
+  <div class="two">
+    <div class="card">
+      <h3>优点</h3>
+      <ul>
+        <li>拿到的是可改、可重跑的工作流，不是一次性成片（README 原话）</li>
+        <li>字幕、特效按词挂，改台词不用重对时间</li>
+        <li>软件免费、不加水印、不按渲染次数收费（README）</li>
+        <li>不用生成模型也能出片，模型费可以为 0（README）</li>
+        <li>付费前会先报价、要你点头（quickstart §4）</li>
+        <li>产出物版权归你，含商业用途（LICENSE 第 3 条）</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>缺点 / 代价</h3>
+      <ul>
+        <li>必须用 Coding Agent，没有图形界面入口；Agent 另外要钱</li>
+        <li>要装 Node.js、ffmpeg、Chromium；听词还要 Python（本地 WhisperX）</li>
+        <li>AI 演员、AI 配音要按次付外部模型的钱</li>
+        <li>项目 8 周大、0.x 版本、8 天 20 版，教程易过期；核心代码 2 人写</li>
+        <li>许可证是改版 Apache-2.0：不能做多租户网站，且作者可改条款</li>
+        <li>README 约两成篇幅是合作伙伴推广，宣传口径需打折看</li>
+      </ul>
+    </div>
+  </div>
+  <ul>
+    <li><b>替代、补充还是无关？</b>补充。剪映解决「把一条视频剪好」；Hypit 解决「把一个结构重跑一百条」。原文没有提到剪映或任何剪辑软件。<span class="pill unk">原文未涉及</span> 关系判断是我的。<span class="pill mine">我的解读</span></li>
+    <li><b>不用它我损失什么？</b>如果你只做一条、两条：几乎什么都不损失。如果你要同一结构出十条以上、要多语言版本、要频繁换开头测试：损失的是每个版本重贴一遍字幕特效的时间，以及「改一句词全部错位」的返工。</li>
+  </ul>
+  <p class="src"><b>出处</b>：README.zh-CN.md §为什么选择 Hypit、§Hypit、§Hypit 能构建什么 · LICENSE 第 1、2、3 条 · docs/zh/quickstart.md §4 · docs/zh/guide/develop.md §前置条件 · GitHub API 数据同第 8 问。</p>
+</section>
+
+<p class="foot">取材：2026-09-23 用 curl 直接抓取 raw.githubusercontent.com 与 api.github.com，读了 README.zh-CN.md、README.md、LICENSE、docs/zh/quickstart.md 及子页、docs/zh/guide/{agents,service-partners,providers,skill,develop,runtime}.md、skills/hypit/SKILL.md 与 references/environment/{distribution,local-tools}.md、examples/README.md 及三个示例说明、services/whisperx/README.md、package.json、.github/FUNDING.yml，以及 repos / releases / commits / contributors / stats 接口。没有克隆仓库，没有运行 Hypit。凡标「项目自称」者未独立验证。</p>
+
+</div>
+</body>
+</html>
