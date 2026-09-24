@@ -77,6 +77,20 @@ export function buildDistillCmd(args) {
   );
 }
 
+/**
+ * 「今日」视图 AI 指令台「拆解视频」按钮用：零输入的通用视频蒸馏指令。
+ * 与 buildDistillCmd 的分工：那个要 platforms.platform() 的平台对象（用户已选平台、已填链接），
+ * 这里服务的是**无输入的静态按钮**——点一下复制，链接由用户自己粘在末尾。
+ * 同样不点名任何 skill（措辞沿用 buildDistillCmd 分支②）：本机可用工具会变，指令只描述任务本身。
+ * @returns {string} 结构化指令，材料区留一行提示等用户粘链接。
+ */
+export function buildVideoQuickCmd() {
+  return _shell(
+    "先用你可用的工具拿到下面这个视频的字幕/文字稿，再把内容提炼成一张六维经验卡。",
+    "把视频链接粘在这一行后面："
+  );
+}
+
 // 页面「▶ 直接蒸馏」用：给**无头 agent**（只有 WebFetch + 只读知识库工具，见 backend/clients/agent.py）的提示。
 // 复用同一套 _shell 六维/评级骨架（craft 单一真源、不漂移），只把「怎么拿材料」换成 WebFetch；
 // 末尾要求「产出即最终答复本身」，便于前端把 result 文本直接填进起草区（人核对后点保存）。

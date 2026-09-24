@@ -55,6 +55,9 @@ metadata:
 
 ## 输出结构
 
+> **[DailyWorkbench 本仓覆盖 · 2026-09-24]** 本文档（含 `methodology/`、`extractors/`）中出现的所有 `books/<slug>/`，一律读作 **`../devmd/books/<slug>/`**（相对本仓根；`devmd` 是 `mtools/` 下的兄弟仓，私有知识库）。原因：本仓是公开仓，而 `.cangjie/normalized/`、`.cangjie/chunks/` 会留下原书全文副本。编译产物 `dist/` 不落工作目录，`--out` 直接指向安装目标。约定详见 `../devmd/books/README.md`。
+> **重新 vendor 上游版本后，这一行需要重新打。**
+
 ```
 books/<book-slug>/
 ├── PIPELINE_STATE.md          # 流水线状态: 当前阶段 + 进度 (断点续跑用)

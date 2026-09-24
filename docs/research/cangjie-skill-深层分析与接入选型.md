@@ -18,7 +18,7 @@
 | 质量 | 三轮盘点里最高：10.5K★ / MIT / 近 30 天 9 次提交 / 有 CI、unittest、确定性编译校验、真实示例产物 / 文档自我约束极严。 |
 | 已做 | 2026-09-24 已把运行时部分装进 `.claude/skills/cangjie-skill/`（§6.3）。**未接进 `distill-template.js`**。 |
 | 借什么 | RIA++ 六段（尤其 A2 触发场景、E 可执行步骤、B 边界）、三重验证四档分流、`importance_rationale` 必填、晋级门、DIGEST 还原自检——正对本仓「打分空白③」与 ADR 0009 Phase 3。 |
-| 风险 | pyyaml 顶层硬依赖（缺则连 `doctor` 都崩）；`also_read` 编译零校验；装多本后 description 常驻膨胀；`books/` 工作目录是相对路径，装在项目里跑需约定（§9 待决）。 |
+| 风险 | pyyaml 顶层硬依赖（缺则连 `doctor` 都崩）；`also_read` 编译零校验；装多本后 description 常驻膨胀；`books/` 工作目录是相对路径（**2026-09-24 已约定为 `../devmd/books/<slug>/`**，§6.3）。 |
 
 ---
 
@@ -135,10 +135,13 @@ flowchart TD
   ```bash
   /home/dev_st/iriswork/tools/anaconda/bin/python .claude/skills/cangjie-skill/scripts/cangjie.py doctor
   ```
-- **编译交付**（`SKILL.md:152` 原句，路径相对 skill 目录）：
+- **工作目录（2026-09-24 已定）**：`../devmd/books/<slug>/`——即知识库仓 `/home/dev_st/mtools/devmd/books/`，**不落本仓**。理由：本仓是公开仓，而 `.cangjie/normalized/` 与 `.cangjie/chunks/` 会留下**原书全文的结构化副本**（体积≈原书）；devmd 是私有仓，且蒸馏产物本就属知识沉淀。已在 vendored `SKILL.md`「## 输出结构」标题下加一行覆盖声明，把文中所有 `books/<slug>/` 重定向到该路径（**上游升级后需重新打这一行**，见 §7 风险 4）。devmd 侧 `.gitignore` 已排除机器中间态（`runs/ snapshots/ index/ chunks/ normalized/ cache/ .staging-* *.cangjie-lock`），入库的只有 8 篇顶层 .md + `candidates/` + `rejected/` + `.cangjie/capabilities/`；目录语义与逐文件说明见 `devmd/books/README.md`。
+- **编译交付**（改写自 `SKILL.md:152` 原句，路径按本仓约定）：
   ```bash
-  python3 scripts/cangjie.py compile --bundle books/<slug>/.cangjie/capabilities --out <目标目录> --output auto
+  python3 .claude/skills/cangjie-skill/scripts/cangjie.py compile \
+    --bundle ../devmd/books/<slug>/.cangjie/capabilities --out <安装目标> --output auto
   ```
+  `--out` 指向真正的安装位置（`~/.claude/skills/` 或某项目 `.claude/skills/`），**不要指回工作目录**——上游 `methodology/07-stage5-deliver.md:62` 明写 `dist/` 只是构建产物、宿主不从那里加载。
   `auto` 会打印决策报告并退出码 2 等你轻确认，确认后加 `--yes` 或显式 `--output single|pack`（`scripts/cangjie.py:160-162`）。
 - **配套取材**（它不做）：图文用本机 `baoyu-url-to-markdown`；YouTube 用 `youtube-transcript`；B 站 / 抖音 / 小红书见 [蒸馏方法论-开源参考地图.md](蒸馏方法论-开源参考地图.md) §6.4 的两个未拍板候选（chubbyskills 轻、video-downloader 重而全）。
 - **与六维卡的分工**：同一份转写稿，要「以后温故」走工作台蒸馏库出六维卡；要「以后让 agent 用」走它出 skill 包。两条线**不接线**，避免把 skill 包当卡入库或反过来。
@@ -152,7 +155,7 @@ flowchart TD
 | 1 | **pyyaml 顶层硬 import**，缺失时任何子命令（含 `doctor`）在 import 阶段就崩，`doctor` 里那条 `[FAIL] yaml 缺失` 永远到不了 | `scripts/cangjie_common.py:18`；`cangjie.py:27-38` vs `:48-54`；CI 用 `doctor \|\| true` 吞掉（issue #29 open） | 本机 anaconda 环境 pyyaml 6.0.2 在位，不触发 | 换 python 解释器前先 `import yaml` |
 | 2 | **`also_read` 编译零校验**：schema 只约束「字符串数组」；编译器唯一消费点把元素直接当 slug 拼路径；router 视图下晋级能力的 `also_read` 被整句替换而丢弃；断链只在 staging 硬门以 `[broken-ref]` 报出且不指向 `also_read` | `schemas/capability.schema.json:23`；`scripts/compile_single.py:97-99`；`validate_skill_pack.py:44-56`（issue #30 open） | 阶段 3 若写成 `cap.xxx` 会产死链，报错难定位 | 阶段 3 只填 slug；编译失败先查 `also_read` |
 | 3 | 装多本后 description 常驻膨胀 | issue #20；`methodology/07:72` 只给「single/pack 二选一」缓解 | 宿主上下文成本 | 一本一 single；控制总数 |
-| 4 | `books/<slug>/` 与 `scripts/cangjie.py` 全是**相对路径**，SKILL.md 未定义工作目录 | `SKILL.md:59,85,91,106,132,140,151-152` | 装在项目里跑，产物可能落在仓根或 skill 目录，被门禁/提交波及 | §9 待决①：约定目录并决定是否 gitignore |
+| 4 | `books/<slug>/` 与 `scripts/cangjie.py` 全是**相对路径**，上游 SKILL.md 未定义工作目录 | `SKILL.md:59,85,91,106,132,140,151-152` | 装在项目里跑，产物可能落在仓根或 skill 目录，被门禁/提交波及 | **2026-09-24 已解**：工作目录定为 `../devmd/books/<slug>/`（私有知识库仓），在 vendored `SKILL.md`「## 输出结构」下加一行覆盖声明重定向。**遗留：重新 vendor 上游版本后这一行会被覆盖掉，须重打** |
 | 5 | 安全审计 | 克隆全文 grep：出网仅 README 的 DeepSeek 插件 `curl -fL` + `shasum -a 256 -c`（用户手动）与 `scripts/generate_star_history.py`（CI 专用，未 vendor 其 workflow）；`subprocess` 只调自家脚本；无 API key、无硬编码绝对路径、无 `/tmp` 落盘（仅文档示例）、无 `curl \| bash`、无静默自检出网 | 无 | 通过 |
 | 6 | 示例产物已过时 | `books/naval-almanack-skill/verified.md:3` 仍是旧三关命名「V1 跨域 / V2 预测力 / V3 独特性」；缺 `coverage-audit.md` 等 2026-09-13 新增产物 | 学样例时别照抄旧结构 | 以 `methodology/03` 现行判据为准 |
 | 7 | 成本 | 项目自称阶段 1 派 5 个并行子代理、阶段 4 三变体评测；真实 Token 未作承诺（ADR-001 `docs/plans/...:1776`） | 一本书一次可能不便宜 | 先「试点 1 本」（`SKILL.md:52,178`） |
@@ -168,7 +171,7 @@ flowchart TD
 
 **同源考古**（本仓 git 历史 + upstream 快照）：本仓是 `Zero-st/DailyWorkbench` 的快照 fork（`b63fce5`，2026-08-26），upstream 是 WorkBuddy 环境。快照随附、后于 `c7b14ad` 删除的 `mobile/assets/skill_lib.json` 三处点名 `cangjie-skill`：`workbuddy-bluebook` 的 `related_skills`、「案例 2：把书/视频蒸馏成 Skill（Ch22）：用 cangjie-skill（v1 蒸馏书、v2 蒸馏视频）」、以及与其「蒸馏引擎」的区分说明；`cs-learning` 亦记「四篇笔记用 cangjie-skill 思路于 2026-08-08 批量蒸馏」。快照里的按钮指令「用 video-cangjie-distill 把以下视频转成 skill」（`app.js:957`）在 fork 当天 `865a561` 被换成「用 creator-video-decoder 拆解以下视频，输出六维拆解报告」——**换的不只是名字，是产物语义（skill → 六维报告）**。两个名字在本机 `find` 均零命中（2026-09-04 校准），本仓 `platforms.js:9` 早已把视频分支拆绑为「用可用工具取字幕」。结论：`video-cangjie-distill` = cangjie-skill v2 的 upstream 安装名；它从未装在本机；它当年被换掉的结构性原因是**产 skill 而非 transcript**，与今天「不接进 distill-template」的决定一致。
 
-**活的残留**：`js/views/dash.js:12` 仍向用户输出「用 creator-video-decoder 拆解以下视频…」死指令，IA 重构漏删的最后一处；修它要动前端资产（`bump_version.py`），另开一轮。
+**活的残留（2026-09-24 已修）**：`js/views/dash.js:12` 曾向用户输出「用 creator-video-decoder 拆解以下视频，输出六维拆解报告：」死指令，是 IA 重构漏删的最后一处、也是 `distill-template.js` 收敛六维单一真源时唯一漏网的消费方。已改为 `import { buildVideoQuickCmd }` 消费真源，指令不再点名任何 skill，术语统一回「六维经验卡」。
 
 ---
 
@@ -181,8 +184,8 @@ flowchart TD
 | 借 RIA++ A2 / E / B 条款与「四档去向 + importance 必附依据」进六维模板 | **采纳（待做，ADR 0009 Phase 3 一并）** | 正对空白③；条款粒度小、可逆 |
 | 借 DIGEST 四条自检当卡片验收 | **采纳（待做）** | 与本仓「还原测试」同一原理，且写得更具体 |
 | 装同作者 `video-downloader` 补取材 | **待决** | 多平台含小红书/视频号，但先下整段视频 + ffmpeg，比 chubbyskills 重；两者二选一时再核真机 |
-| 待决① `books/<slug>/` 工作目录约定 | **待决** | 建议：沿用上游布局落在 `.claude/skills/cangjie-skill/books/`，并将其加入 `.gitignore`（审计层体量大、含原文引用）；编译产物 `--out` 指向 `.claude/skills/<book-slug>/` 才入仓。改 `.gitignore` 属配置变更，由用户拍板 |
-| 修 `dash.js:12` 死指令 | **待决（另开一轮）** | 前端资产变更，需 `bump_version.py` 与走查 |
+| `books/<slug>/` 工作目录约定 | **已决（2026-09-24）** | 定为 **`/home/dev_st/mtools/devmd/books/<slug>/`**（私有知识库仓），不落本公开仓。用户在看过「一次跑完会生成什么」后改判——决定性理由是 `.cangjie/normalized/` + `.cangjie/chunks/` 存的是**原书全文副本**。落地三件：vendored `SKILL.md` 加覆盖声明一行、devmd `.gitignore` 排除机器中间态（已造探针验证生效）、`devmd/books/README.md` 写目录语义与逐文件说明 |
+| 修 `dash.js:12` 死指令 | **采纳（2026-09-24 已做）** | `distill-template.js` 新增无参导出 `buildVideoQuickCmd()`，`dash.js` 改为消费它；已跑 `bump_version.py`（`CACHE=workbench-e15a3809`），门禁 6/6 绿 |
 
 ---
 
