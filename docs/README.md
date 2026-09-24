@@ -103,6 +103,7 @@
 | [需求澄清工具选型.md](research/需求澄清工具选型.md) | 需求澄清工具对比账本 |
 | [接入deepseekHarness-选型.md](research/接入deepseekHarness-选型.md) | 工作台作为工具接入 DeepSeek harness 的可行性：三条路径对比（bash / tool 插件 / MCP server）；**路径③已落地**（ADR 0008） |
 | [蒸馏方法论-开源参考地图.md](research/蒸馏方法论-开源参考地图.md) | 蒸馏「知识工艺层」调研：三空白诊断 + fabric pattern 结构 + 打分 rubric + 提示词骨架 + 最小落地路径 |
+| [cangjie-skill-深层分析与接入选型.md](research/cangjie-skill-深层分析与接入选型.md) | kangarooking/cangjie-skill（仓颉）深层分析：七阶段 RIA-TV++ / 三重验证四档 / 六维逐维对照 / 接入方式 / 风险与采纳表；2026-09-24 已装进 `.claude/skills/` |
 | [AI协作思维模型24条-参考地图.md](research/AI协作思维模型24条-参考地图.md) | 外部资料（B 级来源）提炼：24 条四组清单 + 与本仓原则对照 + 采纳 4 条 / 不采纳 11 条及理由 |
 | [AI反向提问10条-参考地图.md](research/AI反向提问10条-参考地图.md) | 外部手写卡片（不可溯源，够不上 B 级）提炼：实为「写给 AI 的回答契约」，逐条判定 5 真 / 4 半 / 1 无；**只存档未落地** |
 
@@ -115,3 +116,4 @@
 | [知识飞轮路线-思维导图.md](reference/知识飞轮路线-思维导图.md) | 路线图的思维导图形态（配套同名 `.opml`，可导入脑图工具） |
 | [reference/supabase_schema.sql](reference/supabase_schema.sql) | Supabase 表结构 DDL |
 | [reference/devhtml/](reference/devhtml/) | 生成的 html 产物：架构评审（`architecture-review/` 按日期留档）、产品评分卡、jev 原理图解与两张 archify 交互图、运行时架构交互版、各 archify 图等、hypit 小白图解（`hypit-explainer/` 含实操清单）；`.json` 为可重渲图源 |
+| [reference/devhtml/distill-explainer/](reference/devhtml/distill-explainer/) | 内容蒸馏小白图解（explain-concept-plainly v2 提示词实跑产物）：md 配 mermaid + diagram-render 渲染的自包含 html |

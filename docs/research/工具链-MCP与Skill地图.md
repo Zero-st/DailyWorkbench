@@ -110,6 +110,7 @@
 > 两个视频蒸馏 skill 已不在本机。本条**保留不删**（`.claude/plan/phase1-蒸馏库.md` 的历史证据仍然有效），
 > 只改状态——本仓习惯是**留证不抹除**。`baoyu-url-to-markdown` 仍在（全局 skill，见 §5）。
 > **影响**：蒸馏库里指向这两个 skill 的用户指令目前无对应能力可调，属已知缺口。
+> **2026-09-24 增补**：`video-cangjie-distill` 实为 `kangarooking/cangjie-skill`（v2「蒸馏视频」）在 upstream WorkBuddy 机的安装名，本机从未装过；今日已把 cangjie-skill v2.5.0（`3adf9e6`）的运行时部分装进 `.claude/skills/cangjie-skill/`——它产 **Skill 包**而非字幕/六维卡，**不补取材缺口**，也未接进 `distill-template.js`；`js/views/dash.js:12` 仍有指向 `creator-video-decoder` 的死指令待清。详见 `蒸馏方法论-开源参考地图.md` §6.3c。
 
 - **是什么**：本项目「蒸馏库」功能**运行时**编排的社区 skill：
   - `creator-video-decoder` / `video-cangjie-distill`：拆解 B站/小红书视频；
